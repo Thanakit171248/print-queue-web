@@ -18,10 +18,9 @@
       color: #f8fafc;
     }
     
-    /* Custom Smooth Animations */
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(1deg); }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
     @keyframes pulseGlow {
       0%, 100% { opacity: 0.3; transform: scale(1); }
@@ -34,25 +33,24 @@
 
     .animate-float { animation: float 5s ease-in-out infinite; }
     .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
-    .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    /* Glassmorphism Effect */
     .glass-card {
       background: rgba(30, 41, 59, 0.7);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .glass-nav {
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col overflow-x-hidden selection:bg-blue-500 selection:text-white">
+<body class="min-h-screen flex flex-col overflow-x-hidden">
 
-  <!-- 1. SPLASH SCREEN (หน้าต้อนรับอนิเมชัน) -->
-  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700 pointer-events-auto">
+  <!-- 1. SPLASH SCREEN (แก้ไขปัญหาการบังปุ่มคลิก) -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700">
     <div class="absolute w-72 h-72 bg-blue-600/30 rounded-full filter blur-3xl animate-pulse-glow"></div>
     <div class="relative z-10 flex flex-col items-center text-center p-6 animate-slide-up">
       <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 animate-float">
@@ -67,25 +65,24 @@
     </div>
   </div>
 
-  <!-- แถบตั้งค่า SUPABASE (ซ่อนไว้ ให้กดเปิดเมื่อต้องการตั้งค่า) -->
-  <div id="config-panel" class="bg-slate-900 border-b border-slate-800 p-3 hidden transition-all">
+  <!-- แถบตั้งค่า SUPABASE CONFIG -->
+  <div id="config-panel" class="bg-slate-900 border-b border-slate-800 p-3 hidden">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2 text-amber-400 font-medium">
         <i data-lucide="settings" class="w-4 h-4"></i> ตั้งค่าการเชื่อมต่อ Supabase Database
       </div>
       <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white w-full sm:w-60 focus:outline-none focus:border-blue-500">
-        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white w-full sm:w-60 focus:outline-none focus:border-blue-500">
+        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white w-full sm:w-60 focus:outline-none">
+        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-white w-full sm:w-60 focus:outline-none">
         <button onclick="saveAndInitSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-1.5 rounded-lg transition">บันทึก</button>
       </div>
     </div>
   </div>
 
-  <!-- 2. NAVBAR (แถบเมนูด้านบน) -->
-  <nav class="sticky top-0 z-40 glass-nav transition-all">
+  <!-- 2. NAVBAR -->
+  <nav class="sticky top-0 z-40 glass-nav">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-      <!-- โลโก้ -->
-      <a href="#" onclick="switchView('landing')" class="flex items-center gap-3 group">
+      <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-3 group">
         <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition">
           <i data-lucide="printer" class="w-5 h-5 text-white"></i>
         </div>
@@ -95,32 +92,28 @@
         </div>
       </a>
 
-      <!-- เมนูนำทาง -->
       <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-        <button onclick="switchView('landing')" class="hover:text-white transition">หน้าแรก</button>
-        <button onclick="switchView('dashboard')" class="hover:text-white transition">สั่งพิมพ์งาน / เช็คคิว</button>
-        <button onclick="toggleConfigPanel()" class="text-slate-500 hover:text-slate-300 transition text-xs">⚙️ DB Config</button>
+        <button onclick="switchView('landing')" class="hover:text-white transition cursor-pointer">หน้าแรก</button>
+        <button onclick="switchView('dashboard')" class="hover:text-white transition cursor-pointer">สั่งพิมพ์งาน / เช็คคิว</button>
+        <button onclick="toggleConfigPanel()" class="text-slate-500 hover:text-slate-300 transition text-xs cursor-pointer">⚙️ DB Config</button>
       </div>
 
-      <!-- ปุ่มเข้าสู่ระบบ / โปรไฟล์ -->
       <div id="nav-user-actions" class="flex items-center gap-3">
-        <!-- แสดงเมื่อยังไม่ล็อกอิน -->
         <div id="guest-buttons" class="flex items-center gap-2">
-          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white px-3 sm:px-4 py-2 rounded-xl transition">
+          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white px-3 sm:px-4 py-2 rounded-xl transition cursor-pointer">
             เข้าสู่ระบบ
           </button>
-          <button onclick="switchView('auth'); switchAuthTab('register')" class="text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transition transform active:scale-95">
+          <button onclick="switchView('auth'); switchAuthTab('register')" class="text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-blue-600/30 transition transform active:scale-95 cursor-pointer">
             ลงทะเบียน
           </button>
         </div>
 
-        <!-- แสดงเมื่อล็อกอินแล้ว -->
         <div id="user-profile-menu" class="hidden flex items-center gap-3">
           <div class="text-right hidden sm:block">
             <p id="user-display-name" class="text-sm font-bold text-white">ผู้ใช้งาน</p>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">ออนไลน์</span>
           </div>
-          <button onclick="handleLogout()" class="p-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-700 hover:border-red-500/30 rounded-xl transition" title="ออกจากระบบ">
+          <button onclick="handleLogout()" class="p-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-700 rounded-xl transition cursor-pointer" title="ออกจากระบบ">
             <i data-lucide="log-out" class="w-4 h-4"></i>
           </button>
         </div>
@@ -131,14 +124,12 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow">
 
-    <!-- VIEW 1: LANDING PAGE (หน้าแรกของเว็บไซต์) -->
+    <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="animate-slide-up">
-      <!-- Hero Section -->
-      <div class="relative py-12 md:py-24 px-4 max-w-6xl mx-auto">
+      <div class="relative py-12 md:py-20 px-4 max-w-6xl mx-auto">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/20 rounded-full filter blur-3xl -z-10 animate-pulse-glow"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <!-- Text Content -->
           <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
               <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> นวัตกรรมการสั่งพิมพ์งานยุคใหม่
@@ -151,23 +142,21 @@
               อัปโหลดไฟล์ คำนวณราคาประเมินทันที และติดตามสถานะการพิมพ์ได้แบบ Real-time เพิ่มความสะดวกสบายให้ทุกงานพิมพ์ของคุณ
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
-              <button onclick="handleStartPrinting()" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 transition transform hover:-translate-y-0.5 active:translate-y-0">
+              <button onclick="handleStartPrinting()" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/30 transition transform hover:-translate-y-0.5 cursor-pointer">
                 <i data-lucide="file-plus" class="w-5 h-5"></i> เริ่มต้นสั่งพิมพ์เอกสาร
               </button>
-              <button onclick="switchView('dashboard')" class="inline-flex items-center justify-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-6 py-4 rounded-2xl transition">
+              <button onclick="switchView('dashboard')" class="inline-flex items-center justify-center gap-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-6 py-4 rounded-2xl transition cursor-pointer">
                 <i data-lucide="list" class="w-5 h-5"></i> ตรวจสอบคิวพิมพ์
               </button>
             </div>
           </div>
 
-          <!-- Hero Image Section -->
           <div class="lg:col-span-5 relative">
-            <div class="relative rounded-3xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-blue-900/20 animate-float">
-              <img src="https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&w=1000&q=80" alt="High quality print service" class="w-full h-80 sm:h-96 object-cover">
+            <div class="relative rounded-3xl overflow-hidden border border-slate-700/60 shadow-2xl animate-float">
+              <img src="https://images.unsplash.com/photo-1562654501-a0ccc0fc3fb1?auto=format&fit=crop&w=1000&q=80" alt="Print Service" class="w-full h-80 sm:h-96 object-cover">
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               
-              <!-- Floating Card Badge -->
-              <div class="absolute bottom-4 left-4 right-4 glass-card p-4 rounded-2xl flex items-center justify-between border-slate-700/50">
+              <div class="absolute bottom-4 left-4 right-4 glass-card p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
                     <i data-lucide="check-circle-2" class="w-6 h-6"></i>
@@ -183,51 +172,20 @@
           </div>
         </div>
       </div>
-
-      <!-- Features Cards Section -->
-      <div class="max-w-6xl mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="glass-card p-6 rounded-2xl hover:border-blue-500/40 transition group">
-            <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
-              <i data-lucide="zap" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-2">คำนวณราคาทันที</h3>
-            <p class="text-slate-400 text-sm">เลือกขนาดกระดาษ พิมพ์สีหรือขาวดำ ระบบจะประเมินราคาให้อย่างแม่นยำก่อนส่งงาน</p>
-          </div>
-
-          <div class="glass-card p-6 rounded-2xl hover:border-indigo-500/40 transition group">
-            <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
-              <i data-lucide="clock" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-2">ติดตามคิว Real-time</h3>
-            <p class="text-slate-400 text-sm">ไม่ต้องยืนเฝ้าร้าน สามารถเช็คคิวและสถานะการพิมพ์ผ่านหน้าเว็บได้ตลอดเวลา</p>
-          </div>
-
-          <div class="glass-card p-6 rounded-2xl hover:border-purple-500/40 transition group">
-            <div class="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
-              <i data-lucide="shield-check" class="w-6 h-6"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white mb-2">ปลอดภัย & เป็นส่วนตัว</h3>
-            <p class="text-slate-400 text-sm">จัดเก็บข้อมูลด้วย Supabase Database มั่นใจได้ว่าข้อมูลเอกสารของคุณได้รับการดูแลอย่างปลอดภัย[cite: 1, 3]</p>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- VIEW 2: AUTHENTICATION (เข้าสู่ระบบ / สมัครสมาชิก) -->
+    <!-- VIEW 2: AUTHENTICATION -->
     <section id="view-auth" class="hidden py-12 px-4 max-w-md mx-auto animate-slide-up">
       <div class="glass-card rounded-3xl p-8 shadow-2xl border-slate-700/80">
-        <!-- Auth Header Tabs -->
         <div class="flex bg-slate-900/80 p-1 rounded-xl mb-6 border border-slate-800">
-          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-blue-600 transition shadow-md">
+          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-blue-600 transition shadow-md cursor-pointer">
             เข้าสู่ระบบ
           </button>
-          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition cursor-pointer">
             ลงทะเบียน
           </button>
         </div>
 
-        <!-- Form Login -->
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
           <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-white">ยินดีต้อนรับกลับมา</h2>
@@ -235,18 +193,17 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">อีเมล</label>
-            <input type="email" id="login-email" required placeholder="yourname@email.com" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <input type="email" id="login-email" required placeholder="yourname@email.com" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">รหัสผ่าน</label>
-            <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition transform active:scale-95">
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition cursor-pointer">
             เข้าสู่ระบบ
           </button>
         </form>
 
-        <!-- Form Register -->
         <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
           <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-white">สร้างบัญชีผู้ใช้ใหม่</h2>
@@ -254,28 +211,26 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">ชื่อ-นามสกุล</label>
-            <input type="text" id="reg-fullname" required placeholder="สมชาย ใจดี" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            <input type="text" id="reg-fullname" required placeholder="สมชาย ใจดี" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">อีเมล</label>
-            <input type="email" id="reg-email" required placeholder="yourname@email.com" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            <input type="email" id="reg-email" required placeholder="yourname@email.com" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">รหัสผ่าน</label>
-            <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
           </div>
-          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition transform active:scale-95">
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition cursor-pointer">
             ยืนยันลงทะเบียน
           </button>
         </form>
       </div>
     </section>
 
-    <!-- VIEW 3: DASHBOARD (สั่งพิมพ์ & ตารางคิว) -->
+    <!-- VIEW 3: DASHBOARD -->
     <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- ฟอร์มสั่งพิมพ์เอกสาร -->
         <div class="lg:col-span-5 glass-card p-6 rounded-3xl border-slate-700/80">
           <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-700/60">
             <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
@@ -296,28 +251,28 @@
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">ขนาดกระดาษ</label>
-                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500">
+                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white">
                   <option value="A4">A4</option>
                   <option value="A3">A3</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">จำนวนชุด</label>
-                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500">
+                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white">
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">สีพิมพ์</label>
-                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500">
+                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white">
                   <option value="bw">ขาว-ดำ (1.00 ฿)</option>
                   <option value="color">สี (5.00 ฿)</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">การพิมพ์</label>
-                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500">
+                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white">
                   <option value="single">หน้าเดียว</option>
                   <option value="duplex">หน้า-หลัง (+0.50 ฿)</option>
                 </select>
@@ -329,13 +284,12 @@
               <span id="total-price" class="text-2xl font-extrabold text-blue-400">1.00 ฿</span>
             </div>
 
-            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition cursor-pointer flex items-center justify-center gap-2">
               <i data-lucide="send" class="w-4 h-4"></i> ยืนยันส่งงานเข้าคิว
             </button>
           </form>
         </div>
 
-        <!-- ตารางรายการคิวพิมพ์ล่าสุด -->
         <div class="lg:col-span-7 glass-card p-6 rounded-3xl border-slate-700/80">
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-700/60">
             <div class="flex items-center gap-3">
@@ -347,7 +301,7 @@
                 <p class="text-xs text-slate-400">คิวงานพิมพ์ทั้งหมดในระบบ</p>
               </div>
             </div>
-            <button onclick="fetchQueues()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 text-xs flex items-center gap-1.5 transition">
+            <button onclick="fetchQueues()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 text-xs flex items-center gap-1.5 transition cursor-pointer">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> รีเฟรช
             </button>
           </div>
@@ -370,39 +324,38 @@
             </table>
           </div>
         </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
   <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <p>© 2026 PrintQueue Pro. All rights reserved.</p>
-      <div class="flex gap-4">
-        <a href="#" class="hover:text-slate-400 transition">นโยบายความเป็นส่วนตัว</a>
-        <a href="#" class="hover:text-slate-400 transition">เงื่อนไขการใช้งาน</a>
-      </div>
     </div>
   </footer>
 
-  <!-- SCRIPT CONTROLLER -->
   <script>
     let supabaseClient = null;
     let currentUser = null;
 
-    // 1. เมื่อโหลดเว็บเสร็จสิ้น
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+    // แก้ไขระบบตัด Splash Screen อย่างสมบูรณ์แบบ
+    window.addEventListener('load', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
 
-      // บังคับแสดง Splash Screen สั้นๆ เพื่อความละมุน
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        splash.classList.add('opacity-0', 'pointer-events-none');
-      }, 1200);
+      // ซ่อน Splash Screen เมื่อโหลดเสร็จและนำออกจากการบังคลิก
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        setTimeout(() => {
+          splash.classList.add('opacity-0');
+          setTimeout(() => {
+            splash.style.display = 'none'; // ซ่อนแบบเด็ดขาด 100%
+          }, 700);
+        }, 800);
+      }
 
-      // ดึงค่า Supabase Config จาก localStorage
       const savedUrl = localStorage.getItem('sp_url') || 'https://hghutsekeubqpuxpusub.supabase.co';
       const savedKey = localStorage.getItem('sp_key') || '';
 
@@ -414,7 +367,6 @@
       }
     });
 
-    // 2. ควบคุมสลับหน้าเว็บ (Navigation Routing)
     function switchView(viewName) {
       document.getElementById('view-landing').classList.add('hidden');
       document.getElementById('view-auth').classList.add('hidden');
@@ -431,7 +383,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // เมื่อผู้ใช้กดปุ่มเริ่มต้นสั่งพิมพ์
     function handleStartPrinting() {
       if (currentUser) {
         switchView('dashboard');
@@ -441,22 +392,20 @@
       }
     }
 
-    // 3. จัดการแท็บ Login / Register
     function switchAuthTab(tab) {
       const isLogin = tab === 'login';
       document.getElementById('form-login').classList.toggle('hidden', !isLogin);
       document.getElementById('form-register').classList.toggle('hidden', isLogin);
 
       document.getElementById('tab-login').className = isLogin
-        ? 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-blue-600 transition shadow-md'
-        : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition';
+        ? 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-blue-600 transition shadow-md cursor-pointer'
+        : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition cursor-pointer';
 
       document.getElementById('tab-register').className = !isLogin
-        ? 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-emerald-600 transition shadow-md'
-        : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition';
+        ? 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-emerald-600 transition shadow-md cursor-pointer'
+        : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition cursor-pointer';
     }
 
-    // 4. ระบบฐานข้อมูล Supabase
     function toggleConfigPanel() {
       document.getElementById('config-panel').classList.toggle('hidden');
     }
@@ -474,13 +423,17 @@
     }
 
     function initSupabase(url, key) {
-      supabaseClient = supabase.createClient(url, key);
-
-      // ตรวจสอบล็อกอินค้างคืนไว้
-      const savedUser = localStorage.getItem('sp_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateUserUI();
+      try {
+        if (typeof supabase !== 'undefined') {
+          supabaseClient = supabase.createClient(url, key);
+          const savedUser = localStorage.getItem('sp_user');
+          if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUserUI();
+          }
+        }
+      } catch (e) {
+        console.error("Supabase connection error:", e);
       }
     }
 
@@ -495,10 +448,9 @@
       }
     }
 
-    // สมัครสมาชิก[cite: 1]
     async function handleRegister(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณาตั้งค่า Supabase ก่อนใช้งาน');
+      if (!supabaseClient) return alert('กรุณากด ⚙️ DB Config เพื่อเชื่อมต่อ Supabase ก่อนใช้งาน');
 
       const fullName = document.getElementById('reg-fullname').value;
       const email = document.getElementById('reg-email').value;
@@ -520,10 +472,9 @@
       }
     }
 
-    // เข้าสู่ระบบ[cite: 1]
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณาตั้งค่า Supabase ก่อนใช้งาน');
+      if (!supabaseClient) return alert('กรุณากด ⚙️ DB Config เพื่อเชื่อมต่อ Supabase ก่อนใช้งาน');
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -547,7 +498,6 @@
       }
     }
 
-    // ออกจากระบบ
     function handleLogout() {
       currentUser = null;
       localStorage.removeItem('sp_user');
@@ -555,7 +505,6 @@
       switchView('landing');
     }
 
-    // 5. ระบบคำนวณราคา & ส่งงานพิมพ์
     function calculatePrice() {
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
@@ -571,7 +520,7 @@
 
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase');
+      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
       if (!currentUser) {
         alert('กรุณาเข้าสู่ระบบก่อนสั่งพิมพ์เอกสาร');
         switchView('auth');
@@ -588,21 +537,18 @@
       try {
         const queueNum = Math.floor(1000 + Math.random() * 9000);
 
-        // 1. เพิ่ม Order[cite: 1]
         const { data: order, error: oErr } = await supabaseClient
           .from('orders')
           .insert([{ user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued' }])
           .select().single();
         if (oErr) throw oErr;
 
-        // 2. เพิ่ม Document[cite: 1]
         const { data: doc, error: dErr } = await supabaseClient
           .from('documents')
           .insert([{ user_id: currentUser.id, file_name: filename, file_path: '/uploads/' + filename }])
           .select().single();
         if (dErr) throw dErr;
 
-        // 3. เพิ่ม Print Job[cite: 1]
         const { error: jErr } = await supabaseClient
           .from('print_jobs')
           .insert([{
@@ -625,39 +571,42 @@
       }
     }
 
-    // 6. ดึงข้อมูลคิวแสดงในตาราง[cite: 1]
     async function fetchQueues() {
       if (!supabaseClient) return;
 
-      const { data, error } = await supabaseClient
-        .from('print_jobs')
-        .select('id, status, documents(file_name), orders(queue_number, total_amount)')
-        .order('created_at', { ascending: false })
-        .limit(10);
+      try {
+        const { data, error } = await supabaseClient
+          .from('print_jobs')
+          .select('id, status, documents(file_name), orders(queue_number, total_amount)')
+          .order('created_at', { ascending: false })
+          .limit(10);
 
-      const tbody = document.getElementById('queue-table-body');
-      tbody.innerHTML = '';
+        const tbody = document.getElementById('queue-table-body');
+        tbody.innerHTML = '';
 
-      if (error || !data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-12 text-center text-slate-500">ยังไม่มีรายการคิวพิมพ์ในระบบ</td></tr>';
-        return;
+        if (error || !data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-12 text-center text-slate-500">ยังไม่มีรายการคิวพิมพ์ในระบบ</td></tr>';
+          return;
+        }
+
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/40 transition';
+          tr.innerHTML = `
+            <td class="py-3.5 px-3 font-bold text-blue-400">Q-${item.orders?.queue_number || '-'}</td>
+            <td class="py-3.5 px-3 text-slate-200 font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
+            <td class="py-3.5 px-3 text-slate-300 font-semibold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
+            <td class="py-3.5 px-3 text-center">
+              <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                ${item.status}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        console.error("Fetch queues error:", e);
       }
-
-      data.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-800/40 transition';
-        tr.innerHTML = `
-          <td class="py-3.5 px-3 font-bold text-blue-400">Q-${item.orders?.queue_number || '-'}</td>
-          <td class="py-3.5 px-3 text-slate-200 font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
-          <td class="py-3.5 px-3 text-slate-300 font-semibold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
-          <td class="py-3.5 px-3 text-center">
-            <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              ${item.status}
-            </span>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
   </script>
 </body>
