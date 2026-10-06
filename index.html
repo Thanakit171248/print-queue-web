@@ -45,12 +45,15 @@
 
     .animate-float { animation: float 5s ease-in-out infinite; }
     .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
-    .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
 
-  <!-- MODAL BOX แจ้งเตือน -->
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- GENERAL MODAL BOX -->
   <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-slide-up text-center">
       <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
@@ -70,8 +73,92 @@
     </div>
   </div>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-slate-950 transition-opacity duration-700">
+  <!-- PROFILE EDIT MODAL -->
+  <div id="profile-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl animate-slide-up space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="user-cog" class="w-5 h-5 text-blue-600"></i>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">แก้ไขข้อมูลโปรไฟล์ส่วนตัว</h3>
+        </div>
+        <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-edit-profile" onsubmit="handleSaveProfile(event)" class="space-y-4">
+        <!-- Avatar Preview & Upload -->
+        <div class="flex flex-col items-center gap-3">
+          <div class="relative w-24 h-24 rounded-full overflow-hidden border-4 border-blue-500 shadow-md bg-slate-100 dark:bg-slate-800">
+            <img id="profile-avatar-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Avatar" class="w-full h-full object-cover">
+          </div>
+          <div class="w-full text-center">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">เปลี่ยนรูปโปรไฟล์</label>
+            <input type="file" id="profile-avatar-input" accept="image/*" onchange="handleAvatarFileSelect(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อ-นามสกุล</label>
+          <input type="text" id="edit-profile-fullname" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">เบอร์โทรศัพท์ติดต่อ</label>
+          <input type="tel" id="edit-profile-phone" placeholder="08X-XXX-XXXX" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ที่อยู่จัดส่งเริ่มต้น</label>
+          <textarea id="edit-profile-address" rows="2" placeholder="บ้านเลขที่, ถนน, แขวง/ตำบล..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="button" onclick="closeProfileModal()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-semibold text-xs">ยกเลิก</button>
+          <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-md transition">บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ORDER DETAIL MODAL -->
+  <div id="order-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl animate-slide-up space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">รายละเอียดออเดอร์เชิงลึก</h3>
+        </div>
+        <button onclick="closeOrderDetailModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="order-detail-content" class="space-y-3 text-xs"></div>
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-800 text-right">
+        <button onclick="closeOrderDetailModal()" class="px-5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-semibold text-xs">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIP VERIFICATION MODAL -->
+  <div id="slip-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl animate-slide-up text-center space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">ตรวจสอบหลักฐานการโอนเงิน</h3>
+        <button onclick="closeSlipModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl p-2 max-h-80 overflow-hidden flex items-center justify-center">
+        <img id="slip-image-preview" src="https://via.placeholder.com/400x600?text=PromptPay+Slip+Preview" alt="Slip Preview" class="max-h-72 object-contain rounded-xl">
+      </div>
+      <div id="slip-actions" class="flex gap-2">
+        <button onclick="verifyPaymentStatus(false)" class="flex-1 py-2.5 bg-rose-100 hover:bg-rose-200 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 font-bold text-xs rounded-xl">ปฏิเสธสลิป</button>
+        <button onclick="verifyPaymentStatus(true)" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md">อนุมัติการชำระเงิน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLASH SCREEN (มี FAIL-SAFE ซ่อนอัตโนมัติป้องกันค้าง) -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-slate-950 transition-opacity duration-500 pointer-events-none">
     <div class="absolute w-72 h-72 bg-blue-500/20 rounded-full filter blur-3xl animate-pulse-glow"></div>
     <div class="relative z-10 flex flex-col items-center text-center p-6 animate-slide-up">
       <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30 mb-6 animate-float">
@@ -86,7 +173,7 @@
     </div>
   </div>
 
-  <!-- DB CONFIG PANEL (เฉพาะ Admin / ตั้งค่าระบบ) -->
+  <!-- DB CONFIG PANEL -->
   <div id="config-panel" class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-3 hidden">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-medium">
@@ -95,7 +182,7 @@
       <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
         <input type="text" id="supabase-url" placeholder="Project URL" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
         <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
-        <button onclick="saveAndInitSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-1.5 rounded-lg transition">บันทึก & เชื่อมต่อ</button>
+        <button onclick="saveAndInitSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-1.5 rounded-lg transition cursor-pointer">บันทึก & เชื่อมต่อ</button>
       </div>
     </div>
   </div>
@@ -152,10 +239,15 @@
             <span class="hidden sm:inline">จัดการหลังบ้าน</span>
           </button>
 
-          <div class="text-right hidden sm:block">
-            <p id="user-display-name" class="text-xs font-bold text-slate-900 dark:text-white">ผู้ใช้งาน</p>
-            <span id="user-role-badge" class="text-[9px] bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/30">ออนไลน์</span>
+          <!-- User Avatar & Profile Edit Button -->
+          <div onclick="openProfileModal()" class="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <img id="nav-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Profile Avatar" class="w-7 h-7 rounded-full object-cover border border-blue-500">
+            <div class="text-left hidden sm:block">
+              <p id="user-display-name" class="text-xs font-bold text-slate-900 dark:text-white">ผู้ใช้งาน</p>
+              <span id="user-role-badge" class="text-[9px] text-emerald-600 font-semibold">ออนไลน์</span>
+            </div>
           </div>
+
           <button onclick="handleLogout()" class="p-2 bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-500/20 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 rounded-xl transition cursor-pointer" title="ออกจากระบบ">
             <i data-lucide="log-out" class="w-4 h-4"></i>
           </button>
@@ -182,7 +274,7 @@
               <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">นัดรับ หรือ ให้ร้านจัดส่งถึงที่</span>
             </h1>
             <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-              ระบบตรวจนับจำนวนหน้าอัตโนมัติ สั่งเข้าเล่ม ชำระเงินด้วย PromptPay, Coin Wallet หรือเก็บเงินปลายทาง พร้อมตัวเลือกจัดส่งด่วนโดยพนักงานที่ร้าน[cite: 15, 17]
+              ระบบตรวจนับจำนวนหน้าอัตโนมัติ สั่งเข้าเล่ม ชำระเงินด้วย PromptPay, Coin Wallet หรือเก็บเงินปลายทาง พร้อมตัวเลือกจัดส่งด่วนโดยพนักงานที่ร้าน
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
               <button onclick="handleStartPrinting()" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition transform hover:-translate-y-0.5 cursor-pointer">
@@ -229,6 +321,7 @@
           </button>
         </div>
 
+        <!-- FORM LOGIN -->
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
           <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-slate-900 dark:text-white">ยินดีต้อนรับกลับมา</h2>
@@ -247,6 +340,7 @@
           </button>
         </form>
 
+        <!-- FORM REGISTER -->
         <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
           <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-slate-900 dark:text-white">สร้างบัญชีผู้ใช้ใหม่</h2>
@@ -271,7 +365,7 @@
       </div>
     </section>
 
-    <!-- VIEW 3: DASHBOARD (USER ORDERING) -->
+    <!-- VIEW 3: DASHBOARD (USER ORDERING & QUEUES) -->
     <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
@@ -332,17 +426,23 @@
               </div>
             </div>
 
+            <!-- ตัวเลือกขนาดกระดาษ & ความหนา -->
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ขนาดกระดาษ</label>
                 <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
                   <option value="A4">A4</option>
                   <option value="A3">A3 (+2.00 ฿)</option>
+                  <option value="B5">B5</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">จำนวนชุดที่พิมพ์</label>
-                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ความหนากระดาษ</label>
+                <select id="paper-weight" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+                  <option value="80gsm" data-price="0">ปอนด์ 80 แกรม (มาตรฐาน)</option>
+                  <option value="100gsm" data-price="1.0">ปอนด์หนา 100 แกรม (+1.00 ฿)</option>
+                  <option value="210gsm" data-price="3.0">การ์ดหนา 210 แกรม (+3.00 ฿)</option>
+                </select>
               </div>
             </div>
 
@@ -363,21 +463,27 @@
               </div>
             </div>
 
-            <!-- รูปแบบการเข้าเล่ม (binding_options) -->
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">รูปแบบการเข้าเล่ม</label>
-              <select id="binding-option" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
-                <option value="none" data-price="0">ไม่เข้าเล่ม (ฟรี)</option>
-                <option value="staple" data-price="5">เย็บแม็กซ์มุมกระดาษ (+5.00 ฿)</option>
-                <option value="spiral" data-price="20">เข้าเล่มสันเกลียว / สันรูด (+20.00 ฿)</option>
-                <option value="softcover" data-price="40">เข้าเล่มปกอ่อน / สันกาว (+40.00 ฿)</option>
-              </select>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">จำนวนชุดที่พิมพ์</label>
+                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">รูปแบบการเข้าเล่ม</label>
+                <select id="binding-option" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+                  <option value="none" data-price="0">ไม่เข้าเล่ม (ฟรี)</option>
+                  <option value="staple" data-price="5">เย็บแม็กซ์มุมกระดาษ (+5.00 ฿)</option>
+                  <option value="spiral" data-price="20">เข้าเล่มสันเกลียว / สันรูด (+20.00 ฿)</option>
+                  <option value="softcover" data-price="40">เข้าเล่มปกอ่อน / สันกาว (+40.00 ฿)</option>
+                </select>
+              </div>
             </div>
 
+            <!-- สรุปราคา -->
             <div class="p-4 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-between">
               <div>
                 <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">ราคาประเมินค่าพิมพ์เบื้องต้น:</span>
-                <span class="text-[10px] text-slate-400">(ยังไม่รวมค่าจัดส่ง)</span>
+                <span class="text-[10px] text-slate-400">(ยังไม่รวมค่าจัดส่ง & ส่วนลด)</span>
               </div>
               <span id="total-price" class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">1.00 ฿</span>
             </div>
@@ -390,7 +496,7 @@
 
         <!-- ตารางติดตามสถานะคิวของผู้ใช้ -->
         <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
-          <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                 <i data-lucide="activity" class="w-5 h-5"></i>
@@ -400,28 +506,38 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบสถานะ การชำระเงิน และวันเวลานัดรับ</p>
               </div>
             </div>
-            <button onclick="fetchQueues()" class="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-1.5 transition cursor-pointer">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> รีเฟรช
-            </button>
+            
+            <div class="flex items-center gap-2">
+              <select id="user-queue-filter" onchange="fetchQueues()" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium">
+                <option value="all">สถานะทั้งหมด</option>
+                <option value="pending_review">รอชำระเงิน</option>
+                <option value="queued">เข้าคิวแล้ว</option>
+                <option value="printing">กำลังพิมพ์</option>
+                <option value="delivering">กำลังจัดส่ง</option>
+                <option value="completed">เสร็จสิ้น</option>
+              </select>
+              <button onclick="fetchQueues()" class="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-1.5 transition cursor-pointer">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
           </div>
 
-          <div id="queue-cards-container" class="space-y-4">
+          <div id="queue-cards-container" class="space-y-4 max-h-[600px] overflow-y-auto pr-1">
             <p class="py-12 text-center text-slate-400">กำลังโหลดข้อมูลคิว...</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VIEW 4: CHECKOUT & PAYMENT PAGE (เพิ่มใหม่ตามโจทย์) -->
+    <!-- VIEW 4: CHECKOUT & PAYMENT PAGE -->
     <section id="view-checkout" class="hidden py-8 px-4 max-w-5xl mx-auto animate-slide-up">
-      <!-- Banner แจ้งเตือนสถานะก่อนชำระเงิน -->
       <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl flex items-start sm:items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0">
           <i data-lucide="clock" class="w-5 h-5"></i>
         </div>
         <div class="flex-grow">
-          <h3 class="text-sm font-bold text-amber-900 dark:text-amber-200">รายการจองคิวของคุณถูกบันทึกแล้ว (รอตรวจสอบก่อนชำระเงิน)</h3>
-          <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">กรุณาตรวจสอบข้อมูล เลือกรูปแบบการจัดส่ง และเลือกช่องทางชำระเงินเพื่อยืนยันคิวพิมพ์</p>
+          <h3 class="text-sm font-bold text-amber-900 dark:text-amber-200">รายการจองคิวของคุณถูกบันทึกแล้ว (รอชำระเงิน)</h3>
+          <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">กรุณาตรวจสอบข้อมูล เลือกรูปแบบการจัดส่ง กรอกโค้ดส่วนลด และเลือกช่องทางชำระเงิน</p>
         </div>
         <button onclick="switchView('dashboard')" class="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 cursor-pointer">
           กลับหน้าหลัก
@@ -429,7 +545,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
         <!-- สรุปรายการสั่งพิมพ์ -->
         <div class="lg:col-span-5 space-y-6">
           <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
@@ -447,8 +562,8 @@
                 <span id="checkout-doc-name" class="font-bold text-slate-900 dark:text-white truncate max-w-[180px]">document.pdf</span>
               </div>
               <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
-                <span class="text-slate-500">ขนาดกระดาษ & สี:</span>
-                <span id="checkout-paper-spec" class="font-bold text-slate-900 dark:text-white">A4 / ขาวดำ</span>
+                <span class="text-slate-500">กระดาษ & สี:</span>
+                <span id="checkout-paper-spec" class="font-bold text-slate-900 dark:text-white">A4 (80gsm) / ขาวดำ</span>
               </div>
               <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/60">
                 <span class="text-slate-500">การพิมพ์:</span>
@@ -464,6 +579,17 @@
               </div>
             </div>
 
+            <!-- คูปองส่วนลด -->
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">โค้ดส่วนลด (Promo Code)</label>
+              <div class="flex gap-2">
+                <input type="text" id="promo-code-input" placeholder="เช่น PRINT2026" class="flex-grow px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs uppercase font-bold text-slate-900 dark:text-white focus:outline-none">
+                <button type="button" onclick="applyPromoCode()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition cursor-pointer">ใช้โค้ด</button>
+              </div>
+              <p id="promo-status-msg" class="text-[10px] mt-1 font-medium hidden"></p>
+            </div>
+
+            <!-- คำนวณสรุปยอด -->
             <div class="mt-6 p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
               <div class="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>ค่าพิมพ์เอกสาร:</span>
@@ -477,6 +603,10 @@
                 <span>ค่าจัดส่ง:</span>
                 <span id="checkout-delivery-fee" class="font-bold text-blue-600 dark:text-blue-400">0.00 ฿</span>
               </div>
+              <div id="checkout-discount-row" class="hidden flex justify-between text-emerald-600 font-bold">
+                <span>ส่วนลดคูปอง:</span>
+                <span id="checkout-discount-amount">-0.00 ฿</span>
+              </div>
               <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-sm font-extrabold text-slate-900 dark:text-white">
                 <span>ยอดชำระสุทธิ:</span>
                 <span id="checkout-grand-total" class="text-xl text-blue-600 dark:text-blue-400">0.00 ฿</span>
@@ -489,14 +619,13 @@
         <div class="lg:col-span-7 space-y-6">
           <form id="checkout-form" onsubmit="handleConfirmPayment(event)" class="space-y-6">
             
-            <!-- 1. รูปแบบการจัดส่ง (deliveries table) -->
+            <!-- รูปแบบจัดส่ง -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
               <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-                <i data-lucide="truck" class="w-5 h-5 text-indigo-600"></i> เลือกรูปแบบการรับ / จัดส่งเอกสาร[cite: 15]
+                <i data-lucide="truck" class="w-5 h-5 text-indigo-600"></i> เลือกรูปแบบการรับ / จัดส่งเอกสาร
               </h3>
 
               <div class="space-y-3">
-                <!-- ตัวเลือก A: รับเองที่ร้าน -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="delivery_method" value="pickup" checked onchange="toggleDeliveryForm()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
@@ -508,19 +637,17 @@
                   <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">ฟรี (0 ฿)</span>
                 </label>
 
-                <!-- ตัวเลือก B: ให้พนักงานที่ร้านจัดส่งให้ -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="delivery_method" value="store_staff" onchange="toggleDeliveryForm()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
                     <div>
-                      <p class="text-xs font-bold text-slate-900 dark:text-white">พนักงานที่ร้านจัดส่งให้ (Store Staff Delivery)[cite: 15]</p>
+                      <p class="text-xs font-bold text-slate-900 dark:text-white">พนักงานที่ร้านจัดส่งให้ (Store Staff Delivery)</p>
                       <p class="text-[10px] text-slate-400">พนักงานร้านวิ่งส่งถึงหน้าบ้านในพื้นที่บริการ</p>
                     </div>
                   </div>
                   <span class="text-xs font-bold text-blue-600 dark:text-blue-400">+50.00 ฿</span>
                 </label>
 
-                <!-- ตัวเลือก C: ขนส่งเอกชนด่วน -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="delivery_method" value="express" onchange="toggleDeliveryForm()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
@@ -533,7 +660,7 @@
                 </label>
               </div>
 
-              <!-- ฟอร์มกรอกที่อยู่ (แสดงเมื่อเลือกส่ง) -->
+              <!-- ฟอร์มกรอกที่อยู่ -->
               <div id="delivery-address-form" class="hidden mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
                 <div class="grid grid-cols-2 gap-3">
                   <div>
@@ -552,14 +679,13 @@
               </div>
             </div>
 
-            <!-- 2. วิธีการชำระเงิน (payments & wallets table) -->
+            <!-- วิธีชำระเงิน -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
               <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-                <i data-lucide="credit-card" class="w-5 h-5 text-emerald-600"></i> เลือกวิธีการชำระเงิน[cite: 15, 17]
+                <i data-lucide="credit-card" class="w-5 h-5 text-emerald-600"></i> เลือกวิธีการชำระเงิน
               </h3>
 
               <div class="space-y-3">
-                <!-- พร้อมเพย์ -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="payment_method" value="promptpay" checked onchange="togglePaymentDetails()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
@@ -571,27 +697,25 @@
                   <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">สแกน QR</span>
                 </label>
 
-                <!-- Web Wallet Coin -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="payment_method" value="wallet" onchange="togglePaymentDetails()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
                     <div>
-                      <p class="text-xs font-bold text-slate-900 dark:text-white">ชำระด้วย Web Wallet / Coin[cite: 17]</p>
+                      <p class="text-xs font-bold text-slate-900 dark:text-white">ชำระด้วย Web Wallet / Coin</p>
                       <p class="text-[10px] text-slate-400">ตัดจากยอด Coin คงเหลือในระบบทันที</p>
                     </div>
                   </div>
                   <span class="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-800">
-                    ยอดยอดคงเหลือ: <span id="checkout-wallet-bal">0.00</span> Coin
+                    ยอดคงเหลือ: <span id="checkout-wallet-bal">0.00</span> Coin
                   </span>
                 </label>
 
-                <!-- เก็บเงินปลายทาง -->
                 <label class="flex items-center justify-between p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500 transition bg-slate-50 dark:bg-slate-800/40">
                   <div class="flex items-center gap-3">
                     <input type="radio" name="payment_method" value="cod" onchange="togglePaymentDetails()" class="w-4 h-4 text-blue-600 focus:ring-blue-500">
                     <div>
-                      <p class="text-xs font-bold text-slate-900 dark:text-white">เก็บเงินปลายทาง (Cash on Delivery)[cite: 15]</p>
-                      <p class="text-[10px] text-slate-400">ชำระเงินสดกับพนักงานที่ร้านเมื่อนำเอกสารไปส่ง</p>
+                      <p class="text-xs font-bold text-slate-900 dark:text-white">เก็บเงินปลายทาง (Cash on Delivery)</p>
+                      <p class="text-[10px] text-slate-400">ชำระเงินสดกับพนักงานเมื่อนำเอกสารไปส่ง</p>
                     </div>
                   </div>
                   <span class="text-xs font-semibold text-slate-500">COD</span>
@@ -635,22 +759,21 @@
       </div>
     </section>
 
-    <!-- VIEW 5: WALLET / COIN MANAGEMENT (เพิ่มใหม่ตามโจทย์) -->
+    <!-- VIEW 5: WALLET / COIN MANAGEMENT -->
     <section id="view-wallet" class="hidden py-8 px-4 max-w-5xl mx-auto animate-slide-up">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
         <!-- ยอดเงิน & เติมเงิน -->
         <div class="lg:col-span-5 space-y-6">
           <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
             <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full filter blur-xl"></div>
-            <p class="text-xs font-medium text-amber-100">กระเป๋าเงินดิจิทัล (Web Wallet Balance)[cite: 17]</p>
+            <p class="text-xs font-medium text-amber-100">กระเป๋าเงินดิจิทัล (Web Wallet Balance)</p>
             <h2 class="text-3xl font-extrabold mt-2 tracking-tight"><span id="wallet-page-balance">0.00</span> <span class="text-lg font-normal">Coins</span></h2>
             <p class="text-[11px] text-amber-200 mt-2">1 Coin = 1.00 บาท ใช้สำหรับชำระค่าพิมพ์เอกสารได้ทันที</p>
           </div>
 
           <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
             <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <i data-lucide="plus-circle" class="w-5 h-5 text-amber-500"></i> เติมเงินเข้า Coin Wallet[cite: 17]
+              <i data-lucide="plus-circle" class="w-5 h-5 text-amber-500"></i> เติมเงินเข้า Coin Wallet
             </h3>
 
             <div>
@@ -673,15 +796,23 @@
           </div>
         </div>
 
-        <!-- ประวัติธุรกรรม Wallet Transactions (wallet_transactions table) -->
-        <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
-          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-            <i data-lucide="history" class="w-5 h-5 text-indigo-500"></i> ประวัติการทำรายการ (Wallet Transactions)[cite: 18]
-          </h3>
+        <!-- ประวัติธุรกรรม Wallet Transactions -->
+        <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="history" class="w-5 h-5 text-indigo-500"></i> ประวัติการทำรายการ (Wallet Transactions)
+            </h3>
+            
+            <select id="wallet-tx-filter" onchange="loadWalletData()" class="px-2.5 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs">
+              <option value="all">รายการทั้งหมด</option>
+              <option value="deposit">เติมเงิน (+)</option>
+              <option value="payment">ชำระเงิน (-)</option>
+            </select>
+          </div>
 
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
             <table class="w-full text-left border-collapse text-xs">
-              <thead>
+              <thead class="sticky top-0 bg-white dark:bg-slate-900">
                 <tr class="border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase">
                   <th class="py-2 px-2">วันที่/เวลา</th>
                   <th class="py-2 px-2">ประเภท</th>
@@ -707,23 +838,58 @@
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-2">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ระบบหลังบ้านผู้ดูแลระบบ (Admin)
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">จัดการคิวพิมพ์ & บริการจัดส่งเอกสาร[cite: 15]</h1>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">จัดการคิวพิมพ์ & บริการจัดส่งเอกสาร</h1>
         </div>
         <button onclick="loadAdminData()" class="self-start md:self-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer shadow-md">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i> ดึงข้อมูลอัปเดตล่าสุด
         </button>
       </div>
 
+      <!-- ADMIN KPI METRICS STATS CARDS -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <p class="text-[11px] font-semibold text-slate-400">ยอดขายรวมทั้งหมด</p>
+          <h3 id="admin-stat-revenue" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">0.00 ฿</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <p class="text-[11px] font-semibold text-slate-400">จำนวนออเดอร์ทั้งหมด</p>
+          <h3 id="admin-stat-orders" class="text-xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">0 รายการ</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <p class="text-[11px] font-semibold text-slate-400">คิวที่กำลังรอดำเนินการ</p>
+          <h3 id="admin-stat-pending" class="text-xl font-extrabold text-amber-500 mt-1">0 คิว</h3>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <p class="text-[11px] font-semibold text-slate-400">จำนวนผู้ใช้งานในระบบ</p>
+          <h3 id="admin-stat-users" class="text-xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">0 คน</h3>
+        </div>
+      </div>
+
       <div class="space-y-8">
-        <!-- ตารางจัดการคิวพิมพ์ & กำหนดเวลานัดรับ / จัดส่ง -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
-          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <i data-lucide="list-checks" class="w-5 h-5"></i>
+        <!-- ตารางจัดการคิวพิมพ์ -->
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <i data-lucide="list-checks" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">รายการคิวสั่งพิมพ์ทั้งหมด</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบสถานะการชำระเงิน รูปแบบจัดส่ง และอัปเดตคิวพิมพ์</p>
+              </div>
             </div>
-            <div>
-              <h2 class="text-lg font-bold text-slate-900 dark:text-white">รายการคิวสั่งพิมพ์ทั้งหมด</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบสถานะการชำระเงิน รูปแบบจัดส่ง และอัปเดตคิวพิมพ์[cite: 15]</p>
+
+            <!-- ค้นหา & ตัวกรองออเดอร์ -->
+            <div class="flex flex-wrap items-center gap-2">
+              <input type="text" id="admin-search-input" onkeyup="filterAdminOrders()" placeholder="ค้นหา Order ID / ชื่อลูกค้า..." class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none">
+              <select id="admin-status-filter" onchange="filterAdminOrders()" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold">
+                <option value="all">สถานะทั้งหมด</option>
+                <option value="pending_review">รอชำระเงิน</option>
+                <option value="queued">ชำระแล้ว/เข้าคิว</option>
+                <option value="printing">กำลังพิมพ์</option>
+                <option value="delivering">กำลังจัดส่ง</option>
+                <option value="completed">เสร็จสิ้น</option>
+              </select>
             </div>
           </div>
 
@@ -733,9 +899,9 @@
                 <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   <th class="py-3 px-3">คิว / ออเดอร์</th>
                   <th class="py-3 px-3">เอกสาร & สเปก</th>
-                  <th class="py-3 px-3">วิธีชำระเงิน & ยอดเงิน[cite: 15, 17]</th>
-                  <th class="py-3 px-3">การจัดส่ง & ที่อยู่[cite: 15]</th>
-                  <th class="py-3 px-3">สถานะงานพิมพ์[cite: 15]</th>
+                  <th class="py-3 px-3">วิธีชำระเงิน & ยอดเงิน</th>
+                  <th class="py-3 px-3">การจัดส่ง & ที่อยู่</th>
+                  <th class="py-3 px-3">สถานะงานพิมพ์</th>
                   <th class="py-3 px-3 text-right">การกระทำ</th>
                 </tr>
               </thead>
@@ -764,7 +930,7 @@
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase">
-                  <th class="py-3 px-3">ชื่อ-นามสกุล</th>
+                  <th class="py-3 px-3">สมาชิก</th>
                   <th class="py-3 px-3">อีเมล</th>
                   <th class="py-3 px-3">สิทธิ์ปัจจุบัน</th>
                   <th class="py-3 px-3 text-right">ปรับเปลี่ยนสิทธิ์</th>
@@ -794,46 +960,65 @@
     </div>
   </footer>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT FULL IMPLEMENTATION -->
   <script>
-    // --- STATE MANAGEMENT ---
+    // --- STATE MANAGEMENT & DATABASE MOCK ---
     let supabaseClient = null;
     let currentUser = null;
     let selectedFileObj = null;
     let detectedPageCount = 1;
     let currentCheckoutOrder = null;
+    let appliedDiscountAmount = 0;
+    let currentReviewingOrderId = null;
 
-    // LOCAL STORAGE / MOCK DATABASE (กรณี DB offline)
+    // LOCAL STORAGE / FULL MOCK DATABASE (SUPPORT ALL 8 TABLES)
     let dbMock = {
       users: [
-        { id: 'usr-1', email: 'user@print.com', full_name: 'สมชาย ใจดี', role: 'customer' },
-        { id: 'usr-2', email: 'admin@print.com', full_name: 'แอดมิน ร้านพิมพ์', role: 'admin' }
+        { id: 'usr-1', email: 'user@print.com', full_name: 'สมชาย ใจดี', role: 'customer', avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80', phone: '081-234-5678', address: '123/45 ถนนสุขุมวิท เขตวัฒนา กทม. 10110' },
+        { id: 'usr-2', email: 'admin@print.com', full_name: 'แอดมิน ร้านพิมพ์', role: 'admin', avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80', phone: '089-999-8888', address: 'หน้าร้าน PrintQueue Pro อาคาร A' }
       ],
-      orders: [],
+      orders: [
+        { id: 'ORD-8821', user_id: 'usr-1', user_name: 'สมชาย ใจดี', file_name: 'รายงานการประชุมประจำปี.pdf', paper_size: 'A4', paper_weight: '80gsm', color_type: 'color', duplex_type: 'single', pages: 12, copies: 2, binding_name: 'เข้าเล่มสันเกลียว / สันรูด', binding_fee: 20, total_amount: 140, grand_total: 140, status: 'printing', delivery_method: 'pickup', payment_method: 'promptpay', created_at: new Date().toISOString() }
+      ],
       print_jobs: [],
       documents: [],
       deliveries: [],
       payments: [],
-      wallets: [{ id: 'w-1', user_id: 'usr-1', balance: 250.00 }, { id: 'w-2', user_id: 'usr-2', balance: 1000.00 }],
+      wallets: [
+        { id: 'w-1', user_id: 'usr-1', balance: 250.00 },
+        { id: 'w-2', user_id: 'usr-2', balance: 1000.00 }
+      ],
       wallet_transactions: [
         { id: 'tx-1', wallet_id: 'w-1', order_id: null, transaction_type: 'deposit', amount: 250.00, description: 'เติมเงินผ่าน PromptPay', transaction_date: new Date().toISOString() }
       ]
     };
 
-    // INIT APP
+    const promoCodesDB = {
+      'PRINT2026': { percent: 10, minCost: 50 },
+      'WELCOME10': { percent: 15, minCost: 20 },
+      'VIPPRO': { percent: 20, minCost: 100 }
+    };
+
+    // --- INITIALIZATION (WITH FAIL-SAFE SPLASH CLOSING) ---
+    function hideSplash() {
+      const splash = document.getElementById('splash-screen');
+      if (splash) {
+        splash.classList.add('opacity-0');
+        setTimeout(() => splash.remove(), 500);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if(splash) {
-          splash.classList.add('opacity-0');
-          setTimeout(() => splash.remove(), 700);
-        }
-      }, 800);
-
       initSupabaseFromStorage();
       checkAuthSession();
+
+      // ปิด Splash Screen เมื่อโหลดเสร็จ
+      setTimeout(hideSplash, 600);
     });
+
+    // FAIL-SAFE: ซ่อน Splash Screen ทันทีหลังผ่านไป 1.2 วินาที ป้องกันค้าง 100%
+    setTimeout(hideSplash, 1200);
 
     // --- SUPABASE CONFIG ---
     function initSupabaseFromStorage() {
@@ -842,8 +1027,7 @@
       if(url && key && window.supabase) {
         try {
           supabaseClient = window.supabase.createClient(url, key);
-          console.log("Supabase initialized!");
-        } catch(e) { console.error("Supabase error:", e); }
+        } catch(e) { console.error(e); }
       }
     }
 
@@ -851,18 +1035,17 @@
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
       if(!url || !key) {
-        showModal('กรุณากรอก URL และ Anon Key ให้ครบถ้วน', 'warning');
+        showToast('กรุณากรอก URL และ Anon Key ให้ครบถ้วน', 'warning');
         return;
       }
       localStorage.setItem('pq_sp_url', url);
       localStorage.setItem('pq_sp_key', key);
       initSupabaseFromStorage();
-      showModal('บันทึกการตั้งค่า Supabase เรียบร้อยแล้ว!', 'success');
+      showToast('บันทึกการตั้งค่า Supabase เรียบร้อยแล้ว!', 'success');
     }
 
     function toggleConfigPanel() {
-      const panel = document.getElementById('config-panel');
-      panel.classList.toggle('hidden');
+      document.getElementById('config-panel').classList.toggle('hidden');
     }
 
     // --- THEME SWITCHER ---
@@ -922,17 +1105,25 @@
     function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
-      const user = dbMock.users.find(u => u.email === email) || {
-        id: 'usr-' + Date.now(),
-        email: email,
-        full_name: email.split('@')[0],
-        role: email.includes('admin') ? 'admin' : 'customer'
-      };
+      let user = dbMock.users.find(u => u.email === email);
+      
+      if(!user) {
+        user = {
+          id: 'usr-' + Date.now(),
+          email: email,
+          full_name: email.split('@')[0],
+          role: email.includes('admin') ? 'admin' : 'customer',
+          avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+          phone: '',
+          address: ''
+        };
+        dbMock.users.push(user);
+      }
 
       currentUser = user;
       localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
       updateUserUI();
-      showModal(`ยินดีต้อนรับกลับมา คุณ ${currentUser.full_name}`, 'success');
+      showToast(`ยินดีต้อนรับกลับมา คุณ ${currentUser.full_name}`, 'success');
       switchView('dashboard');
     }
 
@@ -945,14 +1136,17 @@
         id: 'usr-' + Date.now(),
         email: email,
         full_name: name,
-        role: 'customer'
+        role: 'customer',
+        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+        phone: '',
+        address: ''
       };
       dbMock.users.push(currentUser);
-      dbMock.wallets.push({ id: 'w-' + Date.now(), user_id: currentUser.id, balance: 100.00 }); // โบนัสสมาชิกใหม่ 100 Coin
+      dbMock.wallets.push({ id: 'w-' + Date.now(), user_id: currentUser.id, balance: 100.00 });
       
       localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
       updateUserUI();
-      showModal(`ลงทะเบียนสำเร็จ! รับโบนัสสมาชิกใหม่ 100 Coins`, 'success');
+      showToast(`ลงทะเบียนสำเร็จ! รับโบนัสสมาชิกใหม่ 100 Coins`, 'success');
       switchView('dashboard');
     }
 
@@ -960,7 +1154,7 @@
       currentUser = null;
       localStorage.removeItem('pq_logged_user');
       updateUserUI();
-      showModal('ออกจากระบบเรียบร้อยแล้ว', 'info');
+      showToast('ออกจากระบบเรียบร้อยแล้ว', 'info');
       switchView('landing');
     }
 
@@ -978,6 +1172,7 @@
 
         document.getElementById('user-display-name').textContent = currentUser.full_name;
         document.getElementById('user-role-badge').textContent = currentUser.role === 'admin' ? 'ผู้ดูแลระบบ' : 'สมาชิกทั่วไป';
+        document.getElementById('nav-user-avatar').src = currentUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
 
         if(currentUser.role === 'admin') {
           adminBtn.classList.remove('hidden');
@@ -994,9 +1189,59 @@
       }
     }
 
+    // --- PROFILE CUSTOMIZATION LOGIC ---
+    function openProfileModal() {
+      if(!currentUser) return;
+      document.getElementById('edit-profile-fullname').value = currentUser.full_name || '';
+      document.getElementById('edit-profile-phone').value = currentUser.phone || '';
+      document.getElementById('edit-profile-address').value = currentUser.address || '';
+      document.getElementById('profile-avatar-preview').src = currentUser.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
+      
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function handleAvatarFileSelect(e) {
+      const file = e.target.files[0];
+      if(file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById('profile-avatar-preview').src = evt.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleSaveProfile(e) {
+      e.preventDefault();
+      if(!currentUser) return;
+
+      const newName = document.getElementById('edit-profile-fullname').value.trim();
+      const newPhone = document.getElementById('edit-profile-phone').value.trim();
+      const newAddr = document.getElementById('edit-profile-address').value.trim();
+      const newAvatar = document.getElementById('profile-avatar-preview').src;
+
+      currentUser.full_name = newName;
+      currentUser.phone = newPhone;
+      currentUser.address = newAddr;
+      currentUser.avatar_url = newAvatar;
+
+      // อัปเดตใน dbMock
+      const idx = dbMock.users.findIndex(u => u.id === currentUser.id);
+      if(idx !== -1) dbMock.users[idx] = currentUser;
+
+      localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
+      updateUserUI();
+      closeProfileModal();
+      showToast('อัปเดตข้อมูลโปรไฟล์เรียบร้อยแล้ว!', 'success');
+    }
+
     function handleStartPrinting() {
       if(!currentUser) {
-        showModal('กรุณาเข้าสู่ระบบก่อนทำการสั่งพิมพ์เอกสาร', 'warning');
+        showToast('กรุณาเข้าสู่ระบบก่อนทำการสั่งพิมพ์เอกสาร', 'warning');
         switchView('auth');
       } else {
         switchView('dashboard');
@@ -1023,6 +1268,10 @@
             document.getElementById('total-pages-display').textContent = detectedPageCount + ' หน้า';
             document.getElementById('printed-pages-input').value = detectedPageCount;
             calculatePrice();
+          }).catch(() => {
+            detectedPageCount = 1;
+            document.getElementById('printed-pages-input').value = 1;
+            calculatePrice();
           });
         };
         reader.readAsArrayBuffer(file);
@@ -1042,29 +1291,33 @@
       const colorType = document.getElementById('color-type').value;
       const duplexType = document.getElementById('duplex-type').value;
 
+      const paperWeightSelect = document.getElementById('paper-weight');
+      const paperWeightFee = parseFloat(paperWeightSelect.options[paperWeightSelect.selectedIndex].getAttribute('data-price')) || 0;
+
       const bindingSelect = document.getElementById('binding-option');
       const bindingFee = parseFloat(bindingSelect.options[bindingSelect.selectedIndex].getAttribute('data-price')) || 0;
 
       let basePerPage = colorType === 'color' ? 5.00 : 1.00;
       if(paperSize === 'A3') basePerPage += 2.00;
       if(duplexType === 'duplex') basePerPage += 0.50;
+      basePerPage += paperWeightFee;
 
       const totalPrintCost = (pages * copies * basePerPage) + bindingFee;
       document.getElementById('total-price').textContent = totalPrintCost.toFixed(2) + ' ฿';
       return totalPrintCost;
     }
 
-    // --- SUBMIT PRINT ORDER (Creates pending_review order & opens Checkout) ---
+    // --- SUBMIT PRINT ORDER ---
     function handleOrderSubmit(e) {
       e.preventDefault();
       if(!currentUser) {
-        showModal('กรุณาเข้าสู่ระบบก่อนทำการสั่งพิมพ์', 'warning');
+        showToast('กรุณาเข้าสู่ระบบก่อนทำการสั่งพิมพ์', 'warning');
         switchView('auth');
         return;
       }
 
       if(!selectedFileObj) {
-        showModal('กรุณาอัปโหลดไฟล์เอกสารก่อนดำเนินการ', 'warning');
+        showToast('กรุณาอัปโหลดไฟล์เอกสารก่อนดำเนินการ', 'warning');
         return;
       }
 
@@ -1072,8 +1325,10 @@
       const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
       const bindingSelect = document.getElementById('binding-option');
       const bindingFee = parseFloat(bindingSelect.options[bindingSelect.selectedIndex].getAttribute('data-price')) || 0;
+      const paperWeightSelect = document.getElementById('paper-weight');
 
-      // สร้างข้อมูล Order Object
+      appliedDiscountAmount = 0;
+
       currentCheckoutOrder = {
         id: orderId,
         user_id: currentUser.id,
@@ -1081,6 +1336,7 @@
         file_name: selectedFileObj.name,
         file_size: (selectedFileObj.size / (1024 * 1024)).toFixed(2) + ' MB',
         paper_size: document.getElementById('paper-size').value,
+        paper_weight: paperWeightSelect.options[paperWeightSelect.selectedIndex].text,
         color_type: document.getElementById('color-type').value,
         duplex_type: document.getElementById('duplex-type').value,
         pages: parseInt(document.getElementById('printed-pages-input').value) || 1,
@@ -1089,24 +1345,22 @@
         binding_fee: bindingFee,
         print_subtotal: printPrice - bindingFee,
         total_amount: printPrice,
-        status: 'pending_review', // สถานะ: รอตรวจสอบก่อนชำระเงิน
+        status: 'pending_review',
         created_at: new Date().toISOString()
       };
 
       dbMock.orders.unshift(currentCheckoutOrder);
-
-      // เปิดหน้า CHECKOUT PAGE
       setupCheckoutPage();
       switchView('checkout');
     }
 
-    // --- CHECKOUT & PAYMENT PAGE LOGIC ---
+    // --- CHECKOUT & PROMO CODE ---
     function setupCheckoutPage() {
       if(!currentCheckoutOrder) return;
 
       document.getElementById('checkout-order-id').textContent = '#' + currentCheckoutOrder.id;
       document.getElementById('checkout-doc-name').textContent = currentCheckoutOrder.file_name;
-      document.getElementById('checkout-paper-spec').textContent = `${currentCheckoutOrder.paper_size} / ${currentCheckoutOrder.color_type === 'color' ? 'พิมพ์สี' : 'ขาว-ดำ'}`;
+      document.getElementById('checkout-paper-spec').textContent = `${currentCheckoutOrder.paper_size} (${currentCheckoutOrder.paper_weight.split(' ')[1] || '80gsm'}) / ${currentCheckoutOrder.color_type === 'color' ? 'พิมพ์สี' : 'ขาว-ดำ'}`;
       document.getElementById('checkout-duplex-spec').textContent = currentCheckoutOrder.duplex_type === 'duplex' ? 'พิมพ์หน้า-หลัง' : 'พิมพ์หน้าเดียว';
       document.getElementById('checkout-pages-spec').textContent = `${currentCheckoutOrder.pages} หน้า x ${currentCheckoutOrder.copies} ชุด`;
       document.getElementById('checkout-binding-spec').textContent = currentCheckoutOrder.binding_name;
@@ -1114,23 +1368,66 @@
       document.getElementById('checkout-subtotal').textContent = currentCheckoutOrder.print_subtotal.toFixed(2) + ' ฿';
       document.getElementById('checkout-binding-fee').textContent = currentCheckoutOrder.binding_fee.toFixed(2) + ' ฿';
 
+      document.getElementById('promo-code-input').value = '';
+      document.getElementById('promo-status-msg').classList.add('hidden');
+      document.getElementById('checkout-discount-row').classList.add('hidden');
+
+      if(currentUser.phone) document.getElementById('recipient-phone').value = currentUser.phone;
+      if(currentUser.address) document.getElementById('recipient-address').value = currentUser.address;
+      if(currentUser.full_name) document.getElementById('recipient-name').value = currentUser.full_name;
+
       updateCheckoutTotals();
       toggleDeliveryForm();
       togglePaymentDetails();
     }
 
+    function applyPromoCode() {
+      const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
+      const msg = document.getElementById('promo-status-msg');
+      const discountRow = document.getElementById('checkout-discount-row');
+
+      if(!code) {
+        msg.textContent = 'กรุณากรอกโค้ดส่วนลด';
+        msg.className = 'text-[10px] mt-1 font-medium text-rose-500';
+        msg.classList.remove('hidden');
+        return;
+      }
+
+      const promo = promoCodesDB[code];
+      if(promo) {
+        if(currentCheckoutOrder.total_amount < promo.minCost) {
+          msg.textContent = `โค้ดนี้ใช้ได้กับยอดขั้นต่ำ ${promo.minCost} บาทขึ้นไป`;
+          msg.className = 'text-[10px] mt-1 font-medium text-amber-500';
+          msg.classList.remove('hidden');
+          return;
+        }
+
+        appliedDiscountAmount = (currentCheckoutOrder.total_amount * promo.percent) / 100;
+        msg.textContent = `ใช้โค้ดส่วนลด ${code} ลด ${promo.percent}% สำเร็จ!`;
+        msg.className = 'text-[10px] mt-1 font-medium text-emerald-600 dark:text-emerald-400';
+        msg.classList.remove('hidden');
+
+        discountRow.classList.remove('hidden');
+        document.getElementById('checkout-discount-amount').textContent = `-${appliedDiscountAmount.toFixed(2)} ฿`;
+        updateCheckoutTotals();
+      } else {
+        msg.textContent = 'ไม่พบโค้ดส่วนลดนี้ หรือโค้ดหมดอายุแล้ว';
+        msg.className = 'text-[10px] mt-1 font-medium text-rose-500';
+        msg.classList.remove('hidden');
+      }
+    }
+
     function updateCheckoutTotals() {
       const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
       let deliveryFee = 0;
-      if(deliveryMethod === 'store_staff') deliveryFee = 50.00; // ค่าจัดส่งโดยพนักงานร้าน[cite: 15]
+      if(deliveryMethod === 'store_staff') deliveryFee = 50.00;
       if(deliveryMethod === 'express') deliveryFee = 40.00;
 
       document.getElementById('checkout-delivery-fee').textContent = deliveryFee.toFixed(2) + ' ฿';
       
-      const grandTotal = currentCheckoutOrder.total_amount + deliveryFee;
+      const grandTotal = Math.max(0, (currentCheckoutOrder.total_amount - appliedDiscountAmount) + deliveryFee);
       document.getElementById('checkout-grand-total').textContent = grandTotal.toFixed(2) + ' ฿';
 
-      // อัปเดตข้อมูล Wallet
       const wallet = getUserWallet();
       document.getElementById('checkout-wallet-bal').textContent = wallet.balance.toFixed(2);
       document.getElementById('checkout-wallet-avail').textContent = wallet.balance.toFixed(2) + ' Coin';
@@ -1184,10 +1481,10 @@
       const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
       let deliveryFee = 0;
-      if(deliveryMethod === 'store_staff') deliveryFee = 50.00; // ค่าจัดส่งโดยพนักงานร้าน[cite: 15]
+      if(deliveryMethod === 'store_staff') deliveryFee = 50.00;
       if(deliveryMethod === 'express') deliveryFee = 40.00;
 
-      const grandTotal = currentCheckoutOrder.total_amount + deliveryFee;
+      const grandTotal = Math.max(0, (currentCheckoutOrder.total_amount - appliedDiscountAmount) + deliveryFee);
 
       let recipientName = '', recipientPhone = '', recipientAddress = '';
       if(deliveryMethod !== 'pickup') {
@@ -1196,16 +1493,15 @@
         recipientAddress = document.getElementById('recipient-address').value.trim();
 
         if(!recipientName || !recipientPhone || !recipientAddress) {
-          showModal('กรุณากรอกข้อมูลผู้รับและที่อยู่จัดส่งให้ครบถ้วน', 'warning');
+          showToast('กรุณากรอกข้อมูลผู้รับและที่อยู่จัดส่งให้ครบถ้วน', 'warning');
           return;
         }
       }
 
-      // หักเงินกรณีเลือก Web Wallet
       if(paymentMethod === 'wallet') {
         const wallet = getUserWallet();
         if(wallet.balance < grandTotal) {
-          showModal('ยอดเงิน Coin ไม่เพียงพอ กรุณาเติมเงินก่อนชำระ', 'warning');
+          showToast('ยอดเงิน Coin ไม่เพียงพอ กรุณาเติมเงินก่อนชำระ', 'warning');
           return;
         }
         wallet.balance -= grandTotal;
@@ -1220,7 +1516,6 @@
         });
       }
 
-      // บันทึกตาราง deliveries[cite: 15]
       dbMock.deliveries.push({
         id: 'del-' + Date.now(),
         order_id: currentCheckoutOrder.id,
@@ -1233,7 +1528,6 @@
         created_at: new Date().toISOString()
       });
 
-      // บันทึกตาราง payments[cite: 15]
       dbMock.payments.push({
         id: 'pay-' + Date.now(),
         order_id: currentCheckoutOrder.id,
@@ -1243,18 +1537,17 @@
         created_at: new Date().toISOString()
       });
 
-      // อัปเดตสถานะ Order เป็น queued (เข้าคิวพิมพ์)
       currentCheckoutOrder.status = 'queued';
       currentCheckoutOrder.grand_total = grandTotal;
       currentCheckoutOrder.delivery_method = deliveryMethod;
       currentCheckoutOrder.payment_method = paymentMethod;
 
       updateWalletBadgeDisplay();
-      showModal(`ชำระเงินสำเร็จ! ออเดอร์ #${currentCheckoutOrder.id} เข้าสู่คิวพิมพ์แล้ว`, 'success');
+      showToast(`ชำระเงินสำเร็จ! ออเดอร์ #${currentCheckoutOrder.id} เข้าสู่คิวพิมพ์แล้ว`, 'success');
       switchView('dashboard');
     }
 
-    // --- WALLET & COIN LOGIC ---
+    // --- WALLET LOGIC ---
     function getUserWallet() {
       if(!currentUser) return { id: 'w-guest', user_id: 'guest', balance: 0 };
       let wallet = dbMock.wallets.find(w => w.user_id === currentUser.id);
@@ -1276,8 +1569,13 @@
       const wallet = getUserWallet();
       document.getElementById('wallet-page-balance').textContent = wallet.balance.toFixed(2);
 
+      const filter = document.getElementById('wallet-tx-filter').value;
       const txTbody = document.getElementById('wallet-tx-tbody');
-      const txs = dbMock.wallet_transactions.filter(t => t.wallet_id === wallet.id);
+      
+      let txs = dbMock.wallet_transactions.filter(t => t.wallet_id === wallet.id);
+      if(filter !== 'all') {
+        txs = txs.filter(t => t.transaction_type === filter);
+      }
 
       if(txs.length === 0) {
         txTbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">ยังไม่มีประวัติการทำรายการ</td></tr>`;
@@ -1285,7 +1583,7 @@
       }
 
       txTbody.innerHTML = txs.map(t => `
-        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
           <td class="py-2.5 px-2 text-slate-500">${new Date(t.transaction_date).toLocaleString('th-TH')}</td>
           <td class="py-2.5 px-2 font-bold ${t.transaction_type === 'deposit' ? 'text-emerald-600' : 'text-rose-600'}">
             ${t.transaction_type === 'deposit' ? 'เติมเงิน (+)' : 'ชำระเงิน (-)'}
@@ -1304,13 +1602,13 @@
 
     function handleTopupSubmit() {
       if(!currentUser) {
-        showModal('กรุณาเข้าสู่ระบบก่อนเติมเงิน', 'warning');
+        showToast('กรุณาเข้าสู่ระบบก่อนเติมเงิน', 'warning');
         switchView('auth');
         return;
       }
       const amt = parseFloat(document.getElementById('topup-amount-input').value) || 0;
       if(amt <= 0) {
-        showModal('กรุณาระบุจำนวนเงินที่ถูกต้อง', 'warning');
+        showToast('กรุณาระบุจำนวนเงินที่ถูกต้อง', 'warning');
         return;
       }
 
@@ -1328,10 +1626,10 @@
 
       updateWalletBadgeDisplay();
       loadWalletData();
-      showModal(`เติมเงินสำเร็จ +${amt.toFixed(2)} Coins เข้ากระเป๋าเรียบร้อยแล้ว!`, 'success');
+      showToast(`เติมเงินสำเร็จ +${amt.toFixed(2)} Coins เข้ากระเป๋าเรียบร้อยแล้ว!`, 'success');
     }
 
-    // --- QUEUE TRACKING (USER VIEW) ---
+    // --- QUEUE TRACKING ---
     function fetchQueues() {
       const container = document.getElementById('queue-cards-container');
       if(!currentUser) {
@@ -1339,12 +1637,18 @@
         return;
       }
 
-      const userOrders = dbMock.orders.filter(o => o.user_id === currentUser.id);
+      const filterStatus = document.getElementById('user-queue-filter').value;
+      let userOrders = dbMock.orders.filter(o => o.user_id === currentUser.id);
+
+      if(filterStatus !== 'all') {
+        userOrders = userOrders.filter(o => o.status === filterStatus);
+      }
+
       if(userOrders.length === 0) {
         container.innerHTML = `
           <div class="py-12 text-center space-y-3">
             <i data-lucide="inbox" class="w-12 h-12 text-slate-300 mx-auto"></i>
-            <p class="text-sm font-semibold text-slate-500">คุณยังไม่มีรายการสั่งพิมพ์เอกสาร</p>
+            <p class="text-sm font-semibold text-slate-500">ไม่พบรายการสั่งพิมพ์เอกสาร</p>
           </div>
         `;
         lucide.createIcons();
@@ -1356,14 +1660,14 @@
         let showPayBtn = false;
 
         if(ord.status === 'pending_review') {
-          statusBadge = `<span class="bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-200">⏳ รอตรวจสอบก่อนชำระเงิน</span>`;
+          statusBadge = `<span class="bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-amber-200">⏳ รอชำระเงิน</span>`;
           showPayBtn = true;
         } else if(ord.status === 'queued') {
           statusBadge = `<span class="bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-blue-200">📋 เข้าคิวรอดำเนินการ</span>`;
         } else if(ord.status === 'printing') {
           statusBadge = `<span class="bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-purple-200 animate-pulse">🖨️ กำลังพิมพ์เอกสาร</span>`;
         } else if(ord.status === 'delivering') {
-          statusBadge = `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-indigo-200">🛵 พนักงานกำลังนำส่ง[cite: 15]</span>`;
+          statusBadge = `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-indigo-200">🛵 กำลังจัดส่ง</span>`;
         } else {
           statusBadge = `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 px-2.5 py-1 rounded-lg text-xs font-bold border border-emerald-200">✅ เสร็จสิ้น / รับเอกสารแล้ว</span>`;
         }
@@ -1386,11 +1690,16 @@
               </div>
             </div>
 
-            ${showPayBtn ? `
-              <button onclick="resumeCheckout('${ord.id}')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-xs rounded-xl shadow-sm hover:from-amber-600 hover:to-amber-700 transition cursor-pointer flex items-center justify-center gap-1.5">
-                <i data-lucide="credit-card" class="w-4 h-4"></i> ดำเนินการชำระเงิน & เลือกวิธีจัดส่ง[cite: 15]
+            <div class="flex items-center gap-2 pt-1">
+              <button onclick="showOrderDetailModal('${ord.id}')" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-1">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> รายละเอียดเชิงลึก
               </button>
-            ` : ''}
+              ${showPayBtn ? `
+                <button onclick="resumeCheckout('${ord.id}')" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-xs rounded-xl shadow-sm hover:from-amber-600 hover:to-amber-700 transition cursor-pointer flex items-center justify-center gap-1.5">
+                  <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> ชำระเงิน
+                </button>
+              ` : ''}
+            </div>
           </div>
         `;
       }).join('');
@@ -1410,63 +1719,28 @@
     // --- ADMIN PANEL LOGIC ---
     function loadAdminData() {
       if(!currentUser || currentUser.role !== 'admin') {
-        showModal('คุณไม่มีสิทธิ์เข้าถึงระบบหลังบ้าน', 'warning');
+        showToast('คุณไม่มีสิทธิ์เข้าถึงระบบหลังบ้าน', 'warning');
         switchView('landing');
         return;
       }
 
-      // ดึงข้อมูล Orders
-      const tbodyOrders = document.getElementById('admin-orders-tbody');
-      if(dbMock.orders.length === 0) {
-        tbodyOrders.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีรายการคิวสั่งพิมพ์</td></tr>`;
-      } else {
-        tbodyOrders.innerHTML = dbMock.orders.map(o => {
-          const del = dbMock.deliveries.find(d => d.order_id === o.id) || {};
-          const pay = dbMock.payments.find(p => p.order_id === o.id) || {};
+      const totalRev = dbMock.orders.reduce((sum, o) => sum + (o.grand_total || o.total_amount), 0);
+      const pendingCount = dbMock.orders.filter(o => o.status === 'pending_review' || o.status === 'queued').length;
 
-          let methodText = 'รับเองที่ร้าน';
-          if(del.delivery_method === 'store_staff') methodText = '🛵 พนักงานร้านจัดส่ง[cite: 15]';
-          if(del.delivery_method === 'express') methodText = '📦 พัสดุด่วน';
+      document.getElementById('admin-stat-revenue').textContent = totalRev.toFixed(2) + ' ฿';
+      document.getElementById('admin-stat-orders').textContent = dbMock.orders.length + ' รายการ';
+      document.getElementById('admin-stat-pending').textContent = pendingCount + ' คิว';
+      document.getElementById('admin-stat-users').textContent = dbMock.users.length + ' คน';
 
-          return `
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-              <td class="py-3 px-3 font-bold text-blue-600">#${o.id}<br><span class="text-[10px] text-slate-400">${o.user_name}</span></td>
-              <td class="py-3 px-3">
-                <p class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${o.file_name}</p>
-                <p class="text-[10px] text-slate-400">${o.paper_size} | ${o.pages}หน้า x ${o.copies}ชุด | ${o.binding_name}</p>
-              </td>
-              <td class="py-3 px-3">
-                <p class="font-bold text-slate-900 dark:text-white">${(o.grand_total || o.total_amount).toFixed(2)} ฿</p>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">${pay.payment_method || 'ยังไม่ชำระ'}</span>
-              </td>
-              <td class="py-3 px-3">
-                <p class="font-bold text-slate-800 dark:text-slate-200">${methodText}</p>
-                <p class="text-[10px] text-slate-400 max-w-[180px] truncate">${del.delivery_address || '-'}</p>
-              </td>
-              <td class="py-3 px-3">
-                <select onchange="updateOrderStatus('${o.id}', this.value)" class="px-2 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold">
-                  <option value="pending_review" ${o.status === 'pending_review' ? 'selected' : ''}>⏳ รอตรวจสอบก่อนชำระเงิน</option>
-                  <option value="queued" ${o.status === 'queued' ? 'selected' : ''}>📋 ชำระแล้ว/เข้าคิว</option>
-                  <option value="printing" ${o.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
-                  <option value="delivering" ${o.status === 'delivering' ? 'selected' : ''}>🛵 อยู่ระหว่างจัดส่ง[cite: 15]</option>
-                  <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>✅ สำเร็จ / รับแล้ว</option>
-                </select>
-              </td>
-              <td class="py-3 px-3 text-right">
-                <button onclick="showModal('ส่งข้อความแจ้งเตือนถึง ${o.user_name} เรียบร้อย', 'info')" class="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">
-                  <i data-lucide="bell" class="w-4 h-4"></i>
-                </button>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
+      filterAdminOrders();
 
-      // ดึงข้อมูล Users
       const tbodyUsers = document.getElementById('admin-users-tbody');
       tbodyUsers.innerHTML = dbMock.users.map(u => `
         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-          <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-200">${u.full_name}</td>
+          <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+            <img src="${u.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}" class="w-6 h-6 rounded-full object-cover">
+            ${u.full_name}
+          </td>
           <td class="py-2.5 px-3 text-slate-500">${u.email}</td>
           <td class="py-2.5 px-3">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-600'}">
@@ -1474,7 +1748,7 @@
             </span>
           </td>
           <td class="py-2.5 px-3 text-right">
-            <button onclick="toggleUserRole('${u.id}')" class="text-[11px] text-blue-600 hover:underline font-semibold">
+            <button onclick="toggleUserRole('${u.id}')" class="text-[11px] text-blue-600 hover:underline font-semibold cursor-pointer">
               สลับสิทธิ์ (Admin/User)
             </button>
           </td>
@@ -1484,49 +1758,155 @@
       lucide.createIcons();
     }
 
+    function filterAdminOrders() {
+      const search = document.getElementById('admin-search-input').value.toLowerCase().trim();
+      const statusFilter = document.getElementById('admin-status-filter').value;
+      const tbodyOrders = document.getElementById('admin-orders-tbody');
+
+      let orders = dbMock.orders;
+      if(statusFilter !== 'all') {
+        orders = orders.filter(o => o.status === statusFilter);
+      }
+
+      if(search) {
+        orders = orders.filter(o => o.id.toLowerCase().includes(search) || o.user_name.toLowerCase().includes(search));
+      }
+
+      if(orders.length === 0) {
+        tbodyOrders.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่พบรายการคิวสั่งพิมพ์</td></tr>`;
+        return;
+      }
+
+      tbodyOrders.innerHTML = orders.map(o => {
+        const del = dbMock.deliveries.find(d => d.order_id === o.id) || {};
+
+        let methodText = 'รับเองที่ร้าน';
+        if(del.delivery_method === 'store_staff') methodText = '🛵 พนักงานร้านจัดส่ง';
+        if(del.delivery_method === 'express') methodText = '📦 พัสดุด่วน';
+
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <td class="py-3 px-3 font-bold text-blue-600">#${o.id}<br><span class="text-[10px] text-slate-400">${o.user_name}</span></td>
+            <td class="py-3 px-3">
+              <p class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${o.file_name}</p>
+              <p class="text-[10px] text-slate-400">${o.paper_size} (${o.color_type === 'color' ? 'สี' : 'ขาวดำ'}) x ${o.copies} ชุด</p>
+            </td>
+            <td class="py-3 px-3 font-extrabold text-slate-900 dark:text-white">
+              ${(o.grand_total || o.total_amount).toFixed(2)} ฿
+              <span class="block text-[10px] font-normal text-slate-400">${o.payment_method || 'PromptPay'}</span>
+            </td>
+            <td class="py-3 px-3 text-slate-600 dark:text-slate-300">
+              ${methodText}
+            </td>
+            <td class="py-3 px-3">
+              <select onchange="updateOrderStatus('${o.id}', this.value)" class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[11px] font-bold">
+                <option value="pending_review" ${o.status === 'pending_review' ? 'selected' : ''}>รอชำระเงิน</option>
+                <option value="queued" ${o.status === 'queued' ? 'selected' : ''}>เข้าคิวแล้ว</option>
+                <option value="printing" ${o.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
+                <option value="delivering" ${o.status === 'delivering' ? 'selected' : ''}>กำลังจัดส่ง</option>
+                <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>เสร็จสิ้น</option>
+              </select>
+            </td>
+            <td class="py-3 px-3 text-right space-x-1">
+              <button onclick="openSlipModal('${o.id}')" class="px-2.5 py-1 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-lg text-[11px] font-bold hover:bg-blue-100">ดูสลิป</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     function updateOrderStatus(orderId, newStatus) {
       const ord = dbMock.orders.find(o => o.id === orderId);
       if(ord) {
         ord.status = newStatus;
-        showModal(`อัปเดตสถานะออเดอร์ #${orderId} เป็น ${newStatus} แล้ว`, 'success');
-      }
-    }
-
-    function toggleUserRole(userId) {
-      const u = dbMock.users.find(usr => usr.id === userId);
-      if(u) {
-        u.role = u.role === 'admin' ? 'customer' : 'admin';
-        showModal(`ปรับสิทธิ์คุณ ${u.full_name} เป็น ${u.role} เรียบร้อย`, 'info');
+        showToast(`อัปเดตสถานะออเดอร์ #${orderId} เป็น ${newStatus} แล้ว`, 'success');
         loadAdminData();
       }
     }
 
-    // --- MODAL UTILITY ---
-    function showModal(msg, type = 'info') {
-      const modal = document.getElementById('custom-modal');
-      const title = document.getElementById('modal-title');
-      const message = document.getElementById('modal-message');
-      const icon = document.getElementById('modal-icon');
-      const iconBg = document.getElementById('modal-icon-bg');
-
-      message.textContent = msg;
-
-      if(type === 'success') {
-        title.textContent = 'สำเร็จ!';
-        icon.setAttribute('data-lucide', 'check-circle-2');
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400';
-      } else if(type === 'warning') {
-        title.textContent = 'แจ้งเตือน';
-        icon.setAttribute('data-lucide', 'alert-triangle');
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400';
-      } else {
-        title.textContent = 'การแจ้งเตือน';
-        icon.setAttribute('data-lucide', 'info');
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400';
+    function toggleUserRole(userId) {
+      const user = dbMock.users.find(u => u.id === userId);
+      if(user) {
+        user.role = user.role === 'admin' ? 'customer' : 'admin';
+        showToast(`เปลี่ยนสิทธิ์ผู้ใช้ ${user.full_name} เป็น ${user.role} เรียบร้อย`, 'info');
+        loadAdminData();
       }
+    }
 
-      lucide.createIcons();
-      modal.classList.remove('hidden');
+    // --- MODALS & DETAILS ---
+    function showOrderDetailModal(orderId) {
+      const ord = dbMock.orders.find(o => o.id === orderId);
+      if(!ord) return;
+
+      const del = dbMock.deliveries.find(d => d.order_id === orderId) || {};
+      const content = document.getElementById('order-detail-content');
+
+      content.innerHTML = `
+        <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-2">
+          <div class="flex justify-between"><strong>รหัสออเดอร์:</strong> <span>#${ord.id}</span></div>
+          <div class="flex justify-between"><strong>ลูกค้า:</strong> <span>${ord.user_name}</span></div>
+          <div class="flex justify-between"><strong>ชื่อไฟล์:</strong> <span>${ord.file_name}</span></div>
+          <div class="flex justify-between"><strong>สเปกกระดาษ:</strong> <span>${ord.paper_size} (${ord.paper_weight || '80gsm'})</span></div>
+          <div class="flex justify-between"><strong>ประเภทสี / หน้าหลัง:</strong> <span>${ord.color_type === 'color' ? 'พิมพ์สี' : 'ขาวดำ'} / ${ord.duplex_type === 'duplex' ? 'สองหน้า' : 'หน้าเดียว'}</span></div>
+          <div class="flex justify-between"><strong>จำนวนหน้า x จำนวนชุด:</strong> <span>${ord.pages} หน้า x ${ord.copies} ชุด</span></div>
+          <div class="flex justify-between"><strong>การเข้าเล่ม:</strong> <span>${ord.binding_name} (+${ord.binding_fee} ฿)</span></div>
+          <div class="flex justify-between border-t border-slate-200 dark:border-slate-700 pt-2 font-bold text-blue-600"><strong>ยอดชำระสุทธิ:</strong> <span>${(ord.grand_total || ord.total_amount).toFixed(2)} ฿</span></div>
+        </div>
+
+        <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-1">
+          <p class="font-bold text-slate-800 dark:text-slate-200 mb-1">ข้อมูลการจัดส่ง:</p>
+          <p><strong>ผู้รับ:</strong> ${del.recipient_name || ord.user_name}</p>
+          <p><strong>เบอร์โทร:</strong> ${del.phone_number || 'ไม่ระบุ'}</p>
+          <p><strong>ที่อยู่จัดส่ง:</strong> ${del.delivery_address || 'รับเองที่ร้าน'}</p>
+        </div>
+      `;
+
+      document.getElementById('order-detail-modal').classList.remove('hidden');
+    }
+
+    function closeOrderDetailModal() {
+      document.getElementById('order-detail-modal').classList.add('hidden');
+    }
+
+    function openSlipModal(orderId) {
+      currentReviewingOrderId = orderId;
+      document.getElementById('slip-modal').classList.remove('hidden');
+    }
+
+    function closeSlipModal() {
+      document.getElementById('slip-modal').classList.add('hidden');
+    }
+
+    function verifyPaymentStatus(isApproved) {
+      if(!currentReviewingOrderId) return;
+      if(isApproved) {
+        updateOrderStatus(currentReviewingOrderId, 'queued');
+        showToast('อนุมัติการชำระเงินเรียบร้อยแล้ว!', 'success');
+      } else {
+        updateOrderStatus(currentReviewingOrderId, 'pending_review');
+        showToast('ปฏิเสธสลิปการโอนเงิน', 'warning');
+      }
+      closeSlipModal();
+    }
+
+    // --- TOAST NOTIFICATIONS ---
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+
+      let bgClass = 'bg-slate-900 text-white';
+      if(type === 'success') bgClass = 'bg-emerald-600 text-white';
+      if(type === 'warning') bgClass = 'bg-amber-500 text-white';
+      if(type === 'error') bgClass = 'bg-rose-600 text-white';
+
+      toast.className = `p-3.5 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 animate-slide-up pointer-events-auto ${bgClass}`;
+      toast.innerHTML = `<span>${msg}</span>`;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     function closeModal() {
