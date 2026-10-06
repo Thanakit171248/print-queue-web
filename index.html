@@ -3,121 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบสั่งพิมพ์และจองคิวออนไลน์</title>
+  <title>ระบบสั่งพิมพ์เอกสาร & จองคิวออนไลน์</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Kanit', sans-serif; }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen font-sans">
+<body class="bg-slate-100 min-h-screen text-slate-800">
 
-  <div class="max-w-4xl mx-auto p-6">
-    <header class="text-center my-6">
-      <h1 class="text-3xl font-bold text-blue-600">🖨️ ระบบสั่งพิมพ์เอกสาร & จองคิวออนไลน์</h1>
-      <p class="text-gray-600 mt-1">อัปโหลด ตั้งค่ากระดาษ สั่งพิมพ์ และติดตามคิวได้ทันที</p>
+  <!-- แถบตั้งค่า Supabase Config (ซ่อนเมื่อเชื่อมต่อแล้ว) -->
+  <div id="config-box" class="bg-amber-50 border-b border-amber-200 p-4 shadow-sm">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div class="text-sm font-semibold text-amber-900">⚙️ ตั้งค่าการเชื่อมต่อฐานข้อมูล (Supabase)</div>
+      <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+        <input type="text" id="supabase-url" placeholder="วาง Project URL" class="px-3 py-1.5 border rounded-lg text-sm w-full md:w-64">
+        <input type="text" id="supabase-key" placeholder="วาง anon public key" class="px-3 py-1.5 border rounded-lg text-sm w-full md:w-64">
+        <button onclick="saveAndInitSupabase()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition whitespace-nowrap">
+          เชื่อมต่อ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto p-4 md:p-6">
+
+    <!-- Header หน้าเว็บหลัก -->
+    <header class="flex justify-between items-center mb-8 bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/80">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-blue-600 flex items-center gap-2">
+          <span>🖨️</span> PrintQueue Online
+        </h1>
+        <p class="text-slate-500 text-xs md:text-sm mt-1">ระบบสั่งพิมพ์เอกสารและติดตามคิวออนไลน์</p>
+      </div>
+      
+      <!-- เมนูผู้ใช้งานเมื่อเข้าสู่ระบบ -->
+      <div id="user-header-info" class="hidden flex items-center gap-3">
+        <div class="text-right hidden sm:block">
+          <p id="user-display-name" class="font-semibold text-slate-700 text-sm">ผู้ใช้งาน</p>
+          <span class="text-xs bg-emerald-100 text-emerald-700 font-medium px-2 py-0.5 rounded-full">ออนไลน์</span>
+        </div>
+        <button onclick="handleLogout()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs md:text-sm font-medium px-3 py-2 rounded-xl transition">
+          ออกจากระบบ
+        </button>
+      </div>
     </header>
 
-    <!-- ส่วนตั้งค่า Supabase -->
-    <div id="config-box" class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-6">
-      <h2 class="font-bold text-yellow-800 mb-2">⚙️ กำหนดค่าการเชื่อมต่อฐานข้อมูล (Supabase)</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input type="text" id="supabase-url" placeholder="วาง Project URL ที่นี่" class="p-2 border rounded w-full text-sm">
-        <input type="text" id="supabase-key" placeholder="วาง anon public key ที่นี่" class="p-2 border rounded w-full text-sm">
+    <!-- 1. ส่วนหน้าต่าง เข้าสู่ระบบ / สมัครสมาชิก (Auth View) -->
+    <div id="auth-container" class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden my-8">
+      <!-- แท็บสลับ เข้าสู่ระบบ / สมัครสมาชิก -->
+      <div class="flex border-b border-slate-100 bg-slate-50/50">
+        <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-4 text-center font-bold text-blue-600 border-b-2 border-blue-600 transition">
+          เข้าสู่ระบบ
+        </button>
+        <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-4 text-center font-bold text-slate-400 hover:text-slate-600 transition">
+          สมัครสมาชิก
+        </button>
       </div>
-      <button onclick="saveAndInitSupabase()" class="mt-3 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1.5 rounded text-sm font-semibold">
-        บันทึกและเชื่อมต่อ
-      </button>
+
+      <div class="p-6 md:p-8">
+        <!-- ฟอร์มเข้าสู่ระบบ -->
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">อีเมล</label>
+            <input type="email" id="login-email" required placeholder="yourname@email.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">รหัสผ่าน</label>
+            <input type="password" id="login-password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/20 transition">
+            เข้าสู่ระบบ
+          </button>
+        </form>
+
+        <!-- ฟอร์มสมัครสมาชิก -->
+        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อ-นามสกุล</label>
+            <input type="text" id="reg-fullname" required placeholder="สมชาย ใจดี" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">อีเมล</label>
+            <input type="email" id="reg-email" required placeholder="yourname@email.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">รหัสผ่าน</label>
+            <input type="password" id="reg-password" required placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition">
+            ยืนยันลงทะเบียน
+          </button>
+        </form>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- 2. ส่วนเมนูหลัก สั่งพิมพ์เอกสาร & ตารางคิว (Dashboard View - แสดงหลังเข้าสู่ระบบ) -->
+    <div id="main-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
       <!-- ฟอร์มสั่งพิมพ์ -->
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">📝 ฟอร์มสั่งพิมพ์เอกสาร</h2>
-        
+      <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span>📝</span> สร้างรายการสั่งพิมพ์
+        </h2>
+
         <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700">ชื่อผู้สั่งพิมพ์</label>
-            <input type="text" id="fullname" required placeholder="เช่น สมชาย ใจดี" class="w-full mt-1 p-2 border rounded-lg">
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">ชื่อไฟล์เอกสาร</label>
-            <input type="text" id="filename" required placeholder="เช่น รายงานการประชุม.pdf" class="w-full mt-1 p-2 border rounded-lg">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อไฟล์เอกสาร</label>
+            <input type="text" id="filename" required placeholder="เช่น รายงานการประชุม.pdf" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700">ขนาดกระดาษ</label>
-              <select id="paper-size" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ขนาดกระดาษ</label>
+              <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm">
                 <option value="A4">A4</option>
                 <option value="A3">A3</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">จำนวนชุด</label>
-              <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">จำนวนชุด</label>
+              <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm">
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700">สีพิมพ์</label>
-              <select id="color-type" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
-                <option value="bw">ขาว-ดำ (1 บาท/หน้า)</option>
-                <option value="color">สี (5 บาท/หน้า)</option>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">สีพิมพ์</label>
+              <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm">
+                <option value="bw">ขาว-ดำ (1.-)</option>
+                <option value="color">สี (5.-)</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">รูปแบบการพิมพ์</label>
-              <select id="duplex-type" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">การพิมพ์</label>
+              <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm">
                 <option value="single">หน้าเดียว</option>
-                <option value="duplex">หน้า-หลัง (+0.50 บาท)</option>
+                <option value="duplex">หน้า-หลัง (+0.50)</option>
               </select>
             </div>
           </div>
 
-          <div class="p-3 bg-blue-50 rounded-lg flex justify-between items-center">
-            <span class="font-semibold text-blue-900">ราคารวมประมาณ:</span>
-            <span id="total-price" class="text-xl font-bold text-blue-600">1.00 บาท</span>
+          <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center">
+            <span class="text-sm font-medium text-slate-600">ราคารวมประเมิน:</span>
+            <span id="total-price" class="text-2xl font-bold text-blue-600">1.00 บาท</span>
           </div>
 
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition">
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/20 transition">
             ส่งงานเข้าคิวพิมพ์
           </button>
         </form>
       </div>
 
-      <!-- ตารางแสดงคิวงาน -->
-      <div class="bg-white p-6 rounded-xl shadow-md">
+      <!-- ตารางแสดงรายการคิว -->
+      <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-gray-800">📊 ตารางแสดงคิวพิมพ์</h2>
-          <button onclick="fetchQueues()" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded">
-            🔄 รีเฟรชคิว
+          <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <span>📊</span> สถานะคิวพิมพ์ล่าสุด
+          </h2>
+          <button onclick="fetchQueues()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition font-medium">
+            🔄 อัปเดตคิว
           </button>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left">
             <thead>
-              <tr class="border-b text-sm font-medium text-gray-500">
-                <th class="py-2">เลขคิว</th>
-                <th class="py-2">ชื่อไฟล์</th>
-                <th class="py-2">สถานะ</th>
+              <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                <th class="py-3 px-2">คิว</th>
+                <th class="py-3 px-2">ชื่อไฟล์</th>
+                <th class="py-3 px-2">ยอดชำระ</th>
+                <th class="py-3 px-2 text-center">สถานะ</th>
               </tr>
             </thead>
-            <tbody id="queue-table-body" class="text-sm divide-y">
+            <tbody id="queue-table-body" class="text-sm divide-y divide-slate-100">
               <tr>
-                <td colspan="3" class="py-4 text-center text-gray-400">ยังไม่มีข้อมูลคิวงาน</td>
+                <td colspan="4" class="py-8 text-center text-slate-400">กำลังโหลดข้อมูลคิว...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
     let supabaseClient = null;
+    let currentUser = null;
 
-    // โหลดค่าอัตโนมัติเมื่อเปิดหน้าเว็บ
+    // เริ่มต้นทำงานเมื่อเปิดหน้าเว็บ
     window.onload = function() {
       const savedUrl = localStorage.getItem('sp_url') || 'https://hghutsekeubqpuxpusub.supabase.co';
       const savedKey = localStorage.getItem('sp_key') || '';
@@ -133,7 +209,7 @@
     function saveAndInitSupabase() {
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) return alert('กรุณากรอก URL และ API Key ให้ครบถ้วน');
+      if (!url || !key) return alert('กรุณากรอก URL และ Key ให้ครบถ้วน');
 
       localStorage.setItem('sp_url', url);
       localStorage.setItem('sp_key', key);
@@ -143,9 +219,100 @@
     function initSupabase(url, key) {
       supabaseClient = supabase.createClient(url, key);
       document.getElementById('config-box').classList.add('hidden');
+      
+      // ตรวจสอบว่ามีข้อมูลผู้ใช้ล็อกอินค้างไว้หรือไม่
+      const savedUser = localStorage.getItem('sp_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showDashboard();
+      }
+    }
+
+    // สลับแท็บ เข้าสู่ระบบ / สมัครสมาชิก
+    function switchAuthTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('form-login').classList.toggle('hidden', !isLogin);
+      document.getElementById('form-register').classList.toggle('hidden', isLogin);
+
+      document.getElementById('tab-login').className = isLogin 
+        ? 'flex-1 py-4 text-center font-bold text-blue-600 border-b-2 border-blue-600 transition'
+        : 'flex-1 py-4 text-center font-bold text-slate-400 hover:text-slate-600 transition';
+
+      document.getElementById('tab-register').className = !isLogin 
+        ? 'flex-1 py-4 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 transition'
+        : 'flex-1 py-4 text-center font-bold text-slate-400 hover:text-slate-600 transition';
+    }
+
+    // สมัครสมาชิก
+    async function handleRegister(e) {
+      e.preventDefault();
+      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
+
+      const fullName = document.getElementById('reg-fullname').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('users')
+          .insert([{ full_name: fullName, email: email, password_hash: password }])
+          .select().single();
+
+        if (error) throw error;
+
+        alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยอีเมลของคุณ');
+        switchAuthTab('login');
+        document.getElementById('login-email').value = email;
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + (err.message.includes('unique') ? 'อีเมลนี้ถูกใช้งานแล้ว' : err.message));
+      }
+    }
+
+    // เข้าสู่ระบบ
+    async function handleLogin(e) {
+      e.preventDefault();
+      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('users')
+          .select('id, full_name, email')
+          .eq('email', email)
+          .eq('password_hash', password)
+          .single();
+
+        if (error || !data) throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+
+        currentUser = data;
+        localStorage.setItem('sp_user', JSON.stringify(currentUser));
+        showDashboard();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // ออกจากระบบ
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('sp_user');
+      document.getElementById('auth-container').classList.remove('hidden');
+      document.getElementById('main-dashboard').classList.add('hidden');
+      document.getElementById('user-header-info').classList.add('hidden');
+    }
+
+    // แสดงหน้าจอหลักเมื่อล็อกอินผ่าน
+    function showDashboard() {
+      document.getElementById('auth-container').classList.add('hidden');
+      document.getElementById('main-dashboard').classList.remove('hidden');
+      document.getElementById('user-header-info').classList.remove('hidden');
+      document.getElementById('user-display-name').innerText = currentUser.full_name;
       fetchQueues();
     }
 
+    // คำนวณราคา
     function calculatePrice() {
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
@@ -159,11 +326,11 @@
       return total;
     }
 
+    // ส่งงานเข้าคิว
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
+      if (!supabaseClient || !currentUser) return;
 
-      const fullname = document.getElementById('fullname').value;
       const filename = document.getElementById('filename').value;
       const copies = parseInt(document.getElementById('copies').value);
       const isColor = document.getElementById('color-type').value === 'color';
@@ -172,22 +339,17 @@
       const totalAmount = calculatePrice();
 
       try {
-        const { data: user, error: uErr } = await supabaseClient
-          .from('users')
-          .insert([{ username: 'user_' + Date.now(), email: `user_${Date.now()}@mail.com`, password_hash: '1234', full_name: fullname }])
-          .select().single();
-        if (uErr) throw uErr;
-
         const queueNum = Math.floor(1000 + Math.random() * 9000);
+
         const { data: order, error: oErr } = await supabaseClient
           .from('orders')
-          .insert([{ user_id: user.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued' }])
+          .insert([{ user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued' }])
           .select().single();
         if (oErr) throw oErr;
 
         const { data: doc, error: dErr } = await supabaseClient
           .from('documents')
-          .insert([{ user_id: user.id, file_name: filename, file_path: '/uploads/' + filename }])
+          .insert([{ user_id: currentUser.id, file_name: filename, file_path: '/uploads/' + filename }])
           .select().single();
         if (dErr) throw dErr;
 
@@ -204,7 +366,7 @@
           }]);
         if (jErr) throw jErr;
 
-        alert(`สร้างคิวสำเร็จ! หมายเลขคิวของคุณคือ: Q-${queueNum}`);
+        alert(`สร้างรายการสำเร็จ! คิวของคุณคือ: Q-${queueNum}`);
         document.getElementById('print-form').reset();
         calculatePrice();
         fetchQueues();
@@ -213,12 +375,13 @@
       }
     }
 
+    // ดึงข้อมูลแสดงในตาราง
     async function fetchQueues() {
       if (!supabaseClient) return;
 
       const { data, error } = await supabaseClient
         .from('print_jobs')
-        .select('id, status, documents(file_name), orders(queue_number)')
+        .select('id, status, documents(file_name), orders(queue_number, total_amount)')
         .order('created_at', { ascending: false })
         .limit(10);
 
@@ -228,18 +391,19 @@
       tbody.innerHTML = '';
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-400">ยังไม่มีรายการคิวพิมพ์</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">ยังไม่มีรายการคิวพิมพ์ในระบบ</td></tr>';
         return;
       }
 
       data.forEach(item => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50';
+        tr.className = 'hover:bg-slate-50/80 transition';
         tr.innerHTML = `
-          <td class="py-2.5 font-bold text-blue-600">Q-${item.orders?.queue_number || '-'}</td>
-          <td class="py-2.5 text-gray-800">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
-          <td class="py-2.5">
-            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-100 text-yellow-800">
+          <td class="py-3 px-2 font-bold text-blue-600">Q-${item.orders?.queue_number || '-'}</td>
+          <td class="py-3 px-2 text-slate-700 font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
+          <td class="py-3 px-2 text-slate-600">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
+          <td class="py-3 px-2 text-center">
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
               ${item.status}
             </span>
           </td>
