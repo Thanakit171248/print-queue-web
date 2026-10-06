@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบสั่งพิมพ์และจองคิวออนไลน์</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-100 min-h-screen font-sans">
+
+  <div class="max-w-4xl mx-auto p-6">
+    <header class="text-center my-6">
+      <h1 class="text-3xl font-bold text-blue-600">🖨️ ระบบสั่งพิมพ์เอกสาร & จองคิวออนไลน์</h1>
+      <p class="text-gray-600 mt-1">อัปโหลด ตั้งค่ากระดาษ สั่งพิมพ์ และติดตามคิวได้ทันที</p>
+    </header>
+
+    <!-- ส่วนตั้งค่า Supabase -->
+    <div id="config-box" class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-6">
+      <h2 class="font-bold text-yellow-800 mb-2">⚙️ กำหนดค่าการเชื่อมต่อฐานข้อมูล (Supabase)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <input type="text" id="supabase-url" placeholder="วาง Project URL ที่นี่" class="p-2 border rounded w-full text-sm">
+        <input type="text" id="supabase-key" placeholder="วาง anon public key ที่นี่" class="p-2 border rounded w-full text-sm">
+      </div>
+      <button onclick="saveAndInitSupabase()" class="mt-3 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1.5 rounded text-sm font-semibold">
+        บันทึกและเชื่อมต่อ
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- ฟอร์มสั่งพิมพ์ -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">📝 ฟอร์มสั่งพิมพ์เอกสาร</h2>
+        
+        <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">ชื่อผู้สั่งพิมพ์</label>
+            <input type="text" id="fullname" required placeholder="เช่น สมชาย ใจดี" class="w-full mt-1 p-2 border rounded-lg">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">ชื่อไฟล์เอกสาร</label>
+            <input type="text" id="filename" required placeholder="เช่น รายงานการประชุม.pdf" class="w-full mt-1 p-2 border rounded-lg">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">ขนาดกระดาษ</label>
+              <select id="paper-size" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+                <option value="A4">A4</option>
+                <option value="A3">A3</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">จำนวนชุด</label>
+              <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">สีพิมพ์</label>
+              <select id="color-type" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+                <option value="bw">ขาว-ดำ (1 บาท/หน้า)</option>
+                <option value="color">สี (5 บาท/หน้า)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">รูปแบบการพิมพ์</label>
+              <select id="duplex-type" onchange="calculatePrice()" class="w-full mt-1 p-2 border rounded-lg">
+                <option value="single">หน้าเดียว</option>
+                <option value="duplex">หน้า-หลัง (+0.50 บาท)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="p-3 bg-blue-50 rounded-lg flex justify-between items-center">
+            <span class="font-semibold text-blue-900">ราคารวมประมาณ:</span>
+            <span id="total-price" class="text-xl font-bold text-blue-600">1.00 บาท</span>
+          </div>
+
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition">
+            ส่งงานเข้าคิวพิมพ์
+          </button>
+        </form>
+      </div>
+
+      <!-- ตารางแสดงคิวงาน -->
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-800">📊 ตารางแสดงคิวพิมพ์</h2>
+          <button onclick="fetchQueues()" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded">
+            🔄 รีเฟรชคิว
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b text-sm font-medium text-gray-500">
+                <th class="py-2">เลขคิว</th>
+                <th class="py-2">ชื่อไฟล์</th>
+                <th class="py-2">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="queue-table-body" class="text-sm divide-y">
+              <tr>
+                <td colspan="3" class="py-4 text-center text-gray-400">ยังไม่มีข้อมูลคิวงาน</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let supabaseClient = null;
+
+    // โหลดค่าอัตโนมัติเมื่อเปิดหน้าเว็บ
+    window.onload = function() {
+      const savedUrl = localStorage.getItem('sp_url') || 'https://hghutsekeubqpuxpusub.supabase.co';
+      const savedKey = localStorage.getItem('sp_key') || '';
+
+      if (savedUrl) document.getElementById('supabase-url').value = savedUrl;
+      if (savedKey) document.getElementById('supabase-key').value = savedKey;
+
+      if (savedUrl && savedKey) {
+        initSupabase(savedUrl, savedKey);
+      }
+    };
+
+    function saveAndInitSupabase() {
+      const url = document.getElementById('supabase-url').value.trim();
+      const key = document.getElementById('supabase-key').value.trim();
+      if (!url || !key) return alert('กรุณากรอก URL และ API Key ให้ครบถ้วน');
+
+      localStorage.setItem('sp_url', url);
+      localStorage.setItem('sp_key', key);
+      initSupabase(url, key);
+    }
+
+    function initSupabase(url, key) {
+      supabaseClient = supabase.createClient(url, key);
+      document.getElementById('config-box').classList.add('hidden');
+      fetchQueues();
+    }
+
+    function calculatePrice() {
+      const copies = parseInt(document.getElementById('copies').value) || 1;
+      const isColor = document.getElementById('color-type').value === 'color';
+      const isDuplex = document.getElementById('duplex-type').value === 'duplex';
+      
+      let basePrice = isColor ? 5.00 : 1.00;
+      if (isDuplex) basePrice += 0.50;
+
+      const total = basePrice * copies;
+      document.getElementById('total-price').innerText = total.toFixed(2) + ' บาท';
+      return total;
+    }
+
+    async function handleOrderSubmit(e) {
+      e.preventDefault();
+      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
+
+      const fullname = document.getElementById('fullname').value;
+      const filename = document.getElementById('filename').value;
+      const copies = parseInt(document.getElementById('copies').value);
+      const isColor = document.getElementById('color-type').value === 'color';
+      const isDuplex = document.getElementById('duplex-type').value === 'duplex';
+      const paperSize = document.getElementById('paper-size').value;
+      const totalAmount = calculatePrice();
+
+      try {
+        const { data: user, error: uErr } = await supabaseClient
+          .from('users')
+          .insert([{ username: 'user_' + Date.now(), email: `user_${Date.now()}@mail.com`, password_hash: '1234', full_name: fullname }])
+          .select().single();
+        if (uErr) throw uErr;
+
+        const queueNum = Math.floor(1000 + Math.random() * 9000);
+        const { data: order, error: oErr } = await supabaseClient
+          .from('orders')
+          .insert([{ user_id: user.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued' }])
+          .select().single();
+        if (oErr) throw oErr;
+
+        const { data: doc, error: dErr } = await supabaseClient
+          .from('documents')
+          .insert([{ user_id: user.id, file_name: filename, file_path: '/uploads/' + filename }])
+          .select().single();
+        if (dErr) throw dErr;
+
+        const { error: jErr } = await supabaseClient
+          .from('print_jobs')
+          .insert([{
+            order_id: order.id,
+            document_id: doc.id,
+            copies: copies,
+            color: isColor,
+            paper_size: paperSize,
+            duplex: isDuplex,
+            status: 'queued'
+          }]);
+        if (jErr) throw jErr;
+
+        alert(`สร้างคิวสำเร็จ! หมายเลขคิวของคุณคือ: Q-${queueNum}`);
+        document.getElementById('print-form').reset();
+        calculatePrice();
+        fetchQueues();
+      } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + err.message);
+      }
+    }
+
+    async function fetchQueues() {
+      if (!supabaseClient) return;
+
+      const { data, error } = await supabaseClient
+        .from('print_jobs')
+        .select('id, status, documents(file_name), orders(queue_number)')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) return console.error(error);
+
+      const tbody = document.getElementById('queue-table-body');
+      tbody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-400">ยังไม่มีรายการคิวพิมพ์</td></tr>';
+        return;
+      }
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50';
+        tr.innerHTML = `
+          <td class="py-2.5 font-bold text-blue-600">Q-${item.orders?.queue_number || '-'}</td>
+          <td class="py-2.5 text-gray-800">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
+          <td class="py-2.5">
+            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-100 text-yellow-800">
+              ${item.status}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>
