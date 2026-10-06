@@ -953,1113 +953,262 @@
     let supabaseClient = null;
     let currentUser = null;
     let selectedFileObj = null;
-    let detectedPageCount = 1;
-    let currentCheckoutOrder = null;
-    let appliedDiscountAmount = 0;
-    let currentReviewingOrderId = null;
 
-    // --- PROMO CODES ---
-    const promoCodesDB = {
-      'PRINT2026': { percent: 10, minCost: 50 },
-      'WELCOME10': { percent: 15, minCost: 20 },
-      'VIPPRO': { percent: 20, minCost: 100 }
-    };
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+    initSupabase();
+    checkAuthSession();
+    if (window.lucide) lucide.createIcons();
+    });
 
-    // --- LOCAL DATABASE MOCK (SUPPORT 8 TABLES) ---
-    let dbMock = {
-      users: [
-        { id: 'usr-1', email: 'user@print.com', full_name: 'สมชาย ใจดี', role: 'customer', avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80', phone: '081-234-5678', address: '123/45 ถนนสุขุมวิท เขตวัฒนา กทม. 10110' },
-        { id: 'usr-2', email: 'admin@print.com', full_name: 'แอดมิน ร้านพิมพ์', role: 'admin', avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80', phone: '089-999-8888', address: 'หน้าร้าน PrintQueue Pro อาคาร A' }
-      ],
-      orders: [
-        { id: 'ORD-8821', user_id: 'usr-1', user_name: 'สมชาย ใจดี', file_name: 'รายงานการประชุมประจำปี.pdf', paper_size: 'A4', paper_weight: '80gsm', color_type: 'color', duplex_type: 'single', pages: 12, copies: 2, binding_name: 'เข้าเล่มสันเกลียว / สันรูด', binding_fee: 20, total_amount: 140, grand_total: 140, status: 'printing', delivery_method: 'pickup', payment_method: 'promptpay', recipient_name: 'สมชาย ใจดี', recipient_phone: '081-234-5678', recipient_address: '123/45 ถนนสุขุมวิท', slip_url: '', created_at: new Date().toISOString() }
-      ],
-      print_jobs: [],
-      documents: [],
-      deliveries: [],
-      payments: [],
-      wallets: [
-        { id: 'w-1', user_id: 'usr-1', balance: 250.00 },
-        { id: 'w-2', user_id: 'usr-2', balance: 1000.00 }
-      ],
-      wallet_transactions: [
-        { id: 'tx-1', wallet_id: 'w-1', order_id: null, transaction_type: 'deposit', amount: 250.00, description: 'เติมเงินผ่าน PromptPay', transaction_date: new Date().toISOString() }
-      ]
-    };
+    function initSupabase() {
+    const url = localStorage.getItem('pq_sp_url') || SUPABASE_DEFAULT_URL;
+    const key = localStorage.getItem('pq_sp_key') || SUPABASE_DEFAULT_KEY;
 
-    function loadDbMockFromStorage() {
-      const saved = localStorage.getItem('pq_db_mock_v1');
-      if (saved) {
-        try { dbMock = JSON.parse(saved); } catch (e) { console.error(e); }
-      }
-    }
-
-    function saveDbMockToStorage() {
-      localStorage.setItem('pq_db_mock_v1', JSON.stringify(dbMock));
-    }
-
-    // --- SUPABASE CLIENT SETUP ---
-    function initSupabaseFromStorage() {
-      const url = localStorage.getItem('pq_sp_url') || SUPABASE_DEFAULT_URL;
-      const key = localStorage.getItem('pq_sp_key') || SUPABASE_DEFAULT_KEY;
-
-      const urlInput = document.getElementById('supabase-url');
-      const keyInput = document.getElementById('supabase-key');
-      if (urlInput) urlInput.value = url;
-      if (keyInput) keyInput.value = key;
-
-      if (url && key && window.supabase) {
+    if (url && key && window.supabase) {
         try {
-          supabaseClient = window.supabase.createClient(url, key);
-          console.log("Supabase initialized with URL:", url);
-        } catch (e) {
-          console.warn("Supabase init fallback to mock.", e);
-        }
-      }
-    }
-
-    function saveAndInitSupabase() {
-      const url = document.getElementById('supabase-url').value.trim();
-      const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) {
-        showToast("กรุณากรอก URL และ Key ให้ถูกต้อง", "warning");
-        return;
-      }
-      localStorage.setItem('pq_sp_url', url);
-      localStorage.setItem('pq_sp_key', key);
-      try {
         supabaseClient = window.supabase.createClient(url, key);
-        showToast("เชื่อมต่อ Supabase สำเร็จ!", "success");
-      } catch (e) {
-        showToast("ไม่สามารถเชื่อมต่อ Supabase ได้: " + e.message, "error");
-      }
-    }
-
-    function toggleConfigPanel() {
-      const panel = document.getElementById('config-panel');
-      if (panel) panel.classList.toggle('hidden');
-    }
-
-    // --- TOAST NOTIFICATIONS ---
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-
-      const bgColors = {
-        success: 'bg-emerald-600 text-white',
-        error: 'bg-rose-600 text-white',
-        warning: 'bg-amber-500 text-white',
-        info: 'bg-blue-600 text-white'
-      };
-
-      const icons = {
-        success: 'check-circle',
-        error: 'alert-circle',
-        warning: 'alert-triangle',
-        info: 'info'
-      };
-
-      const toast = document.createElement('div');
-      toast.className = `flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl ${bgColors[type] || bgColors.info} pointer-events-auto transform transition-all duration-300 opacity-0 translate-y-2`;
-      toast.innerHTML = `
-        <i data-lucide="${icons[type] || 'info'}" class="w-5 h-5 flex-shrink-0"></i>
-        <span class="text-xs font-semibold flex-grow">${message}</span>
-        <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-4 h-4"></i></button>
-      `;
-
-      container.appendChild(toast);
-      if (window.lucide) lucide.createIcons();
-
-      setTimeout(() => toast.classList.remove('opacity-0', 'translate-y-2'), 10);
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-2');
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
-    }
-
-    // --- MODAL DIALOGS ---
-    let modalConfirmCallback = null;
-
-    function showCustomModal(title, message, type = 'info', showCancel = false, onConfirm = null) {
-      const modal = document.getElementById('custom-modal');
-      if (!modal) return;
-
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-message').textContent = message;
-
-      const iconBg = document.getElementById('modal-icon-bg');
-      const icon = document.getElementById('modal-icon');
-      const cancelBtn = document.getElementById('modal-cancel-btn');
-
-      if (showCancel) cancelBtn.classList.remove('hidden');
-      else cancelBtn.classList.add('hidden');
-
-      if (type === 'success') {
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400';
-        icon.setAttribute('data-lucide', 'check-circle');
-      } else if (type === 'error') {
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400';
-        icon.setAttribute('data-lucide', 'alert-circle');
-      } else if (type === 'warning') {
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400';
-        icon.setAttribute('data-lucide', 'alert-triangle');
-      } else {
-        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400';
-        icon.setAttribute('data-lucide', 'info');
-      }
-
-      if (window.lucide) lucide.createIcons();
-      modalConfirmCallback = onConfirm;
-      modal.classList.remove('hidden');
-    }
-
-    function closeModal() {
-      const modal = document.getElementById('custom-modal');
-      if (modal) modal.classList.add('hidden');
-      if (typeof modalConfirmCallback === 'function') {
-        const cb = modalConfirmCallback;
-        modalConfirmCallback = null;
-        cb();
-      }
-    }
-
-    // --- THEME SWITCHER ---
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.classList.toggle('dark');
-      localStorage.setItem('pq_theme', isDark ? 'dark' : 'light');
-
-      const icon = document.getElementById('theme-icon');
-      const text = document.getElementById('theme-text');
-      if (isDark) {
-        icon.setAttribute('data-lucide', 'sun');
-        if (text) text.textContent = 'ธีมสว่าง';
-      } else {
-        icon.setAttribute('data-lucide', 'moon');
-        if (text) text.textContent = 'ธีมมืด';
-      }
-      if (window.lucide) lucide.createIcons();
-    }
-
-    // --- NAVIGATION ---
-    function switchView(viewName) {
-      const views = ['landing', 'auth', 'dashboard', 'checkout', 'wallet', 'admin'];
-      views.forEach(v => {
-        const el = document.getElementById('view-' + v);
-        if (el) el.classList.add('hidden');
-      });
-
-      const target = document.getElementById('view-' + viewName);
-      if (target) {
-        target.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      if (viewName === 'dashboard') fetchQueues();
-      if (viewName === 'wallet') loadWalletData();
-      if (viewName === 'admin') loadAdminData();
-    }
-
-    // --- AUTHENTICATION ---
-    function switchAuthTab(tab) {
-      const loginForm = document.getElementById('form-login');
-      const regForm = document.getElementById('form-register');
-      const tabLogin = document.getElementById('tab-login');
-      const tabReg = document.getElementById('tab-register');
-
-      if (tab === 'login') {
-        loginForm.classList.remove('hidden');
-        regForm.classList.add('hidden');
-        tabLogin.className = 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-blue-600 transition shadow-md cursor-pointer';
-        tabReg.className = 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer';
-      } else {
-        loginForm.classList.add('hidden');
-        regForm.classList.remove('hidden');
-        tabReg.className = 'flex-1 py-2.5 text-xs font-bold rounded-lg text-white bg-emerald-600 transition shadow-md cursor-pointer';
-        tabLogin.className = 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer';
-      }
-    }
-
-    function checkAuthSession() {
-      const savedUser = localStorage.getItem('pq_logged_user');
-      if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
+        console.log("Supabase connected successfully.");
         } catch (e) {
-          currentUser = null;
+        console.error("Supabase connection failed:", e);
         }
-      }
-      updateUserUI();
+    }
     }
 
-    function updateUserUI() {
-      const guestBtns = document.getElementById('guest-buttons');
-      const userMenu = document.getElementById('user-profile-menu');
-      const nameEl = document.getElementById('user-display-name');
-      const avatarEl = document.getElementById('nav-user-avatar');
-      const adminBtn = document.getElementById('admin-menu-btn');
-      const adminDbBtn = document.getElementById('admin-db-config-btn');
-      const walletBadge = document.getElementById('wallet-badge');
+    // --- AUTHENTICATION (SUPABASE DIRECT) ---
+    async function handleRegister(event) {
+    event.preventDefault();
+    const fullname = document.getElementById('reg-fullname').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
 
-      if (currentUser) {
-        if (guestBtns) guestBtns.classList.add('hidden');
-        if (userMenu) userMenu.classList.remove('hidden');
-        if (nameEl) nameEl.textContent = currentUser.full_name || currentUser.email;
-        if (avatarEl && currentUser.avatar_url) avatarEl.src = currentUser.avatar_url;
-        if (walletBadge) walletBadge.classList.remove('hidden');
+    if (!supabaseClient) {
+        showToast("กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน", "error");
+        return;
+    }
 
-        if (currentUser.role === 'admin') {
-          if (adminBtn) adminBtn.classList.remove('hidden');
-          if (adminDbBtn) adminDbBtn.classList.remove('hidden');
-        } else {
-          if (adminBtn) adminBtn.classList.add('hidden');
-          if (adminDbBtn) adminDbBtn.classList.add('hidden');
+    try {
+        // 1. สมัครใช้งานผ่าน Supabase Auth
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+        });
+
+        if (authError) throw authError;
+
+        const userId = authData.user?.id || crypto.randomUUID();
+
+        // 2. บันทึกข้อมูลเข้าตาราง users ใน Supabase (ใช้ fullname ตาม Schema)
+        const { error: dbError } = await supabaseClient.from('users').insert([
+        {
+            id: userId,
+            fullname: fullname, // ตรงตาม Schema ตาราง users[cite: 47]
+            email: email,
+            password_hash: 'SUPABASE_AUTH',
+            role: 'customer'
         }
-        updateWalletBadgeDisplay();
-      } else {
-        if (guestBtns) guestBtns.classList.remove('hidden');
-        if (userMenu) userMenu.classList.add('hidden');
-        if (walletBadge) walletBadge.classList.add('hidden');
-        if (adminBtn) adminBtn.classList.add('hidden');
-        if (adminDbBtn) adminDbBtn.classList.add('hidden');
-      }
+        ]);
+
+        if (dbError) console.warn("Notice inserting user record:", dbError.message);
+
+        // 3. สร้างกระเป๋าเงินเริ่มต้นในตาราง wallets[cite: 49]
+        await supabaseClient.from('wallets').insert([
+        { user_id: userId, balance: 50.00 }
+        ]);
+
+        currentUser = { id: userId, email: email, fullname: fullname, role: 'customer' };
+        localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
+        
+        updateUserUI();
+        showToast("สมัครสมาชิกสำเร็จ! ข้อมูลบันทึกลง Supabase เรียบร้อย", "success");
+        switchView('dashboard');
+    } catch (err) {
+        showToast("สมัครสมาชิกไม่สำเร็จ: " + err.message, "error");
+    }
     }
 
     async function handleLogin(event) {
-      event.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('login-password').value;
+    event.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
 
-      // Try Supabase Auth or DB table lookup
-      let foundUser = dbMock.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!supabaseClient) {
+        showToast("กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน", "error");
+        return;
+    }
 
-      if (supabaseClient) {
-        try {
-          const { data, error } = await supabaseClient.from('users').select('*').eq('email', email).single();
-          if (data && !error) foundUser = data;
-        } catch (e) { console.warn('Supabase fetch error:', e); }
-      }
+    try {
+        // 1. ล็อกอินผ่าน Supabase Auth
+        const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+        });
 
-      if (foundUser) {
-        currentUser = foundUser;
-        localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
-        updateUserUI();
-        showToast("เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ " + (currentUser.full_name || ''), "success");
-        switchView('dashboard');
-      } else {
-        // Create auto-user for easy test
-        const newUser = {
-          id: 'usr-' + Date.now(),
-          email: email,
-          full_name: email.split('@')[0],
-          role: email.includes('admin') ? 'admin' : 'customer',
-          avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-          phone: '081-000-0000',
-          address: 'ที่อยู่เริ่มต้น'
+        if (authError) throw authError;
+
+        // 2. ดึงข้อมูลผู้ใช้จากตาราง users[cite: 47]
+        const { data: userData, error: userError } = await supabaseClient
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+        currentUser = userData || {
+        id: authData.user.id,
+        email: email,
+        fullname: email.split('@')[0],
+        role: 'customer'
         };
-        dbMock.users.push(newUser);
-        dbMock.wallets.push({ id: 'w-' + Date.now(), user_id: newUser.id, balance: 100.00 });
-        saveDbMockToStorage();
 
-        currentUser = newUser;
         localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
         updateUserUI();
         showToast("เข้าสู่ระบบสำเร็จ!", "success");
         switchView('dashboard');
-      }
+    } catch (err) {
+        showToast("เข้าสู่ระบบไม่สำเร็จ: " + err.message, "error");
     }
-
-    async function handleRegister(event) {
-      event.preventDefault();
-      const name = document.getElementById('reg-fullname').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const pass = document.getElementById('reg-password').value;
-
-      const newUser = {
-        id: 'usr-' + Date.now(),
-        email: email,
-        full_name: name,
-        role: 'customer',
-        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-        phone: '',
-        address: ''
-      };
-
-      dbMock.users.push(newUser);
-      dbMock.wallets.push({ id: 'w-' + Date.now(), user_id: newUser.id, balance: 50.00 }); // Bonus 50 coins
-      saveDbMockToStorage();
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('users').insert([newUser]);
-          await supabaseClient.from('wallets').insert([{ user_id: newUser.id, balance: 50.00 }]);
-        } catch (e) { console.warn(e); }
-      }
-
-      currentUser = newUser;
-      localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
-      updateUserUI();
-      showToast("ลงทะเบียนสำเร็จ! ได้รับโบนัสต้อนรับ 50 Coins", "success");
-      switchView('dashboard');
     }
 
     function handleLogout() {
-      currentUser = null;
-      localStorage.removeItem('pq_logged_user');
-      updateUserUI();
-      showToast("ออกจากระบบเรียบร้อยแล้ว", "info");
-      switchView('landing');
+    if (supabaseClient) supabaseClient.auth.signOut();
+    currentUser = null;
+    localStorage.removeItem('pq_logged_user');
+    updateUserUI();
+    showToast("ออกจากระบบเรียบร้อยแล้ว", "info");
+    switchView('landing');
     }
 
-    // --- PROFILE MODAL ---
-    function openProfileModal() {
-      if (!currentUser) return;
-      document.getElementById('edit-profile-fullname').value = currentUser.full_name || '';
-      document.getElementById('edit-profile-phone').value = currentUser.phone || '';
-      document.getElementById('edit-profile-address').value = currentUser.address || '';
-      if (currentUser.avatar_url) {
-        document.getElementById('profile-avatar-preview').src = currentUser.avatar_url;
-      }
-      document.getElementById('profile-modal').classList.remove('hidden');
-    }
+    // --- FETCH QUEUES & ORDERS (FROM SUPABASE) ---
+    async function fetchQueues() {
+    const container = document.getElementById('queue-cards-container');
+    if (!container) return;
 
-    function closeProfileModal() {
-      document.getElementById('profile-modal').classList.add('hidden');
-    }
-
-    function handleAvatarFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('profile-avatar-preview').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    async function handleSaveProfile(event) {
-      event.preventDefault();
-      if (!currentUser) return;
-
-      const newName = document.getElementById('edit-profile-fullname').value.trim();
-      const newPhone = document.getElementById('edit-profile-phone').value.trim();
-      const newAddress = document.getElementById('edit-profile-address').value.trim();
-      const avatarPreview = document.getElementById('profile-avatar-preview').src;
-
-      currentUser.full_name = newName;
-      currentUser.phone = newPhone;
-      currentUser.address = newAddress;
-      currentUser.avatar_url = avatarPreview;
-
-      const userIdx = dbMock.users.findIndex(u => u.id === currentUser.id);
-      if (userIdx !== -1) {
-        dbMock.users[userIdx] = { ...currentUser };
-        saveDbMockToStorage();
-      }
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('users').update({
-            full_name: newName,
-            phone: newPhone,
-            address: newAddress,
-            avatar_url: avatarPreview
-          }).eq('id', currentUser.id);
-        } catch (e) { console.warn(e); }
-      }
-
-      localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
-      updateUserUI();
-      closeProfileModal();
-      showToast("อัปเดตข้อมูลโปรไฟล์เรียบร้อยแล้ว!", "success");
-    }
-
-    // --- ORDERING & FILE PROCESSING ---
-    function handleStartPrinting() {
-      if (!currentUser) {
-        showToast("กรุณาเข้าสู่ระบบก่อนทำการสั่งพิมพ์เอกสาร", "warning");
-        switchView('auth');
-      } else {
-        switchView('dashboard');
-      }
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      selectedFileObj = file;
-      document.getElementById('upload-placeholder').classList.add('hidden');
-      const details = document.getElementById('file-details');
-      details.classList.remove('hidden');
-      document.getElementById('file-info-name').textContent = file.name;
-      document.getElementById('file-info-size').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-
-      // Auto count pages if PDF
-      if (file.type === 'application/pdf') {
-        const fileReader = new FileReader();
-        fileReader.onload = function() {
-          const typedarray = new Uint8Array(this.result);
-          if (window.pdfjsLib) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-            pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-              detectedPageCount = pdf.numPages;
-              document.getElementById('total-pages-display').textContent = detectedPageCount + ' หน้า';
-              document.getElementById('printed-pages-input').value = detectedPageCount;
-              calculatePrice();
-              showToast(`ตรวจพบเอกสาร PDF จำนวน ${detectedPageCount} หน้าอัตโนมัติ`, "success");
-            }).catch(() => {
-              detectedPageCount = 1;
-              document.getElementById('total-pages-display').textContent = '1 หน้า';
-              calculatePrice();
-            });
-          }
-        };
-        fileReader.readAsArrayBuffer(file);
-      } else {
-        detectedPageCount = 1;
-        document.getElementById('total-pages-display').textContent = '1 หน้า';
-        document.getElementById('printed-pages-input').value = 1;
-        calculatePrice();
-      }
-    }
-
-    function calculatePrice() {
-      const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
-      const paperSize = document.getElementById('paper-size').value;
-      const paperWeightElem = document.getElementById('paper-weight');
-      const weightPrice = parseFloat(paperWeightElem.options[paperWeightElem.selectedIndex].getAttribute('data-price') || 0);
-
-      const colorType = document.getElementById('color-type').value;
-      const duplexType = document.getElementById('duplex-type').value;
-      const copies = parseInt(document.getElementById('copies').value) || 1;
-
-      const bindingElem = document.getElementById('binding-option');
-      const bindingFee = parseFloat(bindingElem.options[bindingElem.selectedIndex].getAttribute('data-price') || 0);
-
-      let pageBaseCost = (colorType === 'color') ? 5.00 : 1.00;
-      if (paperSize === 'A3') pageBaseCost += 2.00;
-      pageBaseCost += weightPrice;
-      if (duplexType === 'duplex') pageBaseCost += 0.50;
-
-      const printSubtotal = pages * pageBaseCost * copies;
-      const totalCost = printSubtotal + bindingFee;
-
-      document.getElementById('total-price').textContent = totalCost.toFixed(2) + ' ฿';
-      return totalCost;
-    }
-
-    async function handleOrderSubmit(event) {
-      event.preventDefault();
-      if (!currentUser) {
-        showToast("กรุณาเข้าสู่ระบบก่อนทำรายการ", "warning");
-        switchView('auth');
+    if (!currentUser || !supabaseClient) {
+        container.innerHTML = `<p class="py-12 text-center text-slate-400">กรุณาเข้าสู่ระบบเพื่อดูคิวของคุณ</p>`;
         return;
-      }
-      if (!selectedFileObj) {
-        showToast("กรุณาเลือกไฟล์เอกสารที่ต้องการสั่งพิมพ์", "warning");
+    }
+
+    try {
+        // ดึงข้อมูลจากตาราง orders ของ Supabase[cite: 42]
+        const { data: orders, error } = await supabaseClient
+        .from('orders')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!orders || orders.length === 0) {
+        container.innerHTML = `<p class="py-12 text-center text-slate-400">ยังไม่มีรายการสั่งพิมพ์</p>`;
         return;
-      }
-
-      const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
-      const paperSize = document.getElementById('paper-size').value;
-      const paperWeight = document.getElementById('paper-weight').value;
-      const colorType = document.getElementById('color-type').value;
-      const duplexType = document.getElementById('duplex-type').value;
-      const copies = parseInt(document.getElementById('copies').value) || 1;
-      const bindingElem = document.getElementById('binding-option');
-      const bindingName = bindingElem.options[bindingElem.selectedIndex].text;
-      const bindingFee = parseFloat(bindingElem.options[bindingElem.selectedIndex].getAttribute('data-price') || 0);
-
-      const totalCost = calculatePrice();
-
-      const newOrder = {
-        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
-        user_id: currentUser.id,
-        user_name: currentUser.full_name || currentUser.email,
-        file_name: selectedFileObj.name,
-        paper_size: paperSize,
-        paper_weight: paperWeight,
-        color_type: colorType,
-        duplex_type: duplexType,
-        pages: pages,
-        copies: copies,
-        binding_name: bindingName,
-        binding_fee: bindingFee,
-        print_subtotal: totalCost - bindingFee,
-        total_amount: totalCost,
-        grand_total: totalCost,
-        status: 'pending_review',
-        delivery_method: 'pickup',
-        payment_method: 'promptpay',
-        recipient_name: currentUser.full_name || '',
-        recipient_phone: currentUser.phone || '',
-        recipient_address: currentUser.address || '',
-        slip_url: '',
-        created_at: new Date().toISOString()
-      };
-
-      dbMock.orders.unshift(newOrder);
-      saveDbMockToStorage();
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('orders').insert([newOrder]);
-        } catch (e) { console.warn('Supabase order insert warning:', e); }
-      }
-
-      currentCheckoutOrder = newOrder;
-      setupCheckoutPage();
-      switchView('checkout');
-    }
-
-    // --- CHECKOUT & PAYMENT ---
-    function setupCheckoutPage() {
-      if (!currentCheckoutOrder) return;
-      appliedDiscountAmount = 0;
-
-      document.getElementById('checkout-order-id').textContent = '#' + currentCheckoutOrder.id;
-      document.getElementById('checkout-doc-name').textContent = currentCheckoutOrder.file_name;
-      document.getElementById('checkout-paper-spec').textContent = `${currentCheckoutOrder.paper_size} (${currentCheckoutOrder.paper_weight}) / ${currentCheckoutOrder.color_type === 'color' ? 'พิมพ์สี' : 'ขาวดำ'}`;
-      document.getElementById('checkout-duplex-spec').textContent = currentCheckoutOrder.duplex_type === 'duplex' ? 'พิมพ์หน้า-หลัง' : 'หน้าเดียว';
-      document.getElementById('checkout-pages-spec').textContent = `${currentCheckoutOrder.pages} หน้า x ${currentCheckoutOrder.copies} ชุด`;
-      document.getElementById('checkout-binding-spec').textContent = currentCheckoutOrder.binding_name;
-
-      document.getElementById('checkout-subtotal').textContent = (currentCheckoutOrder.total_amount - currentCheckoutOrder.binding_fee).toFixed(2) + ' ฿';
-      document.getElementById('checkout-binding-fee').textContent = currentCheckoutOrder.binding_fee.toFixed(2) + ' ฿';
-
-      document.getElementById('recipient-name').value = currentUser ? currentUser.full_name || '' : '';
-      document.getElementById('recipient-phone').value = currentUser ? currentUser.phone || '' : '';
-      document.getElementById('recipient-address').value = currentUser ? currentUser.address || '' : '';
-
-      updateCheckoutTotals();
-    }
-
-    function toggleDeliveryForm() {
-      const method = document.querySelector('input[name="delivery_method"]:checked').value;
-      const addrForm = document.getElementById('delivery-address-form');
-      if (method === 'pickup') {
-        addrForm.classList.add('hidden');
-      } else {
-        addrForm.classList.remove('hidden');
-      }
-      updateCheckoutTotals();
-    }
-
-    function togglePaymentDetails() {
-      const method = document.querySelector('input[name="payment_method"]:checked').value;
-      const promptpayBox = document.getElementById('payment-promptpay-box');
-      const walletBox = document.getElementById('payment-wallet-box');
-
-      if (method === 'promptpay') {
-        promptpayBox.classList.remove('hidden');
-        walletBox.classList.add('hidden');
-      } else if (method === 'wallet') {
-        promptpayBox.classList.add('hidden');
-        walletBox.classList.remove('hidden');
-        const userWal = getUserWallet();
-        document.getElementById('checkout-wallet-avail').textContent = userWal.balance.toFixed(2) + ' Coin';
-      } else {
-        promptpayBox.classList.add('hidden');
-        walletBox.classList.add('hidden');
-      }
-    }
-
-    function applyPromoCode() {
-      const input = document.getElementById('promo-code-input').value.trim().toUpperCase();
-      const statusMsg = document.getElementById('promo-status-msg');
-      statusMsg.classList.remove('hidden');
-
-      if (promoCodesDB[input]) {
-        const promo = promoCodesDB[input];
-        if (currentCheckoutOrder.total_amount >= promo.minCost) {
-          appliedDiscountAmount = (currentCheckoutOrder.total_amount * promo.percent) / 100;
-          statusMsg.className = 'text-[10px] mt-1 font-medium text-emerald-600 dark:text-emerald-400';
-          statusMsg.textContent = `✓ ใช้โค้ดส่วนลด ${promo.percent}% สำเร็จ (ประหยัด ${appliedDiscountAmount.toFixed(2)} ฿)`;
-          showToast("ใช้โค้ดส่วนลดสำเร็จ!", "success");
-        } else {
-          statusMsg.className = 'text-[10px] mt-1 font-medium text-rose-600';
-          statusMsg.textContent = `❌ โค้ดนี้ใช้ได้เมื่อมียอดขั้นต่ำ ${promo.minCost} ฿`;
         }
-      } else {
-        statusMsg.className = 'text-[10px] mt-1 font-medium text-rose-600';
-        statusMsg.textContent = '❌ โค้ดส่วนลดไม่ถูกต้องหรือหมดอายุแล้ว';
-      }
-      updateCheckoutTotals();
-    }
 
-    function updateCheckoutTotals() {
-      if (!currentCheckoutOrder) return;
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
-      let deliveryFee = 0;
-      if (deliveryMethod === 'store_staff') deliveryFee = 50.00;
-      else if (deliveryMethod === 'express') deliveryFee = 40.00;
-
-      document.getElementById('checkout-delivery-fee').textContent = deliveryFee.toFixed(2) + ' ฿';
-
-      const discountRow = document.getElementById('checkout-discount-row');
-      if (appliedDiscountAmount > 0) {
-        discountRow.classList.remove('hidden');
-        document.getElementById('checkout-discount-amount').textContent = '-' + appliedDiscountAmount.toFixed(2) + ' ฿';
-      } else {
-        discountRow.classList.add('hidden');
-      }
-
-      const grandTotal = Math.max(0, currentCheckoutOrder.total_amount + deliveryFee - appliedDiscountAmount);
-      document.getElementById('checkout-grand-total').textContent = grandTotal.toFixed(2) + ' ฿';
-      document.getElementById('checkout-wallet-cost').textContent = grandTotal.toFixed(2) + ' Coin';
-
-      const userWal = getUserWallet();
-      document.getElementById('checkout-wallet-bal').textContent = userWal.balance.toFixed(2);
-
-      const warning = document.getElementById('wallet-warning');
-      const confirmBtn = document.getElementById('btn-confirm-pay');
-      const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-
-      if (paymentMethod === 'wallet' && userWal.balance < grandTotal) {
-        warning.classList.remove('hidden');
-        confirmBtn.disabled = true;
-        confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
-      } else {
-        warning.classList.add('hidden');
-        confirmBtn.disabled = false;
-        confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
-    }
-
-    async function handleConfirmPayment(event) {
-      event.preventDefault();
-      if (!currentCheckoutOrder) return;
-
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
-      const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-      let deliveryFee = 0;
-      if (deliveryMethod === 'store_staff') deliveryFee = 50.00;
-      else if (deliveryMethod === 'express') deliveryFee = 40.00;
-
-      const grandTotal = Math.max(0, currentCheckoutOrder.total_amount + deliveryFee - appliedDiscountAmount);
-
-      currentCheckoutOrder.delivery_method = deliveryMethod;
-      currentCheckoutOrder.payment_method = paymentMethod;
-      currentCheckoutOrder.grand_total = grandTotal;
-
-      if (deliveryMethod !== 'pickup') {
-        currentCheckoutOrder.recipient_name = document.getElementById('recipient-name').value;
-        currentCheckoutOrder.recipient_phone = document.getElementById('recipient-phone').value;
-        currentCheckoutOrder.recipient_address = document.getElementById('recipient-address').value;
-      }
-
-      // Handle Slip preview simulation
-      const slipFile = document.getElementById('payment-slip').files[0];
-      if (paymentMethod === 'promptpay' && slipFile) {
-        currentCheckoutOrder.slip_url = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80';
-      }
-
-      // Process payment method logic
-      if (paymentMethod === 'wallet') {
-        const wal = getUserWallet();
-        if (wal.balance < grandTotal) {
-          showToast("ยอดเงิน Coins ไม่เพียงพอ กรุณาเติมเงินก่อน", "error");
-          return;
-        }
-        wal.balance -= grandTotal;
-        dbMock.wallet_transactions.unshift({
-          id: 'tx-' + Date.now(),
-          wallet_id: wal.id,
-          order_id: currentCheckoutOrder.id,
-          transaction_type: 'payment',
-          amount: grandTotal,
-          description: `ชำระค่าพิมพ์เอกสาร #${currentCheckoutOrder.id}`,
-          transaction_date: new Date().toISOString()
-        });
-        currentCheckoutOrder.status = 'queued'; // Paid -> Into Queue directly
-      } else if (paymentMethod === 'promptpay') {
-        currentCheckoutOrder.status = 'pending_review'; // Pending Admin Slip Verification
-      } else {
-        currentCheckoutOrder.status = 'queued'; // COD -> Directly into queue
-      }
-
-      // Record linked tables
-      dbMock.deliveries.push({
-        id: 'del-' + Date.now(),
-        order_id: currentCheckoutOrder.id,
-        delivery_method: deliveryMethod,
-        recipient_name: currentCheckoutOrder.recipient_name,
-        recipient_phone: currentCheckoutOrder.recipient_phone,
-        recipient_address: currentCheckoutOrder.recipient_address,
-        tracking_number: 'TRACK-' + Math.floor(100000 + Math.random() * 900000),
-        delivery_status: 'preparing'
-      });
-
-      dbMock.payments.push({
-        id: 'pay-' + Date.now(),
-        order_id: currentCheckoutOrder.id,
-        payment_method: paymentMethod,
-        amount: grandTotal,
-        payment_status: paymentMethod === 'wallet' ? 'completed' : 'pending',
-        slip_url: currentCheckoutOrder.slip_url
-      });
-
-      dbMock.print_jobs.push({
-        id: 'job-' + Date.now(),
-        order_id: currentCheckoutOrder.id,
-        pages_printed: 0,
-        print_status: 'in_queue'
-      });
-
-      saveDbMockToStorage();
-
-      // Sync Supabase if available
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('orders').upsert([currentCheckoutOrder]);
-          await supabaseClient.from('payments').insert([dbMock.payments[dbMock.payments.length - 1]]);
-          await supabaseClient.from('deliveries').insert([dbMock.deliveries[dbMock.deliveries.length - 1]]);
-        } catch (e) { console.warn('Supabase sync warning:', e); }
-      }
-
-      showCustomModal("สั่งซื้อและยืนยันคิวพิมพ์สำเร็จ!", `รายการออเดอร์ #${currentCheckoutOrder.id} ได้รับการบันทึกเข้าระบบเรียบร้อยแล้ว`, "success", false, () => {
-        switchView('dashboard');
-      });
-    }
-
-    // --- WALLET MANAGEMENT ---
-    function getUserWallet() {
-      if (!currentUser) return { id: 'w-guest', balance: 0.00 };
-      let wal = dbMock.wallets.find(w => w.user_id === currentUser.id);
-      if (!wal) {
-        wal = { id: 'w-' + Date.now(), user_id: currentUser.id, balance: 100.00 };
-        dbMock.wallets.push(wal);
-        saveDbMockToStorage();
-      }
-      return wal;
-    }
-
-    function updateWalletBadgeDisplay() {
-      const wal = getUserWallet();
-      const badge = document.getElementById('user-wallet-balance');
-      if (badge) badge.textContent = wal.balance.toFixed(2);
-    }
-
-    function selectTopupAmount(amount) {
-      document.getElementById('topup-amount-input').value = amount;
-    }
-
-    function handleTopupSubmit() {
-      if (!currentUser) {
-        showToast("กรุณาเข้าสู่ระบบก่อนเติมเงิน", "warning");
-        switchView('auth');
-        return;
-      }
-      const amount = parseFloat(document.getElementById('topup-amount-input').value);
-      if (isNaN(amount) || amount <= 0) {
-        showToast("กรุณาระบุจำนวนเงินให้ถูกต้อง", "error");
-        return;
-      }
-
-      const wal = getUserWallet();
-      wal.balance += amount;
-
-      dbMock.wallet_transactions.unshift({
-        id: 'tx-' + Date.now(),
-        wallet_id: wal.id,
-        order_id: null,
-        transaction_type: 'deposit',
-        amount: amount,
-        description: 'เติมเงินผ่าน PromptPay QR Code',
-        transaction_date: new Date().toISOString()
-      });
-
-      saveDbMockToStorage();
-      updateWalletBadgeDisplay();
-      loadWalletData();
-      showToast(`เติมเงินสำเร็จ +${amount.toFixed(2)} Coins เข้ากระเป๋าแล้ว!`, "success");
-    }
-
-    function loadWalletData() {
-      const wal = getUserWallet();
-      document.getElementById('wallet-page-balance').textContent = wal.balance.toFixed(2);
-
-      const filter = document.getElementById('wallet-tx-filter').value;
-      let txs = dbMock.wallet_transactions.filter(t => t.wallet_id === wal.id);
-      if (filter !== 'all') txs = txs.filter(t => t.transaction_type === filter);
-
-      const tbody = document.getElementById('wallet-tx-tbody');
-      if (txs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">ยังไม่มีประวัติการทำรายการ</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = txs.map(t => {
-        const isDep = t.transaction_type === 'deposit';
-        return `
-          <tr>
-            <td class="py-3 px-2 text-slate-500">${new Date(t.transaction_date).toLocaleString('th-TH')}</td>
-            <td class="py-3 px-2 font-bold ${isDep ? 'text-emerald-600' : 'text-rose-500'}">${isDep ? 'เติมเงิน (+)' : 'ชำระเงิน (-)'}</td>
-            <td class="py-3 px-2 text-slate-800 dark:text-slate-200">${t.description}</td>
-            <td class="py-3 px-2 text-right font-bold ${isDep ? 'text-emerald-600' : 'text-rose-500'}">${isDep ? '+' : '-'}${t.amount.toFixed(2)}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // --- DASHBOARD QUEUE TRACKING ---
-    function fetchQueues() {
-      const filter = document.getElementById('user-queue-filter').value;
-      let userOrders = currentUser ? dbMock.orders.filter(o => o.user_id === currentUser.id) : dbMock.orders;
-
-      if (filter !== 'all') {
-        userOrders = userOrders.filter(o => o.status === filter);
-      }
-
-      const container = document.getElementById('queue-cards-container');
-      if (userOrders.length === 0) {
-        container.innerHTML = `
-          <div class="p-12 text-center text-slate-400 space-y-2">
-            <i data-lucide="inbox" class="w-10 h-10 mx-auto opacity-50"></i>
-            <p>ยังไม่มีรายการคิวสั่งพิมพ์ของคุณ</p>
-          </div>
-        `;
-        if (window.lucide) lucide.createIcons();
-        return;
-      }
-
-      const statusBadges = {
-        'pending_review': '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">รอชำระ/รอตรวจสลิป</span>',
-        'queued': '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">เข้าคิวรอพิมพ์</span>',
-        'printing': '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">กำลังพิมพ์เอกสาร</span>',
-        'delivering': '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">กำลังจัดส่ง</span>',
-        'completed': '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">เสร็จสิ้น</span>'
-      };
-
-      container.innerHTML = userOrders.map(o => `
-        <div class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-sm text-slate-900 dark:text-white">#${o.id}</span>
-              ${statusBadges[o.status] || ''}
+        container.innerHTML = orders.map(ord => `
+        <div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+            <div>
+            <span class="text-xs font-bold text-blue-600">คิวที่ #${ord.queue_number || 'N/A'}</span>
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">ยอดรวม: ${ord.total_amount} ฿</p>
+            <span class="text-[10px] text-slate-400">${new Date(ord.created_at).toLocaleString('th-TH')}</span>
             </div>
-            <p class="text-xs font-semibold text-blue-600 dark:text-blue-400">${o.file_name}</p>
-            <p class="text-[11px] text-slate-500">${o.paper_size} (${o.paper_weight}) • ${o.pages} หน้า x ${o.copies} ชุด • ${o.binding_name}</p>
-          </div>
-          <div class="flex sm:flex-col items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200 dark:border-slate-700">
-            <span class="text-base font-extrabold text-slate-900 dark:text-white">${(o.grand_total || o.total_amount).toFixed(2)} ฿</span>
-            <button onclick="openOrderDetailModal('${o.id}')" class="px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition">
-              ดูรายละเอียด
-            </button>
-          </div>
-        </div>
-      `).join('');
-
-      if (window.lucide) lucide.createIcons();
-    }
-
-    // --- ORDER DETAIL MODAL ---
-    function openOrderDetailModal(orderId) {
-      const order = dbMock.orders.find(o => o.id === orderId);
-      if (!order) return;
-
-      const content = document.getElementById('order-detail-content');
-      content.innerHTML = `
-        <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-700">
-          <div class="flex justify-between font-bold text-slate-900 dark:text-white"><span>รหัสออเดอร์:</span> <span>#${order.id}</span></div>
-          <div class="flex justify-between text-slate-600 dark:text-slate-300"><span>ชื่อเอกสาร:</span> <span class="font-semibold text-blue-600 dark:text-blue-400">${order.file_name}</span></div>
-          <div class="flex justify-between text-slate-600 dark:text-slate-300"><span>สเปกกระดาษ:</span> <span>${order.paper_size} (${order.paper_weight}) / ${order.color_type === 'color' ? 'พิมพ์สี' : 'ขาว-ดำ'}</span></div>
-          <div class="flex justify-between text-slate-600 dark:text-slate-300"><span>จำนวน:</span> <span>${order.pages} หน้า x ${order.copies} ชุด</span></div>
-          <div class="flex justify-between text-slate-600 dark:text-slate-300"><span>การเข้าเล่ม:</span> <span>${order.binding_name || 'ไม่เข้าเล่ม'}</span></div>
-          <div class="flex justify-between text-slate-600 dark:text-slate-300"><span>รูปแบบจัดส่ง:</span> <span>${order.delivery_method === 'pickup' ? 'รับเองที่ร้าน' : order.delivery_method === 'store_staff' ? 'พนักงานร้านจัดส่ง' : 'ส่งพัสดุด่วน'}</span></div>
-          ${order.recipient_address ? `
-            <div class="pt-2 border-t border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
-              <span class="font-bold block text-slate-800 dark:text-slate-200">ที่อยู่จัดส่ง:</span>
-              <p class="text-[11px] mt-0.5">${order.recipient_name} (${order.recipient_phone}) - ${order.recipient_address}</p>
-            </div>
-          ` : ''}
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between font-extrabold text-sm text-slate-900 dark:text-white">
-            <span>ยอดสุทธิ:</span> <span class="text-blue-600 dark:text-blue-400">${(order.grand_total || order.total_amount).toFixed(2)} ฿</span>
-          </div>
-        </div>
-      `;
-      document.getElementById('order-detail-modal').classList.remove('hidden');
-    }
-
-    function closeOrderDetailModal() {
-      document.getElementById('order-detail-modal').classList.add('hidden');
-    }
-
-    // --- SLIP VERIFICATION MODAL ---
-    function openSlipModal(orderId) {
-      currentReviewingOrderId = orderId;
-      const order = dbMock.orders.find(o => o.id === orderId);
-      const img = document.getElementById('slip-image-preview');
-      if (order && order.slip_url) img.src = order.slip_url;
-      else img.src = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80';
-
-      document.getElementById('slip-modal').classList.remove('hidden');
-    }
-
-    function closeSlipModal() {
-      document.getElementById('slip-modal').classList.add('hidden');
-      currentReviewingOrderId = null;
-    }
-
-    async function verifyPaymentStatus(approved) {
-      if (!currentReviewingOrderId) return;
-      const order = dbMock.orders.find(o => o.id === currentReviewingOrderId);
-      if (order) {
-        order.status = approved ? 'queued' : 'pending_review';
-        saveDbMockToStorage();
-
-        if (supabaseClient) {
-          try { await supabaseClient.from('orders').update({ status: order.status }).eq('id', order.id); } catch (e) { console.warn(e); }
-        }
-
-        showToast(approved ? "อนุมัติการชำระเงินเรียบร้อยแล้ว!" : "ปฏิเสธสลิปแล้ว", approved ? "success" : "warning");
-        closeSlipModal();
-        loadAdminData();
-        fetchQueues();
-      }
-    }
-
-    // --- ADMIN BACKOFFICE ---
-    function loadAdminData() {
-      // Calculate KPI metrics
-      const totalRev = dbMock.orders.reduce((acc, o) => acc + (o.grand_total || o.total_amount || 0), 0);
-      document.getElementById('admin-stat-revenue').textContent = totalRev.toFixed(2) + ' ฿';
-      document.getElementById('admin-stat-orders').textContent = dbMock.orders.length + ' รายการ';
-      document.getElementById('admin-stat-pending').textContent = dbMock.orders.filter(o => o.status === 'pending_review' || o.status === 'queued').length + ' คิว';
-      document.getElementById('admin-stat-users').textContent = dbMock.users.length + ' คน';
-
-      filterAdminOrders();
-      renderAdminUsers();
-    }
-
-    function filterAdminOrders() {
-      const search = document.getElementById('admin-search-input').value.toLowerCase();
-      const statusFilter = document.getElementById('admin-status-filter').value;
-
-      let filtered = dbMock.orders;
-      if (statusFilter !== 'all') filtered = filtered.filter(o => o.status === statusFilter);
-      if (search) filtered = filtered.filter(o => o.id.toLowerCase().includes(search) || o.user_name.toLowerCase().includes(search) || o.file_name.toLowerCase().includes(search));
-
-      const tbody = document.getElementById('admin-orders-tbody');
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">ไม่พบคิวรายการสั่งพิมพ์</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(o => `
-        <tr>
-          <td class="py-3 px-3 font-bold text-slate-900 dark:text-white">#${o.id}</td>
-          <td class="py-3 px-3 text-slate-700 dark:text-slate-300">${o.user_name}</td>
-          <td class="py-3 px-3 font-semibold text-blue-600 dark:text-blue-400">${o.file_name}</td>
-          <td class="py-3 px-3 text-slate-500">${o.paper_size} (${o.paper_weight}) / ${o.pages}หน้า x ${o.copies}ชุด</td>
-          <td class="py-3 px-3 font-extrabold text-slate-900 dark:text-white">${(o.grand_total || o.total_amount).toFixed(2)} ฿</td>
-          <td class="py-3 px-3">
-            <select onchange="updateOrderStatus('${o.id}', this.value)" class="px-2 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold">
-              <option value="pending_review" ${o.status === 'pending_review' ? 'selected' : ''}>รอชำระ/รอสลิป</option>
-              <option value="queued" ${o.status === 'queued' ? 'selected' : ''}>เข้าคิวแล้ว</option>
-              <option value="printing" ${o.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
-              <option value="delivering" ${o.status === 'delivering' ? 'selected' : ''}>กำลังจัดส่ง</option>
-              <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>เสร็จสิ้น</option>
-            </select>
-          </td>
-          <td class="py-3 px-3 text-center">
-            ${o.payment_method === 'promptpay' ? `<button onclick="openSlipModal('${o.id}')" class="px-2.5 py-1 bg-amber-500 text-white rounded-lg text-xs font-semibold hover:bg-amber-600 transition">ตรวจสลิป</button>` : `<button onclick="openOrderDetailModal('${o.id}')" class="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold">ดูข้อมูล</button>`}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    async function updateOrderStatus(orderId, newStatus) {
-      const order = dbMock.orders.find(o => o.id === orderId);
-      if (order) {
-        order.status = newStatus;
-        saveDbMockToStorage();
-
-        if (supabaseClient) {
-          try { await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId); } catch (e) { console.warn(e); }
-        }
-        showToast(`อัปเดตสถานะคิว #${orderId} เป็น '${newStatus}' สำเร็จ`, "success");
-      }
-    }
-
-    function renderAdminUsers() {
-      const tbody = document.getElementById('admin-users-tbody');
-      tbody.innerHTML = dbMock.users.map(u => `
-        <tr>
-          <td class="py-3 px-3 flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-            <img src="${u.avatar_url}" class="w-6 h-6 rounded-full object-cover border">
-            ${u.full_name || 'สมาชิก'}
-          </td>
-          <td class="py-3 px-3 text-slate-500">${u.email}</td>
-          <td class="py-3 px-3 text-slate-500">${u.phone || '-'}</td>
-          <td class="py-3 px-3">
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
-              ${u.role.toUpperCase()}
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+            ${ord.status || 'pending'}
             </span>
-          </td>
-          <td class="py-3 px-3 text-center">
-            <button onclick="updateUserRole('${u.id}', '${u.role === 'admin' ? 'customer' : 'admin'}')" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-              สลับเป็น ${u.role === 'admin' ? 'Customer' : 'Admin'}
-            </button>
-          </td>
-        </tr>
-      `).join('');
+        </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = `<p class="py-12 text-center text-rose-500">ไม่สามารถโหลดข้อมูลคิวได้: ${err.message}</p>`;
+    }
     }
 
-    async function updateUserRole(userId, newRole) {
-      const u = dbMock.users.find(x => x.id === userId);
-      if (u) {
-        u.role = newRole;
-        saveDbMockToStorage();
+    // --- WALLET MANAGEMENT (FROM SUPABASE) ---
+    async function loadWalletData() {
+    if (!currentUser || !supabaseClient) return;
 
-        if (supabaseClient) {
-          try { await supabaseClient.from('users').update({ role: newRole }).eq('id', userId); } catch (e) { console.warn(e); }
-        }
+    try {
+        // ดึงยอดเงินจากตาราง wallets[cite: 49]
+        const { data: wallet } = await supabaseClient
+        .from('wallets')
+        .select('balance')
+        .eq('user_id', currentUser.id)
+        .single();
 
-        if (currentUser && currentUser.id === userId) {
-          currentUser.role = newRole;
-          localStorage.setItem('pq_logged_user', JSON.stringify(currentUser));
-          updateUserUI();
-        }
-
-        showToast(`สลับสิทธิ์การใช้งานสำเร็จ`, "success");
-        loadAdminData();
-      }
+        const bal = wallet ? wallet.balance : 0.00;
+        const balEl = document.getElementById('user-wallet-balance');
+        const pageBalEl = document.getElementById('wallet-page-balance');
+        
+        if (balEl) balEl.textContent = Number(bal).toFixed(2);
+        if (pageBalEl) pageBalEl.textContent = Number(bal).toFixed(2);
+    } catch (err) {
+        console.warn("Wallet fetch error:", err);
+    }
     }
 
-    // --- APPLICATION INITIALIZATION ---
-    window.addEventListener('DOMContentLoaded', () => {
-      // 1. Theme
-      const savedTheme = localStorage.getItem('pq_theme');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        const icon = document.getElementById('theme-icon');
-        const text = document.getElementById('theme-text');
-        if (icon) icon.setAttribute('data-lucide', 'sun');
-        if (text) text.textContent = 'ธีมสว่าง';
-      }
+    // --- HELPER UI FUNCTIONS ---
+    function checkAuthSession() {
+    const savedUser = localStorage.getItem('pq_logged_user');
+    if (savedUser) {
+        try { currentUser = JSON.parse(savedUser); } catch (e) { currentUser = null; }
+    }
+    updateUserUI();
+    }
 
-      // 2. Load DB mock & Supabase
-      loadDbMockFromStorage();
-      initSupabaseFromStorage();
+    function updateUserUI() {
+    const guestBtns = document.getElementById('guest-buttons');
+    const userMenu = document.getElementById('user-profile-menu');
+    const nameEl = document.getElementById('user-display-name');
+    const walletBadge = document.getElementById('wallet-badge');
 
-      // 3. Check Session
-      checkAuthSession();
+    if (currentUser) {
+        if (guestBtns) guestBtns.classList.add('hidden');
+        if (userMenu) userMenu.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = currentUser.fullname || currentUser.email; // ใช้ fullname[cite: 47]
+        if (walletBadge) walletBadge.classList.remove('hidden');
+        loadWalletData();
+    } else {
+        if (guestBtns) guestBtns.classList.remove('hidden');
+        if (userMenu) userMenu.classList.add('hidden');
+        if (walletBadge) walletBadge.classList.add('hidden');
+    }
+    }
 
-      // 4. Render Lucide Icons
-      if (window.lucide) lucide.createIcons();
-
-      // 5. Hide Splash Fail-safe
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-          splash.classList.add('opacity-0');
-          setTimeout(() => splash.remove(), 500);
-        }
-      }, 600);
+    function switchView(viewName) {
+    const views = ['landing', 'auth', 'dashboard', 'checkout', 'wallet', 'admin'];
+    views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) el.classList.add('hidden');
     });
+
+    const target = document.getElementById('view-' + viewName);
+    if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (viewName === 'dashboard') fetchQueues();
+    if (viewName === 'wallet') loadWalletData();
+    }
+
+    function switchAuthTab(tab) {
+    const loginForm = document.getElementById('form-login');
+    const regForm = document.getElementById('form-register');
+    if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+    } else {
+        loginForm.classList.add('hidden');
+        regForm.classList.remove('hidden');
+    }
+    }
+
+    function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `p-3 rounded-xl text-xs font-bold text-white bg-blue-600 shadow-lg`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+    }
   </script>
 </body>
 </html>
