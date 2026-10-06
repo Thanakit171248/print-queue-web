@@ -53,7 +53,21 @@
       <p class="text-slate-500 dark:text-slate-400 text-sm max-w-xs mb-8">ระบบสั่งพิมพ์เอกสารและบริหารจัดการคิวดิจิทัล</p>
       <div class="flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50 px-4 py-2 rounded-full">
         <div class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></div>
-        กำลังเชื่อมต่อระบบงาน...
+        กำลังเตรียมความพร้อมระบบ...
+      </div>
+    </div>
+  </div>
+
+  <!-- DB CONFIG PANEL (ซ่อนเป็นค่าเริ่มต้น เปิดได้เฉพาะ Admin) -->
+  <div id="config-panel" class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-3 hidden">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-medium">
+        <i data-lucide="settings" class="w-4 h-4"></i> ตั้งค่าการเชื่อมต่อ Supabase Database (เฉพาะแอดมิน)
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
+        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
+        <button onclick="saveAndInitSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-1.5 rounded-lg transition">บันทึก</button>
       </div>
     </div>
   </div>
@@ -74,6 +88,11 @@
       <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
         <button onclick="switchView('landing')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">หน้าแรก</button>
         <button onclick="switchView('dashboard')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">สั่งพิมพ์งาน / เช็คคิว</button>
+        
+        <!-- ปุ่ม DB Config ซ่อนสำหรับผู้ใช้ทั่วไป จะแสดงเฉพาะเวลา Admin ล็อกอิน -->
+        <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-600 hover:text-amber-700 dark:text-amber-400 transition text-xs font-semibold cursor-pointer">
+          ⚙️ DB Config
+        </button>
       </div>
 
       <div class="flex items-center gap-3">
@@ -93,10 +112,10 @@
         </div>
 
         <div id="user-profile-menu" class="hidden flex items-center gap-3">
-          <!-- เมนูจัดการสำหรับ Admin เท่านั้น -->
+          <!-- เมนูแอดมินสำหรับกดเข้าหลังบ้าน -->
           <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-2 bg-indigo-50 dark:bg-indigo-600/30 hover:bg-indigo-100 dark:hover:bg-indigo-600/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/40 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center gap-1.5">
             <i data-lucide="shield" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
-            <span>การจัดการระบบหลังบ้าน</span>
+            <span>จัดการข้อมูลลูกค้า</span>
           </button>
 
           <div class="text-right hidden sm:block">
@@ -324,7 +343,7 @@
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-2">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ระบบหลังบ้านผู้ดูแลระบบ (Admin)
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">หน้าต่างจัดการข้อมูลลูกค้า & คิวพิมพ์</h1>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">จัดการข้อมูลลูกค้า & คิวพิมพ์</h1>
         </div>
         <button onclick="loadAdminData()" class="self-start md:self-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer shadow-md">
           <i data-lucide="refresh-cw" class="w-4 h-4"></i> อัปเดตข้อมูลทั้งหมด
@@ -407,11 +426,9 @@
   </footer>
 
   <script>
-    /* ============================================================
-       1. กำหนดค่าเชื่อมต่อ Supabase ไว้ในซอร์สโค้ดฝั่งระบบ
-       ============================================================ */
-    const SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwaHV0c2VrZXVicXB1eHB1c3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNzY1NjgsImV4cCI6MjA1Njk1MjU2OH0.d3JgSlyr3iS-RlyrA27S0I31nO4a5o4Y7u21p3n4M'; // ใส่ Anon Key จริงของคุณตรงนี้
+    // ตั้งค่าเริ่มต้นของ Supabase
+    const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
+    const DEFAULT_SUPABASE_KEY = '';
 
     let supabaseClient = null;
     let currentUser = null;
@@ -422,7 +439,6 @@
         lucide.createIcons();
       }
 
-      // ปิด Splash Screen
       const splash = document.getElementById('splash-screen');
       if (splash) {
         setTimeout(() => {
@@ -431,11 +447,18 @@
         }, 800);
       }
 
-      // เชื่อมต่อฐานข้อมูลอัตโนมัติ
-      initSupabase(SUPABASE_URL, SUPABASE_KEY);
+      const savedUrl = localStorage.getItem('sp_url') || DEFAULT_SUPABASE_URL;
+      const savedKey = localStorage.getItem('sp_key') || DEFAULT_SUPABASE_KEY;
+
+      if (savedUrl) document.getElementById('supabase-url').value = savedUrl;
+      if (savedKey) document.getElementById('supabase-key').value = savedKey;
+
+      if (savedUrl && savedKey) {
+        initSupabase(savedUrl, savedKey);
+      }
     });
 
-    /* --- THEME CONTROLLER (ค่าเริ่มต้นเป็นสว่าง Light Mode) --- */
+    /* --- CONTROLLER (THEME & VIEW) --- */
     function initTheme() {
       const savedTheme = localStorage.getItem('app_theme') || 'light';
       applyTheme(savedTheme);
@@ -512,9 +535,30 @@
         : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer';
     }
 
+    /* --- DB CONFIG (เปิดได้เฉพาะ ADMIN) --- */
+    function toggleConfigPanel() {
+      if (!currentUser || currentUser.role !== 'admin') {
+        alert('ส่วนนี้เปิดใช้งานได้เฉพาะผู้ดูแลระบบเท่านั้น');
+        return;
+      }
+      document.getElementById('config-panel').classList.toggle('hidden');
+    }
+
+    function saveAndInitSupabase() {
+      const url = document.getElementById('supabase-url').value.trim();
+      const key = document.getElementById('supabase-key').value.trim();
+      if (!url || !key) return alert('กรุณากรอก URL และ Key ให้ครบถ้วน');
+
+      localStorage.setItem('sp_url', url);
+      localStorage.setItem('sp_key', key);
+      initSupabase(url, key);
+      alert('เชื่อมต่อ Supabase สำเร็จ!');
+      document.getElementById('config-panel').classList.add('hidden');
+    }
+
     function initSupabase(url, key) {
       try {
-        if (typeof supabase !== 'undefined' && url && key) {
+        if (typeof supabase !== 'undefined') {
           supabaseClient = supabase.createClient(url, key);
           const savedUser = localStorage.getItem('sp_user');
           if (savedUser) {
@@ -528,32 +572,39 @@
     }
 
     function updateUserUI() {
+      const adminDbBtn = document.getElementById('admin-db-config-btn');
+      const adminMenuBtn = document.getElementById('admin-menu-btn');
+      const roleBadge = document.getElementById('user-role-badge');
+
       if (currentUser) {
         document.getElementById('guest-buttons').classList.add('hidden');
         document.getElementById('user-profile-menu').classList.remove('hidden');
         document.getElementById('user-display-name').innerText = currentUser.full_name;
 
-        const roleBadge = document.getElementById('user-role-badge');
-        const adminBtn = document.getElementById('admin-menu-btn');
-
         if (currentUser.role === 'admin') {
-          adminBtn.classList.remove('hidden');
+          adminMenuBtn.classList.remove('hidden');
+          adminDbBtn.classList.remove('hidden'); // แสดง DB Config เฉพาะเวลา Admin ล็อกอิน
           roleBadge.innerText = 'ผู้ดูแลระบบ';
           roleBadge.className = 'text-[10px] bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 font-semibold px-2 py-0.5 rounded-full border border-purple-200 dark:border-purple-500/30';
         } else {
-          adminBtn.classList.add('hidden');
+          adminMenuBtn.classList.add('hidden');
+          adminDbBtn.classList.add('hidden'); // ซ่อนจากผู้ใช้ทั่วไป
+          document.getElementById('config-panel').classList.add('hidden');
           roleBadge.innerText = 'ออนไลน์';
           roleBadge.className = 'text-[10px] bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/30';
         }
       } else {
         document.getElementById('guest-buttons').classList.remove('hidden');
         document.getElementById('user-profile-menu').classList.add('hidden');
+        adminDbBtn.classList.add('hidden');
+        document.getElementById('config-panel').classList.add('hidden');
       }
     }
 
+    /* --- AUTH & USER SYSTEM --- */
     async function handleRegister(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('ระบบกำลังเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง');
+      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล กรุณาติดต่อแอดมิน');
 
       const fullName = document.getElementById('reg-fullname').value;
       const email = document.getElementById('reg-email').value;
@@ -577,7 +628,7 @@
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('ระบบกำลังเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง');
+      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล กรุณาติดต่อแอดมิน');
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -613,6 +664,7 @@
       switchView('landing');
     }
 
+    /* --- ORDER & QUEUE SYSTEM --- */
     function calculatePrice() {
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
@@ -718,7 +770,6 @@
     }
 
     /* --- ADMIN BACKOFFICE FUNCTIONS --- */
-
     async function loadAdminData() {
       if (!supabaseClient) return;
       await fetchAdminUsers();
