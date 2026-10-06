@@ -49,7 +49,7 @@
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden">
 
-  <!-- 1. SPLASH SCREEN (แก้ไขปัญหาการบังปุ่มคลิก) -->
+  <!-- 1. SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700">
     <div class="absolute w-72 h-72 bg-blue-600/30 rounded-full filter blur-3xl animate-pulse-glow"></div>
     <div class="relative z-10 flex flex-col items-center text-center p-6 animate-slide-up">
@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <!-- แถบตั้งค่า SUPABASE CONFIG -->
+  <!-- DB CONFIG PANEL -->
   <div id="config-panel" class="bg-slate-900 border-b border-slate-800 p-3 hidden">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2 text-amber-400 font-medium">
@@ -109,9 +109,15 @@
         </div>
 
         <div id="user-profile-menu" class="hidden flex items-center gap-3">
+          <!-- เมนูแอดมินสำหรับกดเข้าหลังบ้าน -->
+          <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center gap-1.5">
+            <i data-lucide="shield" class="w-4 h-4 text-indigo-400"></i>
+            <span>หน้าต่างจัดการข้อมูลลูกค้า</span>
+          </button>
+
           <div class="text-right hidden sm:block">
             <p id="user-display-name" class="text-sm font-bold text-white">ผู้ใช้งาน</p>
-            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">ออนไลน์</span>
+            <span id="user-role-badge" class="text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30">ออนไลน์</span>
           </div>
           <button onclick="handleLogout()" class="p-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-700 rounded-xl transition cursor-pointer" title="ออกจากระบบ">
             <i data-lucide="log-out" class="w-4 h-4"></i>
@@ -228,7 +234,7 @@
       </div>
     </section>
 
-    <!-- VIEW 3: DASHBOARD -->
+    <!-- VIEW 3: DASHBOARD (USER) -->
     <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div class="lg:col-span-5 glass-card p-6 rounded-3xl border-slate-700/80">
@@ -327,6 +333,88 @@
       </div>
     </section>
 
+    <!-- VIEW 4: ADMIN DASHBOARD (หน้าต่างจัดการข้อมูลลูกค้า/หลังบ้าน) -->
+    <section id="view-admin" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-2">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ระบบหลังบ้านผู้ดูแลระบบ (Admin)
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white">หน้าต่างจัดการข้อมูลลูกค้า & คิวพิมพ์</h1>
+        </div>
+        <button onclick="loadAdminData()" class="self-start md:self-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> อัปเดตข้อมูลทั้งหมด
+        </button>
+      </div>
+
+      <!-- ADMIN TAB CONTENT -->
+      <div class="space-y-8">
+        <!-- 1. ตารางจัดการลูกค้า (USERS MANAGEMENT) -->
+        <div class="glass-card p-6 rounded-3xl border-slate-700/80">
+          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-700/60">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">จัดการข้อมูลสมาชิก (Users)</h2>
+              <p class="text-xs text-slate-400">ตรวจสอบรายชื่อ สิทธิ์ใช้งาน และจัดการสถานะผู้ใช้ในฐานข้อมูล</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3 px-3">ชื่อ-นามสกุล</th>
+                  <th class="py-3 px-3">อีเมล</th>
+                  <th class="py-3 px-3">สิทธิ์ปัจจุบัน</th>
+                  <th class="py-3 px-3 text-right">ปรับเปลี่ยนสิทธิ์</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody" class="text-sm divide-y divide-slate-800/60">
+                <tr>
+                  <td colspan="4" class="py-8 text-center text-slate-500">กำลังดึงข้อมูลลูกค้า...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. ตารางจัดการคิวพิมพ์ทั้งหมด (ORDERS MANAGEMENT) -->
+        <div class="glass-card p-6 rounded-3xl border-slate-700/80">
+          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-700/60">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+              <i data-lucide="list-checks" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">จัดการสถานะคิวงานพิมพ์</h2>
+              <p class="text-xs text-slate-400">ปรับเปลี่ยนสถานะการสั่งพิมพ์ของลูกค้าได้ทันที</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3 px-3">คิว</th>
+                  <th class="py-3 px-3">เอกสาร</th>
+                  <th class="py-3 px-3">ตัวเลือก</th>
+                  <th class="py-3 px-3">ยอดรวม</th>
+                  <th class="py-3 px-3 text-center">สถานะปัจจุบัน</th>
+                  <th class="py-3 px-3 text-right">อัปเดตสถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody" class="text-sm divide-y divide-slate-800/60">
+                <tr>
+                  <td colspan="6" class="py-8 text-center text-slate-500">กำลังดึงข้อมูลคิวงานพิมพ์...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
@@ -339,20 +427,17 @@
     let supabaseClient = null;
     let currentUser = null;
 
-    // แก้ไขระบบตัด Splash Screen อย่างสมบูรณ์แบบ
     window.addEventListener('load', () => {
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
 
-      // ซ่อน Splash Screen เมื่อโหลดเสร็จและนำออกจากการบังคลิก
+      // ซ่อน Splash Screen
       const splash = document.getElementById('splash-screen');
       if (splash) {
         setTimeout(() => {
           splash.classList.add('opacity-0');
-          setTimeout(() => {
-            splash.style.display = 'none'; // ซ่อนแบบเด็ดขาด 100%
-          }, 700);
+          setTimeout(() => { splash.style.display = 'none'; }, 700);
         }, 800);
       }
 
@@ -371,6 +456,7 @@
       document.getElementById('view-landing').classList.add('hidden');
       document.getElementById('view-auth').classList.add('hidden');
       document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-admin').classList.add('hidden');
 
       if (viewName === 'landing') {
         document.getElementById('view-landing').classList.remove('hidden');
@@ -379,6 +465,14 @@
       } else if (viewName === 'dashboard') {
         document.getElementById('view-dashboard').classList.remove('hidden');
         fetchQueues();
+      } else if (viewName === 'admin') {
+        if (!currentUser || currentUser.role !== 'admin') {
+          alert('สิทธิ์การใช้งานจำกัดเฉพาะผู้ดูแลระบบ (Admin) เท่านั้น');
+          switchView('landing');
+          return;
+        }
+        document.getElementById('view-admin').classList.remove('hidden');
+        loadAdminData();
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -442,6 +536,19 @@
         document.getElementById('guest-buttons').classList.add('hidden');
         document.getElementById('user-profile-menu').classList.remove('hidden');
         document.getElementById('user-display-name').innerText = currentUser.full_name;
+
+        const roleBadge = document.getElementById('user-role-badge');
+        const adminBtn = document.getElementById('admin-menu-btn');
+
+        if (currentUser.role === 'admin') {
+          adminBtn.classList.remove('hidden');
+          roleBadge.innerText = 'ผู้ดูแลระบบ';
+          roleBadge.className = 'text-[10px] bg-purple-500/20 text-purple-300 font-semibold px-2 py-0.5 rounded-full border border-purple-500/30';
+        } else {
+          adminBtn.classList.add('hidden');
+          roleBadge.innerText = 'ออนไลน์';
+          roleBadge.className = 'text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/30';
+        }
       } else {
         document.getElementById('guest-buttons').classList.remove('hidden');
         document.getElementById('user-profile-menu').classList.add('hidden');
@@ -459,7 +566,7 @@
       try {
         const { data, error } = await supabaseClient
           .from('users')
-          .insert([{ full_name: fullName, email: email, password_hash: password }])
+          .insert([{ full_name: fullName, email: email, password_hash: password, role: 'user' }])
           .select().single();
 
         if (error) throw error;
@@ -482,7 +589,7 @@
       try {
         const { data, error } = await supabaseClient
           .from('users')
-          .select('id, full_name, email')
+          .select('id, full_name, email, role')
           .eq('email', email)
           .eq('password_hash', password)
           .single();
@@ -492,7 +599,12 @@
         currentUser = data;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
-        switchView('dashboard');
+        
+        if (currentUser.role === 'admin') {
+          switchView('admin');
+        } else {
+          switchView('dashboard');
+        }
       } catch (err) {
         alert(err.message);
       }
@@ -597,8 +709,8 @@
             <td class="py-3.5 px-3 text-slate-200 font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
             <td class="py-3.5 px-3 text-slate-300 font-semibold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
             <td class="py-3.5 px-3 text-center">
-              <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                ${item.status}
+              <span class="px-3 py-1 rounded-full text-[11px] font-bold ${getStatusBadgeClass(item.status)}">
+                ${translateStatus(item.status)}
               </span>
             </td>
           `;
@@ -606,6 +718,167 @@
         });
       } catch (e) {
         console.error("Fetch queues error:", e);
+      }
+    }
+
+    /* --- ADMIN BACKOFFICE FUNCTIONS --- */
+
+    async function loadAdminData() {
+      if (!supabaseClient) return;
+      await fetchAdminUsers();
+      await fetchAdminOrders();
+    }
+
+    async function fetchAdminUsers() {
+      try {
+        const { data: users, error } = await supabaseClient
+          .from('users')
+          .select('id, full_name, email, role')
+          .order('id', { ascending: true });
+
+        const tbody = document.getElementById('admin-users-tbody');
+        tbody.innerHTML = '';
+
+        if (error || !users || users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-500">ไม่พบข้อมูลลูกค้า</td></tr>';
+          return;
+        }
+
+        users.forEach(u => {
+          const isAdmin = u.role === 'admin';
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/40 transition';
+          tr.innerHTML = `
+            <td class="py-3.5 px-3 font-medium text-white">${u.full_name}</td>
+            <td class="py-3.5 px-3 text-slate-300">${u.email}</td>
+            <td class="py-3.5 px-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${isAdmin ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-slate-800 text-slate-400'}">
+                ${isAdmin ? 'แอดมิน (Admin)' : 'ลูกค้าทั่วไป'}
+              </span>
+            </td>
+            <td class="py-3.5 px-3 text-right">
+              <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold rounded-lg text-slate-200 transition cursor-pointer">
+                ${isAdmin ? 'ปรับเป็นลูกค้าทั่วไป' : 'แต่งตั้งเป็น แอดมิน'}
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Fetch admin users error:", err);
+      }
+    }
+
+    async function toggleUserRole(userId, currentRole) {
+      const newRole = currentRole === 'admin' ? 'user' : 'admin';
+      if (!confirm(`คุณต้องการเปลี่ยนสิทธิ์ผู้ใช้นี้เป็น [${newRole}] ใช่หรือไม่?`)) return;
+
+      try {
+        const { error } = await supabaseClient
+          .from('users')
+          .update({ role: newRole })
+          .eq('id', userId);
+
+        if (error) throw error;
+
+        // หากเป็นตัวเอง ให้ปรับใน LocalStorage ด้วย
+        if (currentUser && currentUser.id === userId) {
+          currentUser.role = newRole;
+          localStorage.setItem('sp_user', JSON.stringify(currentUser));
+          updateUserUI();
+        }
+
+        alert('อัปเดตสิทธิ์ผู้ใช้เรียบร้อยแล้ว');
+        fetchAdminUsers();
+      } catch (err) {
+        alert('ไม่สามารถเปลี่ยนสิทธิ์ได้: ' + err.message);
+      }
+    }
+
+    async function fetchAdminOrders() {
+      try {
+        const { data: jobs, error } = await supabaseClient
+          .from('print_jobs')
+          .select('id, status, copies, color, paper_size, duplex, documents(file_name), orders(id, queue_number, total_amount)')
+          .order('created_at', { ascending: false });
+
+        const tbody = document.getElementById('admin-orders-tbody');
+        tbody.innerHTML = '';
+
+        if (error || !jobs || jobs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500">ยังไม่มีข้อมูลคิวสั่งพิมพ์</td></tr>';
+          return;
+        }
+
+        jobs.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-800/40 transition';
+          tr.innerHTML = `
+            <td class="py-3.5 px-3 font-bold text-blue-400">Q-${item.orders?.queue_number || '-'}</td>
+            <td class="py-3.5 px-3 text-white font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
+            <td class="py-3.5 px-3 text-xs text-slate-400">${item.paper_size} | ${item.color ? 'สี' : 'ขาวดำ'} | ${item.copies} ชุด</td>
+            <td class="py-3.5 px-3 text-slate-200 font-bold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
+            <td class="py-3.5 px-3 text-center">
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${getStatusBadgeClass(item.status)}">
+                ${translateStatus(item.status)}
+              </span>
+            </td>
+            <td class="py-3.5 px-3 text-right">
+              <select onchange="updateJobStatus('${item.id}', '${item.orders?.id}', this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2 py-1 text-slate-200">
+                <option value="queued" ${item.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
+                <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
+                <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>เสร็จสิ้น</option>
+                <option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>ยกเลิก</option>
+              </select>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Fetch admin orders error:", err);
+      }
+    }
+
+    async function updateJobStatus(jobId, orderId, newStatus) {
+      try {
+        const { error: jErr } = await supabaseClient
+          .from('print_jobs')
+          .update({ status: newStatus })
+          .eq('id', jobId);
+
+        if (jErr) throw jErr;
+
+        if (orderId) {
+          await supabaseClient
+            .from('orders')
+            .update({ status: newStatus })
+            .eq('id', orderId);
+        }
+
+        alert('อัปเดตสถานะคิวงานเรียบร้อยแล้ว');
+        fetchAdminOrders();
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการเปลี่ยนสถานะ: ' + err.message);
+      }
+    }
+
+    function translateStatus(status) {
+      switch (status) {
+        case 'queued': return 'รอดำเนินการ';
+        case 'printing': return 'กำลังพิมพ์';
+        case 'completed': return 'เสร็จสิ้น';
+        case 'cancelled': return 'ยกเลิก';
+        default: return status || 'รอดำเนินการ';
+      }
+    }
+
+    function getStatusBadgeClass(status) {
+      switch (status) {
+        case 'queued': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        case 'printing': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+        case 'completed': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        case 'cancelled': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        default: return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
       }
     }
   </script>
