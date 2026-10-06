@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PrintQueue Pro - ระบบสั่งพิมพ์เอกสาร & จองคิวออนไลน์</title>
   
-  <!-- Tailwind CSS & Lucide Icons & Supabase -->
+  <!-- Tailwind CSS & Lucide Icons & Supabase & PDF.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -14,6 +14,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -24,25 +25,45 @@
     
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-8px); }
     }
     @keyframes pulseGlow {
       0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.08); }
+      50% { opacity: 0.6; transform: scale(1.05); }
     }
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .animate-float { animation: float 5s ease-in-out infinite; }
     .animate-pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
-    .animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
 
-  <!-- 1. SPLASH SCREEN -->
+  <!-- CUSTOM MODAL BOX (แจ้งเตือนสวยงามแทน Alert ปกติ) -->
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-slide-up text-center">
+      <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4">
+        <i id="modal-icon" data-lucide="info" class="w-8 h-8"></i>
+      </div>
+      <h3 id="modal-title" class="text-xl font-bold text-slate-900 dark:text-white mb-2">แจ้งเตือน</h3>
+      <p id="modal-message" class="text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">รายละเอียดข้อความ</p>
+      
+      <div id="modal-actions" class="flex gap-3 justify-center">
+        <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl transition cursor-pointer">
+          ยกเลิก
+        </button>
+        <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-md transition cursor-pointer">
+          ตกลง
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-slate-950 transition-opacity duration-700">
     <div class="absolute w-72 h-72 bg-blue-500/20 rounded-full filter blur-3xl animate-pulse-glow"></div>
     <div class="relative z-10 flex flex-col items-center text-center p-6 animate-slide-up">
@@ -53,12 +74,12 @@
       <p class="text-slate-500 dark:text-slate-400 text-sm max-w-xs mb-8">ระบบสั่งพิมพ์เอกสารและบริหารจัดการคิวดิจิทัล</p>
       <div class="flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50 px-4 py-2 rounded-full">
         <div class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></div>
-        กำลังเตรียมความพร้อมระบบ...
+        กำลังโหลดระบบ...
       </div>
     </div>
   </div>
 
-  <!-- DB CONFIG PANEL (ซ่อนเป็นค่าเริ่มต้น เปิดได้เฉพาะ Admin) -->
+  <!-- DB CONFIG PANEL (แสดงเฉพาะ Admin) -->
   <div id="config-panel" class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-3 hidden">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
       <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-medium">
@@ -72,7 +93,7 @@
     </div>
   </div>
 
-  <!-- 2. NAVBAR -->
+  <!-- NAVBAR -->
   <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
       <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-3 group">
@@ -87,16 +108,15 @@
 
       <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
         <button onclick="switchView('landing')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">หน้าแรก</button>
-        <button onclick="switchView('dashboard')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">สั่งพิมพ์งาน / เช็คคิว</button>
+        <button onclick="switchView('dashboard')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">สั่งพิมพ์งาน / ติดตามคิว</button>
         
-        <!-- ปุ่ม DB Config ซ่อนสำหรับผู้ใช้ทั่วไป จะแสดงเฉพาะเวลา Admin ล็อกอิน -->
         <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-600 hover:text-amber-700 dark:text-amber-400 transition text-xs font-semibold cursor-pointer">
           ⚙️ DB Config
         </button>
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- ปุ่มสลับธีม สว่าง / มืด -->
+        <!-- ปุ่มสลับธีม -->
         <button onclick="toggleTheme()" class="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl transition cursor-pointer flex items-center gap-1.5 text-xs font-medium" title="เปลี่ยนธีม">
           <i id="theme-icon" data-lucide="moon" class="w-4 h-4 text-amber-500"></i>
           <span id="theme-text" class="hidden sm:inline">ธีมมืด</span>
@@ -112,10 +132,9 @@
         </div>
 
         <div id="user-profile-menu" class="hidden flex items-center gap-3">
-          <!-- เมนูแอดมินสำหรับกดเข้าหลังบ้าน -->
           <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-2 bg-indigo-50 dark:bg-indigo-600/30 hover:bg-indigo-100 dark:hover:bg-indigo-600/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/40 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center gap-1.5">
             <i data-lucide="shield" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
-            <span>จัดการข้อมูลลูกค้า</span>
+            <span>จัดการคิวหลังบ้าน</span>
           </button>
 
           <div class="text-right hidden sm:block">
@@ -141,21 +160,21 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400 text-xs font-semibold">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> นวัตกรรมการสั่งพิมพ์งานยุคใหม่
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> ระบบสั่งพิมพ์เอกสารยุคใหม่
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-              สั่งพิมพ์เอกสารออนไลน์ <br>
-              <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">สะดวก รวดเร็ว ไม่ต้องยืนรอคิว</span>
+              อัปโหลดไฟล์ สั่งพิมพ์ <br>
+              <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">นัดรับเอกสารได้ทันใจ</span>
             </h1>
             <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-              อัปโหลดไฟล์ คำนวณราคาประเมินทันที และติดตามสถานะการพิมพ์ได้แบบ Real-time เพิ่มความสะดวกสบายให้ทุกงานพิมพ์ของคุณ
+              ระบบนับจำนวนหน้าเอกสารอัตโนมัติ คำนวณราคาทันที พร้อมระบบแจ้งเตือนวันเวลานัดรับเอกสารจากทางร้านแบบ Real-time
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
               <button onclick="handleStartPrinting()" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition transform hover:-translate-y-0.5 cursor-pointer">
-                <i data-lucide="file-plus" class="w-5 h-5"></i> เริ่มต้นสั่งพิมพ์เอกสาร
+                <i data-lucide="file-up" class="w-5 h-5"></i> อัปโหลดเอกสารสั่งพิมพ์
               </button>
               <button onclick="switchView('dashboard')" class="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold px-6 py-4 rounded-2xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer">
-                <i data-lucide="list" class="w-5 h-5"></i> ตรวจสอบคิวพิมพ์
+                <i data-lucide="clock" class="w-5 h-5"></i> ติดตามคิวพิมพ์
               </button>
             </div>
           </div>
@@ -175,7 +194,7 @@
                     <p class="text-sm font-bold text-slate-900 dark:text-white">พร้อมให้บริการ 100%</p>
                   </div>
                 </div>
-                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/10 px-2.5 py-1 rounded-lg">High Speed</span>
+                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/10 px-2.5 py-1 rounded-lg">Auto Detect</span>
               </div>
             </div>
           </div>
@@ -198,7 +217,7 @@
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
           <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-slate-900 dark:text-white">ยินดีต้อนรับกลับมา</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">เข้าสู่ระบบเพื่อจัดการคิวงานพิมพ์ของคุณ</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">เข้าสู่ระบบเพื่อสั่งพิมพ์งานและติดตามคิวของคุณ</p>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">อีเมล</label>
@@ -240,56 +259,100 @@
     <!-- VIEW 3: DASHBOARD (USER) -->
     <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- ฟอร์มอัปโหลดไฟล์ & คำนวณราคา -->
         <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
           <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <i data-lucide="file-up" class="w-5 h-5"></i>
+              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
             </div>
             <div>
               <h2 class="text-lg font-bold text-slate-900 dark:text-white">สร้างรายการสั่งพิมพ์</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">กรอกข้อมูลเอกสารและเลือกตัวเลือกการพิมพ์</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">อัปโหลดไฟล์ และเลือกรายละเอียดงานพิมพ์</p>
             </div>
           </div>
 
           <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+            
+            <!-- Zone สำหรับอัปโหลดไฟล์ (Drag & Drop) -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อไฟล์เอกสาร</label>
-              <input type="text" id="filename" required placeholder="เช่น รายงานประจำปี.pdf" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">อัปโหลดไฟล์เอกสาร (PDF, DOCX, PNG, JPG)</label>
+              <div class="relative border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 rounded-2xl p-4 text-center transition bg-slate-50 dark:bg-slate-800/50 cursor-pointer" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" required onchange="handleFileSelect(event)" class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                
+                <div id="upload-placeholder" class="space-y-2">
+                  <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center">
+                    <i data-lucide="file-plus-2" class="w-6 h-6"></i>
+                  </div>
+                  <p class="text-xs font-medium text-slate-700 dark:text-slate-300">คลิก หรือ ลากไฟล์มาวางที่นี่</p>
+                  <p class="text-[10px] text-slate-400">รองรับ PDF, DOCX, รูปภาพ (สูงสุด 25MB)</p>
+                </div>
+
+                <div id="file-details" class="hidden text-left bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                  <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center flex-shrink-0">
+                      <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <p id="file-info-name" class="text-xs font-bold text-slate-900 dark:text-white truncate">document.pdf</p>
+                      <p id="file-info-size" class="text-[10px] text-slate-400">0.00 MB</p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 flex-shrink-0">
+                    อัปโหลดแล้ว
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- กล่องแสดงจำนวนหน้าที่ตรวจพบ & ตัวเลือกจำนวนหน้าที่จะพิมพ์ -->
+            <div class="grid grid-cols-2 gap-3 p-3 bg-blue-50/60 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900/40">
+              <div>
+                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block mb-0.5">จำนวนหน้าไฟล์เดิม:</span>
+                <span id="total-pages-display" class="text-base font-extrabold text-blue-600 dark:text-blue-400">0 หน้า</span>
+              </div>
+              <div>
+                <label class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-0.5">จะพิมพ์กี่หน้า:</label>
+                <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ขนาดกระดาษ</label>
-                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
                   <option value="A4">A4</option>
                   <option value="A3">A3</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">จำนวนชุด</label>
-                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">จำนวนชุดที่พิมพ์</label>
+                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">สีพิมพ์</label>
-                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
-                  <option value="bw">ขาว-ดำ (1.00 ฿)</option>
-                  <option value="color">สี (5.00 ฿)</option>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">ประเภทสี</label>
+                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
+                  <option value="bw">ขาว-ดำ (1.00 ฿/หน้า)</option>
+                  <option value="color">พิมพ์สี (5.00 ฿/หน้า)</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">การพิมพ์</label>
-                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white">
+                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white">
                   <option value="single">หน้าเดียว</option>
-                  <option value="duplex">หน้า-หลัง (+0.50 ฿)</option>
+                  <option value="duplex">พิมพ์หน้า-หลัง (+0.50 ฿)</option>
                 </select>
               </div>
             </div>
 
             <div class="p-4 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-between">
-              <span class="text-xs font-medium text-slate-600 dark:text-slate-400">ราคารวมประเมิน:</span>
+              <div>
+                <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block">ราคารวมประเมินสุทธิ:</span>
+                <span class="text-[10px] text-slate-400">(จำนวนหน้า × จำนวนชุด × ราคาต่อหน้า)</span>
+              </div>
               <span id="total-price" class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">1.00 ฿</span>
             </div>
 
@@ -299,6 +362,7 @@
           </form>
         </div>
 
+        <!-- ตารางติดตามสถานะคิว & วันเวลานัดรับ -->
         <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <div class="flex items-center gap-3">
@@ -306,8 +370,8 @@
                 <i data-lucide="activity" class="w-5 h-5"></i>
               </div>
               <div>
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white">สถานะคิวพิมพ์ล่าสุด</h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400">คิวงานพิมพ์ทั้งหมดในระบบ</p>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">ติดตามคิว & วันเวลานัดรับเอกสาร</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">เช็คสถานะการพิมพ์และเวลารับงาน Real-time</p>
               </div>
             </div>
             <button onclick="fetchQueues()" class="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-1.5 transition cursor-pointer">
@@ -315,43 +379,62 @@
             </button>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th class="py-3 px-3">หมายเลขคิว</th>
-                  <th class="py-3 px-3">เอกสาร</th>
-                  <th class="py-3 px-3">ยอดชำระ</th>
-                  <th class="py-3 px-3 text-center">สถานะ</th>
-                </tr>
-              </thead>
-              <tbody id="queue-table-body" class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
-                <tr>
-                  <td colspan="4" class="py-12 text-center text-slate-400">กำลังโหลดข้อมูลคิว...</td>
-                </tr>
-              </tbody>
-            </table>
+          <div id="queue-cards-container" class="space-y-4">
+            <p class="py-12 text-center text-slate-400">กำลังโหลดข้อมูลคิว...</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VIEW 4: ADMIN DASHBOARD (หน้าหลังบ้าน) -->
+    <!-- VIEW 4: ADMIN DASHBOARD (หลังบ้านแอดมิน) -->
     <section id="view-admin" class="hidden py-8 px-4 max-w-6xl mx-auto animate-slide-up">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-2">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ระบบหลังบ้านผู้ดูแลระบบ (Admin)
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">จัดการข้อมูลลูกค้า & คิวพิมพ์</h1>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">จัดการคิวพิมพ์ & กำหนดวันนัดรับเอกสาร</h1>
         </div>
         <button onclick="loadAdminData()" class="self-start md:self-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer shadow-md">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i> อัปเดตข้อมูลทั้งหมด
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> ดึงข้อมูลอัปเดตล่าสุด
         </button>
       </div>
 
       <div class="space-y-8">
-        <!-- 1. ตารางจัดการลูกค้า -->
+        <!-- ตารางจัดการคิวพิมพ์ & กำหนดเวลานัดรับ -->
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
+          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <i data-lucide="list-checks" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 dark:text-white">รายการคิวสั่งพิมพ์ทั้งหมด</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">อัปเดตสถานะ กำหนดวันเวลานัดรับ และส่งข้อความถึงลูกค้า</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3 px-3">คิว</th>
+                  <th class="py-3 px-3">เอกสาร & รายละเอียด</th>
+                  <th class="py-3 px-3">ยอดรวม</th>
+                  <th class="py-3 px-3">สถานะคิว</th>
+                  <th class="py-3 px-3">กำหนดวันเวลานัดรับเอกสาร / หมายเหตุ</th>
+                  <th class="py-3 px-3 text-right">การกระทำ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody" class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
+                <tr>
+                  <td colspan="6" class="py-8 text-center text-slate-400">กำลังดึงข้อมูลคิวงานพิมพ์...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ตารางจัดการข้อมูลสมาชิก -->
         <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
           <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
             <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
@@ -359,7 +442,7 @@
             </div>
             <div>
               <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการข้อมูลสมาชิก (Users)</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบรายชื่อ สิทธิ์ใช้งาน และจัดการสถานะผู้ใช้ในฐานข้อมูล</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">ตรวจสอบสิทธิ์ผู้ใช้งานและปรับเปลี่ยนสิทธิ์แอดมิน</p>
             </div>
           </div>
 
@@ -375,40 +458,7 @@
               </thead>
               <tbody id="admin-users-tbody" class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
                 <tr>
-                  <td colspan="4" class="py-8 text-center text-slate-400">กำลังดึงข้อมูลลูกค้า...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 2. ตารางจัดการคิวพิมพ์ -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg">
-          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <i data-lucide="list-checks" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h2 class="text-lg font-bold text-slate-900 dark:text-white">จัดการสถานะคิวงานพิมพ์</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">ปรับเปลี่ยนสถานะการสั่งพิมพ์ของลูกค้าได้ทันที</p>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th class="py-3 px-3">คิว</th>
-                  <th class="py-3 px-3">เอกสาร</th>
-                  <th class="py-3 px-3">ตัวเลือก</th>
-                  <th class="py-3 px-3">ยอดรวม</th>
-                  <th class="py-3 px-3 text-center">สถานะปัจจุบัน</th>
-                  <th class="py-3 px-3 text-right">อัปเดตสถานะ</th>
-                </tr>
-              </thead>
-              <tbody id="admin-orders-tbody" class="text-sm divide-y divide-slate-100 dark:divide-slate-800">
-                <tr>
-                  <td colspan="6" class="py-8 text-center text-slate-400">กำลังดึงข้อมูลคิวงานพิมพ์...</td>
+                  <td colspan="4" class="py-8 text-center text-slate-400">กำลังดึงข้อมูลสมาชิก...</td>
                 </tr>
               </tbody>
             </table>
@@ -426,18 +476,17 @@
   </footer>
 
   <script>
-    // ตั้งค่าเริ่มต้นของ Supabase
     const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
     const DEFAULT_SUPABASE_KEY = '';
 
     let supabaseClient = null;
     let currentUser = null;
+    let selectedFileObj = null;
+    let detectedPageCount = 1;
 
     window.addEventListener('load', () => {
       initTheme();
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
 
       const splash = document.getElementById('splash-screen');
       if (splash) {
@@ -458,7 +507,51 @@
       }
     });
 
-    /* --- CONTROLLER (THEME & VIEW) --- */
+    /* --- CUSTOM MODAL SYSTEM (แทนการใช้ Alert/Confirm) --- */
+    function showCustomModal({ title, message, icon = 'info', type = 'info', showCancel = false, onConfirm = null }) {
+      const modal = document.getElementById('custom-modal');
+      const titleEl = document.getElementById('modal-title');
+      const msgEl = document.getElementById('modal-message');
+      const iconEl = document.getElementById('modal-icon');
+      const iconBg = document.getElementById('modal-icon-bg');
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+
+      titleEl.innerText = title;
+      msgEl.innerText = message;
+      iconEl.setAttribute('data-lucide', icon);
+
+      // ปรับแต่งสีไอคอนตามประเภท
+      if (type === 'success') {
+        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400';
+      } else if (type === 'error') {
+        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400';
+      } else if (type === 'warning') {
+        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400';
+      } else {
+        iconBg.className = 'w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400';
+      }
+
+      if (showCancel) {
+        cancelBtn.classList.remove('hidden');
+      } else {
+        cancelBtn.classList.add('hidden');
+      }
+
+      confirmBtn.onclick = () => {
+        closeModal();
+        if (onConfirm) onConfirm();
+      };
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.add('hidden');
+    }
+
+    /* --- THEME & VIEW CONTROLLER --- */
     function initTheme() {
       const savedTheme = localStorage.getItem('app_theme') || 'light';
       applyTheme(savedTheme);
@@ -502,7 +595,12 @@
         fetchQueues();
       } else if (viewName === 'admin') {
         if (!currentUser || currentUser.role !== 'admin') {
-          alert('สิทธิ์การใช้งานจำกัดเฉพาะผู้ดูแลระบบ (Admin) เท่านั้น');
+          showCustomModal({
+            title: 'จำกัดสิทธิ์เข้าถึง',
+            message: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถเข้าใช้งานหน้านี้ได้',
+            icon: 'shield-alert',
+            type: 'warning'
+          });
           switchView('landing');
           return;
         }
@@ -516,8 +614,16 @@
       if (currentUser) {
         switchView('dashboard');
       } else {
-        switchView('auth');
-        switchAuthTab('login');
+        showCustomModal({
+          title: 'กรุณาเข้าสู่ระบบก่อน',
+          message: 'คุณต้องเข้าสู่ระบบหรือลงทะเบียนบัญชีก่อน จึงจะสามารถอัปโหลดไฟล์เพื่อสั่งพิมพ์งานได้ครับ',
+          icon: 'lock',
+          type: 'info',
+          onConfirm: () => {
+            switchView('auth');
+            switchAuthTab('login');
+          }
+        });
       }
     }
 
@@ -535,24 +641,23 @@
         : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer';
     }
 
-    /* --- DB CONFIG (เปิดได้เฉพาะ ADMIN) --- */
+    /* --- DB CONFIG & SUPABASE --- */
     function toggleConfigPanel() {
-      if (!currentUser || currentUser.role !== 'admin') {
-        alert('ส่วนนี้เปิดใช้งานได้เฉพาะผู้ดูแลระบบเท่านั้น');
-        return;
-      }
+      if (!currentUser || currentUser.role !== 'admin') return;
       document.getElementById('config-panel').classList.toggle('hidden');
     }
 
     function saveAndInitSupabase() {
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) return alert('กรุณากรอก URL และ Key ให้ครบถ้วน');
+      if (!url || !key) {
+        return showCustomModal({ title: 'ข้อมูลไม่ครบถ้วน', message: 'กรุณากรอก Supabase URL และ Key ให้ครบถ้วน', icon: 'alert-triangle', type: 'warning' });
+      }
 
       localStorage.setItem('sp_url', url);
       localStorage.setItem('sp_key', key);
       initSupabase(url, key);
-      alert('เชื่อมต่อ Supabase สำเร็จ!');
+      showCustomModal({ title: 'เชื่อมต่อสำเร็จ', message: 'บันทึกการเชื่อมต่อ Supabase เรียบร้อยแล้ว', icon: 'check-circle-2', type: 'success' });
       document.getElementById('config-panel').classList.add('hidden');
     }
 
@@ -567,7 +672,7 @@
           }
         }
       } catch (e) {
-        console.error("Supabase connection error:", e);
+        console.error("Supabase init error:", e);
       }
     }
 
@@ -583,14 +688,14 @@
 
         if (currentUser.role === 'admin') {
           adminMenuBtn.classList.remove('hidden');
-          adminDbBtn.classList.remove('hidden'); // แสดง DB Config เฉพาะเวลา Admin ล็อกอิน
+          adminDbBtn.classList.remove('hidden');
           roleBadge.innerText = 'ผู้ดูแลระบบ';
           roleBadge.className = 'text-[10px] bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 font-semibold px-2 py-0.5 rounded-full border border-purple-200 dark:border-purple-500/30';
         } else {
           adminMenuBtn.classList.add('hidden');
-          adminDbBtn.classList.add('hidden'); // ซ่อนจากผู้ใช้ทั่วไป
+          adminDbBtn.classList.add('hidden');
           document.getElementById('config-panel').classList.add('hidden');
-          roleBadge.innerText = 'ออนไลน์';
+          roleBadge.innerText = 'สมาชิกทั่วไป';
           roleBadge.className = 'text-[10px] bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/30';
         }
       } else {
@@ -601,10 +706,10 @@
       }
     }
 
-    /* --- AUTH & USER SYSTEM --- */
+    /* --- AUTH ACTIONS --- */
     async function handleRegister(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล กรุณาติดต่อแอดมิน');
+      if (!supabaseClient) return showCustomModal({ title: 'ยังไม่ได้เชื่อมต่อฐานข้อมูล', message: 'กรุณาติดต่อแอดมินเพื่อตั้งค่าระบบ', icon: 'server-off', type: 'error' });
 
       const fullName = document.getElementById('reg-fullname').value;
       const email = document.getElementById('reg-email').value;
@@ -618,17 +723,24 @@
 
         if (error) throw error;
 
-        alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
-        switchAuthTab('login');
-        document.getElementById('login-email').value = email;
+        showCustomModal({
+          title: 'ลงทะเบียนสำเร็จ!',
+          message: 'สร้างบัญชีผู้ใช้เรียบร้อยแล้ว กรุณาเข้าสู่ระบบ',
+          icon: 'check-circle-2',
+          type: 'success',
+          onConfirm: () => {
+            switchAuthTab('login');
+            document.getElementById('login-email').value = email;
+          }
+        });
       } catch (err) {
-        alert('เกิดข้อผิดพลาด: ' + (err.message.includes('unique') ? 'อีเมลนี้มีในระบบแล้ว' : err.message));
+        showCustomModal({ title: 'ลงทะเบียนไม่สำเร็จ', message: err.message.includes('unique') ? 'อีเมลนี้ถูกใช้งานแล้วในระบบ' : err.message, icon: 'x-circle', type: 'error' });
       }
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล กรุณาติดต่อแอดมิน');
+      if (!supabaseClient) return showCustomModal({ title: 'ยังไม่ได้เชื่อมต่อฐานข้อมูล', message: 'กรุณาติดต่อแอดมินเพื่อตั้งค่าระบบ', icon: 'server-off', type: 'error' });
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -646,48 +758,102 @@
         currentUser = data;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
-        
-        if (currentUser.role === 'admin') {
-          switchView('admin');
-        } else {
-          switchView('dashboard');
-        }
+
+        showCustomModal({
+          title: 'เข้าสู่ระบบสำเร็จ',
+          message: `ยินดีต้อนรับคุณ ${currentUser.full_name}`,
+          icon: 'user-check',
+          type: 'success',
+          onConfirm: () => {
+            if (currentUser.role === 'admin') switchView('admin');
+            else switchView('dashboard');
+          }
+        });
       } catch (err) {
-        alert(err.message);
+        showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: err.message, icon: 'x-circle', type: 'error' });
       }
     }
 
     function handleLogout() {
-      currentUser = null;
-      localStorage.removeItem('sp_user');
-      updateUserUI();
-      switchView('landing');
+      showCustomModal({
+        title: 'ยืนยันออกจากระบบ',
+        message: 'คุณต้องการออกจากระบบใช่หรือไม่?',
+        icon: 'log-out',
+        type: 'warning',
+        showCancel: true,
+        onConfirm: () => {
+          currentUser = null;
+          localStorage.removeItem('sp_user');
+          updateUserUI();
+          switchView('landing');
+        }
+      });
     }
 
-    /* --- ORDER & QUEUE SYSTEM --- */
+    /* --- FILE UPLOAD & PAGE COUNT DETECTION --- */
+    async function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      selectedFileObj = file;
+      document.getElementById('upload-placeholder').classList.add('hidden');
+      document.getElementById('file-details').classList.remove('hidden');
+      document.getElementById('file-info-name').innerText = file.name;
+      document.getElementById('file-info-size').innerText = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+      // อ่านจำนวนหน้า PDF อัตโนมัติด้วย PDF.js
+      if (file.type === 'application/pdf') {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          detectedPageCount = pdf.numPages;
+        } catch (err) {
+          console.error("PDF read error:", err);
+          detectedPageCount = 1;
+        }
+      } else {
+        detectedPageCount = 1; // ไฟล์ภาพ หรือ Doc ให้เริ่มต้นที่ 1 หน้า
+      }
+
+      document.getElementById('total-pages-display').innerText = detectedPageCount + ' หน้า';
+      document.getElementById('printed-pages-input').value = detectedPageCount;
+      calculatePrice();
+    }
+
     function calculatePrice() {
+      const printedPages = parseInt(document.getElementById('printed-pages-input').value) || 1;
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
 
-      let basePrice = isColor ? 5.00 : 1.00;
-      if (isDuplex) basePrice += 0.50;
+      let ratePerPage = isColor ? 5.00 : 1.00;
+      if (isDuplex) ratePerPage += 0.50;
 
-      const total = basePrice * copies;
-      document.getElementById('total-price').innerText = total.toFixed(2) + ' ฿';
-      return total;
+      const totalPrice = (printedPages * copies) * ratePerPage;
+      document.getElementById('total-price').innerText = totalPrice.toFixed(2) + ' ฿';
+      return totalPrice;
     }
 
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล');
+      if (!supabaseClient) return showCustomModal({ title: 'ยังไม่ได้เชื่อมต่อฐานข้อมูล', message: 'กรุณาตั้งค่าฐานข้อมูล Supabase', icon: 'server-off', type: 'error' });
+      
       if (!currentUser) {
-        alert('กรุณาเข้าสู่ระบบก่อนสั่งพิมพ์เอกสาร');
-        switchView('auth');
-        return;
+        return showCustomModal({
+          title: 'เข้าสู่ระบบก่อนสั่งพิมพ์',
+          message: 'กรุณาล็อกอินเข้าสู่ระบบก่อนทำการสั่งคิวพิมพ์',
+          icon: 'lock',
+          type: 'warning',
+          onConfirm: () => switchView('auth')
+        });
       }
 
-      const filename = document.getElementById('filename').value;
+      if (!selectedFileObj) {
+        return showCustomModal({ title: 'ไม่พบไฟล์เอกสาร', message: 'กรุณาเลือกไฟล์เอกสารที่ต้องการสั่งพิมพ์', icon: 'file-warning', type: 'warning' });
+      }
+
+      const printedPages = parseInt(document.getElementById('printed-pages-input').value);
       const copies = parseInt(document.getElementById('copies').value);
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
@@ -697,18 +863,27 @@
       try {
         const queueNum = Math.floor(1000 + Math.random() * 9000);
 
+        // 1. สร้าง Record ใน orders
         const { data: order, error: oErr } = await supabaseClient
           .from('orders')
           .insert([{ user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued' }])
           .select().single();
         if (oErr) throw oErr;
 
+        // 2. บันทึกข้อมูลเอกสารใน documents
         const { data: doc, error: dErr } = await supabaseClient
           .from('documents')
-          .insert([{ user_id: currentUser.id, file_name: filename, file_path: '/uploads/' + filename }])
+          .insert([{ 
+            user_id: currentUser.id, 
+            file_name: selectedFileObj.name, 
+            file_path: '/uploads/' + selectedFileObj.name,
+            page_count: detectedPageCount,
+            file_size: selectedFileObj.size 
+          }])
           .select().single();
         if (dErr) throw dErr;
 
+        // 3. บันทึกงานพิมพ์ใน print_jobs
         const { error: jErr } = await supabaseClient
           .from('print_jobs')
           .insert([{
@@ -718,62 +893,210 @@
             color: isColor,
             paper_size: paperSize,
             duplex: isDuplex,
+            printed_pages_count: printedPages,
+            page_range: `1-${printedPages}`,
             status: 'queued'
           }]);
         if (jErr) throw jErr;
 
-        alert(`สั่งพิมพ์งานเรียบร้อย! คิวของคุณคือ: Q-${queueNum}`);
-        document.getElementById('print-form').reset();
-        calculatePrice();
-        fetchQueues();
+        showCustomModal({
+          title: 'ส่งงานเข้าคิวพิมพ์สำเร็จ!',
+          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}\nยอดชำระ: ${totalAmount.toFixed(2)} ฿`,
+          icon: 'check-circle-2',
+          type: 'success',
+          onConfirm: () => {
+            document.getElementById('print-form').reset();
+            document.getElementById('upload-placeholder').classList.remove('hidden');
+            document.getElementById('file-details').classList.add('hidden');
+            selectedFileObj = null;
+            detectedPageCount = 1;
+            document.getElementById('total-pages-display').innerText = '0 หน้า';
+            calculatePrice();
+            fetchQueues();
+          }
+        });
+
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการสั่งพิมพ์: ' + err.message);
+        showCustomModal({ title: 'เกิดข้อผิดพลาดในการส่งงาน', message: err.message, icon: 'x-circle', type: 'error' });
       }
     }
 
+    /* --- QUEUE DISPLAY & PICKUP TIMELINE FOR CUSTOMER --- */
     async function fetchQueues() {
       if (!supabaseClient) return;
 
       try {
         const { data, error } = await supabaseClient
           .from('print_jobs')
-          .select('id, status, documents(file_name), orders(queue_number, total_amount)')
+          .select('id, status, copies, color, paper_size, printed_pages_count, documents(file_name, page_count), orders(queue_number, total_amount, estimated_pickup, admin_note)')
           .order('created_at', { ascending: false })
           .limit(10);
 
-        const tbody = document.getElementById('queue-table-body');
-        tbody.innerHTML = '';
+        const container = document.getElementById('queue-cards-container');
+        container.innerHTML = '';
 
         if (error || !data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" class="py-12 text-center text-slate-400">ยังไม่มีรายการคิวพิมพ์ในระบบ</td></tr>';
+          container.innerHTML = '<p class="py-12 text-center text-slate-400">ยังไม่มีรายการสั่งพิมพ์ในระบบ</p>';
           return;
         }
 
         data.forEach(item => {
+          const queueNum = item.orders?.queue_number || '-';
+          const fileName = item.documents?.file_name || 'เอกสารไม่ระบุชื่อ';
+          const totalPages = item.printed_pages_count || 1;
+          const totalAmount = item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-';
+          const pickupTime = item.orders?.estimated_pickup ? formatThaiDateTime(item.orders.estimated_pickup) : 'กำลังรอแอดมินประเมินเวลา';
+          const adminNote = item.orders?.admin_note;
+
+          const card = document.createElement('div');
+          card.className = 'bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 p-4 rounded-2xl space-y-3';
+          card.innerHTML = `
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-base font-extrabold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/20 px-3 py-1 rounded-xl">Q-${queueNum}</span>
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[180px] sm:max-w-xs">${fileName}</h4>
+                  <p class="text-[10px] text-slate-400">${item.paper_size} | ${item.color ? 'พิมพ์สี' : 'ขาวดำ'} | ${totalPages} หน้า | ${item.copies} ชุด</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(item.status)}">
+                ${translateStatus(item.status)}
+              </span>
+            </div>
+
+            <!-- กล่องแจ้งเตือนวันเวลานัดรับจากแอดมิน -->
+            <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+                <i data-lucide="clock-check" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>
+                <span>เวลานัดรับเอกสาร: <strong class="text-slate-900 dark:text-white font-bold">${pickupTime}</strong></span>
+              </div>
+              <span class="text-xs font-bold text-blue-600 dark:text-blue-400">${totalAmount}</span>
+            </div>
+
+            ${adminNote ? `
+              <div class="text-xs bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 px-3 py-2 rounded-xl flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                <span><strong>ข้อความจากร้าน:</strong> ${adminNote}</span>
+              </div>
+            ` : ''}
+          `;
+          container.appendChild(card);
+        });
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        console.error("Fetch queues error:", err);
+      }
+    }
+
+    /* --- ADMIN BACKOFFICE ACTIONS --- */
+    async function loadAdminData() {
+      if (!supabaseClient) return;
+      await fetchAdminOrders();
+      await fetchAdminUsers();
+    }
+
+    async function fetchAdminOrders() {
+      try {
+        const { data: jobs, error } = await supabaseClient
+          .from('print_jobs')
+          .select('id, status, copies, color, paper_size, printed_pages_count, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note)')
+          .order('created_at', { ascending: false });
+
+        const tbody = document.getElementById('admin-orders-tbody');
+        tbody.innerHTML = '';
+
+        if (error || !jobs || jobs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">ยังไม่มีรายการสั่งพิมพ์ในระบบ</td></tr>';
+          return;
+        }
+
+        jobs.forEach(item => {
+          const orderId = item.orders?.id;
+          const pickupVal = item.orders?.estimated_pickup ? formatInputDateTime(item.orders.estimated_pickup) : '';
+          const noteVal = item.orders?.admin_note || '';
+
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition';
           tr.innerHTML = `
             <td class="py-3.5 px-3 font-bold text-blue-600 dark:text-blue-400">Q-${item.orders?.queue_number || '-'}</td>
-            <td class="py-3.5 px-3 font-medium text-slate-800 dark:text-slate-200">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
-            <td class="py-3.5 px-3 text-slate-700 dark:text-slate-300 font-semibold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
-            <td class="py-3.5 px-3 text-center">
-              <span class="px-3 py-1 rounded-full text-[11px] font-bold ${getStatusBadgeClass(item.status)}">
-                ${translateStatus(item.status)}
-              </span>
+            <td class="py-3.5 px-3">
+              <p class="text-xs font-bold text-slate-900 dark:text-white">${item.documents?.file_name || 'ไม่ระบุชื่อ'}</p>
+              <p class="text-[10px] text-slate-400">${item.printed_pages_count} หน้า | ${item.copies} ชุด | ${item.color ? 'สี' : 'ขาวดำ'}</p>
+            </td>
+            <td class="py-3.5 px-3 text-xs font-bold text-slate-800 dark:text-slate-200">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
+            <td class="py-3.5 px-3">
+              <select onchange="updateJobStatus('${item.id}', '${orderId}', this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs rounded-lg px-2 py-1 text-slate-800 dark:text-slate-200 focus:outline-none">
+                <option value="queued" ${item.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
+                <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
+                <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>พร้อมรับเอกสาร</option>
+                <option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>ยกเลิก</option>
+              </select>
+            </td>
+            <td class="py-3.5 px-3 space-y-1.5">
+              <input type="datetime-local" id="dt-${orderId}" value="${pickupVal}" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] rounded-lg px-2 py-1 text-slate-800 dark:text-slate-200 w-full focus:outline-none">
+              <input type="text" id="note-${orderId}" value="${noteVal}" placeholder="หมายเหตุ เช่น รับได้ที่โต๊ะ 1" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] rounded-lg px-2 py-1 text-slate-800 dark:text-slate-200 w-full focus:outline-none">
+            </td>
+            <td class="py-3.5 px-3 text-right">
+              <button onclick="saveAdminPickupNote('${orderId}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition cursor-pointer shadow-sm">
+                บันทึกแจ้งลูกค้า
+              </button>
             </td>
           `;
           tbody.appendChild(tr);
         });
-      } catch (e) {
-        console.error("Fetch queues error:", e);
+      } catch (err) {
+        console.error("Fetch admin orders error:", err);
       }
     }
 
-    /* --- ADMIN BACKOFFICE FUNCTIONS --- */
-    async function loadAdminData() {
-      if (!supabaseClient) return;
-      await fetchAdminUsers();
-      await fetchAdminOrders();
+    async function updateJobStatus(jobId, orderId, newStatus) {
+      try {
+        const { error: jErr } = await supabaseClient
+          .from('print_jobs')
+          .update({ status: newStatus })
+          .eq('id', jobId);
+        if (jErr) throw jErr;
+
+        if (orderId) {
+          await supabaseClient
+            .from('orders')
+            .update({ status: newStatus })
+            .eq('id', orderId);
+        }
+
+        showCustomModal({ title: 'อัปเดตสำเร็จ', message: 'อัปเดตสถานะคิวพิมพ์เรียบร้อยแล้ว', icon: 'check-circle-2', type: 'success' });
+        fetchAdminOrders();
+      } catch (err) {
+        showCustomModal({ title: 'อัปเดตไม่สำเร็จ', message: err.message, icon: 'x-circle', type: 'error' });
+      }
+    }
+
+    async function saveAdminPickupNote(orderId) {
+      const pickupVal = document.getElementById(`dt-${orderId}`).value;
+      const noteVal = document.getElementById(`note-${orderId}`).value;
+
+      try {
+        const { error } = await supabaseClient
+          .from('orders')
+          .update({
+            estimated_pickup: pickupVal ? new Date(pickupVal).toISOString() : null,
+            admin_note: noteVal
+          })
+          .eq('id', orderId);
+
+        if (error) throw error;
+
+        showCustomModal({
+          title: 'บันทึกวันนัดรับเรียบร้อย',
+          message: 'ลูกค้านำคิวไปตรวจสอบจะเห็นวันเวลานัดรับเอกสารทันที',
+          icon: 'calendar-check',
+          type: 'success'
+        });
+        fetchAdminOrders();
+      } catch (err) {
+        showCustomModal({ title: 'บันทึกไม่สำเร็จ', message: err.message, icon: 'x-circle', type: 'error' });
+      }
     }
 
     async function fetchAdminUsers() {
@@ -787,7 +1110,7 @@
         tbody.innerHTML = '';
 
         if (error || !users || users.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">ไม่พบข้อมูลลูกค้า</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">ไม่พบข้อมูลสมาชิก</td></tr>';
           return;
         }
 
@@ -805,7 +1128,7 @@
             </td>
             <td class="py-3.5 px-3 text-right">
               <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-lg text-slate-700 dark:text-slate-200 transition cursor-pointer">
-                ${isAdmin ? 'ปรับเป็นลูกค้าทั่วไป' : 'แต่งตั้งเป็น แอดมิน'}
+                ${isAdmin ? 'ปรับเป็นลูกค้าทั่วไป' : 'แต่งตั้งเป็นแอดมิน'}
               </button>
             </td>
           `;
@@ -818,101 +1141,42 @@
 
     async function toggleUserRole(userId, currentRole) {
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
-      if (!confirm(`คุณต้องการเปลี่ยนสิทธิ์ผู้ใช้นี้เป็น [${newRole}] ใช่หรือไม่?`)) return;
+      showCustomModal({
+        title: 'ยืนยันสลับสิทธิ์ผู้ใช้',
+        message: `คุณต้องการเปลี่ยนสิทธิ์ผู้ใช้นี้เป็น [${newRole}] ใช่หรือไม่?`,
+        icon: 'user-cog',
+        type: 'warning',
+        showCancel: true,
+        onConfirm: async () => {
+          try {
+            const { error } = await supabaseClient
+              .from('users')
+              .update({ role: newRole })
+              .eq('id', userId);
 
-      try {
-        const { error } = await supabaseClient
-          .from('users')
-          .update({ role: newRole })
-          .eq('id', userId);
+            if (error) throw error;
 
-        if (error) throw error;
+            if (currentUser && currentUser.id === userId) {
+              currentUser.role = newRole;
+              localStorage.setItem('sp_user', JSON.stringify(currentUser));
+              updateUserUI();
+            }
 
-        if (currentUser && currentUser.id === userId) {
-          currentUser.role = newRole;
-          localStorage.setItem('sp_user', JSON.stringify(currentUser));
-          updateUserUI();
+            showCustomModal({ title: 'อัปเดตสิทธิ์สำเร็จ', message: 'เปลี่ยนสิทธิ์ผู้ใช้เรียบร้อยแล้ว', icon: 'check-circle-2', type: 'success' });
+            fetchAdminUsers();
+          } catch (err) {
+            showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: err.message, icon: 'x-circle', type: 'error' });
+          }
         }
-
-        alert('อัปเดตสิทธิ์ผู้ใช้เรียบร้อยแล้ว');
-        fetchAdminUsers();
-      } catch (err) {
-        alert('ไม่สามารถเปลี่ยนสิทธิ์ได้: ' + err.message);
-      }
+      });
     }
 
-    async function fetchAdminOrders() {
-      try {
-        const { data: jobs, error } = await supabaseClient
-          .from('print_jobs')
-          .select('id, status, copies, color, paper_size, duplex, documents(file_name), orders(id, queue_number, total_amount)')
-          .order('created_at', { ascending: false });
-
-        const tbody = document.getElementById('admin-orders-tbody');
-        tbody.innerHTML = '';
-
-        if (error || !jobs || jobs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">ยังไม่มีข้อมูลคิวสั่งพิมพ์</td></tr>';
-          return;
-        }
-
-        jobs.forEach(item => {
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition';
-          tr.innerHTML = `
-            <td class="py-3.5 px-3 font-bold text-blue-600 dark:text-blue-400">Q-${item.orders?.queue_number || '-'}</td>
-            <td class="py-3.5 px-3 text-slate-900 dark:text-white font-medium">${item.documents?.file_name || 'ไม่ระบุชื่อไฟล์'}</td>
-            <td class="py-3.5 px-3 text-xs text-slate-500 dark:text-slate-400">${item.paper_size} | ${item.color ? 'สี' : 'ขาวดำ'} | ${item.copies} ชุด</td>
-            <td class="py-3.5 px-3 text-slate-800 dark:text-slate-200 font-bold">${item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-'}</td>
-            <td class="py-3.5 px-3 text-center">
-              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${getStatusBadgeClass(item.status)}">
-                ${translateStatus(item.status)}
-              </span>
-            </td>
-            <td class="py-3.5 px-3 text-right">
-              <select onchange="updateJobStatus('${item.id}', '${item.orders?.id}', this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs rounded-lg px-2 py-1 text-slate-800 dark:text-slate-200">
-                <option value="queued" ${item.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
-                <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
-                <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>เสร็จสิ้น</option>
-                <option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>ยกเลิก</option>
-              </select>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error("Fetch admin orders error:", err);
-      }
-    }
-
-    async function updateJobStatus(jobId, orderId, newStatus) {
-      try {
-        const { error: jErr } = await supabaseClient
-          .from('print_jobs')
-          .update({ status: newStatus })
-          .eq('id', jobId);
-
-        if (jErr) throw jErr;
-
-        if (orderId) {
-          await supabaseClient
-            .from('orders')
-            .update({ status: newStatus })
-            .eq('id', orderId);
-        }
-
-        alert('อัปเดตสถานะคิวงานเรียบร้อยแล้ว');
-        fetchAdminOrders();
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการเปลี่ยนสถานะ: ' + err.message);
-      }
-    }
-
+    /* --- UTILITIES --- */
     function translateStatus(status) {
       switch (status) {
         case 'queued': return 'รอดำเนินการ';
         case 'printing': return 'กำลังพิมพ์';
-        case 'completed': return 'เสร็จสิ้น';
+        case 'completed': return 'พร้อมรับเอกสาร';
         case 'cancelled': return 'ยกเลิก';
         default: return status || 'รอดำเนินการ';
       }
@@ -920,12 +1184,25 @@
 
     function getStatusBadgeClass(status) {
       switch (status) {
-        case 'queued': return 'bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20';
-        case 'printing': return 'bg-blue-100 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20';
-        case 'completed': return 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20';
-        case 'cancelled': return 'bg-rose-100 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20';
-        default: return 'bg-slate-100 dark:bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-500/20';
+        case 'queued': return 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30';
+        case 'printing': return 'bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30';
+        case 'completed': return 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30';
+        case 'cancelled': return 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30';
+        default: return 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
       }
+    }
+
+    function formatThaiDateTime(isoString) {
+      if (!isoString) return '-';
+      const d = new Date(isoString);
+      return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) + ' เวลา ' + d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+    }
+
+    function formatInputDateTime(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      return d.toISOString().slice(0, 16);
     }
   </script>
 </body>
