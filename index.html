@@ -53,21 +53,7 @@
       <p class="text-slate-500 dark:text-slate-400 text-sm max-w-xs mb-8">ระบบสั่งพิมพ์เอกสารและบริหารจัดการคิวดิจิทัล</p>
       <div class="flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/50 px-4 py-2 rounded-full">
         <div class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></div>
-        กำลังเตรียมความพร้อมระบบ...
-      </div>
-    </div>
-  </div>
-
-  <!-- DB CONFIG PANEL -->
-  <div id="config-panel" class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-3 hidden">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
-      <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-medium">
-        <i data-lucide="settings" class="w-4 h-4"></i> ตั้งค่าการเชื่อมต่อ Supabase Database
-      </div>
-      <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
-        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white w-full sm:w-60 focus:outline-none">
-        <button onclick="saveAndInitSupabase()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-1.5 rounded-lg transition">บันทึก</button>
+        กำลังเชื่อมต่อระบบงาน...
       </div>
     </div>
   </div>
@@ -88,7 +74,6 @@
       <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
         <button onclick="switchView('landing')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">หน้าแรก</button>
         <button onclick="switchView('dashboard')" class="hover:text-blue-600 dark:hover:text-white transition cursor-pointer">สั่งพิมพ์งาน / เช็คคิว</button>
-        <button onclick="toggleConfigPanel()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition text-xs cursor-pointer">⚙️ DB Config</button>
       </div>
 
       <div class="flex items-center gap-3">
@@ -108,10 +93,10 @@
         </div>
 
         <div id="user-profile-menu" class="hidden flex items-center gap-3">
-          <!-- เมนูแอดมินสำหรับกดเข้าหลังบ้าน -->
+          <!-- เมนูจัดการสำหรับ Admin เท่านั้น -->
           <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-2 bg-indigo-50 dark:bg-indigo-600/30 hover:bg-indigo-100 dark:hover:bg-indigo-600/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/40 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center gap-1.5">
             <i data-lucide="shield" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
-            <span>หน้าต่างจัดการข้อมูลลูกค้า</span>
+            <span>การจัดการระบบหลังบ้าน</span>
           </button>
 
           <div class="text-right hidden sm:block">
@@ -422,6 +407,12 @@
   </footer>
 
   <script>
+    /* ============================================================
+       1. กำหนดค่าเชื่อมต่อ Supabase ไว้ในซอร์สโค้ดฝั่งระบบ
+       ============================================================ */
+    const SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwaHV0c2VrZXVicXB1eHB1c3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNzY1NjgsImV4cCI6MjA1Njk1MjU2OH0.d3JgSlyr3iS-RlyrA27S0I31nO4a5o4Y7u21p3n4M'; // ใส่ Anon Key จริงของคุณตรงนี้
+
     let supabaseClient = null;
     let currentUser = null;
 
@@ -431,6 +422,7 @@
         lucide.createIcons();
       }
 
+      // ปิด Splash Screen
       const splash = document.getElementById('splash-screen');
       if (splash) {
         setTimeout(() => {
@@ -439,18 +431,11 @@
         }, 800);
       }
 
-      const savedUrl = localStorage.getItem('sp_url') || 'https://hghutsekeubqpuxpusub.supabase.co';
-      const savedKey = localStorage.getItem('sp_key') || '';
-
-      if (savedUrl) document.getElementById('supabase-url').value = savedUrl;
-      if (savedKey) document.getElementById('supabase-key').value = savedKey;
-
-      if (savedUrl && savedKey) {
-        initSupabase(savedUrl, savedKey);
-      }
+      // เชื่อมต่อฐานข้อมูลอัตโนมัติ
+      initSupabase(SUPABASE_URL, SUPABASE_KEY);
     });
 
-    /* --- THEME CONTROLLER (LIGHT/DARK) --- */
+    /* --- THEME CONTROLLER (ค่าเริ่มต้นเป็นสว่าง Light Mode) --- */
     function initTheme() {
       const savedTheme = localStorage.getItem('app_theme') || 'light';
       applyTheme(savedTheme);
@@ -527,25 +512,9 @@
         : 'flex-1 py-2.5 text-xs font-bold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer';
     }
 
-    function toggleConfigPanel() {
-      document.getElementById('config-panel').classList.toggle('hidden');
-    }
-
-    function saveAndInitSupabase() {
-      const url = document.getElementById('supabase-url').value.trim();
-      const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) return alert('กรุณากรอก URL และ Key ของ Supabase ให้ครบถ้วน');
-
-      localStorage.setItem('sp_url', url);
-      localStorage.setItem('sp_key', key);
-      initSupabase(url, key);
-      alert('เชื่อมต่อ Supabase สำเร็จ!');
-      document.getElementById('config-panel').classList.add('hidden');
-    }
-
     function initSupabase(url, key) {
       try {
-        if (typeof supabase !== 'undefined') {
+        if (typeof supabase !== 'undefined' && url && key) {
           supabaseClient = supabase.createClient(url, key);
           const savedUser = localStorage.getItem('sp_user');
           if (savedUser) {
@@ -584,7 +553,7 @@
 
     async function handleRegister(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณากด ⚙️ DB Config เพื่อเชื่อมต่อ Supabase ก่อนใช้งาน');
+      if (!supabaseClient) return alert('ระบบกำลังเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง');
 
       const fullName = document.getElementById('reg-fullname').value;
       const email = document.getElementById('reg-email').value;
@@ -608,7 +577,7 @@
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณากด ⚙️ DB Config เพื่อเชื่อมต่อ Supabase ก่อนใช้งาน');
+      if (!supabaseClient) return alert('ระบบกำลังเชื่อมต่อฐานข้อมูล กรุณาลองใหม่อีกครั้ง');
 
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -659,7 +628,7 @@
 
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!supabaseClient) return alert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน');
+      if (!supabaseClient) return alert('ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล');
       if (!currentUser) {
         alert('กรุณาเข้าสู่ระบบก่อนสั่งพิมพ์เอกสาร');
         switchView('auth');
