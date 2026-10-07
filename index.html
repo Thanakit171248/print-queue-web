@@ -1636,7 +1636,7 @@
             <td class="py-3 px-2">
               <p class="font-bold">${del?.delivery_method === 'delivery' ? '🚚 จัดส่ง' : '🏪 รับที่ร้าน'}</p>
               ${del?.delivery_method === 'delivery' ? `
-                <p class="text-[10px] opacity-70">${del.recipient_name \vert{}\vert{} ''} (${del.phone_number || ''})</p>
+                <p class="text-[10px] opacity-70">${del.recipient_name || ''} (${del.phone_number || ''})</p>
                 <input type="text" id="track-${del.id}" placeholder="กรอกเลขพัสดุ" value="${del.tracking_number || ''}" class="mt-1 px-2 py-1 bg-slate-100 dark:bg-black/40 border rounded text-[10px] w-28">
                 <button onclick="saveTracking('${del.id}')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold">บันทึก</button>
               ` : ''}
