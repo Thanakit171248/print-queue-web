@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrintQueue Pro - iPhone Titanium 3D Edition</title>
+  <title>PrintQueue Pro - Apple Titanium 3D Ultra Edition</title>
   
   <!-- Tailwind CSS & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +20,27 @@
               900: '#0e131f',
               950: '#07090e',
               accent: '#2997ff',
-              gold: '#f5c518'
+              gold: '#f5c518',
+              purple: '#8b5cf6'
+            }
+          },
+          animation: {
+            'shimmer': 'shimmer 3s infinite linear',
+            'float-slow': 'floatSlow 8s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 4s ease-in-out infinite'
+          },
+          keyframes: {
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            },
+            floatSlow: {
+              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+              '50%': { transform: 'translateY(-12px) rotate(1.5deg)' }
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.4' },
+              '50%': { opacity: '0.8' }
             }
           }
         }
@@ -30,14 +50,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- Three.js for Interactive 3D Render -->
+  <!-- Three.js for Fullscreen Interactive Background -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     body {
       font-family: 'Kanit', sans-serif;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
     }
 
     /* Dark Mode Theme */
@@ -46,15 +67,15 @@
       color: #f8fafc;
     }
     html.dark .glass-panel {
-      background: rgba(18, 24, 38, 0.75);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      background: rgba(15, 21, 35, 0.72);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
     }
     html.dark .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.035);
+      backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     html.dark .titanium-text {
@@ -63,23 +84,23 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Light Mode Theme (High Contrast & Clear Typography) */
+    /* Light Mode Theme */
     html:not(.dark) body {
       background-color: #f1f5f9;
       color: #0f172a;
     }
     html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.07);
     }
     html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(18px);
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
     }
     html:not(.dark) .titanium-text {
       background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
@@ -87,14 +108,14 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Common Card Hover */
+    /* Interactive Card Hover Effects */
     .glass-card {
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .glass-card:hover {
       border-color: rgba(41, 151, 255, 0.5);
-      box-shadow: 0 12px 30px rgba(41, 151, 255, 0.18);
-      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 15px 35px rgba(41, 151, 255, 0.2);
+      transform: translateY(-5px) scale(1.01);
     }
 
     .apple-blue-text {
@@ -103,15 +124,21 @@
       -webkit-text-fill-color: transparent;
     }
 
+    .apple-gold-text {
+      background: linear-gradient(135deg, #f5c518 0%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     /* Perspective Container & Tilt */
     .perspective-container { perspective: 1200px; }
-    .tilt-card { transform-style: preserve-3d; transition: transform 0.2s ease-out; }
+    .tilt-card { transform-style: preserve-3d; transition: transform 0.25s ease-out; }
 
     /* iPhone Scroll Reveal Animation */
     .scroll-reveal {
       opacity: 0;
-      transform: translateY(45px) scale(0.96);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(50px) scale(0.96);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
     .scroll-reveal.reveal-active {
@@ -119,43 +146,53 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Keyframe Animations */
-    @keyframes floatLight {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(2deg); }
+    /* Animated Border Glow */
+    .glow-border {
+      position: relative;
     }
-    .animate-float-light { animation: floatLight 6s ease-in-out infinite; }
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(41,151,255,0.6), rgba(245,197,24,0.3), rgba(139,92,246,0.6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
 
     @keyframes slideUpModal {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      from { opacity: 0; transform: translateY(40px) scale(0.94); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .animate-modal { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative">
 
-  <!-- BACKGROUND 3D CANVAS (THREE.JS REALISTIC PRINTER SCENE) -->
-  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-70"></div>
+  <!-- FULLSCREEN BACKGROUND 3D CANVAS (THREE.JS PARTICLES & FLOATING TITANIUM GEOMETRY) -->
+  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-80 transition-opacity duration-700"></div>
 
   <!-- MODAL แจ้งเตือนทั่วไป -->
-  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-xl">
-    <div class="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-modal text-center relative overflow-hidden">
-      <div class="absolute -top-12 -left-12 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl"></div>
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-2xl">
+    <div class="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-modal text-center relative overflow-hidden glow-border">
+      <div class="absolute -top-12 -left-12 w-36 h-36 bg-blue-500/20 rounded-full blur-3xl"></div>
       <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-500/20 text-blue-400 border border-blue-500/30">
         <i id="modal-icon" data-lucide="info" class="w-8 h-8"></i>
       </div>
       <h3 id="modal-title" class="text-xl font-bold titanium-text mb-2">แจ้งเตือน</h3>
-      <p id="modal-message" class="text-sm opacity-80 mb-6 leading-relaxed">รายละเอียดข้อความ</p>
+      <p id="modal-message" class="text-xs opacity-80 mb-6 leading-relaxed">รายละเอียดข้อความ</p>
       <div id="modal-actions" class="flex gap-3 justify-center">
         <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-3 bg-slate-500/10 hover:bg-slate-500/20 opacity-80 font-semibold text-xs rounded-2xl border border-white/10 transition">ยกเลิก</button>
-        <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-2xl shadow-lg shadow-blue-500/25 transition">ตกลง</button>
+        <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-2xl shadow-lg shadow-blue-500/30 transition">ตกลง</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL ดูสลิปโอนเงิน -->
-  <div id="slip-preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
+  <div id="slip-preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl">
     <div class="glass-panel rounded-3xl max-w-md w-full p-6 shadow-2xl animate-modal">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
         <h3 class="text-base font-bold flex items-center gap-2">
@@ -165,8 +202,8 @@
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <div class="text-center bg-black/40 rounded-2xl p-2 mb-4 border border-white/5 max-h-96 flex items-center justify-center overflow-hidden">
-        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-88 object-contain rounded-xl shadow-lg">
+      <div class="text-center bg-black/50 rounded-2xl p-2 mb-4 border border-white/10 max-h-96 flex items-center justify-center overflow-hidden">
+        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-88 object-contain rounded-xl shadow-2xl">
       </div>
       <button onclick="closeSlipModal()" class="w-full py-3 bg-slate-500/20 hover:bg-slate-500/30 text-xs font-bold rounded-2xl border border-white/10 transition">ปิดหน้าต่าง</button>
     </div>
@@ -174,12 +211,12 @@
 
   <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
-    <div class="relative z-10 flex flex-col items-center text-center p-6 animate-float-light">
-      <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 border border-white/20">
+    <div class="relative z-10 flex flex-col items-center text-center p-6 animate-float-slow">
+      <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 via-indigo-500 to-amber-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 border border-white/20">
         <i data-lucide="printer" class="w-10 h-10 text-white"></i>
       </div>
       <h1 class="text-3xl font-extrabold titanium-text tracking-tight mb-2">PrintQueue <span class="apple-blue-text">PRO</span></h1>
-      <p class="text-slate-400 text-xs tracking-wider uppercase">Titanium 3D Service System</p>
+      <p class="text-slate-400 text-xs tracking-widest uppercase">Titanium 3D Service System</p>
     </div>
   </div>
 
@@ -197,11 +234,11 @@
     </div>
   </div>
 
-  <!-- NAVBAR (APPLE TITANIUM STYLE WITH THEME TOGGLE) -->
+  <!-- NAVBAR (APPLE TITANIUM STYLE) -->
   <nav class="sticky top-0 z-40 glass-panel border-b">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition">
+        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition duration-300">
           <i data-lucide="printer" class="w-5 h-5"></i>
         </div>
         <div>
@@ -220,7 +257,7 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- THEME TOGGLE BUTTON (WHITE / BLACK SWAP) -->
+        <!-- THEME TOGGLE BUTTON -->
         <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-slate-200 dark:bg-white/10 hover:bg-blue-500/20 transition flex items-center justify-center" title="สลับธีม สว่าง/มืด">
           <i id="theme-icon" data-lucide="sun" class="w-4 h-4 text-amber-500 dark:text-amber-300"></i>
         </button>
@@ -254,7 +291,7 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow z-10 relative">
 
-    <!-- VIEW 1: LANDING PAGE (APPLE IPHONE 3D SHOWCASE & SCROLL ANIMATIONS) -->
+    <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-16 px-4 max-w-6xl mx-auto space-y-24">
       
       <!-- HERO SECTION -->
@@ -265,13 +302,13 @@
           </div>
           <h1 class="text-4xl sm:text-6xl font-extrabold leading-tight tracking-tight titanium-text">
             มิติใหม่ของงานพิมพ์ <br>
-            <span class="apple-blue-text">ด้วยระบบ 3D Titanium</span>
+            <span class="apple-blue-text">ด้วยระบบ Titanium 3D Engine</span>
           </h1>
           <p class="opacity-80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
-            อัปโหลดเอกสาร คำนวณราคาสี/ขาวดำเรียลไทม์ ชำระเงินผ่านระบบ Coins เติมเงินตรวจสอบสลิปอัตโนมัติ พร้อมระบบติดตามคิวและพัสดุระดับพรีเมียม
+            อัปโหลดเอกสาร คำนวณราคาสี/ขาวดำเรียลไทม์ ชำระเงินผ่านระบบ Coins เติมเงินตรวจสอบสลิปอัตโนมัติ พร้อมระบบติดตามคิวและจัดส่งพัสดุระดับพรีเมียม
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
-            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition hover:scale-105">
+            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition hover:scale-105">
               <i data-lucide="file-up" class="w-5 h-5"></i> สั่งพิมพ์เอกสารทันที
             </button>
             <button onclick="switchView('dashboard')" class="glass-card hover:bg-blue-500/10 border font-bold px-7 py-4 rounded-2xl flex items-center justify-center gap-2 transition">
@@ -280,35 +317,71 @@
           </div>
         </div>
 
-        <!-- 3D HERO DISPLAY CONTAINER -->
+        <!-- HIGH-RES APPLE SHOWCASE GRAPHIC DISPLAY (REPLACED INNER 3D PRINTER BOX) -->
         <div class="lg:col-span-5 perspective-container">
-          <div class="tilt-card glass-panel rounded-3xl p-6 border shadow-2xl space-y-6 text-center relative overflow-hidden">
-            <div class="w-full h-72 rounded-2xl bg-gradient-to-b from-blue-600/20 via-indigo-600/10 to-transparent border flex items-center justify-center relative overflow-hidden">
-              <div id="printer-3d-canvas-box" class="w-full h-full"></div>
-              <div class="absolute bottom-4 left-4 right-4 text-left pointer-events-none">
-                <span class="text-[10px] uppercase font-bold text-blue-500 tracking-wider">Realistic 3D Render</span>
-                <p class="text-sm font-bold text-slate-800 dark:text-white">เครื่องพิมพ์ Titanium Pro Engine</p>
+          <div class="tilt-card glass-panel rounded-3xl p-6 border shadow-2xl space-y-6 text-center relative overflow-hidden glow-border">
+            
+            <!-- Sleek High-Res Graphic Display Container -->
+            <div class="relative w-full h-80 rounded-2xl overflow-hidden group shadow-2xl">
+              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Titanium Precision Printer" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+              
+              <!-- Dark Ambient Gradient Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+              <!-- Top Spec Badge -->
+              <div class="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-lg">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>TITANIUM ENGINE PRO</span>
+              </div>
+
+              <!-- Bottom Visual Text overlay -->
+              <div class="absolute bottom-4 left-4 right-4 text-left space-y-1">
+                <span class="text-[10px] uppercase font-extrabold text-blue-400 tracking-wider">Designed for Perfection</span>
+                <p class="text-base font-extrabold text-white">ระบบควบคุมการพิมพ์เลเซอร์ระดับพรีเมียม</p>
+                <p class="text-[11px] text-slate-300 opacity-90">รองรับความละเอียดสูง ชัดเจนทุกจุด สมบูรณ์แบบทุกหน้า</p>
               </div>
             </div>
+
+            <!-- Stats Bar Below Image -->
             <div class="grid grid-cols-3 gap-3 text-center text-xs">
-              <div class="p-3 rounded-2xl glass-card">
-                <p class="text-blue-500 font-extrabold text-lg">100%</p>
-                <p class="text-[10px] opacity-70">คมชัดสูงสุด</p>
+              <div class="p-3 rounded-2xl glass-card border border-white/10">
+                <p class="apple-blue-text font-extrabold text-lg">100%</p>
+                <p class="text-[10px] opacity-70 font-semibold">ความคมชัดสูง</p>
               </div>
-              <div class="p-3 rounded-2xl glass-card">
-                <p class="text-amber-500 font-extrabold text-lg">Coins</p>
-                <p class="text-[10px] opacity-70">จ่ายสะดวก</p>
+              <div class="p-3 rounded-2xl glass-card border border-white/10">
+                <p class="apple-gold-text font-extrabold text-lg">Coins</p>
+                <p class="text-[10px] opacity-70 font-semibold">ชำระสะดวก</p>
               </div>
-              <div class="p-3 rounded-2xl glass-card">
+              <div class="p-3 rounded-2xl glass-card border border-white/10">
                 <p class="text-emerald-500 font-extrabold text-lg">Express</p>
-                <p class="text-[10px] opacity-70">ส่งไวทั่วไทย</p>
+                <p class="text-[10px] opacity-70 font-semibold">ส่งไวทั่วไทย</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- SCROLL REVEAL SECTION 1: HIGHLIGHT CARDS (IPHONE STYLE) -->
+      <!-- LIVE STATS BAR -->
+      <div class="scroll-reveal grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
+          <p class="text-3xl font-extrabold apple-blue-text">15,400+</p>
+          <p class="text-xs opacity-70 font-medium">เอกสารพิมพ์สำเร็จ</p>
+        </div>
+        <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
+          <p class="text-3xl font-extrabold apple-gold-text">&lt; 0.5s</p>
+          <p class="text-xs opacity-70 font-medium">ความเร็วคำนวณราคา</p>
+        </div>
+        <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
+          <p class="text-3xl font-extrabold text-emerald-500">99.9%</p>
+          <p class="text-xs opacity-70 font-medium">อนุมัติสลิปแม่นยำ</p>
+        </div>
+        <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
+          <p class="text-3xl font-extrabold text-purple-500">24 / 7</p>
+          <p class="text-xs opacity-70 font-medium">บริการคิวออนไลน์</p>
+        </div>
+      </div>
+
+      <!-- SCROLL REVEAL SECTION 1: HIGHLIGHT CARDS -->
       <div class="scroll-reveal space-y-12">
         <div class="text-center max-w-2xl mx-auto space-y-3">
           <h2 class="text-3xl font-extrabold titanium-text">นวัตกรรมสั่งพิมพ์ สไตล์ Apple</h2>
@@ -316,24 +389,24 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-blue-500 transition">
-            <div class="w-12 h-12 bg-blue-500/20 text-blue-500 rounded-2xl flex items-center justify-center">
+          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-blue-500 transition duration-300">
+            <div class="w-12 h-12 bg-blue-500/20 text-blue-500 rounded-2xl flex items-center justify-center border border-blue-500/30">
               <i data-lucide="layers" class="w-6 h-6"></i>
             </div>
             <h3 class="text-lg font-bold">เลือกหน้าพิมพ์แบบ Smart Grid</h3>
             <p class="text-xs opacity-70 leading-relaxed">เลือกเฉพาะหน้าที่ต้องการพิมพ์ได้อย่างอิสระผ่านระบบ Grid Preview คำนวณราคาสี/ขาวดำอัตโนมัติแบบเรียลไทม์</p>
           </div>
 
-          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-blue-500 transition">
-            <div class="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center">
+          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-amber-500 transition duration-300">
+            <div class="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center border border-amber-500/30">
               <i data-lucide="wallet" class="w-6 h-6"></i>
             </div>
             <h3 class="text-lg font-bold">ระบบกระเป๋าเงิน Coins</h3>
             <p class="text-xs opacity-70 leading-relaxed">เติมเงินผ่าน PromptPay สแกนแนบสลิปอนุมัติไว ชำระคิวพิมพ์ได้ทันทีโดยไม่ต้องรอทอนเงิน</p>
           </div>
 
-          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-blue-500 transition">
-            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center">
+          <div class="scroll-reveal glass-panel p-8 rounded-3xl space-y-4 border hover:border-emerald-500 transition duration-300">
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center border border-emerald-500/30">
               <i data-lucide="truck" class="w-6 h-6"></i>
             </div>
             <h3 class="text-lg font-bold">ติดตามคิว & พัสดุ Real-time</h3>
@@ -350,25 +423,25 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3">
+          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
             <span class="text-2xl font-black text-blue-500/40">01</span>
             <h4 class="font-bold text-sm">อัปโหลดไฟล์</h4>
             <p class="text-xs opacity-70">รองรับ PDF, Word, รูปภาพ ระบบคำนวณจำนวนหน้าให้อัตโนมัติ</p>
           </div>
 
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3">
+          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
             <span class="text-2xl font-black text-blue-500/40">02</span>
             <h4 class="font-bold text-sm">ตั้งค่ากระดาษ & สี</h4>
             <p class="text-xs opacity-70">เลือก A4/A3 ขาวดำหรือสี พิมพ์หน้าเดียวหรือหน้า-หลัง</p>
           </div>
 
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3">
+          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
             <span class="text-2xl font-black text-amber-500/40">03</span>
             <h4 class="font-bold text-sm">ชำระเงิน / Coins</h4>
             <p class="text-xs opacity-70">หัก Coins ในระบบ หรือโอน PromptPay แนบสลิปชำระเงิน</p>
           </div>
 
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3">
+          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
             <span class="text-2xl font-black text-emerald-500/40">04</span>
             <h4 class="font-bold text-sm">รับงาน / จัดส่ง</h4>
             <p class="text-xs opacity-70">รับสินค้าที่หน้าร้านตามเวลานัดหมาย หรือรอรับพัสดุที่บ้าน</p>
@@ -380,7 +453,7 @@
 
     <!-- VIEW 2: AUTH -->
     <section id="view-auth" class="hidden py-16 px-4 max-w-md mx-auto">
-      <div class="glass-panel rounded-3xl p-8 border shadow-2xl relative overflow-hidden">
+      <div class="glass-panel rounded-3xl p-8 border shadow-2xl relative overflow-hidden glow-border">
         <div class="flex bg-slate-200 dark:bg-white/5 p-1 rounded-2xl mb-6 border border-white/10">
           <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-blue-600 shadow-md">เข้าสู่ระบบ</button>
           <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">ลงทะเบียน</button>
@@ -632,7 +705,7 @@
                 <p class="text-xs opacity-70">สถานะงานพิมพ์ วันเวลานัดรับ และเลขพัสดุ</p>
               </div>
             </div>
-            <!-- REFRESH BUTTON WITH SPIN ANIMATION -->
+            <!-- REFRESH BUTTON -->
             <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 border rounded-xl text-xs flex items-center gap-1.5 transition">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช 🔄
             </button>
@@ -791,6 +864,7 @@
 
   </main>
 
+  <!-- JAVASCRIPT LOGIC & THREE.JS BG ENGINE -->
   <script>
     const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
     const DEFAULT_SUPABASE_KEY = '';
@@ -800,8 +874,12 @@
     let selectedFileObj = null;
     let detectedPageCount = 1;
 
+    // Three.js background globals
+    let bgScene, bgCamera, bgRenderer, bgParticles, bgFloatingGroup;
+    let pointLight1, pointLight2;
+
     window.addEventListener('load', () => {
-      initRealisticPrinter3D();
+      init3DBackground();
       init3DTiltEffect();
       initScrollReveal();
       if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -820,7 +898,132 @@
       if (savedUrl && savedKey) initSupabase(savedUrl, savedKey);
     });
 
-    /* --- THEME TOGGLE (WHITE / BLACK SWAP) --- */
+    /* --- FULLSCREEN 3D THREE.JS BACKGROUND ENGINE --- */
+    function init3DBackground() {
+      const container = document.getElementById('three-bg-canvas');
+      if (!container || typeof THREE === 'undefined') return;
+
+      bgScene = new THREE.Scene();
+      bgCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      bgCamera.position.z = 15;
+
+      bgRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      bgRenderer.setSize(window.innerWidth, window.innerHeight);
+      bgRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(bgRenderer.domElement);
+
+      bgFloatingGroup = new THREE.Group();
+
+      // Create Floating Titanium Geometric Elements
+      const isDark = document.documentElement.classList.contains('dark');
+      const matColor = isDark ? 0x2997ff : 0x0284c7;
+
+      // 1. Torus Knot (Luxurious Titanium Ring)
+      const torusGeo = new THREE.TorusKnotGeometry(2.5, 0.6, 120, 16);
+      const torusMat = new THREE.MeshStandardMaterial({
+        color: matColor, metalness: 0.9, roughness: 0.1, wireframe: true
+      });
+      const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+      torusMesh.position.set(-8, 3, -5);
+      bgFloatingGroup.add(torusMesh);
+
+      // 2. Icosahedron (Geometric Crystal)
+      const icoGeo = new THREE.IcosahedronGeometry(2, 1);
+      const icoMat = new THREE.MeshStandardMaterial({
+        color: 0xf5c518, metalness: 0.8, roughness: 0.2, wireframe: true
+      });
+      const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+      icoMesh.position.set(9, -4, -4);
+      bgFloatingGroup.add(icoMesh);
+
+      // 3. Smooth Floating Cubes
+      for (let i = 0; i < 8; i++) {
+        const boxGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+        const boxMat = new THREE.MeshStandardMaterial({
+          color: 0x8b5cf6, metalness: 0.7, roughness: 0.3
+        });
+        const boxMesh = new THREE.Mesh(boxGeo, boxMat);
+        boxMesh.position.set(
+          (Math.random() - 0.5) * 26,
+          (Math.random() - 0.5) * 20,
+          (Math.random() - 0.5) * 10 - 2
+        );
+        boxMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+        bgFloatingGroup.add(boxMesh);
+      }
+
+      // 4. Ambient Particle Starfield Mesh
+      const particleCount = 200;
+      const particleGeo = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 35;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.12,
+        color: isDark ? 0x38bdf8 : 0x0284c7,
+        transparent: true,
+        opacity: 0.6
+      });
+      bgParticles = new THREE.Points(particleGeo, particleMat);
+      bgScene.add(bgParticles);
+
+      bgScene.add(bgFloatingGroup);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.6 : 1.2);
+      bgScene.add(ambientLight);
+
+      pointLight1 = new THREE.PointLight(0x2997ff, 3, 50);
+      pointLight1.position.set(10, 10, 10);
+      bgScene.add(pointLight1);
+
+      pointLight2 = new THREE.PointLight(0xf5c518, 2, 50);
+      pointLight2.position.set(-10, -10, 5);
+      bgScene.add(pointLight2);
+
+      // Mouse Parallax Effect
+      let mouseX = 0, mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 1.5;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 1.5;
+      });
+
+      // Animate Loop
+      let clock = new THREE.Clock();
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        const t = clock.getElapsedTime();
+
+        bgFloatingGroup.children.forEach((obj, idx) => {
+          obj.rotation.x += 0.005 * (idx % 2 === 0 ? 1 : -1);
+          obj.rotation.y += 0.007 * (idx % 2 === 0 ? -1 : 1);
+          obj.position.y += Math.sin(t + idx) * 0.003;
+        });
+
+        bgParticles.rotation.y = t * 0.02;
+
+        // Smooth Camera movement according to Mouse
+        bgCamera.position.x += (mouseX * 2 - bgCamera.position.x) * 0.05;
+        bgCamera.position.y += (-mouseY * 2 - bgCamera.position.y) * 0.05;
+        bgCamera.lookAt(bgScene.position);
+
+        bgRenderer.render(bgScene, bgCamera);
+      }
+      animate3D();
+
+      window.addEventListener('resize', () => {
+        if (!bgCamera || !bgRenderer) return;
+        bgCamera.aspect = window.innerWidth / window.innerHeight;
+        bgCamera.updateProjectionMatrix();
+        bgRenderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    /* --- THEME TOGGLE (UPDATE 3D SCENE REAL-TIME) --- */
     function toggleTheme() {
       const htmlEl = document.documentElement;
       const themeIcon = document.getElementById('theme-icon');
@@ -834,6 +1037,10 @@
         htmlEl.classList.add('dark');
         themeIcon.setAttribute('data-lucide', 'sun');
         localStorage.setItem('theme_mode', 'dark');
+      }
+
+      if (bgParticles) {
+        bgParticles.material.color.setHex(isDark ? 0x0284c7 : 0x38bdf8);
       }
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
@@ -854,107 +1061,11 @@
       }
     }
 
-    /* --- THREE.JS REALISTIC PRINTER 3D SHOWCASE --- */
-    function initRealisticPrinter3D() {
-      const container = document.getElementById('printer-3d-canvas-box');
-      if (!container || typeof THREE === 'undefined') return;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(0, 4, 12);
-
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
-
-      // Create Printer 3D Group
-      const printerGroup = new THREE.Group();
-
-      // Printer Base (Metallic Body)
-      const baseGeo = new THREE.BoxGeometry(6, 2.2, 4);
-      const baseMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.2 });
-      const printerBase = new THREE.Mesh(baseGeo, baseMat);
-      printerGroup.add(printerBase);
-
-      // Printer Top Cover
-      const topGeo = new THREE.BoxGeometry(5.8, 0.6, 3.8);
-      const topMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.1 });
-      const printerTop = new THREE.Mesh(topGeo, topMat);
-      printerTop.position.y = 1.3;
-      printerGroup.add(printerTop);
-
-      // Paper Tray (Top Back)
-      const trayGeo = new THREE.BoxGeometry(4.5, 3, 0.2);
-      const trayMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.5, roughness: 0.5 });
-      const paperTray = new THREE.Mesh(trayGeo, trayMat);
-      paperTray.position.set(0, 2.2, -1.8);
-      paperTray.rotation.x = -Math.PI / 8;
-      printerGroup.add(paperTray);
-
-      // Output Printed Paper
-      const paperGeo = new THREE.PlaneGeometry(3.6, 3.2);
-      const paperMat = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, roughness: 0.9 });
-      const printedPaper = new THREE.Mesh(paperGeo, paperMat);
-      printedPaper.position.set(0, 0.2, 1.8);
-      printedPaper.rotation.x = Math.PI / 2.3;
-      printerGroup.add(printedPaper);
-
-      // Moving Scanner Beam
-      const beamGeo = new THREE.BoxGeometry(5.2, 0.1, 0.1);
-      const beamMat = new THREE.MeshBasicMaterial({ color: 0x2997ff });
-      const scannerBeam = new THREE.Mesh(beamGeo, beamMat);
-      scannerBeam.position.set(0, 1.35, 0);
-      printerGroup.add(scannerBeam);
-
-      scene.add(printerGroup);
-
-      // Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
-      scene.add(ambientLight);
-
-      const spotLight = new THREE.SpotLight(0x2997ff, 3);
-      spotLight.position.set(10, 20, 10);
-      scene.add(spotLight);
-
-      // Mouse Parallax Interaction
-      let mouseX = 0, mouseY = 0;
-      window.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 1.2;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 1.2;
-      });
-
-      let clock = new THREE.Clock();
-      function animate() {
-        requestAnimationFrame(animate);
-        const elapsedTime = clock.getElapsedTime();
-
-        // Scanner Beam Animation
-        scannerBeam.position.z = Math.sin(elapsedTime * 3) * 1.5;
-
-        // Printer Slight Floating/Tilt
-        printerGroup.rotation.y = Math.sin(elapsedTime * 0.8) * 0.2 + mouseX * 0.5;
-        printerGroup.rotation.x = mouseY * 0.3;
-
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('resize', () => {
-        if (!container) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-    }
-
     /* --- SCROLL REVEAL OBSERVER --- */
     function initScrollReveal() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-active');
-          }
+          if (entry.isIntersecting) entry.target.classList.add('reveal-active');
         });
       }, { threshold: 0.15 });
 
@@ -1474,7 +1585,7 @@
 
         data.forEach(item => {
           const div = document.createElement('div');
-          div.className = 'p-3.5 rounded-2xl glass-card flex items-center justify-between text-xs';
+          div.className = 'p-3.5 rounded-2xl glass-card flex items-center justify-between text-xs border';
           div.innerHTML = `
             <div>
               <p class="font-bold text-amber-500">+${item.coins} Coins (${item.amount} ฿)</p>
@@ -1636,9 +1747,11 @@
             <td class="py-3 px-2">
               <p class="font-bold">${del?.delivery_method === 'delivery' ? '🚚 จัดส่ง' : '🏪 รับที่ร้าน'}</p>
               ${del?.delivery_method === 'delivery' ? `
-                <p class="text-[10px] opacity-70">${del.recipient_name || ''} (${del.phone_number || ''})</p>
-                <input type="text" id="track-${del.id}" placeholder="กรอกเลขพัสดุ" value="${del.tracking_number || ''}" class="mt-1 px-2 py-1 bg-slate-100 dark:bg-black/40 border rounded text-[10px] w-28">
-                <button onclick="saveTracking('${del.id}')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold">บันทึก</button>
+                <p class="text-[10px] opacity-70">${del.recipient_name \vert{}\vert{} ''} (${del.phone_number || ''})</p>
+                <div class="flex gap-1 mt-1">
+                  <input type="text" id="track-${del.id}" placeholder="กรอกเลขพัสดุ" value="${del.tracking_number || ''}" class="px-2 py-1 bg-slate-100 dark:bg-black/40 border rounded text-[10px] w-28">
+                  <button onclick="saveTracking('${del.id}')" class="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold">บันทึก</button>
+                </div>
               ` : ''}
             </td>
             <td class="py-3 px-2">
@@ -1734,46 +1847,44 @@
               ${t.status === 'pending' ? `
                 <button onclick="approveTopup('${t.id}', '${t.user_id}',${t.coins})" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold mr-1 shadow transition">อนุมัติ & เพิ่ม Coins</button>
                 <button onclick="rejectTopup('${t.id}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-[10px] font-bold shadow transition">ปฏิเสธ</button>
-              ` : '-'}
+              ` : '<span class="text-[10px] opacity-60">ดำเนินการแล้ว</span>'}
             </td>
           `;
           tbody.appendChild(tr);
         });
       } catch (err) {
         console.error("Fetch admin topups error:", err);
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการดึงคำขอเติมเงิน</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดรายการ</td></tr>`;
       }
     }
 
-    async function approveTopup(requestId, userId, coinsAmount) {
+    async function approveTopup(topupId, userId, coinsAmount) {
       try {
-        const { error: reqErr } = await supabaseClient.from('topup_requests').update({ status: 'approved', approved_at: new Date() }).eq('id', requestId);
-        if (reqErr) throw reqErr;
-
+        await supabaseClient.from('topup_requests').update({ status: 'approved' }).eq('id', topupId);
+        
         let { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', userId).single();
         if (!w) {
           const { data: newW } = await supabaseClient.from('wallets').insert([{ user_id: userId, balance: coinsAmount }]).select().single();
           w = newW;
         } else {
-          const updatedBal = parseFloat(w.balance) + parseFloat(coinsAmount);
-          await supabaseClient.from('wallets').update({ balance: updatedBal, updated_at: new Date() }).eq('id', w.id);
+          const newBal = parseFloat(w.balance) + parseFloat(coinsAmount);
+          await supabaseClient.from('wallets').update({ balance: newBal, updated_at: new Date() }).eq('id', w.id);
         }
 
         await supabaseClient.from('wallet_transactions').insert([{
-          wallet_id: w.id, transaction_type: 'topup', amount: coinsAmount, description: 'เติมเงิน Coins ผ่านสลิปโอนเงิน'
+          wallet_id: w.id, transaction_type: 'topup', amount: coinsAmount, description: `เติมเงินเข้ากระเป๋าสำเร็จ (+${coinsAmount} Coins)`
         }]);
 
-        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ!', message: `อนุมัติและเพิ่มจำนวน ${coinsAmount} Coins ให้ผู้ใช้เรียบร้อยแล้ว`, icon: 'check-circle' });
+        showCustomModal({ title: 'อนุมัติสำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins ให้ผู้ใช้เรียบร้อย`, icon: 'check-circle' });
         fetchAdminTopups();
-        fetchUserWallet();
+        if (currentUser && currentUser.id === userId) fetchUserWallet();
       } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
-    async function rejectTopup(requestId) {
+    async function rejectTopup(topupId) {
       try {
-        const { error } = await supabaseClient.from('topup_requests').update({ status: 'rejected' }).eq('id', requestId);
-        if (error) throw error;
-        showCustomModal({ title: 'ปฏิเสธคำขอเติมเงินแล้ว', message: 'รายการคำขอเติมเงินนี้ถูกปฏิเสธเรียบร้อยแล้ว', icon: 'info' });
+        await supabaseClient.from('topup_requests').update({ status: 'rejected' }).eq('id', topupId);
+        showCustomModal({ title: 'ปฏิเสธคำขอเรียบร้อย', message: 'ยกเลิกคำขอเติมเงินรายการนี้แล้ว', icon: 'check-circle' });
         fetchAdminTopups();
       } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
@@ -1781,7 +1892,7 @@
     async function fetchAdminUsers() {
       const tbody = document.getElementById('admin-users-tbody');
       try {
-        const { data: users, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: true });
+        const { data: users, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
         tbody.innerHTML = '';
 
         if (error) {
@@ -1789,21 +1900,21 @@
           return;
         }
 
-        if (!users || users.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center opacity-70 text-xs">ไม่พบสมาชิก</td></tr>';
-          return;
-        }
-
         users.forEach(u => {
-          const isAdmin = u.role === 'admin';
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-200/50 dark:hover:bg-white/5 transition';
           tr.innerHTML = `
             <td class="py-3 px-2 font-bold">${u.full_name}</td>
-            <td class="py-3 px-2 opacity-70">${u.email}</td>
-            <td class="py-3 px-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${isAdmin ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30' : 'bg-slate-200 dark:bg-white/10 opacity-80'}">${isAdmin ? 'Admin' : 'User'}</span></td>
+            <td class="py-3 px-2 opacity-80">${u.email}</td>
+            <td class="py-3 px-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30' : 'bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30'}">
+                ${u.role === 'admin' ? 'ผู้ดูแลระบบ' : 'สมาชิก'}
+              </span>
+            </td>
             <td class="py-3 px-2 text-right">
-              <button onclick="toggleRole('${u.id}', '${u.role}')" class="px-2.5 py-1 bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-[10px] rounded-xl font-bold transition">${isAdmin ? 'ปรับเป็นสมาชิก' : 'ตั้งเป็น Admin'}</button>
+              <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-2.5 py-1 bg-slate-200 dark:bg-white/10 hover:bg-blue-500/20 rounded-xl text-[10px] font-bold border transition">
+                เปลี่ยนสิทธิ์เป็น ${u.role === 'admin' ? 'User' : 'Admin'}
+              </button>
             </td>
           `;
           tbody.appendChild(tr);
@@ -1814,40 +1925,41 @@
       }
     }
 
-    async function toggleRole(userId, currentRole) {
+    async function toggleUserRole(userId, currentRole) {
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
       try {
         await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
-        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `ปรับเปลี่ยนสิทธิ์ผู้ใช้เป็น ${newRole} เรียบร้อยแล้ว`, icon: 'check-circle' });
+        showCustomModal({ title: 'อัปเดตสิทธิ์สำเร็จ', message: `ปรับเปลี่ยนสิทธิ์เป็น ${newRole} เรียบร้อยแล้ว`, icon: 'check-circle' });
         fetchAdminUsers();
       } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
-    function translateStatus(s) {
-      switch (s) {
-        case 'queued': return 'รอดำเนินการ';
-        case 'printing': return 'กำลังพิมพ์';
-        case 'completed': return 'พร้อมรับ/พร้อมส่ง';
-        case 'cancelled': return 'ยกเลิก';
-        default: return s || 'รอดำเนินการ';
-      }
-    }
-
-    function getJobStatusBadge(s) {
-      switch (s) {
+    /* --- HELPER UTILITIES --- */
+    function getJobStatusBadge(status) {
+      switch (status) {
         case 'queued': return 'bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30';
-        case 'printing': return 'bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30';
+        case 'printing': return 'bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30 animate-pulse';
         case 'completed': return 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/30';
         case 'cancelled': return 'bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/30';
-        default: return 'bg-slate-200 dark:bg-white/10 opacity-80';
+        default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
       }
     }
 
-    function formatInputDateTime(iso) {
-      if (!iso) return '';
-      const d = new Date(iso);
-      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-      return d.toISOString().slice(0, 16);
+    function translateStatus(status) {
+      switch (status) {
+        case 'queued': return 'รอดำเนินการ';
+        case 'printing': return 'กำลังพิมพ์...';
+        case 'completed': return 'เสร็จสมบูรณ์';
+        case 'cancelled': return 'ยกเลิกรายการ';
+        default: return status || 'รอดำเนินการ';
+      }
+    }
+
+    function formatInputDateTime(isoStr) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr);
+      const tzOffset = d.getTimezoneOffset() * 60000;
+      return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
     }
   </script>
 </body>
