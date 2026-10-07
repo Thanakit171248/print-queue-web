@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrintQueue Pro - Apple Titanium 3D Ultra Edition</title>
+  <title>PrintQueue Pro - Titanium 3D Ultra Enterprise Edition</title>
   
   <!-- Tailwind CSS & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,8 +26,9 @@
           },
           animation: {
             'shimmer': 'shimmer 3s infinite linear',
-            'float-slow': 'floatSlow 8s ease-in-out infinite',
-            'pulse-glow': 'pulseGlow 4s ease-in-out infinite'
+            'float-slow': 'floatSlow 6s ease-in-out infinite',
+            'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
+            'glow-pulse': 'glowPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
           },
           keyframes: {
             shimmer: {
@@ -35,12 +36,16 @@
               '100%': { backgroundPosition: '200% 0' }
             },
             floatSlow: {
-              '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
-              '50%': { transform: 'translateY(-12px) rotate(1.5deg)' }
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
             },
-            pulseGlow: {
-              '0%, 100%': { opacity: '0.4' },
-              '50%': { opacity: '0.8' }
+            pulseSlow: {
+              '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+              '50%': { opacity: '0.6', transform: 'scale(1.08)' }
+            },
+            glowPulse: {
+              '0%, 100%': { opacity: '0.8', filter: 'drop-shadow(0 0 15px rgba(41, 151, 255, 0.8))' },
+              '50%': { opacity: '0.4', filter: 'drop-shadow(0 0 5px rgba(41, 151, 255, 0.3))' }
             }
           }
         }
@@ -50,9 +55,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- Three.js for Fullscreen Interactive Background -->
+  <!-- Three.js for Interactive Canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -61,25 +66,36 @@
       overflow-x: hidden;
     }
 
+    /* Gradient Blue Text Style for Brand Logo */
+    .blue-gradient-text {
+      background: linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .blue-gradient-glow {
+      box-shadow: 0 0 35px -5px rgba(37, 99, 235, 0.4);
+    }
+
     /* Dark Mode Theme */
     html.dark body {
-      background-color: #07090e;
+      background-color: #05070c;
       color: #f8fafc;
     }
     html.dark .glass-panel {
-      background: rgba(15, 21, 35, 0.72);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+      background: rgba(11, 16, 28, 0.88);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
     }
     html.dark .glass-card {
-      background: rgba(255, 255, 255, 0.035);
-      backdrop-filter: blur(18px);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     html.dark .titanium-text {
-      background: linear-gradient(135deg, #ffffff 0%, #a1a1a6 50%, #f5f5f7 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #f8fafc 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -90,17 +106,17 @@
       color: #0f172a;
     }
     html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.07);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
     }
     html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(18px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
     html:not(.dark) .titanium-text {
       background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
@@ -108,20 +124,14 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Interactive Card Hover Effects */
+    /* Subtle Non-Distorting Hover Effects */
     .glass-card {
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover {
-      border-color: rgba(41, 151, 255, 0.5);
-      box-shadow: 0 15px 35px rgba(41, 151, 255, 0.2);
-      transform: translateY(-5px) scale(1.01);
-    }
-
-    .apple-blue-text {
-      background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
+      transform: translateY(-3px);
     }
 
     .apple-gold-text {
@@ -130,15 +140,15 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Perspective Container & Tilt */
+    /* Perspective Container & Soft Tilt */
     .perspective-container { perspective: 1200px; }
-    .tilt-card { transform-style: preserve-3d; transition: transform 0.25s ease-out; }
+    .tilt-card { transform-style: preserve-3d; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-    /* iPhone Scroll Reveal Animation */
+    /* Scroll Reveal Animation */
     .scroll-reveal {
       opacity: 0;
-      transform: translateY(50px) scale(0.96);
-      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(35px) scale(0.98);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
     .scroll-reveal.reveal-active {
@@ -146,7 +156,7 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Animated Border Glow */
+    /* Animated Subtle Glow Border */
     .glow-border {
       position: relative;
     }
@@ -156,7 +166,7 @@
       inset: -1px;
       border-radius: inherit;
       padding: 1px;
-      background: linear-gradient(135deg, rgba(41,151,255,0.6), rgba(245,197,24,0.3), rgba(139,92,246,0.6));
+      background: linear-gradient(135deg, rgba(56,189,248,0.5), rgba(37,99,235,0.2), rgba(139,92,246,0.4));
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -164,19 +174,53 @@
     }
 
     @keyframes slideUpModal {
-      from { opacity: 0; transform: translateY(40px) scale(0.94); }
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .animate-modal { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-modal { animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white relative">
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
 
-  <!-- FULLSCREEN BACKGROUND 3D CANVAS (THREE.JS PARTICLES & FLOATING TITANIUM GEOMETRY) -->
-  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-80 transition-opacity duration-700"></div>
+  <!-- FULLSCREEN BACKGROUND 3D CANVAS (SOFT & FAINT READABILITY BACKGROUND) -->
+  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-25 transition-opacity duration-700"></div>
+
+  <!-- GRAND ELON / MARK SHOWCASE SPLASH SCREEN -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#05070d] transition-all duration-1000 overflow-hidden">
+    <!-- Ambient Background Light Orbs -->
+    <div class="absolute w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[140px] animate-pulse-slow"></div>
+    <div class="absolute w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px] -top-10"></div>
+    
+    <div class="relative z-10 flex flex-col items-center text-center p-6 space-y-6">
+      
+      <!-- Big Glowing Logo Container -->
+      <div class="relative group animate-float-slow">
+        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 rounded-3xl blur-2xl opacity-75 animate-glow-pulse"></div>
+        <div class="relative w-28 h-28 sm:w-36 sm:h-36 bg-slate-950/80 border border-white/20 rounded-3xl flex items-center justify-center shadow-2xl backdrop-blur-xl">
+          <i data-lucide="printer" class="w-14 h-14 sm:w-18 sm:h-18 text-cyan-400 drop-shadow-[0_0_15px_rgba(56,189,248,0.8)]"></i>
+        </div>
+      </div>
+
+      <!-- Grand Keynote Typography -->
+      <div class="space-y-2">
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white">
+          PRINTQUEUE <span class="blue-gradient-text">PRO</span>
+        </h1>
+        <p class="text-xs sm:text-sm font-semibold tracking-[0.35em] text-cyan-400/90 uppercase">
+          TITANIUM 3D ENTERPRISE SYSTEM
+        </p>
+      </div>
+
+      <!-- Sleek Dynamic Loader Line -->
+      <div class="w-64 sm:w-80 h-1.5 bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/10 mt-4">
+        <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full transition-all duration-1000 ease-out w-0 shadow-[0_0_12px_rgba(56,189,248,0.8)]"></div>
+      </div>
+      <p class="text-[11px] text-slate-400 font-mono tracking-wider animate-pulse">SYSTEM INITIALIZING...</p>
+    </div>
+  </div>
 
   <!-- MODAL แจ้งเตือนทั่วไป -->
-  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-2xl">
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
     <div class="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-modal text-center relative overflow-hidden glow-border">
       <div class="absolute -top-12 -left-12 w-36 h-36 bg-blue-500/20 rounded-full blur-3xl"></div>
       <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-500/20 text-blue-400 border border-blue-500/30">
@@ -209,17 +253,6 @@
     </div>
   </div>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
-    <div class="relative z-10 flex flex-col items-center text-center p-6 animate-float-slow">
-      <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 via-indigo-500 to-amber-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 border border-white/20">
-        <i data-lucide="printer" class="w-10 h-10 text-white"></i>
-      </div>
-      <h1 class="text-3xl font-extrabold titanium-text tracking-tight mb-2">PrintQueue <span class="apple-blue-text">PRO</span></h1>
-      <p class="text-slate-400 text-xs tracking-widest uppercase">Titanium 3D Service System</p>
-    </div>
-  </div>
-
   <!-- DB CONFIG PANEL (ADMIN) -->
   <div id="config-panel" class="bg-amber-950/80 border-b border-amber-500/30 p-3 hidden relative z-40 backdrop-blur-md">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
@@ -234,15 +267,15 @@
     </div>
   </div>
 
-  <!-- NAVBAR (APPLE TITANIUM STYLE) -->
+  <!-- NAVBAR -->
   <nav class="sticky top-0 z-40 glass-panel border-b">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition duration-300">
+        <div class="w-10 h-10 bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition duration-300">
           <i data-lucide="printer" class="w-5 h-5"></i>
         </div>
         <div>
-          <span class="text-lg font-extrabold titanium-text tracking-wide">PrintQueue</span>
+          <span class="text-lg font-black blue-gradient-text tracking-wide">PrintQueue</span>
           <span class="text-[10px] bg-blue-500/20 border border-blue-400/30 text-blue-500 dark:text-blue-300 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">Pro 3D</span>
         </div>
       </a>
@@ -298,11 +331,11 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-500 dark:text-blue-400 text-xs font-bold tracking-wide">
-            <i data-lucide="sparkles" class="w-4 h-4"></i> iPhone Titanium Printing Experience
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Titanium Ultra Printing Experience
           </div>
           <h1 class="text-4xl sm:text-6xl font-extrabold leading-tight tracking-tight titanium-text">
             มิติใหม่ของงานพิมพ์ <br>
-            <span class="apple-blue-text">ด้วยระบบ Titanium 3D Engine</span>
+            <span class="blue-gradient-text">ด้วยระบบ Titanium 3D Engine</span>
           </h1>
           <p class="opacity-80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
             อัปโหลดเอกสาร คำนวณราคาสี/ขาวดำเรียลไทม์ ชำระเงินผ่านระบบ Coins เติมเงินตรวจสอบสลิปอัตโนมัติ พร้อมระบบติดตามคิวและจัดส่งพัสดุระดับพรีเมียม
@@ -317,24 +350,20 @@
           </div>
         </div>
 
-        <!-- HIGH-RES APPLE SHOWCASE GRAPHIC DISPLAY (REPLACED INNER 3D PRINTER BOX) -->
+        <!-- HIGH-RES SHOWCASE GRAPHIC DISPLAY -->
         <div class="lg:col-span-5 perspective-container">
           <div class="tilt-card glass-panel rounded-3xl p-6 border shadow-2xl space-y-6 text-center relative overflow-hidden glow-border">
             
-            <!-- Sleek High-Res Graphic Display Container -->
             <div class="relative w-full h-80 rounded-2xl overflow-hidden group shadow-2xl">
               <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Titanium Precision Printer" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
               
-              <!-- Dark Ambient Gradient Overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
 
-              <!-- Top Spec Badge -->
               <div class="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-lg">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                 <span>TITANIUM ENGINE PRO</span>
               </div>
 
-              <!-- Bottom Visual Text overlay -->
               <div class="absolute bottom-4 left-4 right-4 text-left space-y-1">
                 <span class="text-[10px] uppercase font-extrabold text-blue-400 tracking-wider">Designed for Perfection</span>
                 <p class="text-base font-extrabold text-white">ระบบควบคุมการพิมพ์เลเซอร์ระดับพรีเมียม</p>
@@ -342,10 +371,9 @@
               </div>
             </div>
 
-            <!-- Stats Bar Below Image -->
             <div class="grid grid-cols-3 gap-3 text-center text-xs">
               <div class="p-3 rounded-2xl glass-card border border-white/10">
-                <p class="apple-blue-text font-extrabold text-lg">100%</p>
+                <p class="blue-gradient-text font-extrabold text-lg">100%</p>
                 <p class="text-[10px] opacity-70 font-semibold">ความคมชัดสูง</p>
               </div>
               <div class="p-3 rounded-2xl glass-card border border-white/10">
@@ -364,7 +392,7 @@
       <!-- LIVE STATS BAR -->
       <div class="scroll-reveal grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
-          <p class="text-3xl font-extrabold apple-blue-text">15,400+</p>
+          <p class="text-3xl font-extrabold blue-gradient-text">15,400+</p>
           <p class="text-xs opacity-70 font-medium">เอกสารพิมพ์สำเร็จ</p>
         </div>
         <div class="glass-panel p-6 rounded-3xl border text-center space-y-1">
@@ -381,10 +409,10 @@
         </div>
       </div>
 
-      <!-- SCROLL REVEAL SECTION 1: HIGHLIGHT CARDS -->
+      <!-- HIGHLIGHT CARDS -->
       <div class="scroll-reveal space-y-12">
         <div class="text-center max-w-2xl mx-auto space-y-3">
-          <h2 class="text-3xl font-extrabold titanium-text">นวัตกรรมสั่งพิมพ์ สไตล์ Apple</h2>
+          <h2 class="text-3xl font-extrabold titanium-text">นวัตกรรมสั่งพิมพ์ระดับมืออาชีพ</h2>
           <p class="opacity-80 text-xs sm:text-sm">ออกแบบมาให้ใช้งานง่าย รวดเร็ว แม่นยำ และรองรับทุกอุปกรณ์</p>
         </div>
 
@@ -411,40 +439,6 @@
             </div>
             <h3 class="text-lg font-bold">ติดตามคิว & พัสดุ Real-time</h3>
             <p class="text-xs opacity-70 leading-relaxed">เช็กสถานะงานพิมพ์ วันเวลานัดรับ และเลข Tracking จัดส่งพัสดุได้ตลอด 24 ชั่วโมง</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- SCROLL REVEAL SECTION 2: PROCESS STEPS -->
-      <div class="scroll-reveal glass-panel p-10 rounded-3xl border space-y-8">
-        <div class="text-center max-w-xl mx-auto space-y-2">
-          <span class="text-xs font-bold text-blue-500 uppercase tracking-widest">4 Steps Easy Process</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold titanium-text">ขั้นตอนการสั่งพิมพ์ง่ายๆ ใน 1 นาที</h2>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
-            <span class="text-2xl font-black text-blue-500/40">01</span>
-            <h4 class="font-bold text-sm">อัปโหลดไฟล์</h4>
-            <p class="text-xs opacity-70">รองรับ PDF, Word, รูปภาพ ระบบคำนวณจำนวนหน้าให้อัตโนมัติ</p>
-          </div>
-
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
-            <span class="text-2xl font-black text-blue-500/40">02</span>
-            <h4 class="font-bold text-sm">ตั้งค่ากระดาษ & สี</h4>
-            <p class="text-xs opacity-70">เลือก A4/A3 ขาวดำหรือสี พิมพ์หน้าเดียวหรือหน้า-หลัง</p>
-          </div>
-
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
-            <span class="text-2xl font-black text-amber-500/40">03</span>
-            <h4 class="font-bold text-sm">ชำระเงิน / Coins</h4>
-            <p class="text-xs opacity-70">หัก Coins ในระบบ หรือโอน PromptPay แนบสลิปชำระเงิน</p>
-          </div>
-
-          <div class="scroll-reveal glass-card p-5 rounded-2xl relative space-y-3 border">
-            <span class="text-2xl font-black text-emerald-500/40">04</span>
-            <h4 class="font-bold text-sm">รับงาน / จัดส่ง</h4>
-            <p class="text-xs opacity-70">รับสินค้าที่หน้าร้านตามเวลานัดหมาย หรือรอรับพัสดุที่บ้าน</p>
           </div>
         </div>
       </div>
@@ -684,7 +678,7 @@
                 <span class="text-xs font-bold opacity-70 block">ราคารวมสุทธิ:</span>
                 <span id="price-breakdown" class="text-[10px] opacity-70">(ค่าพิมพ์ + ค่าจัดส่ง)</span>
               </div>
-              <span id="total-price" class="text-2xl font-extrabold apple-blue-text">1.00 ฿</span>
+              <span id="total-price" class="text-2xl font-extrabold blue-gradient-text">1.00 ฿</span>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition">
@@ -705,7 +699,6 @@
                 <p class="text-xs opacity-70">สถานะงานพิมพ์ วันเวลานัดรับ และเลขพัสดุ</p>
               </div>
             </div>
-            <!-- REFRESH BUTTON -->
             <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 border rounded-xl text-xs flex items-center gap-1.5 transition">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช 🔄
             </button>
@@ -884,10 +877,19 @@
       initScrollReveal();
       if (typeof lucide !== 'undefined') lucide.createIcons();
 
+      // GRAND SPLASH ANIMATION TIMELINE
+      const progressBar = document.getElementById('splash-progress-bar');
+      if (progressBar) {
+        setTimeout(() => progressBar.style.width = '100%', 100);
+      }
+
       setTimeout(() => {
         const splash = document.getElementById('splash-screen');
-        if (splash) { splash.classList.add('opacity-0'); setTimeout(() => splash.style.display = 'none', 700); }
-      }, 600);
+        if (splash) {
+          splash.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
+          setTimeout(() => splash.style.display = 'none', 1000);
+        }
+      }, 2000);
 
       const savedUrl = localStorage.getItem('sp_url') || DEFAULT_SUPABASE_URL;
       const savedKey = localStorage.getItem('sp_key') || DEFAULT_SUPABASE_KEY;
@@ -898,7 +900,7 @@
       if (savedUrl && savedKey) initSupabase(savedUrl, savedKey);
     });
 
-    /* --- FULLSCREEN 3D THREE.JS BACKGROUND ENGINE --- */
+    /* --- FULLSCREEN 3D THREE.JS BACKGROUND ENGINE (SOFTENED FOR ACCESSIBILITY) --- */
     function init3DBackground() {
       const container = document.getElementById('three-bg-canvas');
       if (!container || typeof THREE === 'undefined') return;
@@ -914,11 +916,10 @@
 
       bgFloatingGroup = new THREE.Group();
 
-      // Create Floating Titanium Geometric Elements
       const isDark = document.documentElement.classList.contains('dark');
       const matColor = isDark ? 0x2997ff : 0x0284c7;
 
-      // 1. Torus Knot (Luxurious Titanium Ring)
+      // 1. Torus Knot
       const torusGeo = new THREE.TorusKnotGeometry(2.5, 0.6, 120, 16);
       const torusMat = new THREE.MeshStandardMaterial({
         color: matColor, metalness: 0.9, roughness: 0.1, wireframe: true
@@ -927,7 +928,7 @@
       torusMesh.position.set(-8, 3, -5);
       bgFloatingGroup.add(torusMesh);
 
-      // 2. Icosahedron (Geometric Crystal)
+      // 2. Icosahedron
       const icoGeo = new THREE.IcosahedronGeometry(2, 1);
       const icoMat = new THREE.MeshStandardMaterial({
         color: 0xf5c518, metalness: 0.8, roughness: 0.2, wireframe: true
@@ -952,8 +953,8 @@
         bgFloatingGroup.add(boxMesh);
       }
 
-      // 4. Ambient Particle Starfield Mesh
-      const particleCount = 200;
+      // 4. Particle Starfield
+      const particleCount = 180;
       const particleGeo = new THREE.BufferGeometry();
       const positions = new Float32Array(particleCount * 3);
 
@@ -963,10 +964,10 @@
       particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
       const particleMat = new THREE.PointsMaterial({
-        size: 0.12,
+        size: 0.1,
         color: isDark ? 0x38bdf8 : 0x0284c7,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.5
       });
       bgParticles = new THREE.Points(particleGeo, particleMat);
       bgScene.add(bgParticles);
@@ -977,38 +978,35 @@
       const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.6 : 1.2);
       bgScene.add(ambientLight);
 
-      pointLight1 = new THREE.PointLight(0x2997ff, 3, 50);
+      pointLight1 = new THREE.PointLight(0x2997ff, 2.5, 50);
       pointLight1.position.set(10, 10, 10);
       bgScene.add(pointLight1);
 
-      pointLight2 = new THREE.PointLight(0xf5c518, 2, 50);
+      pointLight2 = new THREE.PointLight(0xf5c518, 1.8, 50);
       pointLight2.position.set(-10, -10, 5);
       bgScene.add(pointLight2);
 
-      // Mouse Parallax Effect
       let mouseX = 0, mouseY = 0;
       window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth - 0.5) * 1.5;
         mouseY = (e.clientY / window.innerHeight - 0.5) * 1.5;
       });
 
-      // Animate Loop
       let clock = new THREE.Clock();
       function animate3D() {
         requestAnimationFrame(animate3D);
         const t = clock.getElapsedTime();
 
         bgFloatingGroup.children.forEach((obj, idx) => {
-          obj.rotation.x += 0.005 * (idx % 2 === 0 ? 1 : -1);
-          obj.rotation.y += 0.007 * (idx % 2 === 0 ? -1 : 1);
-          obj.position.y += Math.sin(t + idx) * 0.003;
+          obj.rotation.x += 0.003 * (idx % 2 === 0 ? 1 : -1);
+          obj.rotation.y += 0.004 * (idx % 2 === 0 ? -1 : 1);
+          obj.position.y += Math.sin(t + idx) * 0.002;
         });
 
-        bgParticles.rotation.y = t * 0.02;
+        bgParticles.rotation.y = t * 0.015;
 
-        // Smooth Camera movement according to Mouse
-        bgCamera.position.x += (mouseX * 2 - bgCamera.position.x) * 0.05;
-        bgCamera.position.y += (-mouseY * 2 - bgCamera.position.y) * 0.05;
+        bgCamera.position.x += (mouseX * 1.5 - bgCamera.position.x) * 0.04;
+        bgCamera.position.y += (-mouseY * 1.5 - bgCamera.position.y) * 0.04;
         bgCamera.lookAt(bgScene.position);
 
         bgRenderer.render(bgScene, bgCamera);
@@ -1023,7 +1021,7 @@
       });
     }
 
-    /* --- THEME TOGGLE (UPDATE 3D SCENE REAL-TIME) --- */
+    /* --- THEME TOGGLE --- */
     function toggleTheme() {
       const htmlEl = document.documentElement;
       const themeIcon = document.getElementById('theme-icon');
@@ -1045,7 +1043,7 @@
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
-    /* --- REFRESH BUTTON SPIN ANIMATION --- */
+    /* --- REFRESH BUTTON SPIN --- */
     function animateRefresh(btnId, callback) {
       const btn = document.getElementById(btnId);
       if (!btn) return;
@@ -1072,7 +1070,7 @@
       document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
     }
 
-    /* --- 3D TILT EFFECT FOR CARDS --- */
+    /* --- SUBTLE TILT EFFECT FOR CARDS (SMOOTH & NOT OVER-TIP) --- */
     function init3DTiltEffect() {
       document.querySelectorAll('.tilt-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
@@ -1081,8 +1079,9 @@
           const y = e.clientY - rect.top;
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
-          const rotateX = (centerY - y) / 12;
-          const rotateY = (x - centerX) / 12;
+          // Divisor increased to 45 for smooth, high-end Apple-style subtle tilt
+          const rotateX = (centerY - y) / 45;
+          const rotateY = (x - centerX) / 45;
           card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
         card.addEventListener('mouseleave', () => {
@@ -1683,6 +1682,20 @@
       }
     }
 
+    function translateStatus(st) {
+      if (st === 'printing') return 'กำลังพิมพ์';
+      if (st === 'completed') return 'พิมพ์เสร็จแล้ว';
+      if (st === 'cancelled') return 'ยกเลิก';
+      return 'รอดำเนินการ';
+    }
+
+    function getJobStatusBadge(st) {
+      if (st === 'printing') return 'bg-blue-500/20 text-blue-500 border-blue-500/30';
+      if (st === 'completed') return 'bg-emerald-500/20 text-emerald-500 border-emerald-500/30';
+      if (st === 'cancelled') return 'bg-rose-500/20 text-rose-500 border-rose-500/30';
+      return 'bg-amber-500/20 text-amber-500 border-amber-500/30';
+    }
+
     /* --- ADMIN BACKOFFICE ACTIONS --- */
     function loadAdminData() {
       const isTopups = !document.getElementById('admin-tab-topups').classList.contains('hidden');
@@ -1733,7 +1746,6 @@
           const orderId = item.orders?.id;
           const pay = Array.isArray(item.orders?.payments) ? item.orders.payments[0] : item.orders?.payments;
           const del = Array.isArray(item.orders?.deliveries) ? item.orders.deliveries[0] : item.orders?.deliveries;
-          const pickupVal = item.orders?.estimated_pickup ? formatInputDateTime(item.orders.estimated_pickup) : '';
 
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-200/50 dark:hover:bg-white/5 transition';
@@ -1741,7 +1753,7 @@
             <td class="py-3 px-2 font-bold text-blue-500">Q-${item.orders?.queue_number || '-'}</td>
             <td class="py-3 px-2">
               <p class="font-bold text-xs">${item.documents?.file_name || 'เอกสาร'}</p>
-              <p class="text-[10px] opacity-70">${item.orders?.total_amount || 0} ฿ (${item.printed_pages_count} หน้า: ${item.page_range || 'ทุกหน้า'})</p>
+              <p class="text-[10px] opacity-70">${item.orders?.total_amount || 0} ฿ (${item.printed_pages_count} หน้า)</p>
               ${item.orders?.admin_note ? `<p class="text-[9px] text-amber-500 truncate max-w-xs">${item.orders.admin_note}</p>` : ''}
             </td>
             <td class="py-3 px-2">
@@ -1756,172 +1768,169 @@
             </td>
             <td class="py-3 px-2">
               <p class="font-bold">${pay?.payment_method === 'coins' ? 'Coins' : 'PromptPay'}</p>
-              ${pay?.slip_url ? `<button onclick="openSlipModal('${pay.slip_url}')" class="text-[10px] bg-blue-500/20 border border-blue-500/30 text-blue-500 dark:text-blue-300 px-2 py-0.5 rounded font-bold mt-1">ดูสลิป</button>` : ''}
+              ${pay?.slip_url ? `<button onclick="openSlipModal('${pay.slip_url}')" class="text-[10px] bg-blue-500/20 text-blue-500 border border-blue-500/30 px-2 py-0.5 rounded font-bold mt-1">ดูสลิป</button>` : ''}
               ${pay?.status === 'pending' ? `<button onclick="approvePayment('${pay.id}')" class="block text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-0.5 rounded font-bold mt-1 shadow">อนุมัติเงิน</button>` : `<span class="text-[10px] text-emerald-500 font-bold block mt-1">อนุมัติแล้ว</span>`}
             </td>
             <td class="py-3 px-2">
               <select onchange="updateJobStatus('${item.id}', '${orderId}', this.value)" class="border rounded p-1.5 text-[11px] bg-slate-100 dark:bg-black/60">
                 <option value="queued" ${item.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
                 <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
-                <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>พร้อมรับ/พร้อมส่ง</option>
+                <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>พิมพ์เสร็จแล้ว</option>
                 <option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>ยกเลิก</option>
               </select>
             </td>
-            <td class="py-3 px-2 text-right space-y-1">
-              <input type="datetime-local" id="dt-${orderId}" value="${pickupVal}" class="border rounded px-1.5 py-1 text-[10px] w-full bg-slate-100 dark:bg-black/60">
-              <button onclick="savePickupNote('${orderId}')" class="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[10px] font-bold shadow">บันทึกเวลานัด</button>
+            <td class="py-3 px-2 text-right">
+              <button onclick="deleteJob('${item.id}', '${orderId}')" class="text-rose-500 hover:text-rose-400 font-bold text-[10px] px-2 py-1 bg-rose-500/10 rounded-lg">ลบ</button>
             </td>
           `;
           tbody.appendChild(tr);
         });
       } catch (err) {
-        console.error("Fetch admin orders error:", err);
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดรายการ</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>`;
+      }
+    }
+
+    async function updateJobStatus(jobId, orderId, status) {
+      try {
+        await supabaseClient.from('print_jobs').update({ status }).eq('id', jobId);
+        await supabaseClient.from('orders').update({ status }).eq('id', orderId);
+        showCustomModal({ title: 'อัปเดตสำเร็จ', message: 'เปลี่ยนสถานะเรียบร้อยแล้ว', icon: 'check-circle' });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
+      }
+    }
+
+    async function saveTracking(deliveryId) {
+      const trackVal = document.getElementById(`track-${deliveryId}`).value.trim();
+      try {
+        await supabaseClient.from('deliveries').update({ tracking_number: trackVal, delivery_status: trackVal ? 'shipped' : 'pending' }).eq('id', deliveryId);
+        showCustomModal({ title: 'บันทึกสำเร็จ', message: 'อัปเดตเลขพัสดุเรียบร้อยแล้ว', icon: 'check-circle' });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
       }
     }
 
     async function approvePayment(paymentId) {
       try {
         await supabaseClient.from('payments').update({ status: 'approved' }).eq('id', paymentId);
-        showCustomModal({ title: 'อนุมัติชำระเงินสำเร็จ', message: 'ทำรายการอนุมัติเงินเรียบร้อยแล้ว', icon: 'check-circle' });
-        fetchAdminOrders();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+        showCustomModal({ title: 'อนุมัติเรียบร้อย', message: 'อนุมัติการชำระเงินเรียบร้อยแล้ว', icon: 'check-circle', onConfirm: fetchAdminOrders });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
+      }
     }
 
-    async function saveTracking(deliveryId) {
-      const trackNo = document.getElementById(`track-${deliveryId}`).value;
-      try {
-        await supabaseClient.from('deliveries').update({ tracking_number: trackNo, delivery_provider: 'Flash/EMS/Rider', delivery_status: 'shipped' }).eq('id', deliveryId);
-        showCustomModal({ title: 'บันทึกเลขพัสดุแล้ว', message: `บันทึกหมายเลขพัสดุ ${trackNo} สำเร็จ`, icon: 'check-circle' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
-    }
-
-    async function updateJobStatus(jobId, orderId, status) {
-      try {
-        await supabaseClient.from('print_jobs').update({ status }).eq('id', jobId);
-        if (orderId) await supabaseClient.from('orders').update({ status }).eq('id', orderId);
-        showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', message: 'ปรับเปลี่ยนสถานะงานพิมพ์เรียบร้อยแล้ว', icon: 'check-circle' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
-    }
-
-    async function savePickupNote(orderId) {
-      const pickupVal = document.getElementById(`dt-${orderId}`).value;
-      try {
-        await supabaseClient.from('orders').update({ estimated_pickup: pickupVal ? new Date(pickupVal).toISOString() : null }).eq('id', orderId);
-        showCustomModal({ title: 'บันทึกเวลานัดรับสำเร็จ', message: 'อัปเดตวันเวลานัดรับเรียบร้อยแล้ว', icon: 'check-circle' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+    async function deleteJob(jobId, orderId) {
+      showCustomModal({
+        title: 'ยืนยันลบรายการ',
+        message: 'ต้องการลบรายการสั่งพิมพ์นี้หรือไม่?',
+        showCancel: true,
+        onConfirm: async () => {
+          try {
+            await supabaseClient.from('print_jobs').delete().eq('id', jobId);
+            if (orderId) await supabaseClient.from('orders').delete().eq('id', orderId);
+            fetchAdminOrders();
+          } catch (e) {
+            showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
+          }
+        }
+      });
     }
 
     async function fetchAdminTopups() {
       const tbody = document.getElementById('admin-topups-tbody');
       try {
-        const { data: topups, error } = await supabaseClient.from('topup_requests').select('*, users(full_name, email)').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient
+          .from('topup_requests')
+          .select('*, users(full_name, email)')
+          .order('created_at', { ascending: false });
+
         tbody.innerHTML = '';
 
-        if (error) {
-          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+        if (error || !data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center opacity-70 text-xs">ไม่มีคำขอเติม Coins</td></tr>';
           return;
         }
 
-        if (!topups || topups.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center opacity-70 text-xs">ไม่มีคำขอเติมเงิน</td></tr>';
-          return;
-        }
-
-        topups.forEach(t => {
+        data.forEach(item => {
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-200/50 dark:hover:bg-white/5 transition';
           tr.innerHTML = `
-            <td class="py-3 px-2 text-[10px] opacity-70">${new Date(t.created_at).toLocaleString('th-TH')}</td>
-            <td class="py-3 px-2 font-bold">${t.users?.full_name || 'ไม่ระบุชื่อ'}</td>
-            <td class="py-3 px-2 font-extrabold text-amber-500">${t.amount} ฿ (${t.coins} Coins)</td>
-            <td class="py-3 px-2">
-              <button onclick="openSlipModal('${t.slip_url}')" class="px-2.5 py-1 bg-blue-500/20 border border-blue-500/30 text-blue-500 dark:text-blue-300 rounded text-[10px] font-bold transition">ตรวจสอบสลิป</button>
-            </td>
-            <td class="py-3 px-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${t.status === 'approved' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/30' : t.status === 'rejected' ? 'bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/30' : 'bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30'}">
-                ${t.status === 'approved' ? 'อนุมัติแล้ว' : t.status === 'rejected' ? 'ปฏิเสธ' : 'รออนุมัติ'}
-              </span>
-            </td>
+            <td class="py-3 px-2 text-[10px] opacity-70">${new Date(item.created_at).toLocaleString('th-TH')}</td>
+            <td class="py-3 px-2 font-bold">${item.users?.full_name || 'ผู้ใช้'}<br><span class="text-[10px] opacity-70 font-normal">${item.users?.email || ''}</span></td>
+            <td class="py-3 px-2 font-black text-amber-500">${item.amount} ฿ (${item.coins} Coins)</td>
+            <td class="py-3 px-2"><button onclick="openSlipModal('${item.slip_url}')" class="text-[10px] bg-blue-500/20 text-blue-500 px-2.5 py-1 rounded-lg font-bold">ดูสลิป</button></td>
+            <td class="py-3 px-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'approved' ? 'bg-emerald-500/20 text-emerald-500' : item.status === 'rejected' ? 'bg-rose-500/20 text-rose-500' : 'bg-amber-500/20 text-amber-500'}">${item.status}</span></td>
             <td class="py-3 px-2 text-right">
-              ${t.status === 'pending' ? `
-                <button onclick="approveTopup('${t.id}', '${t.user_id}',${t.coins})" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold mr-1 shadow transition">อนุมัติ & เพิ่ม Coins</button>
-                <button onclick="rejectTopup('${t.id}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-[10px] font-bold shadow transition">ปฏิเสธ</button>
-              ` : '<span class="text-[10px] opacity-60">ดำเนินการแล้ว</span>'}
+              ${item.status === 'pending' ? `
+                <div class="flex justify-end gap-1">
+                  <button onclick="approveTopup('${item.id}', '${item.user_id}',${item.coins})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">อนุมัติ</button>
+                  <button onclick="rejectTopup('${item.id}')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px]">ปฏิเสธ</button>
+                </div>
+              ` : '-'}
             </td>
           `;
           tbody.appendChild(tr);
         });
-      } catch (err) {
-        console.error("Fetch admin topups error:", err);
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดรายการ</td></tr>`;
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
       }
     }
 
-    async function approveTopup(topupId, userId, coinsAmount) {
+    async function approveTopup(requestId, userId, coins) {
       try {
-        await supabaseClient.from('topup_requests').update({ status: 'approved' }).eq('id', topupId);
-        
+        await supabaseClient.from('topup_requests').update({ status: 'approved' }).eq('id', requestId);
         let { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', userId).single();
         if (!w) {
-          const { data: newW } = await supabaseClient.from('wallets').insert([{ user_id: userId, balance: coinsAmount }]).select().single();
+          const { data: newW } = await supabaseClient.from('wallets').insert([{ user_id: userId, balance: coins }]).select().single();
           w = newW;
         } else {
-          const newBal = parseFloat(w.balance) + parseFloat(coinsAmount);
+          const newBal = parseFloat(w.balance) + parseFloat(coins);
           await supabaseClient.from('wallets').update({ balance: newBal, updated_at: new Date() }).eq('id', w.id);
         }
-
         await supabaseClient.from('wallet_transactions').insert([{
-          wallet_id: w.id, transaction_type: 'topup', amount: coinsAmount, description: `เติมเงินเข้ากระเป๋าสำเร็จ (+${coinsAmount} Coins)`
+          wallet_id: w.id, transaction_type: 'topup', amount: coins, description: 'อนุมัติการเติมเงินผ่านสลิป PromptPay'
         }]);
-
-        showCustomModal({ title: 'อนุมัติสำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins ให้ผู้ใช้เรียบร้อย`, icon: 'check-circle' });
-        fetchAdminTopups();
-        if (currentUser && currentUser.id === userId) fetchUserWallet();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+        showCustomModal({ title: 'เติม Coins สำเร็จ', message: `เพิ่ม ${coins} Coins ให้ผู้ใช้เรียบร้อย`, icon: 'check-circle', onConfirm: fetchAdminTopups });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
+      }
     }
 
-    async function rejectTopup(topupId) {
+    async function rejectTopup(requestId) {
       try {
-        await supabaseClient.from('topup_requests').update({ status: 'rejected' }).eq('id', topupId);
-        showCustomModal({ title: 'ปฏิเสธคำขอเรียบร้อย', message: 'ยกเลิกคำขอเติมเงินรายการนี้แล้ว', icon: 'check-circle' });
-        fetchAdminTopups();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+        await supabaseClient.from('topup_requests').update({ status: 'rejected' }).eq('id', requestId);
+        showCustomModal({ title: 'ปฏิเสธเรียบร้อย', message: 'ปฏิเสธคำขอเติมเงินเรียบร้อยแล้ว', icon: 'check-circle', onConfirm: fetchAdminTopups });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
+      }
     }
 
     async function fetchAdminUsers() {
       const tbody = document.getElementById('admin-users-tbody');
       try {
-        const { data: users, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
         tbody.innerHTML = '';
 
-        if (error) {
-          tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+        if (error || !data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center opacity-70 text-xs">ไม่มีข้อมูลสมาชิก</td></tr>';
           return;
         }
 
-        users.forEach(u => {
+        data.forEach(u => {
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-200/50 dark:hover:bg-white/5 transition';
           tr.innerHTML = `
             <td class="py-3 px-2 font-bold">${u.full_name}</td>
-            <td class="py-3 px-2 opacity-80">${u.email}</td>
-            <td class="py-3 px-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30' : 'bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30'}">
-                ${u.role === 'admin' ? 'ผู้ดูแลระบบ' : 'สมาชิก'}
-              </span>
-            </td>
+            <td class="py-3 px-2 text-xs opacity-80">${u.email}</td>
+            <td class="py-3 px-2"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-slate-500/20 text-slate-300'}">${u.role === 'admin' ? 'ผู้ดูแลระบบ' : 'สมาชิกทั่วไป'}</span></td>
             <td class="py-3 px-2 text-right">
-              <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-2.5 py-1 bg-slate-200 dark:bg-white/10 hover:bg-blue-500/20 rounded-xl text-[10px] font-bold border transition">
-                เปลี่ยนสิทธิ์เป็น ${u.role === 'admin' ? 'User' : 'Admin'}
-              </button>
+              <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-2.5 py-1 bg-slate-200 dark:bg-white/10 hover:bg-slate-300 rounded-lg text-[10px] font-bold">เปลี่ยนสิทธิ์</button>
             </td>
           `;
           tbody.appendChild(tr);
         });
-      } catch (err) {
-        console.error("Fetch admin users error:", err);
-        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดสมาชิก</td></tr>`;
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการดึงข้อมูล</td></tr>';
       }
     }
 
@@ -1929,37 +1938,10 @@
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
       try {
         await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
-        showCustomModal({ title: 'อัปเดตสิทธิ์สำเร็จ', message: `ปรับเปลี่ยนสิทธิ์เป็น ${newRole} เรียบร้อยแล้ว`, icon: 'check-circle' });
-        fetchAdminUsers();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
-    }
-
-    /* --- HELPER UTILITIES --- */
-    function getJobStatusBadge(status) {
-      switch (status) {
-        case 'queued': return 'bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30';
-        case 'printing': return 'bg-blue-500/20 text-blue-600 dark:text-blue-300 border-blue-500/30 animate-pulse';
-        case 'completed': return 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/30';
-        case 'cancelled': return 'bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/30';
-        default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+        showCustomModal({ title: 'อัปเดตสิทธิ์สำเร็จ', message: `เปลี่ยนสิทธิ์เป็น ${newRole} เรียบร้อย`, icon: 'check-circle', onConfirm: fetchAdminUsers });
+      } catch (e) {
+        showCustomModal({ title: 'ล้มเหลว', message: e.message, icon: 'alert-circle' });
       }
-    }
-
-    function translateStatus(status) {
-      switch (status) {
-        case 'queued': return 'รอดำเนินการ';
-        case 'printing': return 'กำลังพิมพ์...';
-        case 'completed': return 'เสร็จสมบูรณ์';
-        case 'cancelled': return 'ยกเลิกรายการ';
-        default: return status || 'รอดำเนินการ';
-      }
-    }
-
-    function formatInputDateTime(isoStr) {
-      if (!isoStr) return '';
-      const d = new Date(isoStr);
-      const tzOffset = d.getTimezoneOffset() * 60000;
-      return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
     }
   </script>
 </body>
