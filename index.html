@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PrintQueue Pro - ระบบสั่งพิมพ์เอกสาร ชำระเงิน & จัดส่ง</title>
   
-  <!-- Tailwind CSS, Lucide Icons, Supabase JS, PDF.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' }
@@ -30,7 +29,7 @@
   <!-- MODAL แจ้งเตือนทั่วไป -->
   <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-slide-up text-center">
-      <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4">
+      <div id="modal-icon-bg" class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-100 text-blue-600">
         <i id="modal-icon" data-lucide="info" class="w-8 h-8"></i>
       </div>
       <h3 id="modal-title" class="text-xl font-bold text-slate-900 dark:text-white mb-2">แจ้งเตือน</h3>
@@ -42,7 +41,7 @@
     </div>
   </div>
 
-  <!-- MODAL ดูสลิปโอนเงิน (Image Preview Modal) -->
+  <!-- MODAL ดูสลิปโอนเงิน -->
   <div id="slip-preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-5 shadow-2xl animate-slide-up">
       <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
@@ -108,7 +107,6 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- USER WALLET BADGE -->
         <div id="user-coins-badge" class="hidden flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 px-3 py-1.5 rounded-xl cursor-pointer" onclick="switchView('wallet')">
           <i data-lucide="coins" class="w-4 h-4 text-amber-500"></i>
           <span id="user-coins-amount" class="text-xs font-bold text-amber-700 dark:text-amber-300">0 Coins</span>
@@ -248,16 +246,66 @@
               </div>
             </div>
 
-            <!-- จำนวนหน้า & ตัวเลือกพิมพ์ -->
-            <div class="grid grid-cols-2 gap-3 p-3 bg-blue-50/50 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900">
-              <div>
-                <span class="text-[11px] text-slate-500 block">จำนวนหน้าไฟล์เดิม:</span>
-                <span id="total-pages-display" class="text-sm font-extrabold text-blue-600">0 หน้า</span>
+            <!-- การเลือกหน้าที่ต้องการพิมพ์ -->
+            <div class="p-3 bg-blue-50/50 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-[11px] text-slate-500 block">จำนวนหน้าไฟล์ทั้งหมด:</span>
+                  <span id="total-pages-display" class="text-sm font-extrabold text-blue-600">0 หน้า</span>
+                </div>
+                <div>
+                  <span class="text-[11px] text-slate-500 block">จำนวนหน้าที่เลือกพิมพ์:</span>
+                  <span id="selected-pages-count-display" class="text-sm font-extrabold text-emerald-600">0 หน้า</span>
+                </div>
               </div>
+
+              <!-- เลือกโหมดระบุหน้า -->
               <div>
-                <label class="text-[11px] font-semibold block">จำนวนหน้าที่สั่งพิมพ์:</label>
-                <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-2 py-1 bg-white dark:bg-slate-800 border rounded-lg text-xs font-bold">
+                <label class="block text-xs font-bold mb-1">รูปแบบการเลือกหน้าพิมพ์:</label>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <label class="border dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-xl flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="page_selection_mode" value="text" checked onchange="togglePageSelectionMode()">
+                    <span>ระบุช่วงหน้า / หมายเหตุ</span>
+                  </label>
+                  <label class="border dark:border-slate-700 bg-white dark:bg-slate-800 p-2 rounded-xl flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="page_selection_mode" value="grid" onchange="togglePageSelectionMode()">
+                    <span>ตารางติ๊กเลือกรายหน้า</span>
+                  </label>
+                </div>
               </div>
+
+              <!-- โหมด 1: พิมพ์ระบุช่วงหน้า / หมายเหตุ -->
+              <div id="page-mode-text-box" class="space-y-2">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] font-semibold block">จำนวนหน้าที่สั่งพิมพ์:</label>
+                    <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-2 py-1.5 bg-white dark:bg-slate-800 border rounded-lg text-xs font-bold">
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-semibold block">ระบุช่วงหน้า (เช่น 1-5, 8):</label>
+                    <input type="text" id="page-range-input" placeholder="เช่น 1-3, 5" onchange="calculatePrice()" class="w-full px-2 py-1.5 bg-white dark:bg-slate-800 border rounded-lg text-xs">
+                  </div>
+                </div>
+                <div>
+                  <label class="text-[11px] font-semibold block">หมายเหตุการพิมพ์เพิ่มเติม:</label>
+                  <textarea id="order-notes" rows="2" placeholder="เช่น พิมพ์เฉพาะหน้า 1 ถึง 5 หรือใส่หมายเหตุเพิ่มเติม..." class="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border rounded-xl text-xs"></textarea>
+                </div>
+              </div>
+
+              <!-- โหมด 2: ตารางแสดงหน้าทั้งหมดสำหรับติ๊กเลือก -->
+              <div id="page-mode-grid-box" class="hidden space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold">รายการหน้าในเอกสาร:</span>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="selectAllPages(true)" class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">เลือกทั้งหมด</button>
+                    <button type="button" onclick="selectAllPages(false)" class="px-2 py-0.5 bg-slate-200 text-slate-700 rounded text-[10px] font-bold">ยกเลิกทั้งหมด</button>
+                  </div>
+                </div>
+                <div id="pages-grid-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 bg-white dark:bg-slate-800 rounded-xl border">
+                  <p class="col-span-full text-center text-xs text-slate-400 py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>
+                </div>
+              </div>
+
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -291,7 +339,7 @@
               </div>
             </div>
 
-            <!-- 2. วิธีการจัดส่ง (Delivery Options) -->
+            <!-- 2. วิธีการจัดส่ง -->
             <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
               <label class="block text-xs font-bold mb-2 text-slate-800 dark:text-slate-200">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -311,7 +359,6 @@
                 </label>
               </div>
 
-              <!-- กล่องกรอกข้อมูลที่อยู่จัดส่ง -->
               <div id="delivery-address-box" class="hidden space-y-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <div class="grid grid-cols-2 gap-2">
                   <input type="text" id="recipient-name" placeholder="ชื่อผู้รับเอกสาร" class="w-full px-3 py-2 bg-white dark:bg-slate-800 border rounded-xl text-xs">
@@ -321,7 +368,7 @@
               </div>
             </div>
 
-            <!-- 3. วิธีการชำระเงิน (Payment Options) -->
+            <!-- 3. วิธีการชำระเงิน -->
             <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
               <label class="block text-xs font-bold mb-2 text-slate-800 dark:text-slate-200">3. ช่องทางการชำระเงิน</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -343,7 +390,6 @@
                 </label>
               </div>
 
-              <!-- กล่องแนบสลิปสำหรับ PromptPay Direct -->
               <div id="promptpay-box" class="hidden space-y-3 bg-blue-50/60 dark:bg-blue-950/40 p-4 rounded-2xl border border-blue-200 dark:border-blue-800 text-center">
                 <p class="text-xs font-bold text-blue-900 dark:text-blue-200">สแกน QR Code โอนเงิน PromptPay</p>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-32 h-32 mx-auto rounded-xl shadow-md border">
@@ -424,7 +470,6 @@
               <input type="hidden" id="selected-topup-amount" value="20">
             </div>
 
-            <!-- QR Code โอนเงินตามราคาที่เลือก -->
             <div class="bg-amber-50/60 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 text-center space-y-2">
               <p class="text-xs font-bold text-amber-900 dark:text-amber-200">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-sm font-extrabold text-amber-600">20.00</span> บาท</p>
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-32 h-32 mx-auto rounded-xl border">
@@ -467,14 +512,13 @@
         </button>
       </div>
 
-      <!-- TABS ADMIN -->
       <div class="flex bg-slate-200 dark:bg-slate-800 p-1 rounded-2xl mb-6 max-w-md">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white">จัดการงานพิมพ์ & จัดส่ง</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-300">อนุมัติเติม Coins</button>
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-300">จัดการสมาชิก</button>
       </div>
 
-      <!-- ADMIN TAB 1: ORDERS & DELIVERIES & PAYMENTS -->
+      <!-- ADMIN TAB 1: ORDERS -->
       <div id="admin-tab-orders" class="bg-white dark:bg-slate-900 p-6 rounded-3xl border shadow-lg space-y-4">
         <h2 class="text-base font-bold">รายการสั่งพิมพ์ & สถานะชำระเงิน/จัดส่ง</h2>
         <div class="overflow-x-auto">
@@ -496,7 +540,7 @@
         </div>
       </div>
 
-      <!-- ADMIN TAB 2: TOPUP APPROVALS -->
+      <!-- ADMIN TAB 2: TOPUPS -->
       <div id="admin-tab-topups" class="hidden bg-white dark:bg-slate-900 p-6 rounded-3xl border shadow-lg space-y-4">
         <h2 class="text-base font-bold">คำขอเติม Coins (ตรวจสอบสลิปโอนเงิน)</h2>
         <div class="overflow-x-auto">
@@ -570,7 +614,7 @@
     });
 
     /* --- CUSTOM MODAL & SLIP PREVIEW --- */
-    function showCustomModal({ title, message, icon = 'info', type = 'info', showCancel = false, onConfirm = null }) {
+    function showCustomModal({ title, message, icon = 'info', showCancel = false, onConfirm = null }) {
       const modal = document.getElementById('custom-modal');
       document.getElementById('modal-title').innerText = title;
       document.getElementById('modal-message').innerText = message;
@@ -589,7 +633,7 @@
     function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
     function openSlipModal(imageUrl) {
-      if (!imageUrl) return showCustomModal({ title: 'ไม่พบสลิป', message: 'ไม่มีรูปภาพสลิปสำหรับการออเดอร์นี้', icon: 'image-off', type: 'warning' });
+      if (!imageUrl) return showCustomModal({ title: 'ไม่พบสลิป', message: 'ไม่มีรูปภาพสลิปสำหรับการออเดอร์นี้', icon: 'image-off' });
       document.getElementById('slip-modal-img').src = imageUrl;
       document.getElementById('slip-preview-modal').classList.remove('hidden');
     }
@@ -621,7 +665,7 @@
       else if (viewName === 'wallet') { document.getElementById('view-wallet').classList.remove('hidden'); fetchUserTopups(); }
       else if (viewName === 'admin') {
         if (!currentUser || currentUser.role !== 'admin') {
-          showCustomModal({ title: 'จำกัดสิทธิ์', message: 'เฉพาะ Admin เท่านั้นที่เข้าใช้งานได้', icon: 'shield-alert', type: 'warning' });
+          showCustomModal({ title: 'จำกัดสิทธิ์', message: 'เฉพาะ Admin เท่านั้นที่เข้าใช้งานได้', icon: 'shield-alert' });
           return switchView('landing');
         }
         document.getElementById('view-admin').classList.remove('hidden');
@@ -654,10 +698,10 @@
     function saveAndInitSupabase() {
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) return showCustomModal({ title: 'กรอกข้อมูลไม่ครบ', message: 'กรุณากรอก URL และ Key', type: 'warning' });
+      if (!url || !key) return showCustomModal({ title: 'กรอกข้อมูลไม่ครบ', message: 'กรุณากรอก URL และ Key', icon: 'alert-triangle' });
       localStorage.setItem('sp_url', url); localStorage.setItem('sp_key', key);
       initSupabase(url, key);
-      showCustomModal({ title: 'เชื่อมต่อสำเร็จ', message: 'บันทึกเรียบร้อย', type: 'success' });
+      showCustomModal({ title: 'เชื่อมต่อสำเร็จ', message: 'บันทึกเรียบร้อย', icon: 'check-circle' });
       document.getElementById('config-panel').classList.add('hidden');
     }
 
@@ -716,7 +760,7 @@
     /* --- AUTH HANDLERS --- */
     async function handleRegister(e) {
       e.preventDefault();
-      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', type: 'error' });
+      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', icon: 'alert-triangle' });
       const fullName = document.getElementById('reg-fullname').value;
       const email = document.getElementById('reg-email').value;
       const password = document.getElementById('reg-password').value;
@@ -724,13 +768,13 @@
       try {
         const { data, error } = await supabaseClient.from('users').insert([{ full_name: fullName, email: email, password_hash: password, role: 'user' }]).select().single();
         if (error) throw error;
-        showCustomModal({ title: 'ลงทะเบียนสำเร็จ', message: 'กรุณาเข้าสู่ระบบ', type: 'success', onConfirm: () => switchAuthTab('login') });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+        showCustomModal({ title: 'ลงทะเบียนสำเร็จ', message: 'กรุณาเข้าสู่ระบบ', icon: 'check-circle', onConfirm: () => switchAuthTab('login') });
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', type: 'error' });
+      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', icon: 'alert-triangle' });
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
@@ -741,8 +785,8 @@
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
         fetchUserWallet();
-        showCustomModal({ title: 'เข้าสู่ระบบสำเร็จ', message: `ยินดีต้อนรับ ${currentUser.full_name}`, type: 'success', onConfirm: () => switchView('dashboard') });
-      } catch (err) { showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: err.message, type: 'error' }); }
+        showCustomModal({ title: 'เข้าสู่ระบบสำเร็จ', message: `ยินดีต้อนรับ ${currentUser.full_name}`, icon: 'check-circle', onConfirm: () => switchView('dashboard') });
+      } catch (err) { showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: err.message, icon: 'alert-circle' }); }
     }
 
     function handleLogout() {
@@ -752,7 +796,7 @@
       });
     }
 
-    /* --- FILE UPLOAD & FORM CONTROL --- */
+    /* --- FILE UPLOAD & PAGE SELECTION CONTROL --- */
     async function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -772,6 +816,39 @@
 
       document.getElementById('total-pages-display').innerText = detectedPageCount + ' หน้า';
       document.getElementById('printed-pages-input').value = detectedPageCount;
+      renderPagesGrid(detectedPageCount);
+      calculatePrice();
+    }
+
+    function togglePageSelectionMode() {
+      const mode = document.querySelector('input[name="page_selection_mode"]:checked').value;
+      const isGrid = mode === 'grid';
+      document.getElementById('page-mode-text-box').classList.toggle('hidden', isGrid);
+      document.getElementById('page-mode-grid-box').classList.toggle('hidden', !isGrid);
+      calculatePrice();
+    }
+
+    function renderPagesGrid(pageCount) {
+      const container = document.getElementById('pages-grid-container');
+      container.innerHTML = '';
+      if (!pageCount || pageCount < 1) {
+        container.innerHTML = '<p class="col-span-full text-center text-xs text-slate-400 py-2">ไม่พบรายการหน้า</p>';
+        return;
+      }
+
+      for (let i = 1; i <= pageCount; i++) {
+        const label = document.createElement('label');
+        label.className = 'flex flex-col items-center p-2 border dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 cursor-pointer text-[11px] font-bold hover:bg-blue-50 dark:hover:bg-blue-950/40';
+        label.innerHTML = `
+          <span>หน้า ${i}</span>
+          <input type="checkbox" class="page-checkbox mt-1 rounded text-blue-600" value="${i}" checked onchange="calculatePrice()">
+        `;
+        container.appendChild(label);
+      }
+    }
+
+    function selectAllPages(select) {
+      document.querySelectorAll('.page-checkbox').forEach(cb => cb.checked = select);
       calculatePrice();
     }
 
@@ -787,11 +864,22 @@
     }
 
     function calculatePrice() {
-      const printedPages = parseInt(document.getElementById('printed-pages-input').value) || 1;
+      const selectionMode = document.querySelector('input[name="page_selection_mode"]:checked')?.value || 'text';
+      let printedPages = 1;
+
+      if (selectionMode === 'grid') {
+        const checkedBoxes = document.querySelectorAll('.page-checkbox:checked');
+        printedPages = checkedBoxes.length || 0;
+      } else {
+        printedPages = parseInt(document.getElementById('printed-pages-input').value) || 1;
+      }
+
+      document.getElementById('selected-pages-count-display').innerText = printedPages + ' หน้า';
+
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
-      const isDelivery = document.querySelector('input[name="delivery_method"]:checked').value === 'delivery';
+      const isDelivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
 
       let rate = isColor ? 5.00 : 1.00;
       if (isDuplex) rate += 0.50;
@@ -805,11 +893,27 @@
       return total;
     }
 
+    /* --- STORAGE UPLOAD HANDLER WITH SAFE ERROR HANDLING --- */
     async function uploadFileToSupabaseStorage(bucket, file) {
+      if (!supabaseClient) throw new Error("ยังไม่ได้เชื่อมต่อฐานข้อมูล Supabase");
+      
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-      const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file);
-      if (error) throw error;
+      
+      const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+      
+      if (error) {
+        if (error.message.includes('Bucket not found')) {
+          throw new Error(`ไม่พบ Bucket "${bucket}" ใน Supabase Storage กรุณาสร้าง Bucket Titled "${bucket}" ในหน้า Admin Dashboard`);
+        } else if (error.message.includes('row-level security') || error.statusCode === '42501') {
+          throw new Error(`ติดสิทธิ์ RLS ใน Bucket "${bucket}" กรุณาตั้งค่า Storage Policy ใน Supabase SQL Editor`);
+        }
+        throw new Error(`Upload Error: ${error.message}`);
+      }
+      
       const { data: pubData } = supabaseClient.storage.from(bucket).getPublicUrl(fileName);
       return pubData.publicUrl;
     }
@@ -817,26 +921,41 @@
     /* --- ORDER SUBMISSION --- */
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', type: 'error' });
-      if (!currentUser) return showCustomModal({ title: 'เข้าสู่ระบบก่อนสั่งพิมพ์', type: 'warning', onConfirm: () => switchView('auth') });
-      if (!selectedFileObj) return showCustomModal({ title: 'กรุณาเลือกไฟล์', type: 'warning' });
+      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', icon: 'alert-triangle' });
+      if (!currentUser) return showCustomModal({ title: 'เข้าสู่ระบบก่อนสั่งพิมพ์', icon: 'alert-triangle', onConfirm: () => switchView('auth') });
+      if (!selectedFileObj) return showCustomModal({ title: 'กรุณาเลือกไฟล์', icon: 'alert-triangle' });
 
       const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
       const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-      const totalAmount = calculatePrice();
+      const selectionMode = document.querySelector('input[name="page_selection_mode"]:checked').value;
+      
+      let printedPages = 1;
+      let pageRangeText = '';
+      if (selectionMode === 'grid') {
+        const checkedPages = Array.from(document.querySelectorAll('.page-checkbox:checked')).map(cb => cb.value);
+        printedPages = checkedPages.length;
+        if (printedPages === 0) return showCustomModal({ title: 'ไม่ได้เลือกหน้า', message: 'กรุณาติ๊กเลือกอย่างน้อย 1 หน้าที่ต้องการพิมพ์', icon: 'alert-triangle' });
+        pageRangeText = `หน้า: ${checkedPages.join(', ')}`;
+      } else {
+        printedPages = parseInt(document.getElementById('printed-pages-input').value) || 1;
+        const customRange = document.getElementById('page-range-input').value.trim();
+        pageRangeText = customRange ? `ช่วงหน้า: ${customRange}` : `1-${printedPages}`;
+      }
 
-      // ตรวจสอบที่อยู่กรณีเลือกส่งปลายทาง
+      const totalAmount = calculatePrice();
+      const userNote = document.getElementById('order-notes').value.trim();
+      const fullAdminNote = [pageRangeText, userNote ? `หมายเหตุผู้ใช้: ${userNote}` : ''].filter(Boolean).join(' | ');
+
       let recipientName = '', recipientPhone = '', recipientAddress = '';
       if (deliveryMethod === 'delivery') {
         recipientName = document.getElementById('recipient-name').value.trim();
         recipientPhone = document.getElementById('recipient-phone').value.trim();
         recipientAddress = document.getElementById('recipient-address').value.trim();
         if (!recipientName || !recipientPhone || !recipientAddress) {
-          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกชื่อ เบอร์โทร และที่อยู่จัดส่งให้ครบถ้วน', type: 'warning' });
+          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกชื่อ เบอร์โทร และที่อยู่จัดส่งให้ครบถ้วน', icon: 'alert-triangle' });
         }
       }
 
-      // ตรวจสอบกรณีจ่ายด้วย Coins
       let userWallet = null;
       if (paymentMethod === 'coins') {
         const { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', currentUser.id).single();
@@ -845,42 +964,39 @@
           return showCustomModal({
             title: 'Coins ไม่เพียงพอ',
             message: `ยอด Coins คงเหลือของคุณ (${w ? w.balance : 0} Coins) ไม่เพียงพอกับยอดชำระ ${totalAmount.toFixed(2)} Coins\nกรุณาเติมเงินเข้ากระเป๋าก่อนครับ`,
-            type: 'warning',
+            icon: 'wallet',
             onConfirm: () => switchView('wallet')
           });
         }
       }
 
-      // ตรวจสอบกรณี PromptPay Direct
-      let slipUrl = null;
-      if (paymentMethod === 'promptpay') {
-        const slipFile = document.getElementById('order-slip-file').files[0];
-        if (!slipFile) return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'กรุณาแนบไฟล์รูปสลิปการโอนเงิน PromptPay', type: 'warning' });
-        showCustomModal({ title: 'กำลังอัปโหลด...', message: 'กำลังอัปโหลดไฟล์สลิป โปรดรอสักครู่', type: 'info' });
-        slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
-      }
+      showCustomModal({ title: 'กำลังดำเนินการ...', message: 'กำลังอัปโหลดไฟล์และสร้างคำขอสั่งพิมพ์ โปรดรอสักครู่', icon: 'upload-cloud' });
 
       try {
-        // อัปโหลดไฟล์เอกสาร
-        const docFileUrl = await uploadFileToSupabaseStorage('documents', selectedFileObj);
+        let slipUrl = null;
+        if (paymentMethod === 'promptpay') {
+          const slipFile = document.getElementById('order-slip-file').files[0];
+          if (!slipFile) {
+            closeModal();
+            return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'กรุณาแนบไฟล์รูปสลิปการโอนเงิน PromptPay', icon: 'image' });
+          }
+          slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
+        }
 
+        const docFileUrl = await uploadFileToSupabaseStorage('documents', selectedFileObj);
         const queueNum = Math.floor(1000 + Math.random() * 9000);
 
-        // 1. สร้าง Record ใน orders
         const { data: order, error: oErr } = await supabaseClient.from('orders').insert([{
-          user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued'
+          user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued', admin_note: fullAdminNote
         }]).select().single();
         if (oErr) throw oErr;
 
-        // 2. สร้าง Record ใน documents
         const { data: doc, error: dErr } = await supabaseClient.from('documents').insert([{
           user_id: currentUser.id, file_name: selectedFileObj.name, file_path: docFileUrl,
           page_count: detectedPageCount, file_size: selectedFileObj.size
         }]).select().single();
         if (dErr) throw dErr;
 
-        // 3. สร้าง Record ใน print_jobs
-        const printedPages = parseInt(document.getElementById('printed-pages-input').value);
         const copies = parseInt(document.getElementById('copies').value);
         const isColor = document.getElementById('color-type').value === 'color';
         const isDuplex = document.getElementById('duplex-type').value === 'duplex';
@@ -889,19 +1005,16 @@
         await supabaseClient.from('print_jobs').insert([{
           order_id: order.id, document_id: doc.id, copies: copies, color: isColor,
           paper_size: paperSize, duplex: isDuplex, printed_pages_count: printedPages,
-          page_range: `1-${printedPages}`, status: 'queued'
+          page_range: pageRangeText, status: 'queued'
         }]);
 
-        // 4. บันทึกข้อมูลการจัดส่งใน deliveries
         await supabaseClient.from('deliveries').insert([{
           order_id: order.id, delivery_method: deliveryMethod, recipient_name: recipientName,
           phone_number: recipientPhone, delivery_address: recipientAddress,
           delivery_fee: deliveryMethod === 'delivery' ? 30.00 : 0.00, delivery_status: 'pending'
         }]);
 
-        // 5. บันทึกการชำระเงินใน payments
         if (paymentMethod === 'coins') {
-          // หักเงิน Coins ทันที
           const newBal = parseFloat(userWallet.balance) - totalAmount;
           await supabaseClient.from('wallets').update({ balance: newBal, updated_at: new Date() }).eq('id', userWallet.id);
           await supabaseClient.from('wallet_transactions').insert([{
@@ -913,16 +1026,16 @@
           }]);
           fetchUserWallet();
         } else {
-          // โอน PromptPay รอ Admin อนุมัติสลิป
           await supabaseClient.from('payments').insert([{
             order_id: order.id, amount: totalAmount, payment_method: 'promptpay', slip_url: slipUrl, status: 'pending'
           }]);
         }
 
+        closeModal();
         showCustomModal({
           title: 'ส่งงานสั่งพิมพ์สำเร็จ!',
-          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}\nรูปแบบชำระเงิน: ${paymentMethod === 'coins' ? 'หัก Coins เรียบร้อย' : 'รอแอดมินตรวจสอบสลิป'}`,
-          type: 'success',
+          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}\nชำระเงิน: ${paymentMethod === 'coins' ? 'หัก Coins เรียบร้อย' : 'รอแอดมินตรวจสอบสลิป'}`,
+          icon: 'check-circle',
           onConfirm: () => {
             document.getElementById('print-form').reset();
             document.getElementById('upload-placeholder').classList.remove('hidden');
@@ -930,11 +1043,15 @@
             selectedFileObj = null;
             toggleDeliveryFields();
             togglePaymentFields();
+            togglePageSelectionMode();
             fetchQueues();
           }
         });
 
-      } catch (err) { showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, type: 'error' }); }
+      } catch (err) {
+        closeModal();
+        showCustomModal({ title: 'การอัปโหลดหรือบันทึกล้มเหลว', message: err.message, icon: 'alert-octagon' });
+      }
     }
 
     /* --- TOPUP COINS WORKFLOW --- */
@@ -947,13 +1064,14 @@
 
     async function handleTopupSubmit(e) {
       e.preventDefault();
-      if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอินก่อน', type: 'warning' });
+      if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอินก่อน', icon: 'lock' });
       const amount = parseFloat(document.getElementById('selected-topup-amount').value);
       const slipFile = document.getElementById('topup-slip-file').files[0];
-      if (!slipFile) return showCustomModal({ title: 'แนบรูปสลิป', message: 'กรุณาแนบไฟล์สลิปโอนเงิน', type: 'warning' });
+      if (!slipFile) return showCustomModal({ title: 'แนบรูปสลิป', message: 'กรุณาแนบไฟล์สลิปโอนเงิน', icon: 'image' });
+
+      showCustomModal({ title: 'กำลังส่งคำขอ...', message: 'กำลังอัปโหลดไฟล์สลิปโอนเงิน', icon: 'upload-cloud' });
 
       try {
-        showCustomModal({ title: 'กำลังส่งคำขอ...', message: 'กำลังอัปโหลดสลิปการโอนเงิน', type: 'info' });
         const slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
 
         const { error } = await supabaseClient.from('topup_requests').insert([{
@@ -961,16 +1079,20 @@
         }]);
         if (error) throw error;
 
+        closeModal();
         showCustomModal({
           title: 'ส่งคำขอเติมเงินเรียบร้อย!',
           message: `แอดมินกำลังตรวจสอบสลิปยอด ${amount} บาท เมื่ออนุมัติแล้ว Coins จะเข้าบัญชีทันทีครับ`,
-          type: 'success',
+          icon: 'check-circle',
           onConfirm: () => {
             document.getElementById('topup-slip-file').value = '';
             fetchUserTopups();
           }
         });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+      } catch (err) {
+        closeModal();
+        showCustomModal({ title: 'อัปโหลดสลิปล้มเหลว', message: err.message, icon: 'alert-octagon' });
+      }
     }
 
     async function fetchUserTopups() {
@@ -1011,7 +1133,7 @@
       try {
         const { data, error } = await supabaseClient
           .from('print_jobs')
-          .select('id, status, copies, color, paper_size, printed_pages_count, documents(file_name), orders(queue_number, total_amount, estimated_pickup, admin_note, payments(payment_method, status, slip_url), deliveries(delivery_method, recipient_name, tracking_number, delivery_provider, delivery_status))')
+          .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(queue_number, total_amount, estimated_pickup, admin_note, payments(payment_method, status, slip_url), deliveries(delivery_method, recipient_name, tracking_number, delivery_provider, delivery_status))')
           .order('created_at', { ascending: false });
 
         const container = document.getElementById('queue-cards-container');
@@ -1025,7 +1147,6 @@
         data.forEach(item => {
           const queueNum = item.orders?.queue_number || '-';
           const fileName = item.documents?.file_name || 'เอกสารไม่ระบุชื่อ';
-          const totalAmount = item.orders?.total_amount ? item.orders.total_amount + ' ฿' : '-';
           const pickupTime = item.orders?.estimated_pickup ? new Date(item.orders.estimated_pickup).toLocaleString('th-TH') : 'กำลังรอแอดมินประเมินเวลา';
           const del = item.orders?.deliveries;
           const pay = item.orders?.payments;
@@ -1038,7 +1159,7 @@
                 <span class="text-sm font-extrabold text-blue-600 bg-blue-100 dark:bg-blue-900/40 px-2.5 py-0.5 rounded-lg">Q-${queueNum}</span>
                 <div>
                   <h4 class="text-xs font-bold truncate max-w-[150px]">${fileName}</h4>
-                  <p class="text-[10px] text-slate-400">${item.paper_size} | ${item.color ? 'สี' : 'ขาวดำ'} | ${item.printed_pages_count} หน้า | ${item.copies} ชุด</p>
+                  <p class="text-[10px] text-slate-400">${item.paper_size} | ${item.color ? 'สี' : 'ขาวดำ'} | พิมพ์ ${item.printed_pages_count} หน้า (${item.page_range || 'ทุกหน้า'}) | ${item.copies} ชุด</p>
                 </div>
               </div>
               <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${getJobStatusBadge(item.status)}">${translateStatus(item.status)}</span>
@@ -1067,7 +1188,7 @@
               </div>
             </div>
 
-            ${item.orders?.admin_note ? `<div class="text-[11px] bg-amber-50 text-amber-800 p-2 rounded-xl"><strong>ข้อความจากร้าน:</strong> ${item.orders.admin_note}</div>` : ''}
+            ${item.orders?.admin_note ? `<div class="text-[11px] bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 p-2 rounded-xl border border-amber-200"><strong>รายละเอียด/หมายเหตุ:</strong> ${item.orders.admin_note}</div>` : ''}
           `;
           container.appendChild(card);
         });
@@ -1093,7 +1214,7 @@
       try {
         const { data: jobs, error } = await supabaseClient
           .from('print_jobs')
-          .select('id, status, copies, color, paper_size, printed_pages_count, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note, payments(id, payment_method, status, slip_url), deliveries(id, delivery_method, recipient_name, phone_number, delivery_address, delivery_provider, tracking_number)))')
+          .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note, payments(id, payment_method, status, slip_url), deliveries(id, delivery_method, recipient_name, phone_number, delivery_address, delivery_provider, tracking_number)))')
           .order('created_at', { ascending: false });
 
         const tbody = document.getElementById('admin-orders-tbody');
@@ -1116,7 +1237,8 @@
             <td class="py-3 px-2 font-bold text-blue-600">Q-${item.orders?.queue_number}</td>
             <td class="py-3 px-2">
               <p class="font-bold text-xs">${item.documents?.file_name}</p>
-              <p class="text-[10px] text-slate-400">${item.orders?.total_amount} ฿ (${item.printed_pages_count} หน้า)</p>
+              <p class="text-[10px] text-slate-400">${item.orders?.total_amount} ฿ (${item.printed_pages_count} หน้า: ${item.page_range || 'ทุกหน้า'})</p>
+              ${item.orders?.admin_note ? `<p class="text-[9px] text-amber-600 truncate max-w-xs">${item.orders.admin_note}</p>` : ''}
             </td>
             <td class="py-3 px-2">
               <p class="font-bold">${del?.delivery_method === 'delivery' ? '🚚 จัดส่ง' : '🏪 รับที่ร้าน'}</p>
@@ -1132,7 +1254,7 @@
               ${pay?.status === 'pending' ? `<button onclick="approvePayment('${pay.id}')" class="block text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold mt-1">อนุมัติเงิน</button>` : `<span class="text-[10px] text-emerald-600 font-bold block mt-1">อนุมัติแล้ว</span>`}
             </td>
             <td class="py-3 px-2">
-              <select onchange="updateJobStatus('${item.id}', '${orderId}', this.value)" class="border rounded p-1 text-[11px]">
+              <select onchange="updateJobStatus('${item.id}', '${orderId}', this.value)" class="border rounded p-1 text-[11px] bg-white dark:bg-slate-800">
                 <option value="queued" ${item.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
                 <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
                 <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>พร้อมรับ/พร้อมส่ง</option>
@@ -1140,7 +1262,7 @@
               </select>
             </td>
             <td class="py-3 px-2 text-right space-y-1">
-              <input type="datetime-local" id="dt-${orderId}" value="${pickupVal}" class="border rounded px-1 py-0.5 text-[10px] w-full">
+              <input type="datetime-local" id="dt-${orderId}" value="${pickupVal}" class="border rounded px-1 py-0.5 text-[10px] w-full bg-white dark:bg-slate-800">
               <button onclick="savePickupNote('${orderId}')" class="px-2 py-1 bg-blue-600 text-white rounded text-[10px] font-bold">บันทึกเวลานัด</button>
             </td>
           `;
@@ -1152,33 +1274,33 @@
     async function approvePayment(paymentId) {
       try {
         await supabaseClient.from('payments').update({ status: 'approved' }).eq('id', paymentId);
-        showCustomModal({ title: 'อนุมัติชำระเงินสำเร็จ', type: 'success' });
+        showCustomModal({ title: 'อนุมัติชำระเงินสำเร็จ', icon: 'check-circle' });
         fetchAdminOrders();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     async function saveTracking(deliveryId) {
       const trackNo = document.getElementById(`track-${deliveryId}`).value;
       try {
         await supabaseClient.from('deliveries').update({ tracking_number: trackNo, delivery_provider: 'Flash/EMS/Rider', delivery_status: 'shipped' }).eq('id', deliveryId);
-        showCustomModal({ title: 'บันทึกเลขพัสดุแล้ว', type: 'success' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+        showCustomModal({ title: 'บันทึกเลขพัสดุแล้ว', icon: 'check-circle' });
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     async function updateJobStatus(jobId, orderId, status) {
       try {
         await supabaseClient.from('print_jobs').update({ status }).eq('id', jobId);
         if (orderId) await supabaseClient.from('orders').update({ status }).eq('id', orderId);
-        showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', type: 'success' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+        showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', icon: 'check-circle' });
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     async function savePickupNote(orderId) {
       const pickupVal = document.getElementById(`dt-${orderId}`).value;
       try {
         await supabaseClient.from('orders').update({ estimated_pickup: pickupVal ? new Date(pickupVal).toISOString() : null }).eq('id', orderId);
-        showCustomModal({ title: 'บันทึกเวลานัดรับสำเร็จ', type: 'success' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+        showCustomModal({ title: 'บันทึกเวลานัดรับสำเร็จ', icon: 'check-circle' });
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     /* --- ADMIN TOPUP APPROVAL --- */
@@ -1222,10 +1344,8 @@
 
     async function approveTopup(requestId, userId, coinsAmount) {
       try {
-        // 1. ปรับสถานะ topup_requests
         await supabaseClient.from('topup_requests').update({ status: 'approved', approved_at: new Date() }).eq('id', requestId);
 
-        // 2. เพิ่ม Coins ใน wallets
         let { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', userId).single();
         if (!w) {
           const { data: newW } = await supabaseClient.from('wallets').insert([{ user_id: userId, balance: coinsAmount }]).select().single();
@@ -1235,23 +1355,22 @@
           await supabaseClient.from('wallets').update({ balance: updatedBal, updated_at: new Date() }).eq('id', w.id);
         }
 
-        // 3. บันทึก transaction
         await supabaseClient.from('wallet_transactions').insert([{
           wallet_id: w.id, transaction_type: 'topup', amount: coinsAmount, description: 'เติมเงิน Coins ผ่านสลิปโอนเงิน'
         }]);
 
-        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins เข้าบัญชีเรียบร้อย`, type: 'success' });
+        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins เข้าบัญชีเรียบร้อย`, icon: 'check-circle' });
         fetchAdminTopups();
         fetchUserWallet();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     async function rejectTopup(requestId) {
       try {
         await supabaseClient.from('topup_requests').update({ status: 'rejected' }).eq('id', requestId);
-        showCustomModal({ title: 'ปฏิเสธคำขอเติมเงินแล้ว', type: 'info' });
+        showCustomModal({ title: 'ปฏิเสธคำขอเติมเงินแล้ว', icon: 'info' });
         fetchAdminTopups();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     /* --- ADMIN USERS --- */
@@ -1287,9 +1406,9 @@
       const newRole = currentRole === 'admin' ? 'user' : 'admin';
       try {
         await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
-        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', type: 'success' });
+        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', icon: 'check-circle' });
         fetchAdminUsers();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, type: 'error' }); }
+      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
     }
 
     /* --- UTILS --- */
