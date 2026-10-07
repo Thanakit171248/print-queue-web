@@ -259,7 +259,6 @@
                 </div>
               </div>
 
-              <!-- เลือกโหมดระบุหน้า -->
               <div>
                 <label class="block text-xs font-bold mb-1">รูปแบบการเลือกหน้าพิมพ์:</label>
                 <div class="grid grid-cols-2 gap-2 text-xs">
@@ -274,7 +273,6 @@
                 </div>
               </div>
 
-              <!-- โหมด 1: พิมพ์ระบุช่วงหน้า / หมายเหตุ -->
               <div id="page-mode-text-box" class="space-y-2">
                 <div class="grid grid-cols-2 gap-2">
                   <div>
@@ -292,7 +290,6 @@
                 </div>
               </div>
 
-              <!-- โหมด 2: ตารางแสดงหน้าทั้งหมดสำหรับติ๊กเลือก -->
               <div id="page-mode-grid-box" class="hidden space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold">รายการหน้าในเอกสาร:</span>
@@ -459,7 +456,7 @@
 
           <form onsubmit="handleTopupSubmit(event)" class="space-y-4">
             <div>
-              <label class="block text-xs font-bold mb-2">1. เลือกจำนวนเงินที่ต้องการเติม (บังคับราคา):</label>
+              <label class="block text-xs font-bold mb-2">1. เลือกจำนวนเงินที่ต้องการเติม:</label>
               <div class="grid grid-cols-3 gap-2">
                 <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-3 border dark:border-slate-700 rounded-xl font-bold text-xs hover:border-amber-500 text-center active">20 บาท<br><span class="text-[10px] font-normal text-slate-400">(20 Coins)</span></button>
                 <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-3 border dark:border-slate-700 rounded-xl font-bold text-xs hover:border-amber-500 text-center">50 บาท<br><span class="text-[10px] font-normal text-slate-400">(50 Coins)</span></button>
@@ -585,7 +582,6 @@
 
   </main>
 
-  <!-- SCRIPT LOGIC -->
   <script>
     const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
     const DEFAULT_SUPABASE_KEY = '';
@@ -691,7 +687,6 @@
       document.getElementById('form-login').classList.toggle('hidden', !isLogin);
       document.getElementById('form-register').classList.toggle('hidden', isLogin);
 
-      // เพิ่มการอัปเดตสไตล์สีปุ่มแท็บ
       const loginBtn = document.getElementById('tab-login');
       const regBtn = document.getElementById('tab-register');
 
@@ -808,7 +803,7 @@
       });
     }
 
-    /* --- FILE UPLOAD & PAGE SELECTION CONTROL --- */
+    /* --- FILE UPLOAD & PAGE SELECTION --- */
     async function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -905,7 +900,7 @@
       return total;
     }
 
-    /* --- STORAGE UPLOAD HANDLER WITH SAFE ERROR HANDLING --- */
+    /* --- STORAGE UPLOAD HANDLER --- */
     async function uploadFileToSupabaseStorage(bucket, file) {
       if (!supabaseClient) throw new Error("ยังไม่ได้เชื่อมต่อฐานข้อมูล Supabase");
       
@@ -917,14 +912,7 @@
         upsert: false
       });
       
-      if (error) {
-        if (error.message.includes('Bucket not found')) {
-          throw new Error(`ไม่พบ Bucket "${bucket}" ใน Supabase Storage กรุณาสร้าง Bucket Titled "${bucket}" ในหน้า Admin Dashboard`);
-        } else if (error.message.includes('row-level security') || error.statusCode === '42501') {
-          throw new Error(`ติดสิทธิ์ RLS ใน Bucket "${bucket}" กรุณาตั้งค่า Storage Policy ใน Supabase SQL Editor`);
-        }
-        throw new Error(`Upload Error: ${error.message}`);
-      }
+      if (error) throw new Error(`Upload Error: ${error.message}`);
       
       const { data: pubData } = supabaseClient.storage.from(bucket).getPublicUrl(fileName);
       return pubData.publicUrl;
@@ -946,7 +934,7 @@
       if (selectionMode === 'grid') {
         const checkedPages = Array.from(document.querySelectorAll('.page-checkbox:checked')).map(cb => cb.value);
         printedPages = checkedPages.length;
-        if (printedPages === 0) return showCustomModal({ title: 'ไม่ได้เลือกหน้า', message: 'กรุณาติ๊กเลือกอย่างน้อย 1 หน้าที่ต้องการพิมพ์', icon: 'alert-triangle' });
+        if (printedPages === 0) return showCustomModal({ title: 'ไม่ได้เลือกหน้า', message: 'กรุณาติ๊กเลือกอย่างน้อย 1 หน้า', icon: 'alert-triangle' });
         pageRangeText = `หน้า: ${checkedPages.join(', ')}`;
       } else {
         printedPages = parseInt(document.getElementById('printed-pages-input').value) || 1;
@@ -956,7 +944,7 @@
 
       const totalAmount = calculatePrice();
       const userNote = document.getElementById('order-notes').value.trim();
-      const fullAdminNote = [pageRangeText, userNote ? `หมายเหตุผู้ใช้: ${userNote}` : ''].filter(Boolean).join(' | ');
+      const fullAdminNote = [pageRangeText, userNote ? `หมายเหตุ: ${userNote}` : ''].filter(Boolean).join(' | ');
 
       let recipientName = '', recipientPhone = '', recipientAddress = '';
       if (deliveryMethod === 'delivery') {
@@ -964,7 +952,7 @@
         recipientPhone = document.getElementById('recipient-phone').value.trim();
         recipientAddress = document.getElementById('recipient-address').value.trim();
         if (!recipientName || !recipientPhone || !recipientAddress) {
-          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกชื่อ เบอร์โทร และที่อยู่จัดส่งให้ครบถ้วน', icon: 'alert-triangle' });
+          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกข้อมูลจัดส่งให้ครบถ้วน', icon: 'alert-triangle' });
         }
       }
 
@@ -975,14 +963,14 @@
         if (!w || parseFloat(w.balance) < totalAmount) {
           return showCustomModal({
             title: 'Coins ไม่เพียงพอ',
-            message: `ยอด Coins คงเหลือของคุณ (${w ? w.balance : 0} Coins) ไม่เพียงพอกับยอดชำระ ${totalAmount.toFixed(2)} Coins\nกรุณาเติมเงินเข้ากระเป๋าก่อนครับ`,
+            message: `ยอด Coins คงเหลือของคุณ (${w ? w.balance : 0} Coins) ไม่พอจ่าย ${totalAmount.toFixed(2)} Coins`,
             icon: 'wallet',
             onConfirm: () => switchView('wallet')
           });
         }
       }
 
-      showCustomModal({ title: 'กำลังดำเนินการ...', message: 'กำลังอัปโหลดไฟล์และสร้างคำขอสั่งพิมพ์ โปรดรอสักครู่', icon: 'upload-cloud' });
+      showCustomModal({ title: 'กำลังดำเนินการ...', message: 'กำลังอัปโหลดไฟล์และส่งสั่งพิมพ์ โปรดรอสักครู่', icon: 'upload-cloud' });
 
       try {
         let slipUrl = null;
@@ -990,7 +978,7 @@
           const slipFile = document.getElementById('order-slip-file').files[0];
           if (!slipFile) {
             closeModal();
-            return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'กรุณาแนบไฟล์รูปสลิปการโอนเงิน PromptPay', icon: 'image' });
+            return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'กรุณาแนบรูปสลิปการโอนเงิน PromptPay', icon: 'image' });
           }
           slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
         }
@@ -1046,7 +1034,7 @@
         closeModal();
         showCustomModal({
           title: 'ส่งงานสั่งพิมพ์สำเร็จ!',
-          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}\nชำระเงิน: ${paymentMethod === 'coins' ? 'หัก Coins เรียบร้อย' : 'รอแอดมินตรวจสอบสลิป'}`,
+          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}`,
           icon: 'check-circle',
           onConfirm: () => {
             document.getElementById('print-form').reset();
@@ -1062,7 +1050,7 @@
 
       } catch (err) {
         closeModal();
-        showCustomModal({ title: 'การอัปโหลดหรือบันทึกล้มเหลว', message: err.message, icon: 'alert-octagon' });
+        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-octagon' });
       }
     }
 
@@ -1094,7 +1082,7 @@
         closeModal();
         showCustomModal({
           title: 'ส่งคำขอเติมเงินเรียบร้อย!',
-          message: `แอดมินกำลังตรวจสอบสลิปยอด ${amount} บาท เมื่ออนุมัติแล้ว Coins จะเข้าบัญชีทันทีครับ`,
+          message: `แอดมินกำลังตรวจสอบสลิปยอด ${amount} บาท`,
           icon: 'check-circle',
           onConfirm: () => {
             document.getElementById('topup-slip-file').value = '';
@@ -1109,12 +1097,17 @@
 
     async function fetchUserTopups() {
       if (!supabaseClient || !currentUser) return;
+      const container = document.getElementById('topup-history-list');
       try {
         const { data, error } = await supabaseClient.from('topup_requests').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-        const container = document.getElementById('topup-history-list');
         container.innerHTML = '';
 
-        if (error || !data || data.length === 0) {
+        if (error) {
+          container.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</p>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
           container.innerHTML = '<p class="text-center py-8 text-slate-400 text-xs">ยังไม่มีรายการเติมเงิน</p>';
           return;
         }
@@ -1136,22 +1129,30 @@
           `;
           container.appendChild(div);
         });
-      } catch (err) { console.error("Fetch topups error:", err); }
+      } catch (err) {
+        console.error("Fetch topups error:", err);
+        container.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดประวัติ</p>`;
+      }
     }
 
     /* --- QUEUE DISPLAY FOR CUSTOMER --- */
     async function fetchQueues() {
       if (!supabaseClient || !currentUser) return;
+      const container = document.getElementById('queue-cards-container');
       try {
         const { data, error } = await supabaseClient
           .from('print_jobs')
           .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(queue_number, total_amount, estimated_pickup, admin_note, payments(payment_method, status, slip_url), deliveries(delivery_method, recipient_name, tracking_number, delivery_provider, delivery_status))')
           .order('created_at', { ascending: false });
 
-        const container = document.getElementById('queue-cards-container');
         container.innerHTML = '';
 
-        if (error || !data || data.length === 0) {
+        if (error) {
+          container.innerHTML = `<p class="py-12 text-center text-rose-500 font-semibold text-xs">เกิดข้อผิดพลาด: ${error.message}<br>โปรดรัน SQL Script เพื่อสร้างตารางใน Supabase</p>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
           container.innerHTML = '<p class="py-12 text-center text-slate-400">ยังไม่มีรายการสั่งพิมพ์</p>';
           return;
         }
@@ -1160,8 +1161,9 @@
           const queueNum = item.orders?.queue_number || '-';
           const fileName = item.documents?.file_name || 'เอกสารไม่ระบุชื่อ';
           const pickupTime = item.orders?.estimated_pickup ? new Date(item.orders.estimated_pickup).toLocaleString('th-TH') : 'กำลังรอแอดมินประเมินเวลา';
-          const del = item.orders?.deliveries;
-          const pay = item.orders?.payments;
+          
+          const del = Array.isArray(item.orders?.deliveries) ? item.orders.deliveries[0] : item.orders?.deliveries;
+          const pay = Array.isArray(item.orders?.payments) ? item.orders.payments[0] : item.orders?.payments;
 
           const card = document.createElement('div');
           card.className = 'bg-slate-50 dark:bg-slate-800/60 border p-4 rounded-2xl space-y-3';
@@ -1200,77 +1202,83 @@
               </div>
             </div>
 
-            ${item.orders?.admin_note ? `<div class="text-[11px] bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 p-2 rounded-xl border border-amber-200"><strong>รายละเอียด/หมายเหตุ:</strong> ${item.orders.admin_note}</div>` : ''}
+            ${item.orders?.admin_note ? `<div class="text-[11px] bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 p-2 rounded-xl border border-amber-200"><strong>รายละเอียด:</strong> ${item.orders.admin_note}</div>` : ''}
           `;
           container.appendChild(card);
         });
-      } catch (err) { console.error("Fetch queues error:", err); }
+      } catch (err) {
+        console.error("Fetch queues error:", err);
+        container.innerHTML = `<p class="py-12 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
+      }
     }
 
     /* --- ADMIN BACKOFFICE ACTIONS --- */
+    function loadAdminData() {
+      const isTopups = !document.getElementById('admin-tab-topups').classList.contains('hidden');
+      const isUsers = !document.getElementById('admin-tab-users').classList.contains('hidden');
+      if (isTopups) fetchAdminTopups();
+      else if (isUsers) fetchAdminUsers();
+      else fetchAdminOrders();
+    }
+
     function switchAdminTab(tab) {
-    const tabs = ['orders', 'topups', 'users'];
-    
+      const tabs = ['orders', 'topups', 'users'];
       tabs.forEach(t => {
-        // ซ่อนเนื้อหา
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-        
-        // คืนค่าสไตล์ปุ่มปกติ
         const btn = document.getElementById(`admin-tab-${t}-btn`);
-        if (btn) {
-          btn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-300';
-        }
+        if (btn) btn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-300';
       });
 
-      // แสดงเนื้อหาแท็บที่เลือก
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
-      // ใส่ไฮไลต์สีน้ำเงิน/อินดิโก้ให้แท็บที่เลือก
       const activeBtn = document.getElementById(`admin-tab-${tab}-btn`);
-      if (activeBtn) {
-        activeBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white';
-      }
-      // โหลดข้อมูลตามแท็บ
+      if (activeBtn) activeBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white';
+
       if (tab === 'orders') fetchAdminOrders();
       else if (tab === 'topups') fetchAdminTopups();
       else if (tab === 'users') fetchAdminUsers();
     }
 
     async function fetchAdminOrders() {
+      const tbody = document.getElementById('admin-orders-tbody');
       try {
         const { data: jobs, error } = await supabaseClient
           .from('print_jobs')
           .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note, payments(id, payment_method, status, slip_url), deliveries(id, delivery_method, recipient_name, phone_number, delivery_address, delivery_provider, tracking_number))')
           .order('created_at', { ascending: false });
 
-        const tbody = document.getElementById('admin-orders-tbody');
         tbody.innerHTML = '';
 
-        if (error || !jobs || jobs.length === 0) {
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+          return;
+        }
+
+        if (!jobs || jobs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีรายการสั่งพิมพ์</td></tr>';
           return;
         }
 
         jobs.forEach(item => {
           const orderId = item.orders?.id;
-          const pay = item.orders?.payments;
-          const del = item.orders?.deliveries;
+          const pay = Array.isArray(item.orders?.payments) ? item.orders.payments[0] : item.orders?.payments;
+          const del = Array.isArray(item.orders?.deliveries) ? item.orders.deliveries[0] : item.orders?.deliveries;
           const pickupVal = item.orders?.estimated_pickup ? formatInputDateTime(item.orders.estimated_pickup) : '';
 
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40';
           tr.innerHTML = `
-            <td class="py-3 px-2 font-bold text-blue-600">Q-${item.orders?.queue_number}</td>
+            <td class="py-3 px-2 font-bold text-blue-600">Q-${item.orders?.queue_number || '-'}</td>
             <td class="py-3 px-2">
-              <p class="font-bold text-xs">${item.documents?.file_name}</p>
-              <p class="text-[10px] text-slate-400">${item.orders?.total_amount} ฿ (${item.printed_pages_count} หน้า: ${item.page_range || 'ทุกหน้า'})</p>
+              <p class="font-bold text-xs">${item.documents?.file_name || 'เอกสาร'}</p>
+              <p class="text-[10px] text-slate-400">${item.orders?.total_amount || 0} ฿ (${item.printed_pages_count} หน้า: ${item.page_range || 'ทุกหน้า'})</p>
               ${item.orders?.admin_note ? `<p class="text-[9px] text-amber-600 truncate max-w-xs">${item.orders.admin_note}</p>` : ''}
             </td>
             <td class="py-3 px-2">
               <p class="font-bold">${del?.delivery_method === 'delivery' ? '🚚 จัดส่ง' : '🏪 รับที่ร้าน'}</p>
               ${del?.delivery_method === 'delivery' ? `
-                <p class="text-[10px] text-slate-500">${del.recipient_name} (${del.phone_number})</p>
+                <p class="text-[10px] text-slate-500">${del.recipient_name \vert{}\vert{} ''} (${del.phone_number || ''})</p>
                 <input type="text" id="track-${del.id}" placeholder="กรอกเลขพัสดุ" value="${del.tracking_number || ''}" class="mt-1 px-1.5 py-0.5 border rounded text-[10px] w-28">
-                <button onclick="saveTracking('${del.id}')" class="px-1.5 py-0.5 bg-indigo-600 text-white rounded text-[10px]">บันทึกเลข</button>
+                <button onclick="saveTracking('${del.id}')" class="px-1.5 py-0.5 bg-indigo-600 text-white rounded text-[10px]">บันทึก</button>
               ` : ''}
             </td>
             <td class="py-3 px-2">
@@ -1293,7 +1301,10 @@
           `;
           tbody.appendChild(tr);
         });
-      } catch (err) { console.error("Fetch admin orders error:", err); }
+      } catch (err) {
+        console.error("Fetch admin orders error:", err);
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดรายการ</td></tr>`;
+      }
     }
 
     async function approvePayment(paymentId) {
@@ -1330,12 +1341,17 @@
 
     /* --- ADMIN TOPUP APPROVAL --- */
     async function fetchAdminTopups() {
+      const tbody = document.getElementById('admin-topups-tbody');
       try {
         const { data: topups, error } = await supabaseClient.from('topup_requests').select('*, users(full_name, email)').order('created_at', { ascending: false });
-        const tbody = document.getElementById('admin-topups-tbody');
         tbody.innerHTML = '';
 
-        if (error || !topups || topups.length === 0) {
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+          return;
+        }
+
+        if (!topups || topups.length === 0) {
           tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">ไม่มีคำขอเติมเงิน</td></tr>';
           return;
         }
@@ -1364,7 +1380,10 @@
           `;
           tbody.appendChild(tr);
         });
-      } catch (err) { console.error("Fetch admin topups error:", err); }
+      } catch (err) {
+        console.error("Fetch admin topups error:", err);
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการดึงคำขอเติมเงิน</td></tr>`;
+      }
     }
 
     async function approveTopup(requestId, userId, coinsAmount) {
@@ -1384,7 +1403,7 @@
           wallet_id: w.id, transaction_type: 'topup', amount: coinsAmount, description: 'เติมเงิน Coins ผ่านสลิปโอนเงิน'
         }]);
 
-        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins เข้าบัญชีเรียบร้อย`, icon: 'check-circle' });
+        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ!', message: `เพิ่มจำนวน ${coinsAmount} Coins เรียบร้อย`, icon: 'check-circle' });
         fetchAdminTopups();
         fetchUserWallet();
       } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
@@ -1400,12 +1419,17 @@
 
     /* --- ADMIN USERS --- */
     async function fetchAdminUsers() {
+      const tbody = document.getElementById('admin-users-tbody');
       try {
         const { data: users, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: true });
-        const tbody = document.getElementById('admin-users-tbody');
         tbody.innerHTML = '';
 
-        if (error || !users || users.length === 0) {
+        if (error) {
+          tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${error.message}</td></tr>`;
+          return;
+        }
+
+        if (!users || users.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-slate-400">ไม่พบสมาชิก</td></tr>';
           return;
         }
@@ -1424,7 +1448,10 @@
           `;
           tbody.appendChild(tr);
         });
-      } catch (err) { console.error("Fetch admin users error:", err); }
+      } catch (err) {
+        console.error("Fetch admin users error:", err);
+        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500 text-xs">เกิดข้อผิดพลาดในการโหลดสมาชิก</td></tr>`;
+      }
     }
 
     async function toggleRole(userId, currentRole) {
