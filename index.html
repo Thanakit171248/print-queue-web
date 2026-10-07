@@ -15,9 +15,9 @@
           colors: {
             apple: {
               bg: '#000000',
-              card: '#1d1d1f',
-              panel: '#161617',
-              border: '#333336',
+              card: '#161617',
+              panel: '#1c1c1e',
+              border: '#2c2c2e',
               blue: '#2997ff',
               gold: '#f5c518',
               silver: '#e3e4e6',
@@ -37,11 +37,11 @@
             },
             floatSlow: {
               '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-12px)' }
+              '50%': { transform: 'translateY(-10px)' }
             },
             pulseSlow: {
-              '0%, 100%': { opacity: '0.2', transform: 'scale(1)' },
-              '50%': { opacity: '0.45', transform: 'scale(1.08)' }
+              '0%, 100%': { opacity: '0.25', transform: 'scale(1)' },
+              '50%': { opacity: '0.4', transform: 'scale(1.05)' }
             }
           }
         }
@@ -51,7 +51,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -59,13 +58,14 @@
       font-family: 'Kanit', -apple-system, BlinkMacSystemFont, sans-serif;
       transition: background-color 0.4s ease, color 0.4s ease;
       overflow-x: hidden;
+      letter-spacing: -0.011em;
     }
 
-    /* Apple-Style Scroll Reveal Animation */
+    /* APPLE SCROLL-REVEAL FADE ANIMATION */
     .apple-reveal {
       opacity: 0;
-      transform: translateY(45px) scale(0.96);
-      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(60px) scale(0.95);
+      transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
 
@@ -74,70 +74,70 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Staggered animation delays for layered child reveals */
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
+    /* Staggered animation delays */
+    .delay-1 { transition-delay: 0.12s; }
+    .delay-2 { transition-delay: 0.24s; }
+    .delay-3 { transition-delay: 0.36s; }
+    .delay-4 { transition-delay: 0.48s; }
 
-    /* Premium Apple Typography & Gradients */
+    /* PREMIUM APPLE GRADIENT TYPOGRAPHY */
     .blue-gradient-text {
       background: linear-gradient(135deg, #2997ff 0%, #0071e3 50%, #6366f1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: inline-block;
       padding-bottom: 0.08em;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
     .titanium-gradient-text {
-      background: linear-gradient(180deg, #ffffff 0%, #9e9ea7 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: inline-block;
       padding-bottom: 0.08em;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
-    /* Dark Mode Glassmorphism Styling */
+    /* DARK MODE GLASSMORPHISM */
     html.dark body {
       background-color: #000000;
       color: #f5f5f7;
     }
     html.dark .glass-panel {
-      background: rgba(22, 22, 23, 0.78);
-      backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
+      background: rgba(22, 22, 23, 0.85);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
     }
     html.dark .glass-card {
-      background: rgba(255, 255, 255, 0.035);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
     }
     html.dark .titanium-text { color: #f5f5f7; }
-    html.dark .sub-text { color: #9a9a9f; }
+    html.dark .sub-text { color: #86868b; }
 
-    /* Light Mode Styling */
+    /* LIGHT MODE STYLING */
     html:not(.dark) body {
       background-color: #f5f5f7;
       color: #1d1d1f;
     }
     html:not(.dark) .glass-panel {
       background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
       border: 1px solid #d2d2d7;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
     }
     html:not(.dark) .glass-card {
       background: #ffffff;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
       border: 1px solid #e5e5ea;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
     }
     html:not(.dark) .titanium-text { color: #1d1d1f !important; }
     html:not(.dark) .sub-text { color: #6e6e73 !important; }
@@ -146,17 +146,17 @@
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
     }
     .glass-card:hover {
-      border-color: rgba(41, 151, 255, 0.55);
+      border-color: rgba(41, 151, 255, 0.6);
       transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 20px 40px rgba(41, 151, 255, 0.15);
+      box-shadow: 0 20px 45px rgba(41, 151, 255, 0.18);
     }
 
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(134, 134, 139, 0.5); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(134, 134, 139, 0.4); border-radius: 10px; }
 
     @keyframes slideUpModal {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      from { opacity: 0; transform: translateY(35px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .animate-modal { animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -164,8 +164,12 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
 
-  <!-- UPGRADED 3D HIGH-TECH CANVAS BACKGROUND -->
-  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40 dark:opacity-60 transition-opacity duration-1000"></div>
+  <!-- AMBIENT GLOW BACKGROUND (CLEAN & SLEEK - NO 3D) -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="absolute bottom-10 -left-40 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+  </div>
 
   <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#000000] transition-all duration-700 overflow-hidden">
@@ -490,27 +494,27 @@
 
   <!-- NAVBAR -->
   <nav class="sticky top-0 z-40 glass-panel border-b border-white/10 transition-all duration-300">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <button onclick="toggleAppleTabMenu(true)" class="p-2.5 rounded-2xl bg-slate-200/80 dark:bg-white/10 hover:bg-blue-600/30 border border-slate-300 dark:border-white/10 transition text-slate-800 dark:text-white flex items-center justify-center shadow-sm" title="เมนูนำทาง">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-2 group">
-          <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+        <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition">
             <i data-lucide="printer" class="w-5 h-5"></i>
           </div>
           <div>
-            <span class="text-base sm:text-lg font-black blue-gradient-text tracking-wide">PrintDekD</span>
-            <span class="text-[9px] bg-blue-500/15 border border-blue-400/30 text-blue-400 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">Pro</span>
+            <span class="text-lg font-black blue-gradient-text tracking-wide">PrintDekD</span>
+            <span class="text-[10px] bg-blue-500/15 border border-blue-400/30 text-blue-400 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">Pro</span>
           </div>
         </a>
       </div>
 
-      <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
-        <button onclick="switchView('landing')" class="px-4 py-2 rounded-xl transition hover:text-blue-400">หน้าแรก</button>
-        <button onclick="switchView('dashboard')" class="px-4 py-2 rounded-xl transition hover:text-blue-400">สั่งพิมพ์ / คิวงาน</button>
-        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden px-4 py-2 rounded-xl transition hover:text-amber-400 flex items-center gap-1.5">
+      <div class="hidden md:flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 text-xs font-semibold">
+        <button onclick="switchView('landing')" class="px-5 py-2 rounded-xl transition hover:text-blue-400">หน้าแรก</button>
+        <button onclick="switchView('dashboard')" class="px-5 py-2 rounded-xl transition hover:text-blue-400">สั่งพิมพ์ / คิวงาน</button>
+        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden px-5 py-2 rounded-xl transition hover:text-amber-400 flex items-center gap-1.5">
           <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-500"></i> Coins
         </button>
         <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-500 hover:text-amber-400 px-3 py-2 text-xs font-bold transition">⚙️ DB Config</button>
@@ -552,40 +556,40 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow z-10 relative">
 
-    <!-- VIEW 1: LANDING PAGE (APPLE IPHONE STYLE - SCROLL-TRIGGERED FADE ANIMATIONS) -->
-    <section id="view-landing" class="py-16 px-4 max-w-6xl mx-auto space-y-36">
+    <!-- VIEW 1: LANDING PAGE (APPLE IPHONE STYLE - SCROLL FADE UP ANIMATION) -->
+    <section id="view-landing" class="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto space-y-36 sm:space-y-48">
       
       <!-- HERO SECTION -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[80vh] apple-reveal">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 items-center min-h-[75vh] apple-reveal">
         <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs sm:text-sm font-bold tracking-wider shadow-xl animate-pulse-slow">
+          <div class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs sm:text-sm font-bold tracking-wider shadow-lg">
             <i data-lucide="sparkles" class="w-4 h-4"></i> PrintDekD Pro — Ultra Smart Printing Platform
           </div>
           
-          <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black leading-[1.08] tracking-tight titanium-text">
+          <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black leading-[1.08] tracking-tight titanium-gradient-text">
             นวัตกรรมงานพิมพ์ <br>
             <span class="blue-gradient-text">สไตล์ iPhone</span>
           </h1>
           
-          <p class="sub-text text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-            สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็วแบบไร้รอยต่อ อัปโหลดไฟล์ คัดเลือกช่วงหน้า คำนวณราคาเรียลไทม์ หักผ่าน Coins แล้วเข้ามารับงานที่หน้าร้านได้ทันที
+          <p class="sub-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
+            สั่งพิมพ์เอกสารอย่างง่ายดาย อัปโหลดไฟล์ พรีวิว คัดเลือกช่วงหน้า และคำนวณราคาแบบเรียลไทม์ ชำระสะดวกรวดเร็วพร้อมรับงานหน้าร้านได้ทันที
           </p>
 
           <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-4">
-            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-lg px-10 py-4.5 rounded-2xl shadow-2xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
+            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-lg px-10 py-5 rounded-2xl shadow-2xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
               <i data-lucide="file-up" class="w-6 h-6"></i> เริ่มต้นสั่งพิมพ์งาน
             </button>
-            <button onclick="switchView('dashboard')" class="glass-card border border-white/20 font-bold text-lg px-9 py-4.5 rounded-2xl flex items-center justify-center gap-2 transition hover:border-blue-400 titanium-text shadow-xl">
+            <button onclick="switchView('dashboard')" class="glass-card border border-white/20 font-bold text-lg px-9 py-5 rounded-2xl flex items-center justify-center gap-2 transition hover:border-blue-400 titanium-text shadow-xl">
               <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i> เช็กสถานะคิวงาน
             </button>
           </div>
         </div>
 
         <div class="lg:col-span-5 delay-1 apple-reveal">
-          <div class="glass-panel rounded-[40px] p-8 border shadow-2xl space-y-6 text-center relative overflow-hidden group">
+          <div class="glass-panel rounded-[40px] p-8 sm:p-10 border shadow-2xl space-y-6 text-center relative overflow-hidden group">
             <div class="relative w-full h-88 sm:h-96 rounded-[30px] overflow-hidden shadow-2xl border border-white/15">
-              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000 ease-out">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent"></div>
+              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-105 transition duration-1000 ease-out">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent"></div>
               <div class="absolute bottom-6 left-6 right-6 text-left space-y-1.5">
                 <span class="text-xs uppercase font-extrabold text-blue-400 tracking-widest">Self Pickup Service</span>
                 <p class="text-2xl font-black text-white">เครื่องพิมพ์เลเซอร์คมชัดสูง</p>
@@ -595,15 +599,15 @@
 
             <div class="grid grid-cols-3 gap-3 text-center text-xs">
               <div class="p-4 rounded-2xl glass-card border">
-                <p class="blue-gradient-text font-black text-2xl">100%</p>
+                <p class="blue-gradient-text font-black text-2xl sm:text-3xl">100%</p>
                 <p class="text-xs font-semibold sub-text mt-1">ความคมชัดสูง</p>
               </div>
               <div class="p-4 rounded-2xl glass-card border">
-                <p class="text-amber-400 font-black text-2xl">Coins</p>
+                <p class="text-amber-400 font-black text-2xl sm:text-3xl">Coins</p>
                 <p class="text-xs font-semibold sub-text mt-1">จ่ายสะดวก</p>
               </div>
               <div class="p-4 rounded-2xl glass-card border">
-                <p class="text-emerald-400 font-black text-2xl">Pickup</p>
+                <p class="text-emerald-400 font-black text-2xl sm:text-3xl">Pickup</p>
                 <p class="text-xs font-semibold sub-text mt-1">รับหน้าร้าน</p>
               </div>
             </div>
@@ -612,163 +616,163 @@
       </div>
 
       <!-- IPHONE FEATURE SHOWCASE 1: HIGH-TECH FEATURE GRID -->
-      <div class="space-y-16">
+      <div class="space-y-16 sm:space-y-20">
         <div class="text-center space-y-4 max-w-3xl mx-auto apple-reveal">
           <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text tracking-tight">
             ออกแบบมาเพื่อความสมบูรณ์แบบ
           </h2>
-          <p class="sub-text text-base sm:text-lg">
+          <p class="sub-text text-lg sm:text-xl font-light">
             สัมผัสประสบการณ์การใช้งานระดับพรีเมียม ตอบโจทย์การสั่งพิมพ์เอกสารทุกประเภท
           </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
           <!-- CARD 1 -->
-          <div class="glass-card p-9 rounded-[36px] border shadow-2xl space-y-5 apple-reveal delay-1">
+          <div class="glass-card p-10 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-1">
             <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shadow-lg">
               <i data-lucide="zap" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-2xl font-bold titanium-text">พรีวิว PDF สมบูรณ์แบบ</h3>
-            <p class="text-sm sm:text-base sub-text leading-relaxed font-light">
-              รองรับการเปิดดูพรีวิวหน้าเอกสาร PDF จริงแบบ Slide-out พร้้อมระบบซูมขยาย คัดเลือกหน้าพิมพ์ได้แม่นยำที่สุด
+            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">พรีวิว PDF สมบูรณ์แบบ</h3>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
+              รองรับการเปิดดูพรีวิวหน้าเอกสาร PDF จริงแบบ Slide-out พร้้อมระบบซูมขยาย คัดเลือกหน้าพิมพ์ได้อย่างแม่นยำ
             </p>
           </div>
 
           <!-- CARD 2 -->
-          <div class="glass-card p-9 rounded-[36px] border shadow-2xl space-y-5 apple-reveal delay-2">
+          <div class="glass-card p-10 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-2">
             <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-lg">
               <i data-lucide="wallet" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-2xl font-bold titanium-text">PrintDekD Wallet</h3>
-            <p class="text-sm sm:text-base sub-text leading-relaxed font-light">
+            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">PrintDekD Wallet</h3>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
               ระบบเติม Coins สั่งพิมพ์ง่ายดายทันทีในคลิกเดียว ไม่ต้องโอนจ่ายย่อยทุกครั้ง หักชำระเงินอัตโนมัติ
             </p>
           </div>
 
           <!-- CARD 3 -->
-          <div class="glass-card p-9 rounded-[36px] border shadow-2xl space-y-5 apple-reveal delay-3">
+          <div class="glass-card p-10 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-3">
             <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-lg">
               <i data-lucide="store" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-2xl font-bold titanium-text">รับงานหน้าร้าน Direct</h3>
-            <p class="text-sm sm:text-base sub-text leading-relaxed font-light">
+            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">รับงานหน้าร้าน Direct</h3>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
               ไม่มีค่าจัดส่งเพิ่มเติม พิมพ์งานเสร็จปุ๊บ ระบบแจ้งเตือนให้คุณเข้ามารับงานที่หน้าร้านได้ทันที
             </p>
           </div>
         </div>
       </div>
 
-      <!-- INTERACTIVE PRICE ESTIMATOR (CALCULATOR DEMO ON LANDING PAGE) -->
-      <div class="glass-panel p-9 sm:p-14 rounded-[40px] border shadow-2xl relative overflow-hidden space-y-10 apple-reveal">
+      <!-- INTERACTIVE PRICE ESTIMATOR -->
+      <div class="glass-panel p-10 sm:p-16 rounded-[44px] border shadow-2xl relative overflow-hidden space-y-12 apple-reveal">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-8">
           <div>
             <span class="text-xs uppercase tracking-widest font-extrabold text-blue-400 block mb-2">Live Demo Estimator</span>
             <h2 class="text-3xl sm:text-5xl font-black titanium-text">ทดลองคำนวณราคาพิมพ์เอกสาร</h2>
           </div>
-          <button onclick="handleStartPrinting()" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-2xl shadow-xl transition flex items-center gap-2 self-start md:self-auto">
+          <button onclick="handleStartPrinting()" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm sm:text-base rounded-2xl shadow-xl transition flex items-center gap-2 self-start md:self-auto">
             สั่งพิมพ์จริงทันที <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 items-center">
           <div class="lg:col-span-7 space-y-8">
             <div>
-              <div class="flex justify-between text-sm sm:text-base font-bold titanium-text mb-3">
+              <div class="flex justify-between text-base sm:text-lg font-bold titanium-text mb-4">
                 <span>จำนวนหน้าที่ต้องการพิมพ์:</span>
-                <span id="demo-page-val" class="text-blue-400 font-extrabold text-xl">10 หน้า</span>
+                <span id="demo-page-val" class="text-blue-400 font-black text-2xl">10 หน้า</span>
               </div>
-              <input type="range" id="demo-page-slider" min="1" max="100" value="10" oninput="updateDemoPrice()" class="w-full accent-blue-500 h-2.5 bg-black/50 rounded-lg cursor-pointer">
+              <input type="range" id="demo-page-slider" min="1" max="100" value="10" oninput="updateDemoPrice()" class="w-full accent-blue-500 h-3 bg-black/50 rounded-lg cursor-pointer">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label class="block text-xs font-bold mb-2 titanium-text">ประเภทสี:</label>
-                <select id="demo-color-select" onchange="updateDemoPrice()" class="w-full p-4 bg-black/50 border border-white/20 rounded-2xl text-sm titanium-text font-semibold">
+                <label class="block text-xs sm:text-sm font-bold mb-3 titanium-text">ประเภทสี:</label>
+                <select id="demo-color-select" onchange="updateDemoPrice()" class="w-full p-4 bg-black/50 border border-white/20 rounded-2xl text-sm sm:text-base titanium-text font-semibold">
                   <option value="1">ขาว-ดำ (1.00 ฿ / หน้า)</option>
                   <option value="5">พิมพ์สี (5.00 ฿ / หน้า)</option>
                 </select>
               </div>
 
               <div>
-                <label class="block text-xs font-bold mb-2 titanium-text">จำนวนชุด:</label>
-                <input type="number" id="demo-copies-input" min="1" value="1" oninput="updateDemoPrice()" class="w-full p-4 bg-black/50 border border-white/20 rounded-2xl text-sm titanium-text font-bold">
+                <label class="block text-xs sm:text-sm font-bold mb-3 titanium-text">จำนวนชุด:</label>
+                <input type="number" id="demo-copies-input" min="1" value="1" oninput="updateDemoPrice()" class="w-full p-4 bg-black/50 border border-white/20 rounded-2xl text-sm sm:text-base titanium-text font-bold">
               </div>
             </div>
           </div>
 
-          <div class="lg:col-span-5 glass-card p-8 rounded-[32px] border text-center space-y-4 bg-gradient-to-b from-blue-600/15 to-transparent">
-            <span class="text-xs sub-text font-bold block uppercase tracking-wider">ประมาณการราคาเบื้องต้น</span>
-            <div id="demo-total-price" class="text-5xl sm:text-6xl font-black blue-gradient-text">10.00 ฿</div>
-            <p class="text-xs sub-text">(รับสินค้าฟรีหน้าร้าน - ไม่มีค่าธรรมเนียมแอบแฝง)</p>
+          <div class="lg:col-span-5 glass-card p-10 sm:p-12 rounded-[36px] border text-center space-y-4 bg-gradient-to-b from-blue-600/15 to-transparent">
+            <span class="text-xs sm:text-sm sub-text font-bold block uppercase tracking-wider">ประมาณการราคาเบื้องต้น</span>
+            <div id="demo-total-price" class="text-6xl sm:text-7xl font-black blue-gradient-text">10.00 ฿</div>
+            <p class="text-xs sm:text-sm sub-text">(รับสินค้าฟรีหน้าร้าน - ไม่มีค่าธรรมเนียมแอบแฝง)</p>
           </div>
         </div>
       </div>
 
       <!-- HOW IT WORKS STEP-BY-STEP -->
-      <div class="space-y-16">
-        <div class="text-center space-y-3 apple-reveal">
+      <div class="space-y-16 sm:space-y-20">
+        <div class="text-center space-y-4 apple-reveal">
           <span class="text-xs font-extrabold tracking-widest text-blue-400 uppercase">Simple 4-Step Process</span>
           <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text">ขั้นตอนการสั่งพิมพ์ง่ายๆ</h2>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="p-8 rounded-[32px] glass-card border space-y-5 relative apple-reveal delay-1">
-            <span class="text-5xl font-black text-blue-500/30">01</span>
-            <h4 class="text-xl font-bold titanium-text">1. อัปโหลดไฟล์</h4>
-            <p class="text-sm sub-text leading-relaxed">เลือกไฟล์ PDF หรือรูปภาพที่คุณต้องการพิมพ์ลงในระบบ</p>
+          <div class="p-9 rounded-[36px] glass-card border space-y-6 relative apple-reveal delay-1">
+            <span class="text-6xl font-black text-blue-500/30 block">01</span>
+            <h4 class="text-2xl font-bold titanium-text">1. อัปโหลดไฟล์</h4>
+            <p class="text-base sub-text leading-relaxed font-light">เลือกไฟล์ PDF หรือรูปภาพที่คุณต้องการพิมพ์ลงในระบบ</p>
           </div>
 
-          <div class="p-8 rounded-[32px] glass-card border space-y-5 relative apple-reveal delay-2">
-            <span class="text-5xl font-black text-blue-500/30">02</span>
-            <h4 class="text-xl font-bold titanium-text">2. ปรับแต่งหน้าพิมพ์</h4>
-            <p class="text-sm sub-text leading-relaxed">ระบุช่วงหน้า พิมพ์สี/ขาวดำ จำนวนชุด และพรีวิวความถูกต้อง</p>
+          <div class="p-9 rounded-[36px] glass-card border space-y-6 relative apple-reveal delay-2">
+            <span class="text-6xl font-black text-blue-500/30 block">02</span>
+            <h4 class="text-2xl font-bold titanium-text">2. ปรับแต่งหน้าพิมพ์</h4>
+            <p class="text-base sub-text leading-relaxed font-light">ระบุช่วงหน้า พิมพ์สี/ขาวดำ จำนวนชุด และพรีวิวความถูกต้อง</p>
           </div>
 
-          <div class="p-8 rounded-[32px] glass-card border space-y-5 relative apple-reveal delay-3">
-            <span class="text-5xl font-black text-amber-500/30">03</span>
-            <h4 class="text-xl font-bold titanium-text">3. ชำระผ่าน Coins</h4>
-            <p class="text-sm sub-text leading-relaxed">ชำระเงินผ่าน PrintDekD Coins หรือ PromptPay Direct ได้ทันที</p>
+          <div class="p-9 rounded-[36px] glass-card border space-y-6 relative apple-reveal delay-3">
+            <span class="text-6xl font-black text-amber-500/30 block">03</span>
+            <h4 class="text-2xl font-bold titanium-text">3. ชำระผ่าน Coins</h4>
+            <p class="text-base sub-text leading-relaxed font-light">ชำระเงินผ่าน PrintDekD Coins หรือ PromptPay Direct ได้ทันที</p>
           </div>
 
-          <div class="p-8 rounded-[32px] glass-card border space-y-5 relative apple-reveal delay-4">
-            <span class="text-5xl font-black text-emerald-500/30">04</span>
-            <h4 class="text-xl font-bold titanium-text">4. รับงานหน้าร้าน</h4>
-            <p class="text-sm sub-text leading-relaxed">เช็กสถานะงานพิมพ์ในระบบ และเข้ามารับงานที่หน้าร้านสะดวกสบาย</p>
+          <div class="p-9 rounded-[36px] glass-card border space-y-6 relative apple-reveal delay-4">
+            <span class="text-6xl font-black text-emerald-500/30 block">04</span>
+            <h4 class="text-2xl font-bold titanium-text">4. รับงานหน้าร้าน</h4>
+            <p class="text-base sub-text leading-relaxed font-light">เช็กสถานะงานพิมพ์ในระบบ และเข้ามารับงานที่หน้าร้านสะดวกสบาย</p>
           </div>
         </div>
       </div>
 
       <!-- FAQ ACCORDION / CARDS SECTION -->
-      <div class="space-y-10 max-w-4xl mx-auto apple-reveal">
-        <div class="text-center space-y-3">
-          <h2 class="text-3xl sm:text-5xl font-extrabold titanium-text">คำถามที่พบบ่อย (FAQ)</h2>
-          <p class="text-sm sm:text-base sub-text">ข้อสงสัยเกี่ยวกับการสั่งพิมพ์และการรับเอกสาร</p>
+      <div class="space-y-12 max-w-5xl mx-auto apple-reveal">
+        <div class="text-center space-y-4">
+          <h2 class="text-4xl sm:text-6xl font-extrabold titanium-text">คำถามที่พบบ่อย (FAQ)</h2>
+          <p class="text-base sm:text-lg sub-text font-light">ข้อสงสัยเกี่ยวกับการสั่งพิมพ์และการรับเอกสาร</p>
         </div>
 
-        <div class="space-y-5">
-          <div class="p-7 rounded-3xl glass-card border space-y-3">
-            <h4 class="text-base sm:text-lg font-bold text-blue-400">Q: สามารถสั่งพิมพ์ไฟล์รูปแบบใดได้บ้าง?</h4>
-            <p class="text-sm sub-text leading-relaxed">รองรับไฟล์ PDF, Word (DOCX), และรูปภาพ (JPG, PNG) ระบบจะคำนวณจำนวนหน้าให้อัตโนมัติ</p>
+        <div class="space-y-6">
+          <div class="p-8 sm:p-10 rounded-[32px] glass-card border space-y-4">
+            <h4 class="text-xl sm:text-2xl font-bold text-blue-400">Q: สามารถสั่งพิมพ์ไฟล์รูปแบบใดได้บ้าง?</h4>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">รองรับไฟล์ PDF, Word (DOCX), และรูปภาพ (JPG, PNG) ระบบจะคำนวณจำนวนหน้าให้อัตโนมัติ</p>
           </div>
 
-          <div class="p-7 rounded-3xl glass-card border space-y-3">
-            <h4 class="text-base sm:text-lg font-bold text-blue-400">Q: เติม Coins แล้วยอดเข้าทันทีหรือไม่?</h4>
-            <p class="text-sm sub-text leading-relaxed">เมื่อสแกนโอนเงิน PromptPay และแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าอย่างรวดเร็ว</p>
+          <div class="p-8 sm:p-10 rounded-[32px] glass-card border space-y-4">
+            <h4 class="text-xl sm:text-2xl font-bold text-blue-400">Q: เติม Coins แล้วยอดเข้าทันทีหรือไม่?</h4>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">เมื่อสแกนโอนเงิน PromptPay และแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าอย่างรวดเร็ว</p>
           </div>
 
-          <div class="p-7 rounded-3xl glass-card border space-y-3">
-            <h4 class="text-base sm:text-lg font-bold text-blue-400">Q: รับสินค้าได้อย่างไร มีค่าจัดส่งไหม?</h4>
-            <p class="text-sm sub-text leading-relaxed">การรับสินค้าเป็นแบบ Self Pickup หน้าร้านฟรี 100% ไม่มีค่าจัดส่งเพิ่มเติมครับ</p>
+          <div class="p-8 sm:p-10 rounded-[32px] glass-card border space-y-4">
+            <h4 class="text-xl sm:text-2xl font-bold text-blue-400">Q: รับสินค้าได้อย่างไร มีค่าจัดส่งไหม?</h4>
+            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">การรับสินค้าเป็นแบบ Self Pickup หน้าร้านฟรี 100% ไม่มีค่าจัดส่งเพิ่มเติมครับ</p>
           </div>
         </div>
       </div>
 
       <!-- BOTTOM CTA BANNER -->
-      <div class="glass-panel rounded-[40px] p-10 sm:p-20 border text-center space-y-8 relative overflow-hidden bg-gradient-to-tr from-blue-950/40 via-black to-indigo-950/40 apple-reveal">
-        <div class="max-w-2xl mx-auto space-y-6">
+      <div class="glass-panel rounded-[44px] p-12 sm:p-24 border text-center space-y-8 relative overflow-hidden bg-gradient-to-tr from-blue-950/40 via-black to-indigo-950/40 apple-reveal">
+        <div class="max-w-3xl mx-auto space-y-8">
           <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text">พร้อมเริ่มต้นสั่งพิมพ์แล้วหรือยัง?</h2>
-          <p class="text-sm sm:text-base sub-text">สั่งพิมพ์เอกสารของคุณอย่างรวดเร็ว ด้วยเทคโนโลยีที่ล้ำสมัยที่สุด</p>
-          <button onclick="handleStartPrinting()" class="px-12 py-5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-lg rounded-2xl shadow-2xl transition hover:scale-105 inline-flex items-center gap-3">
+          <p class="text-base sm:text-xl sub-text font-light">สั่งพิมพ์เอกสารของคุณอย่างรวดเร็ว ด้วยเทคโนโลยีที่ล้ำสมัยที่สุด</p>
+          <button onclick="handleStartPrinting()" class="px-12 py-5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-lg sm:text-xl rounded-2xl shadow-2xl transition hover:scale-105 inline-flex items-center gap-3">
             <i data-lucide="printer" class="w-6 h-6"></i> สั่งพิมพ์ทันทีที่ PrintDekD Pro
           </button>
         </div>
@@ -845,7 +849,7 @@
     </section>
 
     <!-- VIEW 3: DASHBOARD & ORDER FORM -->
-    <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto">
+    <section id="view-dashboard" class="hidden py-8 px-4 max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <!-- ORDER FORM -->
@@ -1111,7 +1115,7 @@
     </section>
 
     <!-- VIEW 5: ADMIN BACKOFFICE -->
-    <section id="view-admin" class="hidden py-8 px-4 max-w-6xl mx-auto">
+    <section id="view-admin" class="hidden py-8 px-4 max-w-7xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
@@ -1209,8 +1213,6 @@
     let currentOrdersList = [];
     let tempAvatarUrl = '';
 
-    let bgScene, bgCamera, bgRenderer, bgFloatingGroup;
-
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
@@ -1222,7 +1224,6 @@
     }
 
     window.addEventListener('load', () => {
-      init3DBackground();
       initAppleScrollObserver();
       if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -1246,88 +1247,11 @@
           }
         });
       }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
       });
 
       document.querySelectorAll('.apple-reveal').forEach(el => observer.observe(el));
-    }
-
-    /* UPGRADED 3D HIGH-TECH THREE.JS CANVAS */
-    function init3DBackground() {
-      const container = document.getElementById('three-bg-canvas');
-      if (!container || typeof THREE === 'undefined') return;
-
-      bgScene = new THREE.Scene();
-      bgCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
-      bgCamera.position.z = 18;
-
-      bgRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      bgRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      bgRenderer.setSize(window.innerWidth, window.innerHeight);
-      container.appendChild(bgRenderer.domElement);
-
-      bgFloatingGroup = new THREE.Group();
-
-      // Main Torus Knot Metallic Geometry
-      const torusGeo = new THREE.TorusKnotGeometry(3.5, 0.9, 128, 32);
-      const torusMat = new THREE.MeshPhysicalMaterial({
-        color: 0x2997ff,
-        metalness: 0.95,
-        roughness: 0.15,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.1,
-        wireframe: false
-      });
-      const torusMesh = new THREE.Mesh(torusGeo, torusMat);
-      torusMesh.position.set(-6, 2, -4);
-      bgFloatingGroup.add(torusMesh);
-
-      // Outer Glow Geometry Wireframe Ring
-      const ringGeo = new THREE.IcosahedronGeometry(7, 2);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.18 });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.position.set(7, -3, -8);
-      bgFloatingGroup.add(ringMesh);
-
-      bgScene.add(bgFloatingGroup);
-
-      // Dynamic Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-      bgScene.add(ambientLight);
-
-      const bluePointLight = new THREE.PointLight(0x2997ff, 3, 50);
-      bluePointLight.position.set(10, 10, 10);
-      bgScene.add(bluePointLight);
-
-      const purplePointLight = new THREE.PointLight(0x8b5cf6, 2.5, 50);
-      purplePointLight.position.set(-10, -10, -5);
-      bgScene.add(purplePointLight);
-
-      window.addEventListener('resize', () => {
-        bgCamera.aspect = window.innerWidth / window.innerHeight;
-        bgCamera.updateProjectionMatrix();
-        bgRenderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      let clock = new THREE.Clock();
-
-      function animate() {
-        requestAnimationFrame(animate);
-        const elapsedTime = clock.getElapsedTime();
-
-        torusMesh.rotation.x = elapsedTime * 0.25;
-        torusMesh.rotation.y = elapsedTime * 0.35;
-
-        ringMesh.rotation.x = -elapsedTime * 0.15;
-        ringMesh.rotation.y = elapsedTime * 0.2;
-
-        bluePointLight.position.x = Math.sin(elapsedTime * 0.7) * 12;
-        bluePointLight.position.y = Math.cos(elapsedTime * 0.5) * 12;
-
-        bgRenderer.render(bgScene, bgCamera);
-      }
-      animate();
     }
 
     function handleBackdropClick(event, modalId, closeFn) {
@@ -1680,29 +1604,64 @@
       if (!url || !key) return showCustomModal({ title: 'กรอกข้อมูลไม่ครบ', message: 'กรุณากรอก URL และ Key', icon: 'alert-triangle' });
       localStorage.setItem('sp_url', url); localStorage.setItem('sp_key', key);
       initSupabase(url, key);
-      showCustomModal({ title: 'เชื่อมต่อสำเร็จ', message: 'บันทึกการเชื่อมต่อ Supabase เรียบร้อย', icon: 'check-circle' });
-      document.getElementById('config-panel').classList.add('hidden');
+      showCustomModal({ title: 'สำเร็จ', message: 'เชื่อมต่อ Supabase สำเร็จ', icon: 'check-circle' });
     }
 
     function initSupabase(url, key) {
       try {
-        if (typeof supabase !== 'undefined') {
-          supabaseClient = supabase.createClient(url, key);
-          const savedUser = localStorage.getItem('sp_user');
-          if (savedUser) {
-            currentUser = JSON.parse(savedUser);
-            updateUserUI();
-            fetchUserWallet();
-          }
+        supabaseClient = supabase.createClient(url, key);
+        const savedUser = localStorage.getItem('sp_user');
+        if (savedUser) {
+          currentUser = JSON.parse(savedUser);
+          updateUserUI();
         }
       } catch (err) {
-        console.error('Supabase Init Error:', err);
+        console.error("Supabase Init Error:", err);
+      }
+    }
+
+    function updateUserUI() {
+      const isLogged = !!currentUser;
+      document.getElementById('guest-buttons').classList.toggle('hidden', isLogged);
+      document.getElementById('user-profile-menu').classList.toggle('hidden', !isLogged);
+      document.getElementById('nav-wallet-btn').classList.toggle('hidden', !isLogged);
+      document.getElementById('user-coins-badge').classList.toggle('hidden', !isLogged);
+
+      if (isLogged) {
+        document.getElementById('user-display-name').innerText = currentUser.full_name || currentUser.email || 'ผู้ใช้';
+        const avatar = currentUser.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
+        document.getElementById('nav-avatar-img').src = avatar;
+
+        const isAdmin = currentUser.role === 'admin';
+        document.getElementById('admin-menu-btn').classList.toggle('hidden', !isAdmin);
+        document.getElementById('apple-admin-menu-btn').classList.toggle('hidden', !isAdmin);
+        document.getElementById('admin-db-config-btn').classList.toggle('hidden', !isAdmin);
+        fetchUserWallet();
+      }
+    }
+
+    async function fetchUserWallet() {
+      if (!supabaseClient || !currentUser) return;
+      try {
+        const { data, error } = await supabaseClient
+          .from('users')
+          .select('coins')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (data) {
+          currentUser.coins = data.coins || 0;
+          document.getElementById('user-coins-amount').innerText = `${parseFloat(data.coins || 0).toFixed(2)} Coins`;
+          document.getElementById('prof-coins-amount').innerText = `${parseFloat(data.coins || 0).toFixed(2)} Coins`;
+        }
+      } catch (e) {
+        console.error("Fetch Wallet error:", e);
       }
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return showCustomModal({ title: 'ยังไม่ได้เชื่อมต่อ DB', message: 'กรุณาตั้งค่า Supabase URL/Key', icon: 'database' });
+      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', message: 'กรุณาตั้งค่า Supabase ก่อนใช้งาน', icon: 'settings' });
 
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
@@ -1712,25 +1671,25 @@
           .from('users')
           .select('*')
           .eq('email', email)
-          .eq('password', password)
           .single();
 
-        if (error || !data) throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        if (error || !data) throw new Error('ไม่พบอีเมลผู้ใช้งานในระบบ');
+        if (data.password !== password) throw new Error('รหัสผ่านไม่ถูกต้อง');
 
         currentUser = data;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
-        showCustomModal({ title: 'สำเร็จ', message: `ยินดีต้อนรับคุณ ${currentUser.full_name}`, icon: 'check-circle' });
         switchView('dashboard');
+        showCustomModal({ title: 'เข้าสู่ระบบสำเร็จ', message: `ยินดีต้อนรับคุณ ${currentUser.full_name}`, icon: 'check' });
       } catch (err) {
-        showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: err.message, icon: 'alert-triangle' });
+        showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: err.message, icon: 'alert-circle' });
       }
     }
 
     async function handleRegister(e) {
       e.preventDefault();
-      if (!isPasswordValid) return showCustomModal({ title: 'รหัสผ่านไม่ตรงเงื่อนไข', message: 'กรุณาตั้งรหัสผ่านให้ถูกต้องตามเงื่อนไขความปลอดภัย', icon: 'shield-alert' });
-      if (!supabaseClient) return showCustomModal({ title: 'ยังไม่ได้เชื่อมต่อ DB', message: 'กรุณาตั้งค่า Supabase URL/Key', icon: 'database' });
+      if (!isPasswordValid) return showCustomModal({ title: 'รหัสผ่านไม่ผ่านเงื่อนไข', message: 'กรุณากรอกรหัสผ่านให้ถูกต้องตามเงื่อนไขความปลอดภัย', icon: 'shield-alert' });
+      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', message: 'กรุณาตั้งค่า Supabase ก่อนใช้งาน', icon: 'settings' });
 
       const fullname = document.getElementById('reg-fullname').value.trim();
       const email = document.getElementById('reg-email').value.trim();
@@ -1738,21 +1697,28 @@
       const avatarUrl = document.getElementById('reg-avatar-preview').src;
 
       try {
-        const { data, error } = await supabaseClient
-          .from('users')
-          .insert([{ full_name: fullname, email: email, password: password, avatar_url: avatarUrl, role: 'member', coins: 0 }])
-          .select()
-          .single();
+        const { data: exist } = await supabaseClient.from('users').select('id').eq('email', email).single();
+        if (exist) throw new Error('อีเมลนี้ถูกใช้งานแล้วในระบบ');
 
+        const newUser = {
+          full_name: fullname,
+          email: email,
+          password: password,
+          avatar_url: avatarUrl,
+          role: 'member',
+          coins: 0.00
+        };
+
+        const { data, error } = await supabaseClient.from('users').insert([newUser]).select().single();
         if (error) throw error;
 
         currentUser = data;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
-        showCustomModal({ title: 'ลงทะเบียนสำเร็จ', message: 'ยินดีต้อนรับสมาชิกใหม่', icon: 'check-circle' });
         switchView('dashboard');
+        showCustomModal({ title: 'ลงทะเบียนสำเร็จ', message: 'บัญชีของคุณถูกสร้างเรียบร้อยแล้ว', icon: 'check-circle' });
       } catch (err) {
-        showCustomModal({ title: 'ลงทะเบียนไม่สำเร็จ', message: err.message, icon: 'alert-triangle' });
+        showCustomModal({ title: 'ลงทะเบียนไม่สำเร็จ', message: err.message, icon: 'alert-circle' });
       }
     }
 
@@ -1761,146 +1727,111 @@
       localStorage.removeItem('sp_user');
       updateUserUI();
       switchView('landing');
-      showCustomModal({ title: 'ออกจากระบบแล้ว', message: 'คุณได้ออกจากระบบเรียบร้อย', icon: 'log-out' });
+      showCustomModal({ title: 'ออกจากระบบแล้ว', message: 'ขอบคุณที่ใช้บริการ PrintDekD Pro', icon: 'info' });
     }
 
-    function updateUserUI() {
-      const guestBtns = document.getElementById('guest-buttons');
-      const userMenu = document.getElementById('user-profile-menu');
-      const coinsBadge = document.getElementById('user-coins-badge');
-      const walletBtn = document.getElementById('nav-wallet-btn');
-      const adminBtn = document.getElementById('admin-menu-btn');
-      const appleAdminBtn = document.getElementById('apple-admin-menu-btn');
-      const dbConfigBtn = document.getElementById('admin-db-config-btn');
-
-      if (currentUser) {
-        guestBtns.classList.add('hidden');
-        userMenu.classList.remove('hidden');
-        coinsBadge.classList.remove('hidden');
-        walletBtn.classList.remove('hidden');
-        dbConfigBtn.classList.remove('hidden');
-
-        document.getElementById('user-display-name').innerText = currentUser.full_name || 'ผู้ใช้';
-        if (currentUser.avatar_url) document.getElementById('nav-avatar-img').src = currentUser.avatar_url;
-
-        const isAdmin = currentUser.role === 'admin';
-        adminBtn.classList.toggle('hidden', !isAdmin);
-        appleAdminBtn.classList.toggle('hidden', !isAdmin);
-      } else {
-        guestBtns.classList.remove('hidden');
-        userMenu.classList.add('hidden');
-        coinsBadge.classList.add('hidden');
-        walletBtn.classList.add('hidden');
-        dbConfigBtn.classList.add('hidden');
-      }
-    }
-
-    async function fetchUserWallet() {
-      if (!supabaseClient || !currentUser) return;
-      try {
-        const { data } = await supabaseClient.from('users').select('coins').eq('id', currentUser.id).single();
-        if (data) {
-          currentUser.coins = data.coins || 0;
-          document.getElementById('user-coins-amount').innerText = `${parseFloat(data.coins).toFixed(2)} Coins`;
-          document.getElementById('prof-coins-amount').innerText = `${parseFloat(data.coins).toFixed(2)} Coins`;
-        }
-      } catch (err) { console.error('Fetch wallet error:', err); }
-    }
-
-    function handleFileSelect(e) {
-      const file = e.target.files[0];
+    /* PRINT ORDER FORM LOGIC */
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
       if (!file) return;
 
       selectedFileObj = file;
       document.getElementById('upload-placeholder').classList.add('hidden');
-      const fileDetails = document.getElementById('file-details');
-      fileDetails.classList.remove('hidden');
+      document.getElementById('file-details').classList.remove('hidden');
       document.getElementById('file-info-name').innerText = file.name;
       document.getElementById('preview-file-drawer-btn').classList.remove('hidden');
 
-      document.getElementById('preview-modal-filename').innerText = file.name;
-      document.getElementById('preview-modal-filesize').innerText = `ขนาดไฟล์: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
-
       if (file.type === 'application/pdf') {
-        const fileReader = new FileReader();
-        fileReader.onload = function() {
-          const typedarray = new Uint8Array(this.result);
-          pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-            detectedPageCount = pdf.numPages;
-            document.getElementById('total-pages-display').innerText = `${detectedPageCount} หน้า`;
-            document.getElementById('preview-modal-pages').innerText = `${detectedPageCount} หน้า`;
-            document.getElementById('printed-pages-input').value = detectedPageCount;
-            renderPageGrid(detectedPageCount);
-            calculatePrice();
-          });
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const typedarray = new Uint8Array(e.target.result);
+          if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+              detectedPageCount = pdf.numPages;
+              document.getElementById('total-pages-display').innerText = `${detectedPageCount} หน้า`;
+              document.getElementById('printed-pages-input').value = detectedPageCount;
+              document.getElementById('selected-pages-count-display').innerText = `${detectedPageCount} หน้า`;
+              document.getElementById('preview-modal-filename').innerText = file.name;
+              document.getElementById('preview-modal-filesize').innerText = `ขนาดไฟล์: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+              document.getElementById('preview-modal-pages').innerText = `${detectedPageCount} หน้า`;
+              
+              renderPdfPreviewPages(pdf);
+              renderPageSelectionGrid(detectedPageCount);
+              calculatePrice();
+            });
+          }
         };
-        fileReader.readAsArrayBuffer(file);
+        reader.readAsArrayBuffer(file);
       } else {
         detectedPageCount = 1;
-        document.getElementById('total-pages-display').innerText = `1 หน้า`;
+        document.getElementById('total-pages-display').innerText = '1 หน้า';
         document.getElementById('printed-pages-input').value = 1;
+        document.getElementById('selected-pages-count-display').innerText = '1 หน้า';
         calculatePrice();
       }
     }
 
-    function renderPageGrid(count) {
-      const container = document.getElementById('pages-grid-container');
-      container.innerHTML = '';
-      for (let i = 1; i <= count; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'p-2 rounded-xl border border-white/10 text-xs font-bold titanium-text bg-white/5 hover:bg-blue-600/30 page-grid-item text-center transition';
-        btn.innerText = `P.${i}`;
-        btn.onclick = () => {
-          btn.classList.toggle('bg-blue-600');
-          btn.classList.toggle('text-white');
-          updateSelectedGridPagesCount();
-        };
-        container.appendChild(btn);
+    function renderPdfPreviewPages(pdf) {
+      const wrapper = document.getElementById('pdf-preview-wrapper');
+      wrapper.innerHTML = '';
+      for (let num = 1; num <= Math.min(pdf.numPages, 10); num++) {
+        pdf.getPage(num).then(page => {
+          const viewport = page.getViewport({ scale: 0.8 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          canvas.className = 'rounded-xl shadow-lg border border-white/20 mb-4';
+
+          const renderContext = { canvasContext: context, viewport: viewport };
+          page.render(renderContext);
+          wrapper.appendChild(canvas);
+        });
       }
     }
 
-    function selectAllPages(select = true) {
-      const items = document.querySelectorAll('.page-grid-item');
-      items.forEach(item => {
-        if (select) {
-          item.classList.add('bg-blue-600', 'text-white');
-        } else {
-          item.classList.remove('bg-blue-600', 'text-white');
-        }
-      });
-      updateSelectedGridPagesCount();
+    function renderPageSelectionGrid(total) {
+      const grid = document.getElementById('pages-grid-container');
+      grid.innerHTML = '';
+      for (let i = 1; i <= total; i++) {
+        grid.innerHTML += `
+          <label class="p-2 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between cursor-pointer hover:bg-blue-600/20 text-xs font-mono">
+            <span>P.${i}</span>
+            <input type="checkbox" value="${i}" checked onchange="updateGridSelectedCount()" class="accent-blue-500">
+          </label>
+        `;
+      }
+      updateGridSelectedCount();
     }
 
-    function updateSelectedGridPagesCount() {
-      const selected = document.querySelectorAll('.page-grid-item.bg-blue-600').length;
-      document.getElementById('selected-pages-count-display').innerText = `${selected} หน้า`;
-      document.getElementById('printed-pages-input').value = selected || 1;
+    function updateGridSelectedCount() {
+      const checkedBoxes = document.querySelectorAll('#pages-grid-container input[type="checkbox"]:checked');
+      const count = checkedBoxes.length;
+      document.getElementById('selected-pages-count-display').innerText = `${count} หน้า`;
+      document.getElementById('printed-pages-input').value = count;
       calculatePrice();
+    }
+
+    function selectAllPages(select) {
+      document.querySelectorAll('#pages-grid-container input[type="checkbox"]').forEach(cb => cb.checked = select);
+      updateGridSelectedCount();
     }
 
     function togglePageSelectionMode() {
       const mode = document.querySelector('input[name="page_selection_mode"]:checked').value;
-      const textBox = document.getElementById('page-mode-text-box');
-      const gridBox = document.getElementById('page-mode-grid-box');
-
-      if (mode === 'text') {
-        textBox.classList.remove('hidden');
-        gridBox.classList.add('hidden');
-      } else {
-        textBox.classList.add('hidden');
-        gridBox.classList.remove('hidden');
-      }
+      document.getElementById('page-mode-text-box').classList.toggle('hidden', mode !== 'text');
+      document.getElementById('page-mode-grid-box').classList.toggle('hidden', mode !== 'grid');
     }
 
     function calculatePrice() {
       const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
       const copies = parseInt(document.getElementById('copies').value) || 1;
-      const colorType = document.getElementById('color-type').value;
-      const duplexType = document.getElementById('duplex-type').value;
+      const isColor = document.getElementById('color-type').value === 'color';
+      const isDuplex = document.getElementById('duplex-type').value === 'duplex';
 
-      let pageRate = colorType === 'color' ? 5.00 : 1.00;
-      if (duplexType === 'duplex') pageRate += 0.50;
+      let pageRate = isColor ? 5.00 : 1.00;
+      if (isDuplex) pageRate += 0.50;
 
       const total = pages * pageRate * copies;
       document.getElementById('total-price').innerText = `${total.toFixed(2)} ฿`;
@@ -1913,53 +1844,48 @@
 
     async function handleOrderSubmit(e) {
       e.preventDefault();
-      if (!currentUser) return showCustomModal({ title: 'โปรดเข้าสู่ระบบ', message: 'กรุณาเข้าสู่ระบบก่อนสั่งพิมพ์', icon: 'lock' });
-      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', message: 'โปรดตั้งค่า Supabase DB', icon: 'database' });
+      if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอิน', message: 'โปรดเข้าสู่ระบบเพื่อสั่งพิมพ์', icon: 'lock' });
 
+      const fileInput = document.getElementById('file-input');
+      if (!fileInput.files[0]) return showCustomModal({ title: 'ไม่ได้แนบไฟล์', message: 'กรุณาอัปโหลดไฟล์เอกสาร', icon: 'file' });
+
+      const file = fileInput.files[0];
       const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const paperSize = document.getElementById('paper-size').value;
-      const colorType = document.getElementById('color-type').value;
-      const duplexType = document.getElementById('duplex-type').value;
+      const isColor = document.getElementById('color-type').value === 'color';
+      const isDuplex = document.getElementById('duplex-type').value === 'duplex';
       const notes = document.getElementById('order-notes').value.trim();
-      const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+      const method = document.querySelector('input[name="payment_method"]:checked').value;
 
-      let pageRate = colorType === 'color' ? 5.00 : 1.00;
-      if (duplexType === 'duplex') pageRate += 0.50;
+      let pageRate = isColor ? 5.00 : 1.00;
+      if (isDuplex) pageRate += 0.50;
       const totalPrice = pages * pageRate * copies;
 
-      let slipUrl = null;
+      let slipUrl = '';
 
-      if (paymentMethod === 'coins') {
+      if (method === 'coins') {
         if ((currentUser.coins || 0) < totalPrice) {
-          return showCustomModal({ title: 'Coins ไม่พอ', message: ' Coins ของคุณไม่เพียงพอ กรุณาเติม Coins เพิ่ม', icon: 'coins' });
+          return showCustomModal({
+            title: 'Coins ไม่เพียงพอ',
+            message: `ยอดคงเหลือของคุณคือ ${currentUser.coins || 0} Coins ไม่พอสำหรับชำระ ${totalPrice.toFixed(2)} Coins กรุณาเติม Coins`,
+            icon: 'wallet',
+            onConfirm: () => switchView('wallet')
+          });
         }
+      } else {
+        const slipFile = document.getElementById('order-slip-file').files[0];
+        if (!slipFile) return showCustomModal({ title: 'ยังไม่ได้แนบสลิป', message: 'กรุณาแนบสลิปการโอนเงิน PromptPay', icon: 'image' });
+        
+        const reader = new FileReader();
+        slipUrl = await new Promise(resolve => {
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(slipFile);
+        });
       }
 
       try {
-        const { data: newOrder, error } = await supabaseClient
-          .from('orders')
-          .insert([{
-            user_id: currentUser.id,
-            user_name: currentUser.full_name,
-            file_name: selectedFileObj ? selectedFileObj.name : 'เอกสารพิมพ์.pdf',
-            page_count: pages,
-            copies: copies,
-            paper_size: paperSize,
-            is_color: colorType === 'color',
-            is_duplex: duplexType === 'duplex',
-            total_price: totalPrice,
-            payment_method: paymentMethod,
-            slip_url: slipUrl,
-            admin_note: notes,
-            status: 'pending'
-          }])
-          .select()
-          .single();
-
-        if (error) throw error;
-
-        if (paymentMethod === 'coins') {
+        if (method === 'coins') {
           const newCoins = (currentUser.coins || 0) - totalPrice;
           await supabaseClient.from('users').update({ coins: newCoins }).eq('id', currentUser.id);
           currentUser.coins = newCoins;
@@ -1967,127 +1893,156 @@
           updateUserUI();
         }
 
-        showCustomModal({ title: 'สร้างคิวงานสำเร็จ', message: 'สั่งพิมพ์เอกสารเรียบร้อย คุณสามารถเข้ามารับงานได้ที่หน้าร้านเมื่อเสร็จสิ้น', icon: 'check-circle' });
+        const newOrder = {
+          user_id: currentUser.id,
+          file_name: file.name,
+          page_count: pages,
+          copies: copies,
+          paper_size: paperSize,
+          is_color: isColor,
+          is_duplex: isDuplex,
+          total_price: totalPrice,
+          payment_method: method,
+          slip_url: slipUrl,
+          status: 'pending',
+          admin_note: notes || 'สั่งพิมพ์ผ่านระบบ PrintDekD Pro (รับสินค้าหน้าร้าน)'
+        };
+
+        const { error } = await supabaseClient.from('orders').insert([newOrder]);
+        if (error) throw error;
+
+        showCustomModal({ title: 'สั่งพิมพ์สำเร็จ!', message: 'สร้างรายการสั่งพิมพ์เรียบร้อยแล้ว เข้ามารับสินค้าหน้าร้านเมื่อสถานะพิมพ์เสร็จสมบูรณ์', icon: 'check-circle' });
         fetchQueues();
+        document.getElementById('print-form').reset();
+        document.getElementById('upload-placeholder').classList.remove('hidden');
+        document.getElementById('file-details').classList.add('hidden');
+        document.getElementById('preview-file-drawer-btn').classList.add('hidden');
       } catch (err) {
-        showCustomModal({ title: 'ทำรายการไม่สำเร็จ', message: err.message, icon: 'alert-triangle' });
+        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-circle' });
       }
     }
 
     async function fetchQueues() {
-      if (!supabaseClient) return;
+      if (!supabaseClient || !currentUser) return;
+      const container = document.getElementById('queue-cards-container');
       try {
         const { data, error } = await supabaseClient
           .from('orders')
           .select('*')
+          .eq('user_id', currentUser.id)
           .order('id', { ascending: false });
 
         if (error) throw error;
         currentOrdersList = data || [];
-        renderQueueCards(currentOrdersList);
-      } catch (err) {
-        console.error('Fetch queues error:', err);
-      }
-    }
 
-    function renderQueueCards(orders) {
-      const container = document.getElementById('queue-cards-container');
-      if (!orders || orders.length === 0) {
-        container.innerHTML = '<p class="py-12 text-center sub-text text-xs">ยังไม่มีคิวงานพิมพ์ในขณะนี้</p>';
-        return;
-      }
+        if (currentOrdersList.length === 0) {
+          container.innerHTML = `<p class="py-12 text-center sub-text text-xs">คุณยังไม่มีคิวงานพิมพ์ในขณะนี้</p>`;
+          return;
+        }
 
-      container.innerHTML = orders.map(o => `
-        <div class="p-5 rounded-2xl glass-card border hover:border-blue-500/50 transition cursor-pointer flex items-center justify-between gap-4" onclick="openQueueDetailModal(${o.id})">
-          <div class="space-y-1 overflow-hidden">
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-blue-400 text-xs">#${o.id}</span>
-              <span class="font-bold titanium-text text-sm truncate max-w-xs">${escapeHtml(o.file_name)}</span>
+        container.innerHTML = currentOrdersList.map(order => `
+          <div class="p-5 rounded-2xl glass-card border flex items-center justify-between gap-4">
+            <div class="space-y-1 overflow-hidden">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono font-bold text-blue-400">#${order.id}</span>
+                <span class="text-xs font-bold titanium-text truncate max-w-xs">${escapeHtml(order.file_name)}</span>
+              </div>
+              <p class="text-[11px] sub-text">${order.page_count} หน้า | ${order.copies} ชุด | ${order.is_color ? 'สี' : 'ขาวดำ'} | <strong class="text-amber-400">${parseFloat(order.total_price).toFixed(2)} ฿</strong></p>
             </div>
-            <p class="text-xs sub-text">${o.page_count} หน้า | ${o.copies} ชุด | ${o.is_color ? 'สี' : 'ขาวดำ'}</p>
+            <div class="text-right flex-shrink-0">
+              <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold ${
+                order.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                order.status === 'printing' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+              }">${order.status === 'completed' ? 'พิมพ์เสร็จแล้ว (รับหน้าร้าน)' : order.status === 'printing' ? 'กำลังพิมพ์...' : 'รอคิว'}</span>
+              <button onclick="openQueueDetailModal(${order.id})" class="block mt-1 text-[11px] font-bold text-blue-400 hover:underline">ดูรายละเอียด</button>
+            </div>
           </div>
-          <div class="text-right flex-shrink-0">
-            <span class="text-xs font-bold px-3 py-1 rounded-full ${
-              o.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-              o.status === 'printing' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-              'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-            }">${
-              o.status === 'completed' ? 'พิมพ์เสร็จแล้ว' :
-              o.status === 'printing' ? 'กำลังพิมพ์...' : 'รอดำเนินการ'
-            }</span>
-            <span class="block text-sm font-black blue-gradient-text mt-1.5">${parseFloat(o.total_price || 0).toFixed(2)} ฿</span>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<p class="py-8 text-center text-xs text-rose-400">โหลดข้อมูลล้มเหลว: ${err.message}</p>`;
+      }
     }
 
+    /* WALLET TOPUP LOGIC */
     function selectTopupAmount(amt) {
       document.getElementById('selected-topup-amount').value = amt;
       document.getElementById('topup-qr-amount').innerText = parseFloat(amt).toFixed(2);
+      document.querySelectorAll('.topup-pkg-btn').forEach(btn => {
+        btn.className = 'topup-pkg-btn p-3 border rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text';
+      });
+      event.currentTarget.className = 'topup-pkg-btn p-3 border border-amber-500/50 bg-amber-500/10 rounded-2xl font-bold text-xs text-amber-500 text-center transition hover:scale-105';
     }
 
     async function handleTopupSubmit(e) {
       e.preventDefault();
-      if (!currentUser) return showCustomModal({ title: 'โปรดเข้าสู่ระบบ', message: 'กรุณาเข้าสู่ระบบก่อนเติม Coins', icon: 'lock' });
-      if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', message: 'โปรดตั้งค่า Supabase DB', icon: 'database' });
+      if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอิน', message: 'โปรดเข้าสู่ระบบก่อนเติมเงิน', icon: 'lock' });
 
-      const amount = parseFloat(document.getElementById('selected-topup-amount').value) || 20;
+      const amount = parseFloat(document.getElementById('selected-topup-amount').value);
+      const slipFile = document.getElementById('topup-slip-file').files[0];
+      if (!slipFile) return showCustomModal({ title: 'แนบสลิปโอนเงิน', message: 'กรุณาแนบสลิปการโอนเงินก่อนส่งคำขอ', icon: 'image' });
 
-      try {
-        const { error } = await supabaseClient
-          .from('topups')
-          .insert([{ user_id: currentUser.id, user_name: currentUser.full_name, amount: amount, status: 'pending' }]);
+      const reader = new FileReader();
+      reader.onload = async function(evt) {
+        const slipUrl = evt.target.result;
+        try {
+          const newTopup = {
+            user_id: currentUser.id,
+            user_name: currentUser.full_name || currentUser.email,
+            amount: amount,
+            coins: amount,
+            slip_url: slipUrl,
+            status: 'pending'
+          };
 
-        if (error) throw error;
+          const { error } = await supabaseClient.from('topups').insert([newTopup]);
+          if (error) throw error;
 
-        showCustomModal({ title: 'ส่งคำขอสำเร็จ', message: 'ส่งคำขอเติม Coins เรียบร้อยแล้ว แอดมินจะตรวจสอบอนุมัติโดยเร็ว', icon: 'check-circle' });
-        fetchUserTopups();
-      } catch (err) {
-        showCustomModal({ title: 'ทำรายการไม่สำเร็จ', message: err.message, icon: 'alert-triangle' });
-      }
+          showCustomModal({ title: 'ส่งคำขอเติมเงินแล้ว', message: 'แอดมินจะตรวจสอบสลิปและอนุมัติ Coins ให้คุณโดยเร็ว', icon: 'clock' });
+          fetchUserTopups();
+          document.getElementById('topup-slip-file').value = '';
+        } catch (err) {
+          showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-circle' });
+        }
+      };
+      reader.readAsDataURL(slipFile);
     }
 
     async function fetchUserTopups() {
       if (!supabaseClient || !currentUser) return;
+      const list = document.getElementById('topup-history-list');
       try {
-        const { data } = await supabaseClient
+        const { data, error } = await supabaseClient
           .from('topups')
           .select('*')
           .eq('user_id', currentUser.id)
           .order('id', { ascending: false });
 
-        const container = document.getElementById('topup-history-list');
+        if (error) throw error;
         if (!data || data.length === 0) {
-          container.innerHTML = '<p class="text-center py-8 sub-text text-xs">ไม่มีประวัติการเติม Coins</p>';
+          list.innerHTML = `<p class="text-center py-8 sub-text text-xs">ไม่พบประวัติการเติมเงิน</p>`;
           return;
         }
 
-        container.innerHTML = data.map(t => `
+        list.innerHTML = data.map(t => `
           <div class="p-4 rounded-2xl glass-card border flex items-center justify-between text-xs">
             <div>
-              <p class="font-bold text-amber-400 text-sm">+${parseFloat(t.amount).toFixed(2)} Coins</p>
-              <p class="text-[10px] sub-text">${new Date(t.created_at || Date.now()).toLocaleString('th-TH')}</p>
+              <p class="font-bold text-amber-400">+${parseFloat(t.amount).toFixed(2)} Coins</p>
+              <p class="text-[10px] sub-text">${new Date(t.created_at || Date.now()).toLocaleDateString('th-TH')}</p>
             </div>
-            <span class="px-3 py-1 rounded-full font-bold ${
+            <span class="px-3 py-1 rounded-full text-[10px] font-bold ${
               t.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
               t.status === 'rejected' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
               'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-            }">${
-              t.status === 'approved' ? 'อนุมัติแล้ว' :
-              t.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ'
-            }</span>
+            }">${t.status === 'approved' ? 'อนุมัติแล้ว' : t.status === 'rejected' ? 'ปฏิเสธ' : 'รออนุมัติ'}</span>
           </div>
         `).join('');
-      } catch (err) { console.error('Fetch topups error:', err); }
+      } catch (err) {
+        list.innerHTML = `<p class="text-center py-6 text-xs text-rose-400">โหลดประวัติล้มเหลว: ${err.message}</p>`;
+      }
     }
 
-    async function loadAdminData() {
-      if (!supabaseClient || currentUser?.role !== 'admin') return;
-      loadAdminOrders();
-      loadAdminTopups();
-      loadAdminUsers();
-    }
-
+    /* ADMIN BACKOFFICE LOGIC */
     function switchAdminTab(tab) {
       ['orders', 'topups', 'users'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
@@ -2098,111 +2053,162 @@
       document.getElementById(`admin-tab-${tab}-btn`).className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-md';
     }
 
-    async function loadAdminOrders() {
-      const { data } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
-      const tbody = document.getElementById('admin-orders-tbody');
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีรายการสั่งพิมพ์</td></tr>';
-        return;
-      }
-      tbody.innerHTML = data.map(o => `
-        <tr class="hover:bg-white/5 transition">
-          <td class="py-3 px-2 font-bold text-blue-400">#${o.id}</td>
-          <td class="py-3 px-2">
-            <span class="font-bold titanium-text block max-w-xs truncate">${escapeHtml(o.file_name)}</span>
-            <span class="sub-text text-[10px]">${parseFloat(o.total_price || 0).toFixed(2)} ฿ (${o.page_count} หน้า)</span>
-          </td>
-          <td class="py-3 px-2 text-emerald-400 font-semibold">Self Pickup หน้าร้าน</td>
-          <td class="py-3 px-2">
-            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold text-[10px]">${o.payment_method}</span>
-          </td>
-          <td class="py-3 px-2">
-            <select onchange="updateOrderStatus(${o.id}, this.value)" class="bg-black/60 border border-white/20 rounded-xl px-2.5 py-1 text-xs titanium-text font-bold">
-              <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>⏳ รอตรวจสอบ</option>
-              <option value="printing" ${o.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
-              <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
-              <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
-            </select>
-          </td>
-          <td class="py-3 px-2 text-right">
-            <button onclick="openQueueDetailModal(${o.id})" class="px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-600/30 font-bold transition">ดูรายละเอียด</button>
-          </td>
-        </tr>
-      `).join('');
+    async function loadAdminData() {
+      if (!supabaseClient || !currentUser || currentUser.role !== 'admin') return;
+      loadAdminOrders();
+      loadAdminTopups();
+      loadAdminUsers();
     }
 
-    async function updateOrderStatus(orderId, newStatus) {
-      await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
-      showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', message: `เปลี่ยนสถานะคิว #${orderId} เรียบร้อย`, icon: 'check-circle' });
-      fetchQueues();
+    async function loadAdminOrders() {
+      const tbody = document.getElementById('admin-orders-tbody');
+      try {
+        const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีรายการสั่งพิมพ์</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.map(o => `
+          <tr class="hover:bg-white/5 transition">
+            <td class="py-3 px-2 font-mono font-bold text-blue-400">#${o.id}</td>
+            <td class="py-3 px-2">
+              <span class="font-bold titanium-text block max-w-xs truncate">${escapeHtml(o.file_name)}</span>
+              <span class="sub-text text-[10px]">${o.page_count} หน้า x ${o.copies} ชุด | <strong class="text-amber-400">${parseFloat(o.total_price).toFixed(2)} ฿</strong></span>
+            </td>
+            <td class="py-3 px-2 text-emerald-400 font-bold">Self Pickup หน้าร้าน</td>
+            <td class="py-3 px-2">
+              <span class="uppercase font-bold text-[10px] text-amber-400">${o.payment_method}</span>
+              ${o.slip_url ? `<button onclick="openSlipModal('${o.slip_url}')" class="block text-[10px] text-blue-400 hover:underline">ดูสลิป</button>` : ''}
+            </td>
+            <td class="py-3 px-2">
+              <select onchange="updateOrderStatus(${o.id}, this.value)" class="bg-black/60 border border-white/20 rounded-xl px-2 py-1 text-[11px] titanium-text">
+                <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
+                <option value="printing" ${o.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
+                <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
+                <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
+              </select>
+            </td>
+            <td class="py-3 px-2 text-right">
+              <button onclick="openQueueDetailModal(${o.id})" class="px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl text-[10px] font-bold hover:bg-blue-600 hover:text-white transition">ดูรายละเอียด</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function updateOrderStatus(orderId, status) {
+      try {
+        const { error } = await supabaseClient.from('orders').update({ status }).eq('id', orderId);
+        if (error) throw error;
+        showCustomModal({ title: 'อัปเดตสำเร็จ', message: `เปลี่ยนสถานะคิว #${orderId} เป็น ${status}`, icon: 'check-circle' });
+      } catch (err) {
+        showCustomModal({ title: 'อัปเดตไม่สำเร็จ', message: err.message, icon: 'alert-circle' });
+      }
     }
 
     async function loadAdminTopups() {
-      const { data } = await supabaseClient.from('topups').select('*').order('id', { ascending: false });
       const tbody = document.getElementById('admin-topups-tbody');
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีคำขอเติมเงิน</td></tr>';
-        return;
+      try {
+        const { data, error } = await supabaseClient.from('topups').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีคำขอเติม Coins</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.map(t => `
+          <tr class="hover:bg-white/5 transition">
+            <td class="py-3 px-2 font-mono sub-text text-[10px]">${new Date(t.created_at || Date.now()).toLocaleDateString('th-TH')}</td>
+            <td class="py-3 px-2 font-bold titanium-text">${escapeHtml(t.user_name || 'ผู้ใช้')}</td>
+            <td class="py-3 px-2 font-black text-amber-400">+${parseFloat(t.amount).toFixed(2)} Coins</td>
+            <td class="py-3 px-2">
+              <button onclick="openSlipModal('${t.slip_url}')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-bold titanium-text border border-white/10">ดูรูปสลิป</button>
+            </td>
+            <td class="py-3 px-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                t.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400' :
+                t.status === 'rejected' ? 'bg-rose-500/20 text-rose-400' : 'bg-amber-500/20 text-amber-400'
+              }">${t.status}</span>
+            </td>
+            <td class="py-3 px-2 text-right space-x-1">
+              ${t.status === 'pending' ? `
+                <button onclick="approveTopup(${t.id}, ${t.user_id},${t.amount})" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-md transition">อนุมัติ</button>
+                <button onclick="rejectTopup(${t.id})" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-[10px] font-bold shadow-md transition">ปฏิเสธ</button>
+              ` : '<span class="sub-text text-[10px]">ดำเนินการแล้ว</span>'}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-rose-400">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
       }
-      tbody.innerHTML = data.map(t => `
-        <tr class="hover:bg-white/5 transition">
-          <td class="py-3 px-2 sub-text">${new Date(t.created_at || Date.now()).toLocaleDateString('th-TH')}</td>
-          <td class="py-3 px-2 font-bold titanium-text">${escapeHtml(t.user_name || 'ผู้ใช้')}</td>
-          <td class="py-3 px-2 font-black text-amber-400">+${parseFloat(t.amount).toFixed(2)} Coins</td>
-          <td class="py-3 px-2">
-            ${t.slip_url ? `<button onclick="openSlipModal('${t.slip_url}')" class="text-blue-400 hover:underline">ดูสลิป</button>` : '<span class="sub-text">-</span>'}
-          </td>
-          <td class="py-3 px-2">
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
-              t.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-              t.status === 'rejected' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
-              'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-            }">${t.status}</span>
-          </td>
-          <td class="py-3 px-2 text-right space-x-1">
-            ${t.status === 'pending' ? `
-              <button onclick="approveTopup(${t.id}, '${t.user_id}',${t.amount})" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition">อนุมัติ</button>
-              <button onclick="rejectTopup(${t.id})" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold transition">ปฏิเสธ</button>
-            ` : '<span class="sub-text text-[11px]">ดำเนินการแล้ว</span>'}
-          </td>
-        </tr>
-      `).join('');
     }
 
     async function approveTopup(topupId, userId, amount) {
-      await supabaseClient.from('topups').update({ status: 'approved' }).eq('id', topupId);
-      const { data: user } = await supabaseClient.from('users').select('coins').eq('id', userId).single();
-      if (user) {
-        const updatedCoins = (user.coins || 0) + parseFloat(amount);
+      try {
+        const { data: user } = await supabaseClient.from('users').select('coins').eq('id', userId).single();
+        const updatedCoins = (user?.coins || 0) + amount;
+
         await supabaseClient.from('users').update({ coins: updatedCoins }).eq('id', userId);
+        await supabaseClient.from('topups').update({ status: 'approved' }).eq('id', topupId);
+
+        showCustomModal({ title: 'อนุมัติเติม Coins สำเร็จ', message: `เพิ่ม ${amount} Coins ให้ผู้ใช้เรียบร้อย`, icon: 'check-circle' });
+        loadAdminTopups();
+      } catch (err) {
+        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-circle' });
       }
-      showCustomModal({ title: 'อนุมัติเรียบร้อย', message: `อนุมัติเติม Coins จำนวน ${amount} ให้ผู้ใช้แล้ว`, icon: 'check-circle' });
-      loadAdminTopups();
     }
 
     async function rejectTopup(topupId) {
-      await supabaseClient.from('topups').update({ status: 'rejected' }).eq('id', topupId);
-      showCustomModal({ title: 'ปฏิเสธคำขอแล้ว', message: 'ปฏิเสธคำขอเติม Coins เรียบร้อย', icon: 'info' });
-      loadAdminTopups();
+      try {
+        await supabaseClient.from('topups').update({ status: 'rejected' }).eq('id', topupId);
+        showCustomModal({ title: 'ปฏิเสธคำขอแล้ว', message: 'ปฏิเสธรายการเติม Coins เรียบร้อย', icon: 'info' });
+        loadAdminTopups();
+      } catch (err) {
+        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-circle' });
+      }
     }
 
     async function loadAdminUsers() {
-      const { data } = await supabaseClient.from('users').select('*').order('id', { ascending: true });
       const tbody = document.getElementById('admin-users-tbody');
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center sub-text">ไม่มีสมาชิกในระบบ</td></tr>';
-        return;
+      try {
+        const { data, error } = await supabaseClient.from('users').select('*').order('id', { ascending: false });
+        if (error) throw error;
+
+        tbody.innerHTML = data.map(u => `
+          <tr class="hover:bg-white/5 transition">
+            <td class="py-3 px-2 font-bold titanium-text">${escapeHtml(u.full_name || '-')}</td>
+            <td class="py-3 px-2 font-mono sub-text">${escapeHtml(u.email)}</td>
+            <td class="py-3 px-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                u.role === 'admin' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+              }">${u.role}</span>
+            </td>
+            <td class="py-3 px-2 text-right">
+              <button onclick="toggleUserRole(${u.id}, '${u.role}')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-bold titanium-text transition">สลับสิทธิ์ Admin/Member</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-rose-400">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
       }
-      tbody.innerHTML = data.map(u => `
-        <tr class="hover:bg-white/5 transition">
-          <td class="py-3 px-2 font-bold titanium-text">${escapeHtml(u.full_name)}</td>
-          <td class="py-3 px-2 text-blue-400 font-mono">${escapeHtml(u.email)}</td>
-          <td class="py-3 px-2 font-bold ${u.role === 'admin' ? 'text-purple-400' : 'text-emerald-400'}">${u.role}</td>
-          <td class="py-3 px-2 text-right">
-            <span class="sub-text text-[11px]">${parseFloat(u.coins || 0).toFixed(2)} Coins</span>
-          </td>
-        </tr>
-      `).join('');
+    }
+
+    async function toggleUserRole(userId, currentRole) {
+      const newRole = currentRole === 'admin' ? 'member' : 'admin';
+      try {
+        const { error } = await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
+        if (error) throw error;
+        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `เปลี่ยนสิทธิ์เป็น ${newRole}`, icon: 'check-circle' });
+        loadAdminUsers();
+      } catch (err) {
+        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-circle' });
+      }
     }
   </script>
 </body>
