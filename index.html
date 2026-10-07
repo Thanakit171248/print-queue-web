@@ -690,6 +690,18 @@
       const isLogin = tab === 'login';
       document.getElementById('form-login').classList.toggle('hidden', !isLogin);
       document.getElementById('form-register').classList.toggle('hidden', isLogin);
+
+      // เพิ่มการอัปเดตสไตล์สีปุ่มแท็บ
+      const loginBtn = document.getElementById('tab-login');
+      const regBtn = document.getElementById('tab-register');
+
+      if (isLogin) {
+        loginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-white bg-blue-600';
+        regBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-slate-500';
+      } else {
+        loginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-slate-500';
+        regBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-white bg-blue-600';
+      }
     }
 
     /* --- SUPABASE & WALLET --- */
@@ -1197,24 +1209,37 @@
 
     /* --- ADMIN BACKOFFICE ACTIONS --- */
     function switchAdminTab(tab) {
-      ['orders', 'topups', 'users'].forEach(t => document.getElementById(`admin-tab-${t}`).classList.add('hidden'));
+    const tabs = ['orders', 'topups', 'users'];
+    
+      tabs.forEach(t => {
+        // ซ่อนเนื้อหา
+        document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+        
+        // คืนค่าสไตล์ปุ่มปกติ
+        const btn = document.getElementById(`admin-tab-${t}-btn`);
+        if (btn) {
+          btn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-300';
+        }
+      });
+
+      // แสดงเนื้อหาแท็บที่เลือก
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+      // ใส่ไฮไลต์สีน้ำเงิน/อินดิโก้ให้แท็บที่เลือก
+      const activeBtn = document.getElementById(`admin-tab-${tab}-btn`);
+      if (activeBtn) {
+        activeBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white';
+      }
+      // โหลดข้อมูลตามแท็บ
       if (tab === 'orders') fetchAdminOrders();
       else if (tab === 'topups') fetchAdminTopups();
       else if (tab === 'users') fetchAdminUsers();
-    }
-
-    async function loadAdminData() {
-      await fetchAdminOrders();
-      await fetchAdminTopups();
-      await fetchAdminUsers();
     }
 
     async function fetchAdminOrders() {
       try {
         const { data: jobs, error } = await supabaseClient
           .from('print_jobs')
-          .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note, payments(id, payment_method, status, slip_url), deliveries(id, delivery_method, recipient_name, phone_number, delivery_address, delivery_provider, tracking_number)))')
+          .select('id, status, copies, color, paper_size, printed_pages_count, page_range, documents(file_name), orders(id, queue_number, total_amount, estimated_pickup, admin_note, payments(id, payment_method, status, slip_url), deliveries(id, delivery_method, recipient_name, phone_number, delivery_address, delivery_provider, tracking_number))')
           .order('created_at', { ascending: false });
 
         const tbody = document.getElementById('admin-orders-tbody');
