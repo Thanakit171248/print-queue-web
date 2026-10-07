@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrintQueue Pro - Titanium 3D Ultra Enterprise Edition</title>
+  <title>PrintQueue Pro - Titanium iPhone Ultra Enterprise Edition</title>
   
   <!-- Tailwind CSS & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,22 +13,24 @@
       theme: {
         extend: {
           colors: {
-            titanium: {
-              50: '#f8fafc',
-              100: '#f1f5f9',
-              800: '#171f33',
-              900: '#0e131f',
-              950: '#05070c',
-              accent: '#2997ff',
+            apple: {
+              bg: '#000000',
+              card: '#1d1d1f',
+              panel: '#161617',
+              border: '#333336',
+              blue: '#2997ff',
               gold: '#f5c518',
-              purple: '#8b5cf6'
+              silver: '#e3e4e6',
+              text: '#f5f5f7',
+              subtext: '#86868b'
             }
           },
           animation: {
             'shimmer': 'shimmer 4s infinite linear',
             'float-slow': 'floatSlow 7s ease-in-out infinite',
             'pulse-slow': 'pulseSlow 6s ease-in-out infinite',
-            'glow-pulse': 'glowPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            'glow-pulse': 'glowPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'blur-in': 'blurIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards'
           },
           keyframes: {
             shimmer: {
@@ -46,6 +48,10 @@
             glowPulse: {
               '0%, 100%': { opacity: '0.7', filter: 'drop-shadow(0 0 25px rgba(41, 151, 255, 0.6))' },
               '50%': { opacity: '0.3', filter: 'drop-shadow(0 0 10px rgba(41, 151, 255, 0.2))' }
+            },
+            blurIn: {
+              '0%': { opacity: 0, backdropFilter: 'blur(0px)' },
+              '100%': { opacity: 1, backdropFilter: 'blur(32px)' }
             }
           }
         }
@@ -55,7 +61,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- Three.js for Dynamic Interactive Background -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -66,90 +71,80 @@
       overflow-x: hidden;
     }
 
-    /* Apple Keynote Metallic & Blue Gradient Text */
+    /* Apple Metallic & Gradient Text */
     .blue-gradient-text {
-      background: linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #6366f1 100%);
+      background: linear-gradient(135deg, #2997ff 0%, #0071e3 50%, #6366f1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .titanium-gradient-text {
-      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #86868b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-    }
-
-    /* DARK THEME STYLING */
-    html.dark body {
-      background-color: #05070c;
-      color: #f8fafc;
-    }
-    html.dark .glass-panel {
-      background: rgba(13, 18, 30, 0.88);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-    html.dark .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    html.dark .titanium-text {
-      color: #f8fafc;
-    }
-    html.dark .sub-text {
-      color: #94a3b8;
-    }
-
-    /* LIGHT THEME STYLING - HIGH CONTRAST & PERFECT LEGIBILITY */
-    html:not(.dark) body {
-      background-color: #f8fafc;
-      color: #0f172a;
-    }
-    html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
-    }
-    html:not(.dark) .glass-card {
-      background: #ffffff;
-      backdrop-filter: blur(12px);
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-    }
-    html:not(.dark) .titanium-text {
-      color: #0f172a !important;
-    }
-    html:not(.dark) .sub-text {
-      color: #334155 !important;
-    }
-    html:not(.dark) p, html:not(.dark) label, html:not(.dark) span {
-      color: #1e293b;
-    }
-    html:not(.dark) input, html:not(.dark) select, html:not(.dark) textarea {
-      background-color: #ffffff !important;
-      color: #0f172a !important;
-      border-color: #cbd5e1 !important;
-    }
-
-    /* ULTRA SMOOTH LEVELED TILT (MAX 1.5 DEG - NO EXTREME BEND) */
-    .glass-card {
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .glass-card:hover {
-      border-color: rgba(56, 189, 248, 0.5);
-      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
-      transform: translateY(-3px);
     }
 
     .apple-gold-text {
       background: linear-gradient(135deg, #f5c518 0%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+
+    /* DARK THEME STYLING (APPLE OBSIDIAN TITANIUM) */
+    html.dark body {
+      background-color: #000000;
+      color: #f5f5f7;
+    }
+    html.dark .glass-panel {
+      background: rgba(22, 22, 23, 0.82);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+    html.dark .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    html.dark .titanium-text { color: #f5f5f7; }
+    html.dark .sub-text { color: #86868b; }
+
+    /* LIGHT THEME STYLING (APPLE SILVER / WHITE) */
+    html:not(.dark) body {
+      background-color: #f5f5f7;
+      color: #1d1d1f;
+    }
+    html:not(.dark) .glass-panel {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid #d2d2d7;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    html:not(.dark) .glass-card {
+      background: #ffffff;
+      backdrop-filter: blur(12px);
+      border: 1px solid #e5e5ea;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    html:not(.dark) .titanium-text { color: #1d1d1f !important; }
+    html:not(.dark) .sub-text { color: #515154 !important; }
+    html:not(.dark) p, html:not(.dark) label, html:not(.dark) span { color: #1d1d1f; }
+    html:not(.dark) input, html:not(.dark) select, html:not(.dark) textarea {
+      background-color: #ffffff !important;
+      color: #1d1d1f !important;
+      border-color: #d2d2d7 !important;
+    }
+
+    /* CARD HOVER TILT */
+    .glass-card {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(41, 151, 255, 0.5);
+      box-shadow: 0 12px 28px rgba(41, 151, 255, 0.15);
+      transform: translateY(-3px);
     }
 
     .perspective-container { perspective: 1200px; }
@@ -159,7 +154,7 @@
       will-change: transform;
     }
 
-    /* Scroll Reveal Animation */
+    /* Scroll Animations */
     .scroll-reveal {
       opacity: 0;
       transform: translateY(20px) scale(0.99);
@@ -171,89 +166,284 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(134, 134, 139, 0.4); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(134, 134, 139, 0.7); }
 
     @keyframes slideUpModal {
-      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .animate-modal { animation: slideUpModal 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-modal { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
 
-  <!-- 3D CANVAS BACKGROUND (ULTRA SUBTLE IN LIGHT MODE FOR MAXIMUM READABILITY) -->
-  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-5 dark:opacity-25 transition-opacity duration-700"></div>
+  <!-- 3D DYNAMIC CANVAS BACKGROUND -->
+  <div id="three-bg-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-10 dark:opacity-30 transition-opacity duration-700"></div>
 
-  <!-- APPLE / IPHONE WEB KEYNOTE STYLE SPLASH SCREEN -->
-  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#05070c] transition-all duration-1000 overflow-hidden">
-    <!-- Ambient Halo Lights -->
-    <div class="absolute w-[800px] h-[800px] bg-blue-600/15 rounded-full blur-[180px] animate-pulse-slow"></div>
-    <div class="absolute w-[550px] h-[550px] bg-cyan-500/10 rounded-full blur-[140px] -top-24"></div>
-    <div class="absolute w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[140px] -bottom-20"></div>
+  <!-- APPLE KEYNOTE SPLASH SCREEN -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#000000] transition-all duration-1000 overflow-hidden">
+    <div class="absolute w-[850px] h-[850px] bg-blue-600/15 rounded-full blur-[200px] animate-pulse-slow"></div>
+    <div class="absolute w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[150px] -top-20"></div>
 
     <div class="relative z-10 flex flex-col items-center text-center p-6 space-y-10 max-w-2xl">
-      
-      <!-- Giant Glossy Keynote Logo Showcase -->
       <div class="relative group animate-float-slow">
-        <div class="absolute -inset-6 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 rounded-[40px] blur-3xl opacity-60 animate-glow-pulse"></div>
-        <div class="relative w-36 h-36 sm:w-48 sm:h-48 bg-slate-950/80 border border-white/20 rounded-[38px] flex items-center justify-center shadow-[0_25px_60px_rgba(0,0,0,0.8)] backdrop-blur-3xl">
-          <i data-lucide="printer" class="w-20 h-20 sm:w-24 sm:h-24 text-cyan-400 drop-shadow-[0_0_25px_rgba(56,189,248,0.85)]"></i>
+        <div class="absolute -inset-6 bg-gradient-to-r from-blue-500 via-indigo-600 to-cyan-400 rounded-[45px] blur-3xl opacity-70 animate-glow-pulse"></div>
+        <div class="relative w-40 h-40 sm:w-52 sm:h-52 bg-black/90 border border-white/20 rounded-[40px] flex items-center justify-center shadow-[0_30px_70px_rgba(0,0,0,0.9)] backdrop-blur-3xl">
+          <i data-lucide="printer" class="w-20 h-20 sm:w-28 sm:h-28 text-blue-400 drop-shadow-[0_0_30px_rgba(41,151,255,0.9)]"></i>
         </div>
       </div>
 
-      <!-- Keynote Headline Typography -->
       <div class="space-y-4">
         <h1 class="text-5xl sm:text-7xl font-black tracking-tight titanium-gradient-text leading-none">
           PRINTQUEUE <span class="blue-gradient-text">PRO</span>
         </h1>
-        <p class="text-xs sm:text-base font-semibold tracking-[0.45em] text-cyan-400/90 uppercase">
-          TITANIUM 3D ULTRA ENTERPRISE ENGINE
+        <p class="text-xs sm:text-base font-semibold tracking-[0.45em] text-blue-400 uppercase">
+          TITANIUM 3D IPHONE EDITION
         </p>
       </div>
 
-      <!-- Keynote Dynamic Progress Bar & Percentage -->
       <div class="w-64 sm:w-80 space-y-3">
         <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/10">
-          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full transition-all duration-1000 ease-out w-0 shadow-[0_0_15px_rgba(56,189,248,0.9)]"></div>
+          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full transition-all duration-1000 ease-out w-0 shadow-[0_0_15px_rgba(41,151,255,0.9)]"></div>
         </div>
-        <div class="flex items-center justify-between text-[11px] font-mono tracking-widest text-slate-400 uppercase">
+        <div class="flex items-center justify-between text-[11px] font-mono tracking-widest text-apple-subtext uppercase">
           <span id="splash-status-text">INITIALIZING ENGINE...</span>
-          <span id="splash-percent-text" class="text-cyan-400 font-bold">0%</span>
+          <span id="splash-percent-text" class="text-blue-400 font-bold">0%</span>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- MODAL แจ้งเตือนทั่วไป -->
-  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-xl">
+  <!-- APPLE-STYLE HEAVY BLUR OVERLAY NAVIGATION TAB MENU -->
+  <div id="apple-tab-menu" class="fixed inset-0 z-50 hidden flex-col justify-between p-6 sm:p-12 bg-black/75 backdrop-blur-3xl transition-all duration-500 opacity-0 pointer-events-none">
+    <div class="flex items-center justify-between border-b border-white/10 pb-6 max-w-5xl mx-auto w-full">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+          <i data-lucide="apple" class="w-6 h-6"></i>
+        </div>
+        <span class="text-xl font-extrabold text-white tracking-wide">PrintQueue <span class="blue-gradient-text">iPhone Hub</span></span>
+      </div>
+      <button onclick="toggleAppleTabMenu(false)" class="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Centered Nav Links -->
+    <div class="max-w-3xl mx-auto w-full text-center space-y-8 my-auto">
+      <div class="space-y-4">
+        <button onclick="switchView('landing'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition tracking-tight">
+          01. หน้าแรก (Home)
+        </button>
+        <button onclick="switchView('dashboard'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition tracking-tight">
+          02. สั่งพิมพ์เอกสาร & คิวพิมพ์
+        </button>
+        <button onclick="switchView('wallet'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition tracking-tight">
+          03. กระเป๋าเงิน Coins
+        </button>
+        <button id="apple-admin-menu-btn" onclick="switchView('admin'); toggleAppleTabMenu(false);" class="hidden w-full text-3xl sm:text-5xl font-black text-purple-400 hover:text-purple-300 transition tracking-tight">
+          04. Admin Backoffice
+        </button>
+      </div>
+
+      <div class="pt-8 border-t border-white/10 flex flex-wrap justify-center gap-4">
+        <button onclick="openUserProfileModal(); toggleAppleTabMenu(false);" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-sm transition flex items-center gap-2">
+          <i data-lucide="user" class="w-4 h-4 text-blue-400"></i> ดูโปรไฟล์ส่วนตัว (User Profile)
+        </button>
+        <button onclick="toggleTheme()" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-sm transition flex items-center gap-2">
+          <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i> สลับธีม สว่าง/มืด
+        </button>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto w-full text-center text-xs text-apple-subtext pt-6 border-t border-white/10">
+      <p>© 2026 PrintQueue Pro Engine. Titanium iPhone Web Architecture.</p>
+    </div>
+  </div>
+
+  <!-- ELEGANT USER PROFILE MODAL -->
+  <div id="user-profile-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl">
+    <div class="glass-panel rounded-3xl max-w-md w-full p-6 shadow-2xl animate-modal relative overflow-hidden">
+      <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl"></div>
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+            <i data-lucide="user-check" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold titanium-text">โปรไฟล์ผู้ใช้งาน</h3>
+            <p class="text-xs sub-text">ข้อมูลสมาชิกและสิทธิ์ระบบ</p>
+          </div>
+        </div>
+        <button onclick="closeUserProfileModal()" class="p-2 rounded-full hover:bg-white/10 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Profile Cards -->
+      <div class="space-y-4 text-xs">
+        <div class="p-4 rounded-2xl glass-card space-y-2 border">
+          <div class="flex justify-between items-center">
+            <span class="sub-text font-medium">ชื่อ-นามสกุล:</span>
+            <span id="prof-fullname" class="font-bold text-sm titanium-text">กรุณาล็อกอิน</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="sub-text font-medium">อีเมลบัญชี:</span>
+            <span id="prof-email" class="font-mono text-blue-400">user@example.com</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="sub-text font-medium">สิทธิ์การใช้งาน:</span>
+            <span id="prof-role-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 border border-emerald-500/30 text-emerald-400">Member</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-transparent border border-amber-500/30 flex items-center justify-between">
+          <div>
+            <span class="sub-text block font-medium">ยอด Coins ในกระเป๋า:</span>
+            <span id="prof-coins-amount" class="text-xl font-black text-amber-400">0.00 Coins</span>
+          </div>
+          <button onclick="closeUserProfileModal(); switchView('wallet');" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl transition text-xs shadow-md">
+            เติม Coins
+          </button>
+        </div>
+
+        <div class="p-4 rounded-2xl glass-card space-y-2 border">
+          <p class="font-bold titanium-text flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> สถานะความปลอดภัยบัญชี
+          </p>
+          <ul class="sub-text space-y-1 list-disc list-inside text-[11px]">
+            <li>เชื่อมต่อฐานข้อมูล Supabase แท้ 100%</li>
+            <li>รหัสผ่านผ่านการเข้ารหัส Hash ตามมาตรฐาน</li>
+            <li>การรับสินค้า: รับหน้าร้านโดยตรง (Self Pickup)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button onclick="handleLogout(); closeUserProfileModal();" class="w-full py-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 font-bold rounded-2xl transition">
+          ออกจากระบบ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUEUE & ORDER DETAIL MODAL (รายละเอียดคิวนั้นทั้งหมด) -->
+  <div id="queue-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-2xl">
+    <div class="glass-panel rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl animate-modal overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 flex-shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+            <i data-lucide="layers" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold titanium-text">รายละเอียดคิวงานพิมพ์</h3>
+            <p class="text-xs sub-text" id="qd-modal-order-id">Queue ID: #---</p>
+          </div>
+        </div>
+        <button onclick="closeQueueDetailModal()" class="p-2.5 rounded-2xl bg-white/10 hover:bg-rose-500 transition text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Details -->
+      <div class="flex-1 overflow-y-auto space-y-6 py-4 pr-1 my-2">
+        
+        <!-- Status Timeline -->
+        <div class="p-4 rounded-2xl glass-card border space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs sub-text font-bold uppercase">สถานะคิวปัจจุบัน</span>
+            <span id="qd-modal-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              รอตรวจสอบ
+            </span>
+          </div>
+          <p class="text-xs text-blue-400 font-semibold" id="qd-modal-pickup-info">📍 รูปแบบการรับสินค้า: รับหน้าร้านโดยตรงเมื่อพิมพ์เสร็จ</p>
+        </div>
+
+        <!-- Specifications Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">ชื่อไฟล์เอกสาร</span>
+            <span id="qd-modal-filename" class="font-bold titanium-text block truncate mt-0.5">-</span>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">จำนวนที่เลือกพิมพ์</span>
+            <span id="qd-modal-pages" class="font-extrabold text-blue-400 block mt-0.5">0 หน้า</span>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">จำนวนชุด</span>
+            <span id="qd-modal-copies" class="font-bold titanium-text block mt-0.5">1 ชุด</span>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">ขนาดกระดาษ</span>
+            <span id="qd-modal-paper" class="font-bold titanium-text block mt-0.5">A4</span>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">ประเภทสี</span>
+            <span id="qd-modal-color" class="font-bold titanium-text block mt-0.5">ขาว-ดำ</span>
+          </div>
+          <div class="p-3.5 rounded-2xl glass-card border">
+            <span class="sub-text block text-[11px]">รูปแบบพิมพ์</span>
+            <span id="qd-modal-duplex" class="font-bold titanium-text block mt-0.5">หน้าเดียว</span>
+          </div>
+        </div>
+
+        <!-- Order Notes -->
+        <div class="p-4 rounded-2xl glass-card border space-y-1">
+          <span class="text-xs sub-text font-bold block">ช่วงหน้า / หมายเหตุเพิ่มเติม:</span>
+          <p id="qd-modal-notes" class="text-xs titanium-text bg-black/30 p-3 rounded-xl border border-white/5 font-mono">ไม่มีหมายเหตุ</p>
+        </div>
+
+        <!-- Financial Breakdown -->
+        <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
+          <div>
+            <span class="text-xs sub-text block">ช่องทางชำระเงิน: <strong id="qd-modal-paymethod" class="text-amber-400">Coins</strong></span>
+            <span class="text-xs sub-text block">ค่าบริการพิมพ์สุทธิ (ไม่มีค่าส่ง)</span>
+          </div>
+          <span id="qd-modal-totalprice" class="text-2xl font-black blue-gradient-text">0.00 ฿</span>
+        </div>
+
+        <!-- Slip Image Viewer (If PromptPay) -->
+        <div id="qd-modal-slip-box" class="hidden space-y-2">
+          <span class="text-xs font-bold titanium-text block">หลักฐานสลิปการโอนเงิน:</span>
+          <div class="p-2 bg-black/60 rounded-2xl border border-white/10 text-center">
+            <img id="qd-modal-slip-img" src="" alt="สลิปโอนเงิน" class="max-h-64 mx-auto rounded-xl object-contain cursor-pointer hover:scale-105 transition" onclick="openSlipModal(this.src)">
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 dark:border-white/10 flex-shrink-0">
+        <button onclick="closeQueueDetailModal()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-2xl shadow-lg transition">
+          ปิดหน้าต่างรายละเอียดคิว
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERAL MODAL NOTIFICATION -->
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-xl">
     <div class="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-2xl animate-modal text-center relative overflow-hidden">
-      <div class="absolute -top-12 -left-12 w-36 h-36 bg-blue-500/20 rounded-full blur-3xl"></div>
-      <div id="modal-icon-bg" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-500/20 text-blue-400 border border-blue-500/30">
+      <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-500/20 text-blue-400 border border-blue-500/30">
         <i id="modal-icon" data-lucide="info" class="w-7 h-7"></i>
       </div>
       <h3 id="modal-title" class="text-lg font-bold titanium-text mb-2">แจ้งเตือน</h3>
       <p id="modal-message" class="text-xs sub-text mb-6 leading-relaxed">รายละเอียดข้อความ</p>
       <div id="modal-actions" class="flex gap-3 justify-center">
-        <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-2.5 bg-slate-500/10 hover:bg-slate-500/20 opacity-80 font-semibold text-xs rounded-xl border border-slate-300 dark:border-white/10 transition">ยกเลิก</button>
+        <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-2.5 bg-white/10 hover:bg-white/20 font-semibold text-xs rounded-xl border border-white/10 transition">ยกเลิก</button>
         <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-500/30 transition">ตกลง</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL พรีวิวและรายละเอียดไฟล์เอกสาร (ขยายใหญ่ขึ้น + มีระบบ ZOOM เข้า/ออก) -->
-  <div id="file-preview-drawer" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-2xl">
+  <!-- FILE PREVIEW DRAWER (PDF ZOOM) -->
+  <div id="file-preview-drawer" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-2xl">
     <div class="glass-panel rounded-3xl max-w-5xl w-full p-6 shadow-2xl animate-modal flex flex-col h-[88vh] overflow-hidden border">
-      
-      <!-- Drawer Header -->
       <div class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-white/10 flex-shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-500 border border-blue-500/30 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
             <i data-lucide="file-text" class="w-6 h-6"></i>
           </div>
           <div>
@@ -261,71 +451,68 @@
             <p class="text-xs sub-text" id="preview-modal-filesize">ขนาดไฟล์: 0 MB</p>
           </div>
         </div>
-        <button onclick="toggleFilePreviewDrawer(false)" class="p-2.5 rounded-2xl bg-slate-200/80 dark:bg-white/10 hover:bg-rose-500 hover:text-white transition text-slate-600 dark:text-slate-300">
+        <button onclick="toggleFilePreviewDrawer(false)" class="p-2.5 rounded-2xl bg-white/10 hover:bg-rose-500 transition text-white">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- File Details Grid Bar -->
       <div class="grid grid-cols-3 gap-3 my-4 flex-shrink-0 text-center text-xs">
         <div class="p-3 rounded-2xl glass-card border">
           <span class="text-[11px] sub-text block">จำนวนหน้าทั้งหมด</span>
-          <span id="preview-modal-pages" class="text-base font-extrabold text-blue-500">0 หน้า</span>
+          <span id="preview-modal-pages" class="text-base font-extrabold text-blue-400">0 หน้า</span>
         </div>
         <div class="p-3 rounded-2xl glass-card border">
           <span class="text-[11px] sub-text block">ชนิดไฟล์</span>
-          <span id="preview-modal-type" class="text-base font-extrabold text-emerald-500">PDF</span>
+          <span id="preview-modal-type" class="text-base font-extrabold text-emerald-400">PDF</span>
         </div>
         <div class="p-3 rounded-2xl glass-card border">
           <span class="text-[11px] sub-text block">สถานะไฟล์</span>
-          <span class="text-base font-extrabold text-purple-500">พร้อมพิมพ์</span>
+          <span class="text-base font-extrabold text-purple-400">พร้อมพิมพ์</span>
         </div>
       </div>
 
-      <!-- Interactive Document Zoom Toolbar -->
-      <div class="flex items-center justify-between bg-slate-200/60 dark:bg-slate-900/80 px-4 py-2.5 rounded-2xl border border-slate-300 dark:border-white/10 flex-shrink-0 mb-3">
+      <div class="flex items-center justify-between bg-black/60 px-4 py-2.5 rounded-2xl border border-white/10 flex-shrink-0 mb-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold titanium-text mr-2">เครื่องมือซูม:</span>
-          <button onclick="changeZoom(-0.15)" class="p-2 rounded-xl bg-slate-300/80 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition" title="ซูมออก">
+          <span class="text-xs font-bold titanium-text mr-2">ซูม:</span>
+          <button onclick="changeZoom(-0.15)" class="p-2 rounded-xl bg-white/10 hover:bg-blue-600 transition" title="ซูมออก">
             <i data-lucide="zoom-out" class="w-4 h-4"></i>
           </button>
           <span id="zoom-level-text" class="text-xs font-mono font-bold w-12 text-center titanium-text">100%</span>
-          <button onclick="changeZoom(0.15)" class="p-2 rounded-xl bg-slate-300/80 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition" title="ซูมเข้า">
+          <button onclick="changeZoom(0.15)" class="p-2 rounded-xl bg-white/10 hover:bg-blue-600 transition" title="ซูมเข้า">
             <i data-lucide="zoom-in" class="w-4 h-4"></i>
           </button>
-          <button onclick="resetZoom()" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-300/80 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition">100% (รีเซ็ต)</button>
+          <button onclick="resetZoom()" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white/10 hover:bg-blue-600 transition">รีเซ็ต</button>
         </div>
-        <span class="hidden sm:inline text-xs sub-text">เลื่อนเมาส์ (Scroll) หรือใช้ปุ่มเพื่อซูมดูข้อความ</span>
+        <span class="hidden sm:inline text-xs sub-text">เลื่อนเมาส์เพื่อตรวจดูข้อความ</span>
       </div>
 
-      <!-- High-Res Scrollable Canvas Preview Container -->
-      <div class="flex-1 overflow-auto p-4 rounded-2xl bg-slate-300/40 dark:bg-slate-950/80 border border-slate-300 dark:border-white/10 flex justify-center items-start">
+      <div class="flex-1 overflow-auto p-4 rounded-2xl bg-black/80 border border-white/10 flex justify-center items-start">
         <div id="pdf-preview-wrapper" class="transition-transform duration-200 ease-out flex flex-col items-center space-y-6 origin-top">
-          <p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวตัวอย่างหน้า...</p>
+          <p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>
         </div>
       </div>
 
       <div class="pt-4 border-t border-slate-200 dark:border-white/10 flex-shrink-0 mt-3">
-        <button onclick="toggleFilePreviewDrawer(false)" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-2xl shadow-lg transition">ปิดหน้าต่างพรีวิว</button>
+        <button onclick="toggleFilePreviewDrawer(false)" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-2xl shadow-lg transition">ปิดพรีวิว</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL ดูสลิปโอนเงิน -->
+  <!-- SLIP PREVIEW MODAL -->
   <div id="slip-preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl">
     <div class="glass-panel rounded-3xl max-w-md w-full p-6 shadow-2xl animate-modal">
-      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200 dark:border-white/10">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
         <h3 class="text-base font-bold flex items-center gap-2 titanium-text">
-          <i data-lucide="file-check" class="w-5 h-5 text-blue-500"></i> ตรวจสอบสลิปการโอนเงิน
+          <i data-lucide="file-check" class="w-5 h-5 text-blue-400"></i> ตรวจสอบสลิปการโอนเงิน
         </h3>
-        <button onclick="closeSlipModal()" class="p-1 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition">
+        <button onclick="closeSlipModal()" class="p-1 rounded-full hover:bg-white/10 transition">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <div class="text-center bg-slate-900/90 rounded-2xl p-2 mb-4 border border-white/10 max-h-96 flex items-center justify-center overflow-hidden">
+      <div class="text-center bg-black/90 rounded-2xl p-2 mb-4 border border-white/10 max-h-96 flex items-center justify-center overflow-hidden">
         <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-88 object-contain rounded-xl shadow-2xl">
       </div>
-      <button onclick="closeSlipModal()" class="w-full py-3 bg-slate-500/20 hover:bg-slate-500/30 text-xs font-bold rounded-2xl border border-slate-300 dark:border-white/10 transition">ปิดหน้าต่าง</button>
+      <button onclick="closeSlipModal()" class="w-full py-3 bg-white/10 text-xs font-bold rounded-2xl border border-white/10 transition">ปิดหน้าต่าง</button>
     </div>
   </div>
 
@@ -343,188 +530,141 @@
     </div>
   </div>
 
-  <!-- NAVBAR / NAVIGATION BAR -->
-  <nav class="sticky top-0 z-40 glass-panel border-b">
+  <!-- APPLE NAVBAR -->
+  <nav class="sticky top-0 z-40 glass-panel border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition duration-300">
-          <i data-lucide="printer" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <span class="text-lg font-black blue-gradient-text tracking-wide">PrintQueue</span>
-          <span class="text-[9px] bg-blue-500/15 border border-blue-400/30 text-blue-600 dark:text-blue-300 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">Pro 3D</span>
-        </div>
-      </a>
+      
+      <!-- Apple Blur Tab Menu Button & Logo -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleAppleTabMenu(true)" class="p-2.5 rounded-2xl bg-white/10 hover:bg-blue-600/30 border border-white/10 transition text-white flex items-center justify-center" title="เปิดเมนู Apple Tab">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
 
-      <!-- Desktop Tabs -->
-      <div class="hidden md:flex items-center gap-1 bg-slate-200/80 dark:bg-white/5 p-1 rounded-2xl border border-slate-300 dark:border-white/10 text-xs font-semibold">
-        <button onclick="switchView('landing')" class="nav-tab-item px-4 py-2 rounded-xl transition hover:text-blue-500">หน้าแรก</button>
-        <button onclick="switchView('dashboard')" class="nav-tab-item px-4 py-2 rounded-xl transition hover:text-blue-500">สั่งพิมพ์ / ติดตามคิว</button>
-        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden nav-tab-item px-4 py-2 rounded-xl transition hover:text-blue-500 flex items-center gap-1.5">
-          <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-500"></i> กระเป๋าเงิน Coins
+        <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-2 group">
+          <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+            <i data-lucide="printer" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-base sm:text-lg font-black blue-gradient-text tracking-wide">PrintQueue</span>
+            <span class="text-[9px] bg-blue-500/15 border border-blue-400/30 text-blue-400 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">iPhone Edition</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
+        <button onclick="switchView('landing')" class="nav-tab-item px-4 py-2 rounded-xl transition hover:text-blue-400">หน้าแรก</button>
+        <button onclick="switchView('dashboard')" class="nav-tab-item px-4 py-2 rounded-xl transition hover:text-blue-400">สั่งพิมพ์ / คิวงาน</button>
+        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden nav-tab-item px-4 py-2 rounded-xl transition hover:text-amber-400 flex items-center gap-1.5">
+          <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-500"></i> Coins
         </button>
         <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-500 hover:text-amber-400 px-3 py-2 text-xs font-bold transition">⚙️ DB Config</button>
       </div>
 
+      <!-- Right Actions -->
       <div class="flex items-center gap-3">
-        <!-- THEME TOGGLE BUTTON -->
-        <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-slate-200 dark:bg-white/10 hover:bg-blue-500/20 transition flex items-center justify-center text-slate-800 dark:text-amber-300" title="สลับธีม สว่าง/มืด">
+        <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-white/10 hover:bg-blue-500/20 transition flex items-center justify-center text-amber-400" title="สลับธีม">
           <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
         </button>
 
         <div id="user-coins-badge" class="hidden flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-2xl cursor-pointer hover:bg-amber-500/20 transition" onclick="switchView('wallet')">
           <i data-lucide="coins" class="w-4 h-4 text-amber-500 animate-pulse"></i>
-          <span id="user-coins-amount" class="text-xs font-extrabold text-amber-600 dark:text-amber-300">0 Coins</span>
+          <span id="user-coins-amount" class="text-xs font-extrabold text-amber-400">0 Coins</span>
         </div>
 
         <div id="guest-buttons" class="flex gap-2">
-          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs font-semibold px-3.5 py-2 hover:text-blue-500 transition">เข้าสู่ระบบ</button>
+          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs font-semibold px-3 py-2 hover:text-blue-400 transition">เข้าสู่ระบบ</button>
           <button onclick="switchView('auth'); switchAuthTab('register')" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-2xl shadow-md transition">ลงทะเบียน</button>
         </div>
 
-        <div id="user-profile-menu" class="hidden flex items-center gap-3">
-          <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-1.5 bg-purple-500/20 border border-purple-500/30 text-purple-600 dark:text-purple-300 hover:bg-purple-500/30 text-xs font-bold rounded-xl flex items-center gap-1 transition">
+        <div id="user-profile-menu" class="hidden flex items-center gap-2">
+          <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-1.5 bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 text-xs font-bold rounded-xl flex items-center gap-1 transition">
             <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin
           </button>
-          <div class="text-right hidden sm:block">
-            <p id="user-display-name" class="text-xs font-bold titanium-text">ผู้ใช้</p>
-            <span id="user-role-badge" class="text-[9px] bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">สมาชิก</span>
-          </div>
-          <button onclick="handleLogout()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 rounded-xl transition" title="ออกจากระบบ">
+
+          <!-- User Profile Avatar Button -->
+          <button onclick="openUserProfileModal()" class="flex items-center gap-2 p-1.5 bg-white/10 hover:bg-white/20 rounded-2xl border border-white/10 transition">
+            <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </div>
+            <span id="user-display-name" class="text-xs font-bold titanium-text hidden sm:inline max-w-[100px] truncate">ผู้ใช้</span>
+          </button>
+
+          <button onclick="handleLogout()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl transition" title="ออกจากระบบ">
             <i data-lucide="log-out" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
+
     </div>
   </nav>
 
-  <!-- MAIN CONTENT CONTAINER -->
+  <!-- MAIN VIEW ENGINE CONTAINER -->
   <main class="flex-grow z-10 relative">
 
     <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-12 px-4 max-w-6xl mx-auto space-y-20">
-      
-      <!-- HERO SECTION -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         <div class="lg:col-span-7 space-y-7 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold tracking-wide">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Titanium Ultra Printing Engine
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-wide">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Titanium iPhone Printing Engine
           </div>
-          <h1 class="text-4xl sm:text-6xl font-extrabold leading-tight tracking-tight titanium-text">
-            มิติใหม่ของงานพิมพ์ <br>
-            <span class="blue-gradient-text">ด้วยระบบ Titanium 3D Engine</span>
+          <h1 class="text-4xl sm:text-6xl font-black leading-tight tracking-tight titanium-text">
+            มิติใหม่ของการสั่งพิมพ์ <br>
+            <span class="blue-gradient-text">ดีไซน์ล้ำระดับ iPhone Pro</span>
           </h1>
-          <p class="sub-text text-xs sm:text-sm leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
-            อัปโหลดเอกสาร คำนวณราคาสี/ขาวดำเรียลไทม์ ชำระเงินผ่านระบบ Coins เติมเงินตรวจสอบสลิปอัตโนมัติ พร้อมระบบติดตามคิวและจัดส่งพัสดุระดับพรีเมียม
+          <p class="sub-text text-xs sm:text-sm leading-relaxed max-w-xl mx-auto lg:mx-0">
+            อัปโหลดเอกสาร เลือกหน้าพิมพ์ด้วย Smart Grid คำนวณราคาเรียลไทม์ ชำระผ่าน Coins หรือพร้อมเพย์ รับสินค้าหน้าร้านได้สะดวกรวดเร็ว
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
-            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/20 flex items-center justify-center gap-2 transition hover:scale-[1.02]">
+            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition hover:scale-[1.02]">
               <i data-lucide="file-up" class="w-5 h-5"></i> สั่งพิมพ์เอกสารทันที
             </button>
             <button onclick="switchView('dashboard')" class="glass-card border font-bold px-7 py-4 rounded-2xl flex items-center justify-center gap-2 transition titanium-text">
-              <i data-lucide="clock" class="w-5 h-5 text-blue-500"></i> ติดตามคิวงานพิมพ์
+              <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i> ติดตามคิวงานพิมพ์
             </button>
           </div>
         </div>
 
-        <!-- HIGH-RES GRAPHIC SHOWCASE (LEVELED SUBTLE TILT) -->
         <div class="lg:col-span-5 perspective-container">
-          <div class="tilt-card glass-panel rounded-3xl p-5 border shadow-xl space-y-5 text-center relative overflow-hidden">
-            
+          <div class="tilt-card glass-panel rounded-3xl p-5 border shadow-2xl space-y-5 text-center relative overflow-hidden">
             <div class="relative w-full h-72 rounded-2xl overflow-hidden group shadow-xl">
               <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Titanium Precision Printer" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
-
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
               <div class="absolute top-3 left-3 flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-bold text-white shadow-md">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>TITANIUM ENGINE PRO</span>
+                <span>TITANIUM IPHONE ENGINE</span>
               </div>
-
               <div class="absolute bottom-3 left-3 right-3 text-left space-y-1">
-                <span class="text-[9px] uppercase font-extrabold text-blue-400 tracking-wider">Designed for Perfection</span>
-                <p class="text-sm font-extrabold text-white">ระบบควบคุมการพิมพ์เลเซอร์ระดับพรีเมียม</p>
-                <p class="text-[10px] text-slate-300 opacity-90">รองรับความละเอียดสูง ชัดเจนทุกจุด สมบูรณ์แบบทุกหน้า</p>
+                <span class="text-[9px] uppercase font-extrabold text-blue-400 tracking-wider">Designed for Store Pickup</span>
+                <p class="text-sm font-extrabold text-white">ระบบควบคุมการพิมพ์เลเซอร์ประสิทธิภาพสูง</p>
+                <p class="text-[10px] text-slate-300">พิมพ์เสร็จเข้ามารับหน้าร้านได้ทันที ปลอดภัย ไร้กังวล[cite: 64]</p>
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
               <div class="p-2.5 rounded-2xl glass-card border">
                 <p class="blue-gradient-text font-extrabold text-base">100%</p>
-                <p class="text-[9px] font-semibold sub-text">ความคมชัดสูง</p>
+                <p class="text-[9px] font-semibold sub-text">คมชัดสมบูรณ์</p>
               </div>
               <div class="p-2.5 rounded-2xl glass-card border">
                 <p class="apple-gold-text font-extrabold text-base">Coins</p>
-                <p class="text-[9px] font-semibold sub-text">ชำระสะดวก</p>
+                <p class="text-[9px] font-semibold sub-text">จ่ายสะดวก</p>
               </div>
               <div class="p-2.5 rounded-2xl glass-card border">
-                <p class="text-emerald-500 font-extrabold text-base">Express</p>
-                <p class="text-[9px] font-semibold sub-text">ส่งไวทั่วไทย</p>
+                <p class="text-emerald-400 font-extrabold text-base">Pickup</p>
+                <p class="text-[9px] font-semibold sub-text">รับหน้าร้าน[cite: 64]</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- LIVE STATS BAR -->
-      <div class="scroll-reveal grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass-panel p-5 rounded-3xl border text-center space-y-1">
-          <p class="text-2xl sm:text-3xl font-extrabold blue-gradient-text">15,400+</p>
-          <p class="text-xs sub-text font-medium">เอกสารพิมพ์สำเร็จ</p>
-        </div>
-        <div class="glass-panel p-5 rounded-3xl border text-center space-y-1">
-          <p class="text-2xl sm:text-3xl font-extrabold apple-gold-text">&lt; 0.5s</p>
-          <p class="text-xs sub-text font-medium">ความเร็วคำนวณราคา</p>
-        </div>
-        <div class="glass-panel p-5 rounded-3xl border text-center space-y-1">
-          <p class="text-2xl sm:text-3xl font-extrabold text-emerald-500">99.9%</p>
-          <p class="text-xs sub-text font-medium">อนุมัติสลิปแม่นยำ</p>
-        </div>
-        <div class="glass-panel p-5 rounded-3xl border text-center space-y-1">
-          <p class="text-2xl sm:text-3xl font-extrabold text-purple-500">24 / 7</p>
-          <p class="text-xs sub-text font-medium">บริการคิวออนไลน์</p>
-        </div>
-      </div>
-
-      <!-- HIGHLIGHT CARDS -->
-      <div class="scroll-reveal space-y-10">
-        <div class="text-center max-w-2xl mx-auto space-y-2">
-          <h2 class="text-2xl sm:text-3xl font-extrabold titanium-text">นวัตกรรมสั่งพิมพ์ระดับมืออาชีพ</h2>
-          <p class="sub-text text-xs sm:text-sm">ออกแบบมาให้ใช้งานง่าย รวดเร็ว แม่นยำ และรองรับทุกอุปกรณ์</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="scroll-reveal glass-panel p-7 rounded-3xl space-y-3 border hover:border-blue-500 transition duration-300">
-            <div class="w-11 h-11 bg-blue-500/20 text-blue-500 rounded-2xl flex items-center justify-center border border-blue-500/30">
-              <i data-lucide="layers" class="w-5 h-5"></i>
-            </div>
-            <h3 class="text-base font-bold titanium-text">เลือกหน้าพิมพ์แบบ Smart Grid</h3>
-            <p class="text-xs sub-text leading-relaxed">เลือกเฉพาะหน้าที่ต้องการพิมพ์ได้อย่างอิสระผ่านระบบ Grid Preview คำนวณราคาสี/ขาวดำอัตโนมัติแบบเรียลไทม์</p>
-          </div>
-
-          <div class="scroll-reveal glass-panel p-7 rounded-3xl space-y-3 border hover:border-amber-500 transition duration-300">
-            <div class="w-11 h-11 bg-amber-500/20 text-amber-500 rounded-2xl flex items-center justify-center border border-amber-500/30">
-              <i data-lucide="wallet" class="w-5 h-5"></i>
-            </div>
-            <h3 class="text-base font-bold titanium-text">ระบบกระเป๋าเงิน Coins</h3>
-            <p class="text-xs sub-text leading-relaxed">เติมเงินผ่าน PromptPay สแกนแนบสลิปอนุมัติไว ชำระคิวพิมพ์ได้ทันทีโดยไม่ต้องรอทอนเงิน</p>
-          </div>
-
-          <div class="scroll-reveal glass-panel p-7 rounded-3xl space-y-3 border hover:border-emerald-500 transition duration-300">
-            <div class="w-11 h-11 bg-emerald-500/20 text-emerald-500 rounded-2xl flex items-center justify-center border border-emerald-500/30">
-              <i data-lucide="truck" class="w-5 h-5"></i>
-            </div>
-            <h3 class="text-base font-bold titanium-text">ติดตามคิว & พัสดุ Real-time</h3>
-            <p class="text-xs sub-text leading-relaxed">เช็กสถานะงานพิมพ์ วันเวลานัดรับ และเลข Tracking จัดส่งพัสดุได้ตลอด 24 ชั่วโมง</p>
-          </div>
-        </div>
-      </div>
-
     </section>
 
     <!-- VIEW 2: AUTH -->
     <section id="view-auth" class="hidden py-12 px-4 max-w-md mx-auto">
       <div class="glass-panel rounded-3xl p-7 border shadow-xl relative overflow-hidden">
-        <div class="flex bg-slate-200/80 dark:bg-white/5 p-1 rounded-2xl mb-6 border border-slate-300 dark:border-white/10">
+        <div class="flex bg-white/5 p-1 rounded-2xl mb-6 border border-white/10">
           <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-blue-600 shadow-sm">เข้าสู่ระบบ</button>
           <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">ลงทะเบียน</button>
         </div>
@@ -533,13 +673,13 @@
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold mb-1 titanium-text">อีเมล</label>
-            <input type="email" id="login-email" required class="w-full px-4 py-3 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
+            <input type="email" id="login-email" required class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1 titanium-text">รหัสผ่าน</label>
             <div class="relative">
-              <input type="password" id="login-password" required class="w-full px-4 py-3 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3 top-3 text-slate-400 hover:text-blue-500">
+              <input type="password" id="login-password" required class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3 top-3 text-apple-subtext hover:text-blue-400">
                 <i id="login-eye" data-lucide="eye" class="w-4 h-4"></i>
               </button>
             </div>
@@ -551,107 +691,105 @@
         <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
           <div>
             <label class="block text-xs font-semibold mb-1 titanium-text">ชื่อ-นามสกุล</label>
-            <input type="text" id="reg-fullname" required class="w-full px-4 py-3 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
+            <input type="text" id="reg-fullname" required class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1 titanium-text">อีเมล</label>
-            <input type="email" id="reg-email" required class="w-full px-4 py-3 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
+            <input type="email" id="reg-email" required class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1 titanium-text">รหัสผ่าน</label>
             <div class="relative">
-              <input type="password" id="reg-password" required onkeyup="validatePasswordRequirements()" class="w-full px-4 py-3 bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute right-3 top-3 text-slate-400 hover:text-blue-500">
+              <input type="password" id="reg-password" required onkeyup="validatePasswordRequirements()" class="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute right-3 top-3 text-apple-subtext hover:text-blue-400">
                 <i id="reg-eye" data-lucide="eye" class="w-4 h-4"></i>
               </button>
             </div>
           </div>
 
-          <!-- Password Checklist -->
-          <div class="p-3 bg-slate-100 dark:bg-black/30 rounded-2xl border border-slate-300 dark:border-white/10 text-[11px] space-y-1">
+          <div class="p-3 bg-black/30 rounded-2xl border border-white/10 text-[11px] space-y-1">
             <p class="font-bold mb-1 titanium-text">เงื่อนไขความปลอดภัยรหัสผ่าน:</p>
             <div id="pwd-req-length" class="flex items-center gap-1.5 text-rose-500 font-medium">
               <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> อย่างน้อย 8 ตัวอักษร
             </div>
             <div id="pwd-req-upper" class="flex items-center gap-1.5 text-rose-500 font-medium">
-              <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีตัวอักษรภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)
+              <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)
             </div>
             <div id="pwd-req-lower" class="flex items-center gap-1.5 text-rose-500 font-medium">
-              <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีตัวอักษรภาษาอังกฤษ พิมพ์เล็ก (a-z)
+              <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีภาษาอังกฤษ พิมพ์เล็ก (a-z)
             </div>
             <div id="pwd-req-num" class="flex items-center gap-1.5 text-rose-500 font-medium">
               <i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีตัวเลขอย่างน้อย 1 ตัว (0-9)
             </div>
           </div>
 
-          <button type="submit" id="reg-submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-emerald-500/25 transition opacity-60">ยืนยันลงทะเบียน</button>
+          <button type="submit" id="reg-submit-btn" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-emerald-500/25 transition opacity-60">ยืนยันลงทะเบียน</button>
         </form>
       </div>
     </section>
 
-    <!-- VIEW 3: DASHBOARD / ORDER FORM -->
+    <!-- VIEW 3: DASHBOARD & ORDER FORM (NO SHIPPING / NO DELIVERY FEES) -->
     <section id="view-dashboard" class="hidden py-8 px-4 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- ฟอร์มอัปโหลด & ตั้งค่าสั่งพิมพ์ -->
-        <div class="lg:col-span-6 glass-panel p-6 rounded-3xl border shadow-xl">
-          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
-            <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-500 border border-blue-500/30 flex items-center justify-center">
+        <!-- Order Form -->
+        <div class="lg:col-span-6 glass-panel p-6 rounded-3xl border shadow-xl space-y-5">
+          <div class="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-white/10">
+            <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
               <i data-lucide="upload-cloud" class="w-5 h-5"></i>
             </div>
             <div>
               <h2 class="text-lg font-bold titanium-text">สร้างรายการสั่งพิมพ์</h2>
-              <p class="text-xs sub-text">อัปโหลดไฟล์ เลือกรูปแบบพิมพ์ การจัดส่ง และชำระเงิน</p>
+              <p class="text-xs sub-text">อัปโหลดไฟล์ เลือกรูปแบบ พิมพ์เสร็จมารับหน้าร้าน[cite: 64]</p>
             </div>
           </div>
 
           <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-5">
             
-            <!-- อัปโหลดไฟล์ -->
+            <!-- File Upload -->
             <div>
-              <label class="block text-xs font-semibold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, รูปภาพ)</label>
-              <div class="relative border-2 border-dashed hover:border-blue-500 border-slate-300 dark:border-white/20 rounded-2xl p-5 text-center transition bg-slate-100 dark:bg-black/30 cursor-pointer group" onclick="document.getElementById('file-input').click()">
+              <label class="block text-xs font-semibold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, JPG)</label>
+              <div class="relative border-2 border-dashed hover:border-blue-500 border-white/20 rounded-2xl p-5 text-center transition bg-black/30 cursor-pointer group" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" required onchange="handleFileSelect(event)" class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                 <div id="upload-placeholder" class="space-y-2">
-                  <i data-lucide="file-plus" class="w-8 h-8 text-blue-500 mx-auto group-hover:scale-110 transition"></i>
+                  <i data-lucide="file-plus" class="w-8 h-8 text-blue-400 mx-auto group-hover:scale-110 transition"></i>
                   <p class="text-xs font-bold titanium-text">คลิกเลือกไฟล์ หรือ ลากมาวางที่นี่</p>
                 </div>
-                <div id="file-details" class="hidden text-left bg-slate-200/80 dark:bg-white/5 p-3 rounded-xl border flex items-center justify-between">
+                <div id="file-details" class="hidden text-left bg-white/5 p-3 rounded-xl border border-white/10 flex items-center justify-between">
                   <div class="flex items-center gap-2 overflow-hidden">
-                    <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
+                    <i data-lucide="file-text" class="w-5 h-5 text-blue-400"></i>
                     <span id="file-info-name" class="text-xs font-bold truncate max-w-xs titanium-text">doc.pdf</span>
                   </div>
-                  <span class="text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">พร้อมพิมพ์</span>
+                  <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">พร้อมพิมพ์</span>
                 </div>
               </div>
 
-              <!-- ปุ่มเปิดพรีวิวรายละเอียดไฟล์เอกสาร -->
-              <button type="button" id="preview-file-drawer-btn" onclick="toggleFilePreviewDrawer(true)" class="hidden w-full mt-2.5 py-2.5 px-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
-                <i data-lucide="eye" class="w-4 h-4"></i> ดูรายละเอียด & พรีวิวไฟล์เอกสาร (Slide Preview)
+              <button type="button" id="preview-file-drawer-btn" onclick="toggleFilePreviewDrawer(true)" class="hidden w-full mt-2.5 py-2.5 px-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+                <i data-lucide="eye" class="w-4 h-4"></i> ดูพรีวิวไฟล์เอกสาร (Slide Preview)
               </button>
             </div>
 
-            <!-- การเลือกหน้าที่ต้องการพิมพ์ -->
+            <!-- Page Selection -->
             <div class="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 space-y-3">
               <div class="flex items-center justify-between border-b border-blue-500/20 pb-2">
                 <div>
                   <span class="text-[11px] sub-text block">จำนวนหน้าทั้งหมด:</span>
-                  <span id="total-pages-display" class="text-sm font-extrabold text-blue-500">0 หน้า</span>
+                  <span id="total-pages-display" class="text-sm font-extrabold text-blue-400">0 หน้า</span>
                 </div>
                 <div class="text-right">
                   <span class="text-[11px] sub-text block">หน้าที่เลือกพิมพ์:</span>
-                  <span id="selected-pages-count-display" class="text-sm font-extrabold text-emerald-500">0 หน้า</span>
+                  <span id="selected-pages-count-display" class="text-sm font-extrabold text-emerald-400">0 หน้า</span>
                 </div>
               </div>
 
               <div>
-                <label class="block text-xs font-bold mb-1 titanium-text">รูปแบบการเลือกหน้าพิมพ์ Mode:</label>
+                <label class="block text-xs font-bold mb-1 titanium-text">รูปแบบการเลือกหน้าพิมพ์:</label>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                  <label class="border p-2.5 rounded-xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-blue-500 titanium-text">
+                  <label class="border p-2.5 rounded-xl flex items-center gap-2 cursor-pointer bg-black/30 hover:border-blue-500 titanium-text">
                     <input type="radio" name="page_selection_mode" value="text" checked onchange="togglePageSelectionMode()">
                     <span>ระบุช่วงหน้า</span>
                   </label>
-                  <label class="border p-2.5 rounded-xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-blue-500 titanium-text">
+                  <label class="border p-2.5 rounded-xl flex items-center gap-2 cursor-pointer bg-black/30 hover:border-blue-500 titanium-text">
                     <input type="radio" name="page_selection_mode" value="grid" onchange="togglePageSelectionMode()">
                     <span>ตารางเลือกรายหน้า</span>
                   </label>
@@ -662,16 +800,16 @@
                 <div class="grid grid-cols-2 gap-2">
                   <div>
                     <label class="text-[11px] font-semibold sub-text block">จำนวนหน้าที่พิมพ์:</label>
-                    <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs font-bold titanium-text">
+                    <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs font-bold titanium-text">
                   </div>
                   <div>
                     <label class="text-[11px] font-semibold sub-text block">ระบุช่วงหน้า (เช่น 1-5):</label>
-                    <input type="text" id="page-range-input" placeholder="เช่น 1-3, 5" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
+                    <input type="text" id="page-range-input" placeholder="เช่น 1-3, 5" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text">
                   </div>
                 </div>
                 <div>
                   <label class="text-[11px] font-semibold sub-text block">หมายเหตุเพิ่มเติม:</label>
-                  <textarea id="order-notes" rows="2" placeholder="เช่น พิมพ์เฉพาะหน้า 1 ถึง 5..." class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text"></textarea>
+                  <textarea id="order-notes" rows="2" placeholder="เช่น พิมพ์เฉพาะหน้า 1 ถึง 5..." class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text"></textarea>
                 </div>
               </div>
 
@@ -679,82 +817,62 @@
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold titanium-text">รายการหน้าในเอกสาร:</span>
                   <div class="flex gap-2">
-                    <button type="button" onclick="selectAllPages(true)" class="px-2 py-1 bg-blue-500/20 text-blue-500 border border-blue-500/30 rounded-lg text-[10px] font-bold">เลือกทั้งหมด</button>
-                    <button type="button" onclick="selectAllPages(false)" class="px-2 py-1 bg-slate-200 dark:bg-white/10 sub-text border rounded-lg text-[10px] font-bold">ยกเลิก</button>
+                    <button type="button" onclick="selectAllPages(true)" class="px-2 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-[10px] font-bold">เลือกทั้งหมด</button>
+                    <button type="button" onclick="selectAllPages(false)" class="px-2 py-1 bg-white/10 sub-text border rounded-lg text-[10px] font-bold">ยกเลิก</button>
                   </div>
                 </div>
-                <div id="pages-grid-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 bg-slate-100 dark:bg-black/40 rounded-xl border">
+                <div id="pages-grid-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 bg-black/40 rounded-xl border">
                   <p class="col-span-full text-center text-xs sub-text py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>
                 </div>
               </div>
             </div>
 
-            <!-- การตั้งค่ากระดาษและสี -->
+            <!-- Paper Options -->
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold mb-1 titanium-text">ขนาดกระดาษ</label>
-                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
+                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text">
                   <option value="A4">A4</option>
                   <option value="A3">A3</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold mb-1 titanium-text">จำนวนชุด</label>
-                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
+                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text">
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-semibold mb-1 titanium-text">ประเภทสี</label>
-                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
+                <select id="color-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text">
                   <option value="bw">ขาว-ดำ (1.00 ฿/หน้า)</option>
                   <option value="color">พิมพ์สี (5.00 ฿/หน้า)</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-semibold mb-1 titanium-text">การพิมพ์</label>
-                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
+                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3 py-2 bg-black/40 border rounded-xl text-xs titanium-text">
                   <option value="single">หน้าเดียว</option>
                   <option value="duplex">พิมพ์หน้า-หลัง (+0.50 ฿)</option>
                 </select>
               </div>
             </div>
 
-            <!-- 2. วิธีการจัดส่ง -->
-            <div class="pt-3 border-t border-slate-200 dark:border-white/10">
-              <label class="block text-xs font-bold mb-2 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
-              <div class="grid grid-cols-2 gap-3 mb-3">
-                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-blue-500 titanium-text">
-                  <input type="radio" name="delivery_method" value="pickup" checked onchange="toggleDeliveryFields()">
-                  <div>
-                    <p class="text-xs font-bold">รับที่ร้าน</p>
-                    <p class="text-[10px] sub-text">ฟรี (0 ฿)</p>
-                  </div>
-                </label>
-                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-blue-500 titanium-text">
-                  <input type="radio" name="delivery_method" value="delivery" onchange="toggleDeliveryFields()">
-                  <div>
-                    <p class="text-xs font-bold">จัดส่งปลายทาง</p>
-                    <p class="text-[10px] text-indigo-500 font-bold">+ค่าส่ง 30.00 ฿</p>
-                  </div>
-                </label>
-              </div>
-
-              <div id="delivery-address-box" class="hidden space-y-2 bg-slate-200/50 dark:bg-white/5 p-3 rounded-2xl border">
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="text" id="recipient-name" placeholder="ชื่อผู้รับ" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
-                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์" class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text">
-                </div>
-                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด..." class="w-full px-3 py-2 bg-slate-100 dark:bg-black/40 border rounded-xl text-xs titanium-text"></textarea>
+            <!-- Self Pickup Notice (No Shipping Options) -->
+            <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center gap-2 text-xs">
+              <i data-lucide="store" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>
+              <div>
+                <p class="font-bold text-emerald-400">การรับสินค้า: รับที่ร้านโดยตรง (Self Pickup)[cite: 64]</p>
+                <p class="text-[10px] sub-text">ไม่มีค่าจัดส่ง | พิมพ์เสร็จแล้วสามารถเข้ามารับได้ทันที[cite: 64]</p>
               </div>
             </div>
 
-            <!-- 3. วิธีการชำระเงิน -->
+            <!-- Payment Channels -->
             <div class="pt-3 border-t border-slate-200 dark:border-white/10">
-              <label class="block text-xs font-bold mb-2 titanium-text">3. ช่องทางการชำระเงิน</label>
+              <label class="block text-xs font-bold mb-2 titanium-text">2. ช่องทางการชำระเงิน</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
-                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-amber-500 titanium-text">
+                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/30 hover:border-amber-500 titanium-text">
                   <input type="radio" name="payment_method" value="coins" checked onchange="togglePaymentFields()">
                   <div>
                     <p class="text-xs font-bold flex items-center gap-1">
@@ -763,7 +881,7 @@
                     <p class="text-[10px] sub-text">หัก Coins ทันที</p>
                   </div>
                 </label>
-                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-slate-100 dark:bg-black/30 hover:border-blue-500 titanium-text">
+                <label class="border p-3 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/30 hover:border-blue-500 titanium-text">
                   <input type="radio" name="payment_method" value="promptpay" onchange="togglePaymentFields()">
                   <div>
                     <p class="text-xs font-bold">PromptPay Direct</p>
@@ -773,21 +891,21 @@
               </div>
 
               <div id="promptpay-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 text-center">
-                <p class="text-xs font-bold text-blue-500">สแกน QR Code โอนเงิน PromptPay</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-32 h-32 mx-auto rounded-xl border">
+                <p class="text-xs font-bold text-blue-400">สแกน QR Code โอนเงิน PromptPay</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-32 h-32 mx-auto rounded-xl border border-white/20">
                 <p class="text-[10px] sub-text">ร้าน PrintQueue Pro (พร้อมเพย์: 089-999-9999)</p>
                 <div>
                   <label class="block text-xs font-semibold mb-1 text-left titanium-text">แนบสลิปโอนเงิน (Image):</label>
-                  <input type="file" id="order-slip-file" accept="image/*" class="w-full text-xs bg-slate-100 dark:bg-black/40 rounded-xl p-2 border">
+                  <input type="file" id="order-slip-file" accept="image/*" class="w-full text-xs bg-black/40 rounded-xl p-2 border border-white/10">
                 </div>
               </div>
             </div>
 
-            <!-- สรุปราคารวม -->
-            <div class="p-4 bg-slate-200/50 dark:bg-white/5 rounded-2xl border flex items-center justify-between">
+            <!-- Price Breakdown -->
+            <div class="p-4 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
               <div>
                 <span class="text-xs font-bold sub-text block">ราคารวมสุทธิ:</span>
-                <span id="price-breakdown" class="text-[10px] sub-text">(ค่าพิมพ์ + ค่าจัดส่ง)</span>
+                <span id="price-breakdown" class="text-[10px] sub-text">(ไม่มีค่าจัดส่ง - รับหน้าร้าน)[cite: 64]</span>
               </div>
               <span id="total-price" class="text-2xl font-extrabold blue-gradient-text">1.00 ฿</span>
             </div>
@@ -798,35 +916,33 @@
           </form>
         </div>
 
-        <!-- รายการคิว & การจัดส่งของลูกค้า -->
+        <!-- Live Queue List -->
         <div class="lg:col-span-6 glass-panel p-6 rounded-3xl border shadow-xl">
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-500 border border-indigo-500/30 flex items-center justify-center">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
                 <i data-lucide="activity" class="w-5 h-5"></i>
               </div>
               <div>
-                <h2 class="text-lg font-bold titanium-text">ติดตามคิว & การจัดส่ง</h2>
-                <p class="text-xs sub-text">สถานะงานพิมพ์ วันเวลานัดรับ และเลขพัสดุ</p>
+                <h2 class="text-lg font-bold titanium-text">ติดตามคิวงานพิมพ์</h2>
+                <p class="text-xs sub-text">สถานะงานพิมพ์ และรายละเอียดหน้าร้าน[cite: 64]</p>
               </div>
             </div>
-            <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 border rounded-xl text-xs flex items-center gap-1.5 transition titanium-text">
+            <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs flex items-center gap-1.5 transition titanium-text">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช 🔄
             </button>
           </div>
 
           <div id="queue-cards-container" class="space-y-4">
-            <p class="py-12 text-center sub-text text-xs">กำลังโหลดข้อมูล...</p>
+            <p class="py-12 text-center sub-text text-xs">กำลังโหลดข้อมูลคิว...</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VIEW 4: WALLET / TOPUP COINS -->
+    <!-- VIEW 4: WALLET -->
     <section id="view-wallet" class="hidden py-8 px-4 max-w-4xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        
-        <!-- เติมเงิน Coins -->
         <div class="md:col-span-6 glass-panel p-6 rounded-3xl border shadow-xl">
           <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-500 border border-amber-500/30 flex items-center justify-center">
@@ -834,7 +950,7 @@
             </div>
             <div>
               <h2 class="text-lg font-bold titanium-text">เติม Coins เข้ากระเป๋าเงิน</h2>
-              <p class="text-xs sub-text">เลือกแพ็กเกจ โอน PromptPay และแนบสลิป</p>
+              <p class="text-xs sub-text">เลือกแพ็กเกจ โอน PromptPay แนบสลิป</p>
             </div>
           </div>
 
@@ -852,14 +968,14 @@
             </div>
 
             <div class="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20 text-center space-y-2">
-              <p class="text-xs font-bold text-amber-500">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-sm font-extrabold text-amber-600 dark:text-amber-400">20.00</span> บาท</p>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-32 h-32 mx-auto rounded-xl border">
+              <p class="text-xs font-bold text-amber-500">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-sm font-extrabold text-amber-400">20.00</span> บาท</p>
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-32 h-32 mx-auto rounded-xl border border-white/20">
               <p class="text-[10px] sub-text">พร้อมเพย์: 089-999-9999 (ร้าน PrintQueue Pro)</p>
             </div>
 
             <div>
               <label class="block text-xs font-semibold mb-1 titanium-text">2. แนบสลิปการโอนเงิน:</label>
-              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs bg-slate-100 dark:bg-black/40 rounded-xl p-2 border">
+              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs bg-black/40 rounded-xl p-2 border border-white/10">
             </div>
 
             <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 rounded-2xl shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transition">
@@ -868,11 +984,10 @@
           </form>
         </div>
 
-        <!-- ประวัติคำขอเติมเงิน -->
         <div class="md:col-span-6 glass-panel p-6 rounded-3xl border shadow-xl">
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <h2 class="text-lg font-bold titanium-text">ประวัติการเติม Coins</h2>
-            <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="p-2 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 rounded-xl text-xs flex items-center gap-1 transition titanium-text">
+            <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs flex items-center gap-1 transition titanium-text">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช 🔄
             </button>
           </div>
@@ -883,11 +998,11 @@
       </div>
     </section>
 
-    <!-- VIEW 5: ADMIN BACKOFFICE -->
+    <!-- VIEW 5: ADMIN BACKOFFICE (NO SHIPPING TRACKING) -->
     <section id="view-admin" class="hidden py-8 px-4 max-w-6xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
+          <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
           <h1 class="text-2xl font-extrabold titanium-text mt-1">จัดการออเดอร์ สลิปโอนเงิน & เติม Coins</h1>
         </div>
         <button id="refresh-admin-btn" onclick="animateRefresh('refresh-admin-btn', loadAdminData)" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-2xl shadow-lg shadow-purple-500/25 flex items-center gap-2 transition">
@@ -895,41 +1010,41 @@
         </button>
       </div>
 
-      <div class="flex bg-slate-200/80 dark:bg-white/5 p-1 rounded-2xl mb-6 max-w-md border">
+      <div class="flex bg-white/5 p-1 rounded-2xl mb-6 max-w-md border border-white/10">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-md">จัดการงานพิมพ์</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')" class="flex-1 py-2 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">อนุมัติเติม Coins</button>
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">จัดการสมาชิก</button>
       </div>
 
-      <!-- ADMIN TAB 1: ORDERS -->
+      <!-- ADMIN ORDERS TAB -->
       <div id="admin-tab-orders" class="glass-panel p-6 rounded-3xl border shadow-xl space-y-4">
-        <h2 class="text-base font-bold titanium-text">รายการสั่งพิมพ์ & สถานะชำระเงิน/จัดส่ง</h2>
+        <h2 class="text-base font-bold titanium-text">รายการสั่งพิมพ์ (การรับสินค้า: หน้าร้านเท่านั้น)[cite: 64]</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+              <tr class="border-b border-white/10 sub-text uppercase font-bold">
                 <th class="py-3 px-2">คิว</th>
                 <th class="py-3 px-2">ไฟล์ & ยอด</th>
-                <th class="py-3 px-2">การจัดส่ง & ที่อยู่</th>
+                <th class="py-3 px-2">สิทธิ์รับสินค้า</th>
                 <th class="py-3 px-2">ชำระเงิน / สลิป</th>
                 <th class="py-3 px-2">สถานะงานพิมพ์</th>
-                <th class="py-3 px-2 text-right">จัดการ</th>
+                <th class="py-3 px-2 text-right">รายละเอียดคิว</th>
               </tr>
             </thead>
-            <tbody id="admin-orders-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
+            <tbody id="admin-orders-tbody" class="divide-y divide-white/10">
               <tr><td colspan="6" class="py-8 text-center sub-text">กำลังโหลดรายการ...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ADMIN TAB 2: TOPUPS -->
+      <!-- ADMIN TOPUPS TAB -->
       <div id="admin-tab-topups" class="hidden glass-panel p-6 rounded-3xl border shadow-xl space-y-4">
         <h2 class="text-base font-bold titanium-text">คำขอเติม Coins (อนุมัติสลิปโอนเงิน)</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+              <tr class="border-b border-white/10 sub-text uppercase font-bold">
                 <th class="py-3 px-2">วันที่</th>
                 <th class="py-3 px-2">ผู้ใช้งาน</th>
                 <th class="py-3 px-2">ยอดเงิน / Coins</th>
@@ -938,27 +1053,27 @@
                 <th class="py-3 px-2 text-right">อนุมัติคำขอ</th>
               </tr>
             </thead>
-            <tbody id="admin-topups-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
+            <tbody id="admin-topups-tbody" class="divide-y divide-white/10">
               <tr><td colspan="6" class="py-8 text-center sub-text">กำลังโหลดคำขอเติมเงิน...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ADMIN TAB 3: USERS -->
+      <!-- ADMIN USERS TAB -->
       <div id="admin-tab-users" class="hidden glass-panel p-6 rounded-3xl border shadow-xl space-y-4">
         <h2 class="text-base font-bold titanium-text">สิทธิ์สมาชิกในระบบ</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+              <tr class="border-b border-white/10 sub-text uppercase font-bold">
                 <th class="py-3 px-2">ชื่อ-นามสกุล</th>
                 <th class="py-3 px-2">อีเมล</th>
                 <th class="py-3 px-2">สิทธิ์</th>
                 <th class="py-3 px-2 text-right">จัดการ</th>
               </tr>
             </thead>
-            <tbody id="admin-users-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
+            <tbody id="admin-users-tbody" class="divide-y divide-white/10">
               <tr><td colspan="4" class="py-8 text-center sub-text">กำลังโหลดสมาชิก...</td></tr>
             </tbody>
           </table>
@@ -968,7 +1083,7 @@
 
   </main>
 
-  <!-- JAVASCRIPT LOGIC & THREE.JS ENGINE -->
+  <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
     const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
     const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnaHV0c2VrZXVicXB1eHB1c3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyOTczNzIsImV4cCI6MjEwNjg3MzM3Mn0.AfVAfWomE8pt7misSFOnX1PuXKV5vw8kQFQwWpLZUf8';
@@ -978,11 +1093,21 @@
     let selectedFileObj = null;
     let detectedPageCount = 1;
     let currentPdfZoom = 1.0;
-
     let isPasswordValid = false;
+    let currentOrdersList = [];
 
-    // Three.js background globals
     let bgScene, bgCamera, bgRenderer, bgParticles, bgFloatingGroup;
+
+    /* --- SECURITY SANITIZATION (XSS PROTECTION) --- */
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     window.addEventListener('load', () => {
       init3DBackground();
@@ -990,7 +1115,6 @@
       initScrollReveal();
       if (typeof lucide !== 'undefined') lucide.createIcons();
 
-      // GRAND APPLE KEYNOTE SPLASH TIMELINE
       runSplashAnimation();
 
       const savedUrl = localStorage.getItem('sp_url') || DEFAULT_SUPABASE_URL;
@@ -1002,7 +1126,104 @@
       if (savedUrl && savedKey) initSupabase(savedUrl, savedKey);
     });
 
-    /* --- APPLE KEYNOTE SPLASH SCREEN TIMELINE --- */
+    /* --- APPLE TAB MENU BLUR OVERLAY TOGGLE --- */
+    function toggleAppleTabMenu(show = true) {
+      const menu = document.getElementById('apple-tab-menu');
+      if (!menu) return;
+      if (show) {
+        menu.classList.remove('hidden');
+        menu.classList.remove('pointer-events-none');
+        setTimeout(() => {
+          menu.classList.remove('opacity-0');
+        }, 10);
+      } else {
+        menu.classList.add('opacity-0');
+        setTimeout(() => {
+          menu.classList.add('hidden');
+          menu.classList.add('pointer-events-none');
+        }, 400);
+      }
+    }
+
+    /* --- USER PROFILE MODAL HANDLERS --- */
+    function openUserProfileModal() {
+      if (!currentUser) {
+        showCustomModal({
+          title: 'ยังไม่ได้เข้าสู่ระบบ',
+          message: 'กรุณาเข้าสู่ระบบเพื่อดูข้อมูลโปรไฟล์ส่วนตัว',
+          icon: 'lock',
+          onConfirm: () => switchView('auth')
+        });
+        return;
+      }
+
+      document.getElementById('prof-fullname').innerText = currentUser.full_name || 'ผู้ใช้งาน';
+      document.getElementById('prof-email').innerText = currentUser.email || '-';
+      
+      const roleBadge = document.getElementById('prof-role-badge');
+      if (currentUser.role === 'admin') {
+        roleBadge.innerText = 'ผู้ดูแลระบบ (Admin)';
+        roleBadge.className = 'px-2.5 py-0.5 rounded-full font-bold bg-purple-500/20 border border-purple-500/30 text-purple-300';
+      } else {
+        roleBadge.innerText = 'สมาชิกทั่วไป (Member)';
+        roleBadge.className = 'px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 border border-emerald-500/30 text-emerald-400';
+      }
+
+      fetchUserWallet();
+      document.getElementById('user-profile-modal').classList.remove('hidden');
+    }
+
+    function closeUserProfileModal() {
+      document.getElementById('user-profile-modal').classList.add('hidden');
+    }
+
+    /* --- QUEUE DETAIL MODAL HANDLERS (ดูรายละเอียดคิวนั้นทั้งหมด) --- */
+    function openQueueDetailModal(orderId) {
+      const order = currentOrdersList.find(o => o.id === orderId);
+      if (!order) return showCustomModal({ title: 'ไม่พบข้อมูล', message: 'ไม่พบรายละเอียดคิวงานพิมพ์นี้', icon: 'alert-triangle' });
+
+      document.getElementById('qd-modal-order-id').innerText = `Queue ID: #${order.id}`;
+      document.getElementById('qd-modal-filename').innerText = order.file_name || 'เอกสารพิมพ์';
+      document.getElementById('qd-modal-pages').innerText = `${order.page_count || 1} หน้า`;
+      document.getElementById('qd-modal-copies').innerText = `${order.copies || 1} ชุด`;
+      document.getElementById('qd-modal-paper').innerText = order.paper_size || 'A4';
+      document.getElementById('qd-modal-color').innerText = order.is_color ? 'พิมพ์สี' : 'ขาว-ดำ';
+      document.getElementById('qd-modal-duplex').innerText = order.is_duplex ? 'พิมพ์หน้า-หลัง' : 'หน้าเดียว';
+      document.getElementById('qd-modal-notes').innerText = order.admin_note || 'ไม่มีหมายเหตุเพิ่มเติม';
+      document.getElementById('qd-modal-totalprice').innerText = `${parseFloat(order.total_price || 0).toFixed(2)} ฿`;
+      document.getElementById('qd-modal-paymethod').innerText = order.payment_method === 'coins' ? 'Coins' : 'PromptPay Direct';
+
+      const statusBadge = document.getElementById('qd-modal-status-badge');
+      if (order.status === 'completed') {
+        statusBadge.innerText = '✅ พิมพ์เสร็จแล้ว (พร้อมรับหน้าร้าน)';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+      } else if (order.status === 'printing') {
+        statusBadge.innerText = '🖨️ กำลังพิมพ์เอกสาร...';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30';
+      } else if (order.status === 'cancelled') {
+        statusBadge.innerText = '❌ ยกเลิกรายการ';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30';
+      } else {
+        statusBadge.innerText = '⏳ รอยืนยันคิว / ตรวจสลิป';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30';
+      }
+
+      const slipBox = document.getElementById('qd-modal-slip-box');
+      if (order.slip_url) {
+        document.getElementById('qd-modal-slip-img').src = order.slip_url;
+        slipBox.classList.remove('hidden');
+      } else {
+        slipBox.classList.add('hidden');
+      }
+
+      document.getElementById('queue-detail-modal').classList.remove('hidden');
+    }
+
+    function closeQueueDetailModal() {
+      document.getElementById('queue-detail-modal').classList.add('hidden');
+    }
+
+    /* --- SPLASH ANIMATION --- */
     function runSplashAnimation() {
       const progressBar = document.getElementById('splash-progress-bar');
       const percentText = document.getElementById('splash-percent-text');
@@ -1022,9 +1243,7 @@
         if (percentText) percentText.innerText = currentPct + '%';
 
         const activeStep = statusSteps.find(s => s.pct === currentPct);
-        if (activeStep && statusText) {
-          statusText.innerText = activeStep.msg;
-        }
+        if (activeStep && statusText) statusText.innerText = activeStep.msg;
 
         if (currentPct >= 100) {
           clearInterval(interval);
@@ -1034,12 +1253,12 @@
               splash.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
               setTimeout(() => splash.style.display = 'none', 1000);
             }
-          }, 400);
+          }, 300);
         }
-      }, 25);
+      }, 20);
     }
 
-    /* --- FULLSCREEN 3D THREE.JS BACKGROUND ENGINE --- */
+    /* --- THREE.JS BACKGROUND --- */
     function init3DBackground() {
       const container = document.getElementById('three-bg-canvas');
       if (!container || typeof THREE === 'undefined') return;
@@ -1056,69 +1275,24 @@
       bgFloatingGroup = new THREE.Group();
 
       const isDark = document.documentElement.classList.contains('dark');
-      const matColor = isDark ? 0x2997ff : 0x0284c7;
+      const matColor = isDark ? 0x2997ff : 0x0071e3;
 
-      // 1. Torus Knot
       const torusGeo = new THREE.TorusKnotGeometry(2.5, 0.5, 100, 14);
-      const torusMat = new THREE.MeshStandardMaterial({
-        color: matColor, metalness: 0.9, roughness: 0.1, wireframe: true
-      });
+      const torusMat = new THREE.MeshStandardMaterial({ color: matColor, metalness: 0.9, roughness: 0.1, wireframe: true });
       const torusMesh = new THREE.Mesh(torusGeo, torusMat);
       torusMesh.position.set(-8, 3, -5);
       bgFloatingGroup.add(torusMesh);
 
-      // 2. Icosahedron
       const icoGeo = new THREE.IcosahedronGeometry(2, 1);
-      const icoMat = new THREE.MeshStandardMaterial({
-        color: 0xf5c518, metalness: 0.8, roughness: 0.2, wireframe: true
-      });
+      const icoMat = new THREE.MeshStandardMaterial({ color: 0xf5c518, metalness: 0.8, roughness: 0.2, wireframe: true });
       const icoMesh = new THREE.Mesh(icoGeo, icoMat);
       icoMesh.position.set(9, -4, -4);
       bgFloatingGroup.add(icoMesh);
-
-      // 3. Floating Cubes
-      for (let i = 0; i < 6; i++) {
-        const boxGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-        const boxMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6, metalness: 0.7, roughness: 0.3 });
-        const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-        boxMesh.position.set((Math.random() - 0.5) * 26, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10 - 2);
-        boxMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-        bgFloatingGroup.add(boxMesh);
-      }
-
-      // Particle Starfield
-      const particleCount = 100;
-      const particleGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(particleCount * 3);
-
-      for (let i = 0; i < particleCount * 3; i++) {
-        positions[i] = (Math.random() - 0.5) * 35;
-      }
-      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-      const particleMat = new THREE.PointsMaterial({
-        size: 0.08,
-        color: isDark ? 0x38bdf8 : 0x0284c7,
-        transparent: true,
-        opacity: isDark ? 0.35 : 0.15
-      });
-      bgParticles = new THREE.Points(particleGeo, particleMat);
-      bgScene.add(bgParticles);
 
       bgScene.add(bgFloatingGroup);
 
       const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.6 : 1.2);
       bgScene.add(ambientLight);
-
-      const pointLight1 = new THREE.PointLight(0x2997ff, 2.0, 50);
-      pointLight1.position.set(10, 10, 10);
-      bgScene.add(pointLight1);
-
-      let mouseX = 0, mouseY = 0;
-      window.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 1.2;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 1.2;
-      });
 
       let clock = new THREE.Clock();
       function animate3D() {
@@ -1128,53 +1302,31 @@
         bgFloatingGroup.children.forEach((obj, idx) => {
           obj.rotation.x += 0.002 * (idx % 2 === 0 ? 1 : -1);
           obj.rotation.y += 0.003 * (idx % 2 === 0 ? -1 : 1);
-          obj.position.y += Math.sin(t + idx) * 0.0015;
         });
-
-        if (bgParticles) bgParticles.rotation.y = t * 0.008;
-
-        bgCamera.position.x += (mouseX * 1.2 - bgCamera.position.x) * 0.03;
-        bgCamera.position.y += (-mouseY * 1.2 - bgCamera.position.y) * 0.03;
-        bgCamera.lookAt(bgScene.position);
 
         bgRenderer.render(bgScene, bgCamera);
       }
       animate3D();
-
-      window.addEventListener('resize', () => {
-        if (!bgCamera || !bgRenderer) return;
-        bgCamera.aspect = window.innerWidth / window.innerHeight;
-        bgCamera.updateProjectionMatrix();
-        bgRenderer.setSize(window.innerWidth, window.innerHeight);
-      });
     }
 
-    /* --- THEME TOGGLE & BG OPACITY CONTROL --- */
+    /* --- THEME TOGGLE --- */
     function toggleTheme() {
       const htmlEl = document.documentElement;
       const themeIcon = document.getElementById('theme-icon');
       const isDark = htmlEl.classList.contains('dark');
-      const canvasEl = document.getElementById('three-bg-canvas');
 
       if (isDark) {
         htmlEl.classList.remove('dark');
         themeIcon.setAttribute('data-lucide', 'moon');
         localStorage.setItem('theme_mode', 'light');
-        if (canvasEl) canvasEl.style.opacity = '0.05'; // Ultra faint in light mode for 100% legibility
       } else {
         htmlEl.classList.add('dark');
         themeIcon.setAttribute('data-lucide', 'sun');
         localStorage.setItem('theme_mode', 'dark');
-        if (canvasEl) canvasEl.style.opacity = '0.25';
-      }
-
-      if (bgParticles) {
-        bgParticles.material.color.setHex(isDark ? 0x0284c7 : 0x38bdf8);
       }
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
-    /* --- REFRESH BUTTON ANIMATION --- */
     function animateRefresh(btnId, callback) {
       const btn = document.getElementById(btnId);
       if (!btn) return;
@@ -1185,12 +1337,9 @@
         callback().finally(() => {
           setTimeout(() => { if (icon) icon.classList.remove('animate-spin'); }, 600);
         });
-      } else {
-        setTimeout(() => { if (icon) icon.classList.remove('animate-spin'); }, 800);
       }
     }
 
-    /* --- SCROLL REVEAL OBSERVER --- */
     function initScrollReveal() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1201,18 +1350,14 @@
       document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
     }
 
-    /* --- SUBTLE LEVELED TILT EFFECT (MAX 1.5 DEG) --- */
     function init3DTiltEffect() {
       document.querySelectorAll('.tilt-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          // Divisor set to 350 for micro-tilt (approx 1.5 degrees max - no extreme tilting)
-          const rotateX = (centerY - y) / 350;
-          const rotateY = (x - centerX) / 350;
+          const rotateX = (rect.height / 2 - y) / 350;
+          const rotateY = (x - rect.width / 2) / 350;
           card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
         });
         card.addEventListener('mouseleave', () => {
@@ -1221,12 +1366,10 @@
       });
     }
 
-    /* --- PASSWORD EYE TOGGLE & VALIDATION --- */
     function togglePasswordVisibility(inputId, eyeIconId) {
       const input = document.getElementById(inputId);
       const eye = document.getElementById(eyeIconId);
       if (!input || !eye) return;
-
       if (input.type === 'password') {
         input.type = 'text';
         eye.setAttribute('data-lucide', 'eye-off');
@@ -1249,18 +1392,16 @@
       };
 
       updateReqStatus('pwd-req-length', reqs.length, 'อย่างน้อย 8 ตัวอักษร');
-      updateReqStatus('pwd-req-upper', reqs.upper, 'มีตัวอักษรภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)');
-      updateReqStatus('pwd-req-lower', reqs.lower, 'มีตัวอักษรภาษาอังกฤษ พิมพ์เล็ก (a-z)');
+      updateReqStatus('pwd-req-upper', reqs.upper, 'มีภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)');
+      updateReqStatus('pwd-req-lower', reqs.lower, 'มีภาษาอังกฤษ พิมพ์เล็ก (a-z)');
       updateReqStatus('pwd-req-num', reqs.num, 'มีตัวเลขอย่างน้อย 1 ตัว (0-9)');
 
       isPasswordValid = reqs.length && reqs.upper && reqs.lower && reqs.num;
 
       if (isPasswordValid) {
-        submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
-        submitBtn.classList.add('hover:bg-emerald-500');
+        submitBtn.classList.remove('opacity-60');
       } else {
-        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
-        submitBtn.classList.remove('hover:bg-emerald-500');
+        submitBtn.classList.add('opacity-60');
       }
     }
 
@@ -1268,7 +1409,7 @@
       const el = document.getElementById(elementId);
       if (!el) return;
       if (isValid) {
-        el.className = 'flex items-center gap-1.5 text-emerald-500 font-medium';
+        el.className = 'flex items-center gap-1.5 text-emerald-400 font-medium';
         el.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5"></i> ${text}`;
       } else {
         el.className = 'flex items-center gap-1.5 text-rose-500 font-medium';
@@ -1277,32 +1418,25 @@
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
-    /* --- FILE PREVIEW DRAWER & ZOOM ENGINE --- */
     function toggleFilePreviewDrawer(show = true) {
       const drawer = document.getElementById('file-preview-drawer');
-      if (!drawer) return;
       if (show) drawer.classList.remove('hidden');
       else drawer.classList.add('hidden');
     }
 
     function changeZoom(delta) {
       currentPdfZoom = Math.max(0.6, Math.min(2.5, currentPdfZoom + delta));
-      applyZoom();
-    }
-
-    function resetZoom() {
-      currentPdfZoom = 1.0;
-      applyZoom();
-    }
-
-    function applyZoom() {
       const wrapper = document.getElementById('pdf-preview-wrapper');
       const text = document.getElementById('zoom-level-text');
       if (wrapper) wrapper.style.transform = `scale(${currentPdfZoom})`;
       if (text) text.innerText = `${Math.round(currentPdfZoom * 100)}%`;
     }
 
-    /* --- MODAL SYSTEM --- */
+    function resetZoom() {
+      currentPdfZoom = 1.0;
+      changeZoom(0);
+    }
+
     function showCustomModal({ title, message = '', icon = 'info', showCancel = false, onConfirm = null }) {
       const modal = document.getElementById('custom-modal');
       document.getElementById('modal-title').innerText = title || 'แจ้งเตือน';
@@ -1322,14 +1456,14 @@
     function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
     function openSlipModal(imageUrl) {
-      if (!imageUrl) return showCustomModal({ title: 'ไม่พบสลิป', message: 'ไม่มีรูปภาพสลิปสำหรับการออเดอร์นี้', icon: 'image-off' });
+      if (!imageUrl) return showCustomModal({ title: 'ไม่พบสลิป', message: 'ไม่มีรูปภาพสลิปสำหรับรายการนี้', icon: 'image-off' });
       document.getElementById('slip-modal-img').src = imageUrl;
       document.getElementById('slip-preview-modal').classList.remove('hidden');
     }
 
     function closeSlipModal() { document.getElementById('slip-preview-modal').classList.add('hidden'); }
 
-    /* --- VIEWS SWITCHING --- */
+    /* --- VIEW SWITCHING --- */
     function switchView(viewName) {
       ['landing', 'auth', 'dashboard', 'wallet', 'admin'].forEach(v => {
         document.getElementById(`view-${v}`).classList.add('hidden');
@@ -1379,7 +1513,6 @@
       }
     }
 
-    /* --- SUPABASE & WALLET --- */
     function toggleConfigPanel() { document.getElementById('config-panel').classList.toggle('hidden'); }
 
     function saveAndInitSupabase() {
@@ -1407,27 +1540,29 @@
     }
 
     function updateUserUI() {
+      const appleAdminBtn = document.getElementById('apple-admin-menu-btn');
       if (currentUser) {
         document.getElementById('guest-buttons').classList.add('hidden');
         document.getElementById('user-profile-menu').classList.remove('hidden');
         document.getElementById('nav-wallet-btn').classList.remove('hidden');
         document.getElementById('user-coins-badge').classList.remove('hidden');
-        document.getElementById('user-display-name').innerText = currentUser.full_name;
+        document.getElementById('user-display-name').innerText = escapeHtml(currentUser.full_name);
 
         if (currentUser.role === 'admin') {
           document.getElementById('admin-menu-btn').classList.remove('hidden');
           document.getElementById('admin-db-config-btn').classList.remove('hidden');
-          document.getElementById('user-role-badge').innerText = 'ผู้ดูแลระบบ';
+          if (appleAdminBtn) appleAdminBtn.classList.remove('hidden');
         } else {
           document.getElementById('admin-menu-btn').classList.add('hidden');
           document.getElementById('admin-db-config-btn').classList.add('hidden');
-          document.getElementById('user-role-badge').innerText = 'สมาชิก';
+          if (appleAdminBtn) appleAdminBtn.classList.add('hidden');
         }
       } else {
         document.getElementById('guest-buttons').classList.remove('hidden');
         document.getElementById('user-profile-menu').classList.add('hidden');
         document.getElementById('nav-wallet-btn').classList.add('hidden');
         document.getElementById('user-coins-badge').classList.add('hidden');
+        if (appleAdminBtn) appleAdminBtn.classList.add('hidden');
       }
     }
 
@@ -1441,10 +1576,11 @@
         }
         const coins = data ? parseFloat(data.balance).toFixed(2) : '0.00';
         document.getElementById('user-coins-amount').innerText = `${coins} Coins`;
-      } catch (err) { console.error("Wallet fetch error:", err); }
+        const profCoins = document.getElementById('prof-coins-amount');
+        if (profCoins) profCoins.innerText = `${coins} Coins`;
+      } catch (err) { console.error("Wallet error:", err); }
     }
 
-    /* --- AUTH HANDLERS --- */
     async function handleRegister(e) {
       e.preventDefault();
       if (!isPasswordValid) {
@@ -1452,8 +1588,8 @@
       }
       if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', message: 'กรุณาเชื่อมต่อ Supabase Database ก่อน', icon: 'alert-triangle' });
       
-      const fullName = document.getElementById('reg-fullname').value;
-      const email = document.getElementById('reg-email').value;
+      const fullName = document.getElementById('reg-fullname').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
       const password = document.getElementById('reg-password').value;
 
       try {
@@ -1466,7 +1602,7 @@
     async function handleLogin(e) {
       e.preventDefault();
       if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้ตั้งค่า DB', message: 'กรุณาเชื่อมต่อ Supabase Database ก่อน', icon: 'alert-triangle' });
-      const email = document.getElementById('login-email').value;
+      const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
 
       try {
@@ -1487,7 +1623,6 @@
       });
     }
 
-    /* --- FILE UPLOAD & HIGH-RES PREVIEW RENDER --- */
     async function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1498,7 +1633,6 @@
       document.getElementById('file-info-name').innerText = file.name;
       document.getElementById('preview-file-drawer-btn').classList.remove('hidden');
 
-      // Update Modal Drawer Details
       document.getElementById('preview-modal-filename').innerText = file.name;
       document.getElementById('preview-modal-filesize').innerText = `ขนาดไฟล์: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
       document.getElementById('preview-modal-type').innerText = file.name.split('.').pop().toUpperCase();
@@ -1514,15 +1648,14 @@
           const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
           detectedPageCount = pdf.numPages;
 
-          // Render High-Resolution Pages inside Drawer Container
           for (let pageNum = 1; pageNum <= Math.min(detectedPageCount, 15); pageNum++) {
             const page = await pdf.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 1.5 }); // High-Res Scale 1.5x for crisp text
+            const viewport = page.getViewport({ scale: 1.5 });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.height = viewport.height;
             canvas.width = viewport.width;
-            canvas.className = 'rounded-xl border border-slate-300 dark:border-white/20 shadow-2xl bg-white';
+            canvas.className = 'rounded-xl border border-white/20 shadow-2xl bg-white';
 
             await page.render({ canvasContext: context, viewport: viewport }).promise;
 
@@ -1566,7 +1699,7 @@
 
       for (let i = 1; i <= pageCount; i++) {
         const label = document.createElement('label');
-        label.className = 'flex flex-col items-center p-2 border rounded-xl bg-slate-200/50 dark:bg-black/30 cursor-pointer text-[11px] font-bold hover:border-blue-500 titanium-text';
+        label.className = 'flex flex-col items-center p-2 border rounded-xl bg-black/30 cursor-pointer text-[11px] font-bold hover:border-blue-500 titanium-text';
         label.innerHTML = `
           <span>หน้า ${i}</span>
           <input type="checkbox" class="page-checkbox mt-1 rounded text-blue-600" value="${i}" checked onchange="calculatePrice()">
@@ -1580,17 +1713,12 @@
       calculatePrice();
     }
 
-    function toggleDeliveryFields() {
-      const isDelivery = document.querySelector('input[name="delivery_method"]:checked').value === 'delivery';
-      document.getElementById('delivery-address-box').classList.toggle('hidden', !isDelivery);
-      calculatePrice();
-    }
-
     function togglePaymentFields() {
       const isPromptPay = document.querySelector('input[name="payment_method"]:checked').value === 'promptpay';
       document.getElementById('promptpay-box').classList.toggle('hidden', !isPromptPay);
     }
 
+    /* --- CALCULATE PRICE (NO SHIPPING FEE) --- */
     function calculatePrice() {
       const selectionMode = document.querySelector('input[name="page_selection_mode"]:checked')?.value || 'text';
       let printedPages = 1;
@@ -1607,46 +1735,38 @@
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
-      const isDelivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
 
       let rate = isColor ? 5.00 : 1.00;
       if (isDuplex) rate += 0.50;
 
       const printCost = (printedPages * copies) * rate;
-      const deliveryFee = isDelivery ? 30.00 : 0.00;
-      const total = printCost + deliveryFee;
+      const total = printCost; // NO DELIVERY FEE
 
-      document.getElementById('price-breakdown').innerText = `(ค่าพิมพ์ ${printCost.toFixed(2)} ฿ ${deliveryFee > 0 ? '+ ค่าส่ง 30.00 ฿' : ''})`;
+      document.getElementById('price-breakdown').innerText = `(ค่าบริการพิมพ์ ${printCost.toFixed(2)} ฿ | รับหน้าร้าน)`;
       document.getElementById('total-price').innerText = total.toFixed(2) + ' ฿';
       return total;
     }
 
-    /* --- STORAGE UPLOAD HANDLER --- */
     async function uploadFileToSupabaseStorage(bucket, file) {
       if (!supabaseClient) throw new Error("ยังไม่ได้เชื่อมต่อฐานข้อมูล Supabase");
       
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
       
-      const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
-      
+      const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file, { cacheControl: '3600', upsert: false });
       if (error) throw new Error(`Storage Upload Error: ${error.message}`);
       
       const { data: pubData } = supabaseClient.storage.from(bucket).getPublicUrl(fileName);
       return pubData.publicUrl;
     }
 
-    /* --- ORDER SUBMISSION --- */
+    /* --- SUBMIT ORDER HANDLER --- */
     async function handleOrderSubmit(e) {
       e.preventDefault();
       if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', message: 'กรุณาเชื่อมต่อ Supabase', icon: 'alert-triangle' });
       if (!currentUser) return showCustomModal({ title: 'เข้าสู่ระบบก่อนสั่งพิมพ์', message: 'กรุณาล็อกอินก่อนทำรายการ', icon: 'alert-triangle', onConfirm: () => switchView('auth') });
       if (!selectedFileObj) return showCustomModal({ title: 'กรุณาเลือกไฟล์', message: 'เลือกไฟล์เอกสารที่ต้องการสั่งพิมพ์', icon: 'alert-triangle' });
 
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
       const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
       const selectionMode = document.querySelector('input[name="page_selection_mode"]:checked').value;
       
@@ -1667,258 +1787,192 @@
       const userNote = document.getElementById('order-notes').value.trim();
       const fullAdminNote = [pageRangeText, userNote ? `หมายเหตุ: ${userNote}` : ''].filter(Boolean).join(' | ');
 
-      let recipientName = '', recipientPhone = '', recipientAddress = '';
-      if (deliveryMethod === 'delivery') {
-        recipientName = document.getElementById('recipient-name').value.trim();
-        recipientPhone = document.getElementById('recipient-phone').value.trim();
-        recipientAddress = document.getElementById('recipient-address').value.trim();
-        if (!recipientName || !recipientPhone || !recipientAddress) {
-          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกชื่อ เบอร์โทร และที่อยู่จัดส่ง', icon: 'alert-triangle' });
-        }
-      }
-
       let userWallet = null;
       if (paymentMethod === 'coins') {
         const { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', currentUser.id).single();
         userWallet = w;
-        if (!w || parseFloat(w.balance) < totalAmount) {
+        if (!userWallet || parseFloat(userWallet.balance) < totalAmount) {
           return showCustomModal({
-            title: 'Coins ไม่เพียงพอ',
-            message: `ยอด Coins คงเหลือของคุณ (${w ? w.balance : 0} Coins) ไม่พอจ่าย ${totalAmount.toFixed(2)} Coins`,
-            icon: 'wallet',
+            title: 'Coins ไม่พอ',
+            message: `คุณมี Coins ไม่พอสำหรับชำระยอด ${totalAmount.toFixed(2)} Coins`,
+            icon: 'coins',
             onConfirm: () => switchView('wallet')
           });
         }
       }
 
-      showCustomModal({ title: 'กำลังดำเนินการ...', message: 'กำลังอัปโหลดไฟล์และส่งสั่งพิมพ์ โปรดรอสักครู่', icon: 'upload-cloud' });
+      let slipUrl = null;
+      if (paymentMethod === 'promptpay') {
+        const slipFile = document.getElementById('order-slip-file').files[0];
+        if (!slipFile) return showCustomModal({ title: 'แนบสลิปโอนเงิน', message: 'กรุณาแนบสลิปการโอนเงินเพื่อยืนยันออเดอร์', icon: 'image' });
+        try { slipUrl = await uploadFileToSupabaseStorage('slips', slipFile); }
+        catch (err) { return showCustomModal({ title: 'อัปโหลดสลิปล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+      }
+
+      let fileUrl = null;
+      try { fileUrl = await uploadFileToSupabaseStorage('documents', selectedFileObj); }
+      catch (err) { fileUrl = `local_filename_${selectedFileObj.name}`; }
+
+      const orderPayload = {
+        user_id: currentUser.id,
+        file_name: selectedFileObj.name,
+        file_url: fileUrl,
+        page_count: printedPages,
+        paper_size: document.getElementById('paper-size').value,
+        copies: parseInt(document.getElementById('copies').value) || 1,
+        is_color: document.getElementById('color-type').value === 'color',
+        is_duplex: document.getElementById('duplex-type').value === 'duplex',
+        delivery_method: 'pickup', // STRICTLY PICKUP AT STORE[cite: 64]
+        payment_method: paymentMethod,
+        slip_url: slipUrl,
+        total_price: totalAmount,
+        status: paymentMethod === 'coins' ? 'printing' : 'pending',
+        admin_note: fullAdminNote
+      };
 
       try {
-        let slipUrl = null;
-        if (paymentMethod === 'promptpay') {
-          const slipFile = document.getElementById('order-slip-file').files[0];
-          if (!slipFile) {
-            closeModal();
-            return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'กรุณาแนบรูปสลิปการโอนเงิน PromptPay', icon: 'image' });
-          }
-          slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
-        }
+        const { data: orderData, error: orderErr } = await supabaseClient.from('orders').insert([orderPayload]).select().single();
+        if (orderErr) throw orderErr;
 
-        const docFileUrl = await uploadFileToSupabaseStorage('documents', selectedFileObj);
-        const queueNum = Math.floor(1000 + Math.random() * 9000);
-
-        const { data: order, error: oErr } = await supabaseClient.from('orders').insert([{
-          user_id: currentUser.id, queue_number: queueNum, total_amount: totalAmount, status: 'queued', admin_note: fullAdminNote
-        }]).select().single();
-        if (oErr) throw oErr;
-
-        const { data: doc, error: dErr } = await supabaseClient.from('documents').insert([{
-          user_id: currentUser.id, file_name: selectedFileObj.name, file_path: docFileUrl,
-          page_count: detectedPageCount, file_size: selectedFileObj.size
-        }]).select().single();
-        if (dErr) throw dErr;
-
-        const copies = parseInt(document.getElementById('copies').value);
-        const isColor = document.getElementById('color-type').value === 'color';
-        const isDuplex = document.getElementById('duplex-type').value === 'duplex';
-        const paperSize = document.getElementById('paper-size').value;
-
-        await supabaseClient.from('print_jobs').insert([{
-          order_id: order.id, document_id: doc.id, copies: copies, color: isColor,
-          paper_size: paperSize, duplex: isDuplex, printed_pages_count: printedPages,
-          page_range: pageRangeText, status: 'queued'
-        }]);
-
-        await supabaseClient.from('deliveries').insert([{
-          order_id: order.id, delivery_method: deliveryMethod, recipient_name: recipientName,
-          phone_number: recipientPhone, delivery_address: recipientAddress,
-          delivery_fee: deliveryMethod === 'delivery' ? 30.00 : 0.00, delivery_status: 'pending'
-        }]);
-
-        if (paymentMethod === 'coins') {
+        if (paymentMethod === 'coins' && userWallet) {
           const newBal = parseFloat(userWallet.balance) - totalAmount;
-          await supabaseClient.from('wallets').update({ balance: newBal, updated_at: new Date() }).eq('id', userWallet.id);
-          await supabaseClient.from('wallet_transactions').insert([{
-            wallet_id: userWallet.id, order_id: order.id, transaction_type: 'payment',
-            amount: totalAmount, description: `ชำระค่าพิมพ์คิว Q-${queueNum}`
-          }]);
-          await supabaseClient.from('payments').insert([{
-            order_id: order.id, amount: totalAmount, payment_method: 'coins', status: 'completed'
-          }]);
+          await supabaseClient.from('wallets').update({ balance: newBal }).eq('id', userWallet.id);
           fetchUserWallet();
-        } else {
-          await supabaseClient.from('payments').insert([{
-            order_id: order.id, amount: totalAmount, payment_method: 'promptpay', slip_url: slipUrl, status: 'pending'
-          }]);
         }
 
-        closeModal();
         showCustomModal({
-          title: 'ส่งงานสั่งพิมพ์สำเร็จ!',
-          message: `หมายเลขคิวของคุณคือ: Q-${queueNum}`,
+          title: 'สร้างรายการสั่งพิมพ์สำเร็จ',
+          message: 'ส่งข้อมูลคิวงานพิมพ์เรียบร้อย! สามารถมารับสินค้าหน้าร้านได้ทันทีเมื่อพิมพ์เสร็จ[cite: 64]',
           icon: 'check-circle',
-          onConfirm: () => {
-            document.getElementById('print-form').reset();
-            document.getElementById('upload-placeholder').classList.remove('hidden');
-            document.getElementById('file-details').classList.add('hidden');
-            document.getElementById('preview-file-drawer-btn').classList.add('hidden');
-            selectedFileObj = null;
-            toggleDeliveryFields();
-            togglePaymentFields();
-            togglePageSelectionMode();
-            fetchQueues();
-          }
+          onConfirm: () => fetchQueues()
         });
-
       } catch (err) {
-        closeModal();
-        showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-octagon' });
+        showCustomModal({ title: 'ส่งรายการไม่สำเร็จ', message: err.message, icon: 'alert-circle' });
       }
     }
 
-    /* --- TOPUP COINS WORKFLOW --- */
+    /* --- FETCH QUEUES FOR USERS --- */
+    async function fetchQueues() {
+      const container = document.getElementById('queue-cards-container');
+      if (!supabaseClient || !currentUser) {
+        container.innerHTML = '<p class="py-12 text-center sub-text text-xs">กรุณาเข้าสู่ระบบเพื่อดูรายการคิวของคุณ</p>';
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+        if (error) throw error;
+
+        currentOrdersList = data || [];
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p class="py-12 text-center sub-text text-xs">ยังไม่มีรายการสั่งพิมพ์ในระบบ</p>';
+          return;
+        }
+
+        container.innerHTML = data.map((item) => {
+          let statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">รอยืนยัน</span>';
+          if (item.status === 'completed') statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">พิมพ์เสร็จแล้ว</span>';
+          else if (item.status === 'printing') statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">กำลังพิมพ์</span>';
+
+          return `
+            <div class="glass-card p-4 rounded-2xl border space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-blue-400">Queue #${item.id}</span>
+                ${statusBadge}
+              </div>
+              <div>
+                <p class="text-xs font-bold titanium-text truncate">${escapeHtml(item.file_name)}</p>
+                <p class="text-[10px] sub-text mt-0.5">${item.paper_size} | ${item.is_color ? 'พิมพ์สี' : 'ขาวดำ'} | ${item.page_count} หน้า x ${item.copies} ชุด</p>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+                <span class="font-extrabold blue-gradient-text">${parseFloat(item.total_price).toFixed(2)} ฿</span>
+                <button onclick="openQueueDetailModal(${item.id})" class="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 font-bold rounded-xl text-[11px] transition flex items-center gap-1">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i> ดูรายละเอียดคิวนั้นทั้งหมด[cite: 64]
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } catch (err) {
+        container.innerHTML = `<p class="py-12 text-center text-rose-500 text-xs">เกิดข้อผิดพลาด: ${err.message}</p>`;
+      }
+    }
+
+    /* --- TOPUP HANDLERS --- */
     function selectTopupAmount(amt) {
       document.getElementById('selected-topup-amount').value = amt;
-      document.getElementById('topup-qr-amount').innerText = amt.toFixed(2);
-      document.querySelectorAll('.topup-pkg-btn').forEach(b => {
-        b.className = 'topup-pkg-btn p-3 border rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text';
+      document.getElementById('topup-qr-amount').innerText = parseFloat(amt).toFixed(2);
+      document.querySelectorAll('.topup-pkg-btn').forEach(btn => {
+        if (btn.innerText.includes(`${amt} บาท`)) {
+          btn.className = 'topup-pkg-btn p-3 border border-amber-500/50 bg-amber-500/10 rounded-2xl font-bold text-xs text-amber-500 text-center transition hover:scale-105';
+        } else {
+          btn.className = 'topup-pkg-btn p-3 border rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text';
+        }
       });
-      event.currentTarget.className = 'topup-pkg-btn p-3 border border-amber-500/50 bg-amber-500/10 rounded-2xl font-bold text-xs text-amber-500 text-center transition hover:scale-105';
     }
 
     async function handleTopupSubmit(e) {
       e.preventDefault();
       if (!supabaseClient) return showCustomModal({ title: 'ไม่ได้เชื่อมต่อ DB', message: 'กรุณาเชื่อมต่อ Supabase', icon: 'alert-triangle' });
-      if (!currentUser) return showCustomModal({ title: 'เข้าสู่ระบบก่อน', message: 'กรุณาล็อกอินก่อนเติมเงิน', icon: 'alert-triangle' });
+      if (!currentUser) return showCustomModal({ title: 'เข้าสู่ระบบก่อน', message: 'กรุณาล็อกอินก่อนทำรายการ', icon: 'alert-triangle', onConfirm: () => switchView('auth') });
 
-      const amount = parseFloat(document.getElementById('selected-topup-amount').value);
+      const amount = parseFloat(document.getElementById('selected-topup-amount').value) || 20;
       const slipFile = document.getElementById('topup-slip-file').files[0];
-      if (!slipFile) return showCustomModal({ title: 'กรุณาแนบสลิป', message: 'เลือกรูปสลิปการโอนเงินเพื่อแจ้งเติมเงิน', icon: 'image' });
-
-      showCustomModal({ title: 'กำลังส่งข้อมูล...', message: 'กำลังอัปโหลดสลิปและส่งคำขอเติม Coins', icon: 'upload-cloud' });
+      if (!slipFile) return showCustomModal({ title: 'แนบสลิป', message: 'กรุณาแนบสลิปการโอนเงินเติม Coins', icon: 'image' });
 
       try {
-        const slipUrl = await uploadFileToSupabaseStorage('topup_slips', slipFile);
-        const { error } = await supabaseClient.from('topup_requests').insert([{
-          user_id: currentUser.id, amount: amount, slip_url: slipUrl, status: 'pending'
-        }]);
-
+        const slipUrl = await uploadFileToSupabaseStorage('slips', slipFile);
+        const { error } = await supabaseClient.from('topups').insert([{ user_id: currentUser.id, amount: amount, slip_url: slipUrl, status: 'pending' }]);
         if (error) throw error;
-
-        closeModal();
-        showCustomModal({
-          title: 'ส่งคำขอเติมเงินแล้ว!',
-          message: `ส่งคำขอเติมเงินจำนวน ${amount.toFixed(2)} บาท เรียบร้อยแล้ว รอแอนมินตรวจสอบและอนุมัติ Coins`,
-          icon: 'check-circle',
-          onConfirm: () => {
-            document.getElementById('topup-slip-file').value = '';
-            fetchUserTopups();
-          }
-        });
-
+        showCustomModal({ title: 'ส่งคำขอเติม Coins สำเร็จ', message: 'ส่งคำขอแล้ว รอแอนมินตรวจสอบอนุมัติยอด Coins', icon: 'check-circle', onConfirm: () => fetchUserTopups() });
       } catch (err) {
-        closeModal();
-        showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' });
+        showCustomModal({ title: 'ส่งคำขอล้มเหลว', message: err.message, icon: 'alert-circle' });
       }
     }
 
     async function fetchUserTopups() {
-      if (!supabaseClient || !currentUser) return;
-      const list = document.getElementById('topup-history-list');
+      const container = document.getElementById('topup-history-list');
+      if (!supabaseClient || !currentUser) {
+        container.innerHTML = '<p class="text-center py-8 sub-text text-xs">กรุณาเข้าสู่ระบบ</p>';
+        return;
+      }
+
       try {
-        const { data, error } = await supabaseClient.from('topup_requests').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('topups').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
         if (error) throw error;
 
         if (!data || data.length === 0) {
-          list.innerHTML = '<p class="text-center py-8 sub-text text-xs">ยังไม่มีประวัติการเติม Coins</p>';
+          container.innerHTML = '<p class="text-center py-8 sub-text text-xs">ไม่มีประวัติการเติม Coins</p>';
           return;
         }
 
-        list.innerHTML = data.map(item => `
-          <div class="p-3.5 rounded-2xl glass-card border flex items-center justify-between text-xs">
-            <div class="space-y-0.5">
-              <span class="font-bold text-amber-500 block">+${parseFloat(item.amount).toFixed(2)} Coins</span>
-              <span class="text-[10px] sub-text block">${new Date(item.created_at).toLocaleString('th-TH')}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              ${item.slip_url ? `<button onclick="openSlipModal('${item.slip_url}')" class="px-2.5 py-1 bg-blue-500/10 text-blue-500 border border-blue-500/20 rounded-lg text-[10px] font-bold">ดูสลิป</button>` : ''}
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                item.status === 'approved' ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30' :
-                item.status === 'rejected' ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30' :
-                'bg-amber-500/20 text-amber-500 border border-amber-500/30'
-              }">${item.status === 'approved' ? 'อนุมัติแล้ว' : item.status === 'rejected' ? 'ปฏิเสธ' : 'รอดำเนินการ'}</span>
-            </div>
-          </div>
-        `).join('');
-      } catch (err) { list.innerHTML = `<p class="text-center py-4 text-rose-500 text-xs">${err.message}</p>`; }
-    }
-
-    /* --- QUEUE & ORDER FETCHING --- */
-    async function fetchQueues() {
-      if (!supabaseClient || !currentUser) return;
-      const container = document.getElementById('queue-cards-container');
-      try {
-        const { data: orders, error } = await supabaseClient
-          .from('orders')
-          .select('*, print_jobs(*, documents(*)), deliveries(*), payments(*)')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        if (!orders || orders.length === 0) {
-          container.innerHTML = '<p class="py-12 text-center sub-text text-xs">ยังไม่มีรายการสั่งพิมพ์ในระบบ</p>';
-          return;
-        }
-
-        container.innerHTML = orders.map(ord => {
-          const job = ord.print_jobs?.[0] || {};
-          const doc = job.documents || {};
-          const del = ord.deliveries?.[0] || {};
-          const pay = ord.payments?.[0] || {};
+        container.innerHTML = data.map(item => {
+          let st = '<span class="text-amber-400 font-bold">รอตรวจสอบ</span>';
+          if (item.status === 'approved') st = '<span class="text-emerald-400 font-bold">อนุมัติสำเร็จ</span>';
+          else if (item.status === 'rejected') st = '<span class="text-rose-400 font-bold">ปฏิเสธคำขอ</span>';
 
           return `
-            <div class="p-4 rounded-2xl glass-card border space-y-3">
-              <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-black bg-blue-500/20 text-blue-500 border border-blue-500/30 px-2.5 py-1 rounded-xl">Q-${ord.queue_number}</span>
-                  <span class="text-xs font-bold titanium-text truncate max-w-[150px] sm:max-w-xs">${doc.file_name || 'เอกสาร.pdf'}</span>
-                </div>
-                <span class="text-xs font-bold ${
-                  ord.status === 'completed' ? 'text-emerald-500' :
-                  ord.status === 'printing' ? 'text-purple-500 animate-pulse' : 'text-amber-500'
-                }">${ord.status === 'completed' ? 'พิมพ์เสร็จสิ้น' : ord.status === 'printing' ? 'กำลังพิมพ์...' : 'รอดำเนินการ'}</span>
+            <div class="glass-card p-3 rounded-2xl border flex items-center justify-between text-xs">
+              <div>
+                <p class="font-extrabold text-amber-400">+${parseFloat(item.amount).toFixed(2)} Coins</p>
+                <p class="text-[10px] sub-text">${new Date(item.created_at).toLocaleString('th-TH')}</p>
               </div>
-
-              <div class="grid grid-cols-2 gap-2 text-[11px] sub-text">
-                <div>ขนาด: <b class="titanium-text">${job.paper_size || 'A4'}</b> | <b class="titanium-text">${job.color ? 'พิมพ์สี' : 'ขาวดำ'}</b></div>
-                <div>จำนวน: <b class="titanium-text">${job.copies || 1} ชุด</b> (${job.printed_pages_count || 1} หน้า)</div>
-                <div>ชำระเงิน: <b class="titanium-text">${pay.payment_method === 'coins' ? 'Coins' : 'PromptPay'}</b> (${parseFloat(ord.total_amount).toFixed(2)} ฿)</div>
-                <div>จัดส่ง: <b class="titanium-text">${del.delivery_method === 'delivery' ? 'จัดส่งพัสดุ' : 'รับที่ร้าน'}</b></div>
-              </div>
-
-              ${del.tracking_number ? `
-                <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs flex items-center justify-between text-emerald-500">
-                  <span class="font-bold">เลข Tracking: ${del.tracking_number}</span>
-                  <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-md font-bold">${del.courier_name || 'Express'}</span>
-                </div>
-              ` : ''}
-
-              ${pay.slip_url ? `
-                <button onclick="openSlipModal('${pay.slip_url}')" class="text-[10px] text-blue-500 font-bold underline">ดูรูปสลิปการโอนเงินที่แนบ</button>
-              ` : ''}
+              ${st}
             </div>
           `;
         }).join('');
-
-      } catch (err) { container.innerHTML = `<p class="py-8 text-center text-rose-500 text-xs">${err.message}</p>`; }
+      } catch (err) {
+        container.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">${err.message}</p>`;
+      }
     }
 
     /* --- ADMIN BACKOFFICE LOGIC --- */
     function switchAdminTab(tab) {
       ['orders', 'topups', 'users'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-        document.getElementById(`admin-tab-${t}-btn`).className = 'flex-1 py-2 text-xs font-bold rounded-xl opacity-70 hover:opacity-100 titanium-text';
+        document.getElementById(`admin-tab-${t}-btn`).className = 'flex-1 py-2 text-xs font-bold rounded-xl opacity-70 hover:opacity-100';
       });
 
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
@@ -1935,126 +1989,131 @@
     async function loadAdminOrders() {
       const tbody = document.getElementById('admin-orders-tbody');
       try {
-        const { data: orders, error } = await supabaseClient
-          .from('orders')
-          .select('*, print_jobs(*, documents(*)), deliveries(*), payments(*), users(full_name, email)')
-          .order('created_at', { ascending: false });
-
+        const { data, error } = await supabaseClient.from('orders').select('*, users(full_name, email)').order('created_at', { ascending: false });
         if (error) throw error;
-        if (!orders || orders.length === 0) {
+
+        currentOrdersList = data || [];
+
+        if (!data || data.length === 0) {
           tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีออเดอร์ในระบบ</td></tr>';
           return;
         }
 
-        tbody.innerHTML = orders.map(ord => {
-          const job = ord.print_jobs?.[0] || {};
-          const doc = job.documents || {};
-          const del = ord.deliveries?.[0] || {};
-          const pay = ord.payments?.[0] || {};
-          const usr = ord.users || {};
+        tbody.innerHTML = data.map(item => {
+          const userName = item.users ? escapeHtml(item.users.full_name) : 'ไม่ระบุ';
+          let slipBtn = item.slip_url ? `<button onclick="openSlipModal('${item.slip_url}')" class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-[10px] font-bold">ดูสลิป</button>` : '<span class="sub-text text-[10px]">Coins</span>';
 
           return `
-            <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
-              <td class="py-3 px-2 font-bold text-blue-500">Q-${ord.queue_number}</td>
+            <tr>
+              <td class="py-3 px-2 font-mono font-bold text-blue-400">#${item.id}</td>
               <td class="py-3 px-2">
-                <p class="font-bold titanium-text truncate max-w-[120px]">${doc.file_name || 'เอกสาร'}</p>
-                <span class="text-[10px] sub-text">${usr.full_name || 'ผู้ใช้'} | ${parseFloat(ord.total_amount).toFixed(2)} ฿</span>
-              </td>
-              <td class="py-3 px-2 text-[10px]">
-                <p class="font-bold titanium-text">${del.delivery_method === 'delivery' ? 'จัดส่ง' : 'รับร้าน'}</p>
-                ${del.recipient_name ? `<p class="sub-text truncate max-w-[100px]">${del.recipient_name} (${del.phone_number})</p>` : ''}
+                <p class="font-bold titanium-text truncate max-w-[140px]">${escapeHtml(item.file_name)}</p>
+                <p class="sub-text text-[10px]">${userName} | ${parseFloat(item.total_price).toFixed(2)} ฿</p>
               </td>
               <td class="py-3 px-2">
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${pay.status === 'completed' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-amber-500/20 text-amber-500'}">${pay.payment_method} (${pay.status})</span>
-                ${pay.slip_url ? `<br><button onclick="openSlipModal('${pay.slip_url}')" class="text-[9px] text-blue-500 font-bold underline mt-1">ดูสลิป</button>` : ''}
+                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-bold text-[10px]">รับหน้าร้าน (Self Pickup)</span>[cite: 64]
               </td>
+              <td class="py-3 px-2">${slipBtn}</td>
               <td class="py-3 px-2">
-                <select onchange="updateOrderStatus('${ord.id}', this.value)" class="text-[10px] bg-slate-100 dark:bg-black/40 border rounded-lg p-1 titanium-text font-bold">
-                  <option value="queued" ${ord.status === 'queued' ? 'selected' : ''}>รอดำเนินการ</option>
-                  <option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>กำลังพิมพ์</option>
-                  <option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>เสร็จสิ้น</option>
+                <select onchange="updateOrderStatus(${item.id}, this.value)" class="bg-black/50 border border-white/20 rounded-xl px-2 py-1 text-[11px] font-bold titanium-text">
+                  <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>⏳ รอยืนยัน</option>
+                  <option value="printing" ${item.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
+                  <option value="completed" ${item.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
+                  <option value="cancelled" ${item.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
                 </select>
               </td>
               <td class="py-3 px-2 text-right">
-                <button onclick="promptTracking('${del.id}')" class="px-2.5 py-1 bg-indigo-500/20 text-indigo-500 hover:bg-indigo-500/30 rounded-lg text-[10px] font-bold border border-indigo-500/30">ใส่ Tracking</button>
+                <button onclick="openQueueDetailModal(${item.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-bold shadow-md transition">
+                  🔍 รายละเอียดคิว[cite: 64]
+                </button>
               </td>
             </tr>
           `;
         }).join('');
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-rose-500 text-xs">${err.message}</td></tr>`; }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500">${err.message}</td></tr>`;
+      }
     }
 
     async function updateOrderStatus(orderId, newStatus) {
       if (!supabaseClient) return;
       try {
-        await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
-        showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', message: `เปลี่ยนสถานะคิวเป็น ${newStatus} แล้ว`, icon: 'check-circle' });
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
-    }
-
-    async function promptTracking(deliveryId) {
-      const trackNo = prompt("กรอกหมายเลข Tracking จัดส่งพัสดุ:");
-      if (!trackNo) return;
-      try {
-        await supabaseClient.from('deliveries').update({ tracking_number: trackNo, courier_name: 'Kerry Express', delivery_status: 'shipped' }).eq('id', deliveryId);
-        showCustomModal({ title: 'บันทึก Tracking สำเร็จ', message: `บันทึกหมายเลข ${trackNo} เรียบร้อยแล้ว`, icon: 'check-circle' });
-        loadAdminOrders();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+        const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+        if (error) throw error;
+        showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', message: `เปลี่ยนสถานะคิว #${orderId} เป็น ${newStatus} แล้ว`, icon: 'check-circle' });
+      } catch (err) {
+        showCustomModal({ title: 'อัปเดตล้มเหลว', message: err.message, icon: 'alert-circle' });
+      }
     }
 
     async function loadAdminTopups() {
       const tbody = document.getElementById('admin-topups-tbody');
       try {
-        const { data, error } = await supabaseClient.from('topup_requests').select('*, users(full_name, email)').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('topups').select('*, users(full_name, email)').order('created_at', { ascending: false });
         if (error) throw error;
 
         if (!data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีคำขอเติมเงิน</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center sub-text">ไม่มีคำขอเติม Coins</td></tr>';
           return;
         }
 
-        tbody.innerHTML = data.map(req => `
-          <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
-            <td class="py-3 px-2 sub-text">${new Date(req.created_at).toLocaleDateString('th-TH')}</td>
-            <td class="py-3 px-2 font-bold titanium-text">${req.users?.full_name || 'ผู้ใช้'}<br><span class="text-[10px] sub-text font-normal">${req.users?.email || ''}</span></td>
-            <td class="py-3 px-2 font-extrabold text-amber-500">+${parseFloat(req.amount).toFixed(2)} Coins</td>
-            <td class="py-3 px-2">
-              ${req.slip_url ? `<button onclick="openSlipModal('${req.slip_url}')" class="px-2 py-1 bg-blue-500/20 text-blue-500 rounded-md text-[10px] font-bold">ดูสลิป</button>` : '-'}
-            </td>
-            <td class="py-3 px-2">
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${req.status === 'approved' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-amber-500/20 text-amber-500'}">${req.status}</span>
-            </td>
-            <td class="py-3 px-2 text-right">
-              ${req.status === 'pending' ? `
-                <button onclick="approveTopup('${req.id}', '${req.user_id}',${req.amount})" class="px-2.5 py-1 bg-emerald-600 text-white hover:bg-emerald-500 rounded-lg text-[10px] font-bold shadow-md">อนุมัติ Coins</button>
-              ` : '<span class="text-[10px] sub-text">ดำเนินการแล้ว</span>'}
-            </td>
-          </tr>
-        `).join('');
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-rose-500 text-xs">${err.message}</td></tr>`; }
+        tbody.innerHTML = data.map(item => {
+          const userName = item.users ? escapeHtml(item.users.full_name) : 'ไม่ระบุ';
+          let actions = '-';
+          if (item.status === 'pending') {
+            actions = `
+              <div class="flex justify-end gap-1">
+                <button onclick="approveTopup(${item.id}, ${item.user_id}, ${item.amount})" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-500">อนุมัติ</button>
+                <button onclick="rejectTopup(${item.id})" class="px-2.5 py-1 bg-rose-600 text-white rounded-lg font-bold hover:bg-rose-500">ปฏิเสธ</button>
+              </div>
+            `;
+          }
+
+          return `
+            <tr>
+              <td class="py-3 px-2 text-[10px] sub-text">${new Date(item.created_at).toLocaleDateString('th-TH')}</td>
+              <td class="py-3 px-2 font-bold titanium-text">${userName}</td>
+              <td class="py-3 px-2 font-extrabold text-amber-400">+${parseFloat(item.amount).toFixed(2)} Coins</td>
+              <td class="py-3 px-2">
+                <button onclick="openSlipModal('${item.slip_url}')" class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-[10px] font-bold">ดูสลิป</button>
+              </td>
+              <td class="py-3 px-2 font-bold text-[10px]">${item.status}</td>
+              <td class="py-3 px-2 text-right">${actions}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500">${err.message}</td></tr>`;
+      }
     }
 
-    async function approveTopup(requestId, userId, amount) {
+    async function approveTopup(topupId, userId, amount) {
       if (!supabaseClient) return;
-      showCustomModal({ title: 'กำลังอนุมัติ...', message: 'กำลังเพิ่ม Coins ให้ผู้ใช้งาน โปรดรอสักครู่', icon: 'coins' });
       try {
-        let { data: w } = await supabaseClient.from('wallets').select('*').eq('user_id', userId).single();
-        if (!w) {
-          const { data: newW } = await supabaseClient.from('wallets').insert([{ user_id: userId, balance: 0.00 }]).select().single();
-          w = newW;
+        await supabaseClient.from('topups').update({ status: 'approved' }).eq('id', topupId);
+        
+        let { data: wallet } = await supabaseClient.from('wallets').select('*').eq('user_id', userId).single();
+        if (!wallet) {
+          await supabaseClient.from('wallets').insert([{ user_id: userId, balance: amount }]);
+        } else {
+          const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
+          await supabaseClient.from('wallets').update({ balance: newBalance }).eq('id', wallet.id);
         }
 
-        const newBal = parseFloat(w.balance) + parseFloat(amount);
-        await supabaseClient.from('wallets').update({ balance: newBal, updated_at: new Date() }).eq('id', w.id);
-        await supabaseClient.from('topup_requests').update({ status: 'approved' }).eq('id', requestId);
-        await supabaseClient.from('wallet_transactions').insert([{
-          wallet_id: w.id, transaction_type: 'topup', amount: amount, description: 'เติมเงินผ่าน PromptPay (แอดมินอนุมัติ)'
-        }]);
+        showCustomModal({ title: 'อนุมัติสำเร็จ', message: `อนุมัติเติมเงิน ${amount} Coins ให้ผู้ใช้เรียบร้อย`, icon: 'check-circle', onConfirm: () => loadAdminTopups() });
+      } catch (err) {
+        showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' });
+      }
+    }
 
-        closeModal();
-        showCustomModal({ title: 'อนุมัติสำเร็จ!', message: `เพิ่ม ${amount} Coins ให้ผู้ใช้เรียบร้อยแล้ว`, icon: 'check-circle' });
-        loadAdminTopups();
-      } catch (err) { closeModal(); showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+    async function rejectTopup(topupId) {
+      if (!supabaseClient) return;
+      try {
+        await supabaseClient.from('topups').update({ status: 'rejected' }).eq('id', topupId);
+        showCustomModal({ title: 'ปฏิเสธสำเร็จ', message: 'ปฏิเสธคำขอเติมเงินเรียบร้อย', icon: 'check-circle', onConfirm: () => loadAdminTopups() });
+      } catch (err) {
+        showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' });
+      }
     }
 
     async function loadAdminUsers() {
@@ -2063,27 +2122,41 @@
         const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
         if (error) throw error;
 
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center sub-text">ไม่มีสมาชิกในระบบ</td></tr>';
+          return;
+        }
+
         tbody.innerHTML = data.map(u => `
-          <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
-            <td class="py-3 px-2 font-bold titanium-text">${u.full_name}</td>
-            <td class="py-3 px-2 sub-text">${u.email}</td>
-            <td class="py-3 px-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-500' : 'bg-slate-500/20 sub-text'}">${u.role}</span></td>
+          <tr>
+            <td class="py-3 px-2 font-bold titanium-text">${escapeHtml(u.full_name)}</td>
+            <td class="py-3 px-2 sub-text">${escapeHtml(u.email)}</td>
+            <td class="py-3 px-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-300' : 'bg-emerald-500/20 text-emerald-400'}">
+                ${u.role}
+              </span>
+            </td>
             <td class="py-3 px-2 text-right">
-              <button onclick="toggleUserRole('${u.id}', '${u.role}')" class="px-2 py-1 bg-slate-200 dark:bg-white/10 hover:bg-purple-500 hover:text-white rounded-lg text-[10px] font-bold transition">สลับสิทธิ์ Admin</button>
+              <button onclick="toggleUserRole(${u.id}, '${u.role}')" class="px-2 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-bold titanium-text">
+                สลับสิทธิ์
+              </button>
             </td>
           </tr>
         `).join('');
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-rose-500 text-xs">${err.message}</td></tr>`; }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-rose-500">${err.message}</td></tr>`;
+      }
     }
 
     async function toggleUserRole(userId, currentRole) {
       if (!supabaseClient) return;
-      const targetRole = currentRole === 'admin' ? 'user' : 'admin';
+      const newRole = currentRole === 'admin' ? 'user' : 'admin';
       try {
-        await supabaseClient.from('users').update({ role: targetRole }).eq('id', userId);
-        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `ปรับสิทธิ์เป็น ${targetRole} เรียบร้อยแล้ว`, icon: 'check-circle' });
-        loadAdminUsers();
-      } catch (err) { showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' }); }
+        await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
+        showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `เปลี่ยนสิทธิ์ผู้ใช้งานเป็น ${newRole} เรียบร้อย`, icon: 'check-circle', onConfirm: () => loadAdminUsers() });
+      } catch (err) {
+        showCustomModal({ title: 'ล้มเหลว', message: err.message, icon: 'alert-circle' });
+      }
     }
   </script>
 </body>
