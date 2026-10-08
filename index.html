@@ -11,7 +11,7 @@
   <!-- Best-effort document policy. Critical clickjacking / HSTS / server headers still belong on Vercel response headers. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; object-src 'none';">
 
-  <title>PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
+  <title>PrintDekD Pro v11 — PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
   
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
@@ -6057,6 +6057,1532 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
     let last=scrollY;addEventListener('scroll',()=>{const down=scrollY>last;last=scrollY;document.querySelector('nav.sticky')?.classList.toggle('is-compact',scrollY>70);const wash=$('pd-page-wash');if(wash){wash.classList.toggle('is-active',down&&scrollY>120)}setTimeout(()=>wash?.classList.remove('is-active'),140)} ,{passive:true});
   }
   installAI();installMotion();
+})();
+</script>
+
+
+<style id="pd-v11-system">
+/* ================================================================
+   PRINTDEKD PRO v11 — CINEMATIC PRODUCT SHELL
+   Purpose: visual system, navigation, landing page, diagnostics.
+   No layout depends on absolute positioning for primary content.
+   ================================================================ */
+:root{
+  --v11-blue:#0a84ff;--v11-blue2:#5aa9ff;--v11-violet:#8b5cf6;--v11-cyan:#22d3ee;
+  --v11-green:#34d399;--v11-gold:#f5b318;--v11-ink:#07090d;--v11-panel:#10131a;
+  --v11-line:rgba(255,255,255,.10);--v11-soft:rgba(255,255,255,.055);
+  --v11-ease:cubic-bezier(.16,1,.3,1);--v11-ease-soft:cubic-bezier(.22,1,.36,1);
+}
+html.dark body{background:
+ radial-gradient(900px 500px at 12% -10%,rgba(10,132,255,.09),transparent 62%),
+ radial-gradient(900px 500px at 88% 12%,rgba(139,92,246,.08),transparent 64%),
+ #07090d!important;}
+html.dark .titanium-text{color:#f5f7fb!important}
+html.dark .sub-text{color:#aeb7c6!important}
+/* ---------- security strip: calm and readable ---------- */
+#security-strip{width:min(1440px,calc(100% - 36px));margin:12px auto 0!important}
+#security-strip .security-strip-inner{min-height:56px!important;padding:10px 14px!important;border:1px solid rgba(255,255,255,.10)!important;background:linear-gradient(90deg,rgba(16,20,29,.92),rgba(15,18,25,.78))!important;box-shadow:0 12px 40px rgba(0,0,0,.20)!important;color:#f5f7fb}
+html:not(.dark) #security-strip .security-strip-inner{background:rgba(255,255,255,.96)!important;color:#111827}
+#security-strip #security-title{font-size:13px!important;line-height:1.35!important;font-weight:850!important}
+#security-strip #security-copy{font-size:11px!important;line-height:1.5!important;max-width:min(72vw,720px);color:#aeb7c6!important}
+html:not(.dark) #security-strip #security-copy{color:#64748b!important}
+#security-strip .security-action{font-size:11px!important;min-height:38px!important;color:#72b7ff!important;background:rgba(10,132,255,.11)!important;border:1px solid rgba(10,132,255,.20)!important}
+/* ---------- v11 menu: derived from the index1_2 menu language ---------- */
+#apple-tab-menu{padding:14px!important;background:rgba(1,3,8,.62)!important;backdrop-filter:blur(30px) saturate(145%)!important;-webkit-backdrop-filter:blur(30px) saturate(145%)!important}
+#apple-tab-menu .apple-menu-sheet{width:min(1080px,calc(100vw - 28px))!important;height:min(860px,calc(100dvh - 28px))!important;margin:auto!important;border-radius:34px!important;border:1px solid rgba(255,255,255,.12)!important;background:
+ radial-gradient(520px 320px at 0% 0%,rgba(10,132,255,.13),transparent 70%),
+ radial-gradient(500px 320px at 100% 100%,rgba(139,92,246,.10),transparent 70%),
+ rgba(11,14,20,.96)!important;box-shadow:0 50px 140px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.06)!important}
+#apple-tab-menu .apple-menu-head{min-height:92px!important;padding:18px 22px!important;border-bottom:1px solid rgba(255,255,255,.08)!important}
+#apple-tab-menu .apple-menu-brandmark{width:48px!important;height:48px!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(10,132,255,.22),rgba(139,92,246,.14))!important;box-shadow:0 12px 34px rgba(10,132,255,.18),inset 0 1px 0 rgba(255,255,255,.12)}
+#apple-tab-menu .apple-menu-brandmark svg{filter:drop-shadow(0 0 8px rgba(90,169,255,.4))}
+#apple-tab-menu .apple-menu-nav{padding:22px!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-content:center!important;gap:14px!important}
+#apple-tab-menu .apple-menu-item{min-height:118px!important;border-radius:25px!important;padding:18px!important;grid-template-columns:54px 1fr auto!important;gap:16px!important;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))!important;border-color:rgba(255,255,255,.08)!important;position:relative;overflow:hidden}
+#apple-tab-menu .apple-menu-item:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.08) 48%,transparent 70%);transform:translateX(-120%);transition:transform .8s var(--v11-ease);pointer-events:none}
+#apple-tab-menu .apple-menu-item:hover:after,#apple-tab-menu .apple-menu-item:focus-visible:after{transform:translateX(120%)}
+#apple-tab-menu .apple-menu-item:hover{transform:translateY(-4px)!important;border-color:color-mix(in srgb,var(--accent) 50%,transparent)!important;box-shadow:0 24px 60px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.08)!important}
+#apple-tab-menu .apple-menu-item.is-active{transform:none!important;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 15%,transparent),rgba(255,255,255,.035))!important}
+#apple-tab-menu .apple-menu-item .menu-icon{width:54px!important;height:54px!important;border-radius:17px!important}
+#apple-tab-menu .apple-menu-item .menu-kicker{font-size:10px!important;letter-spacing:.13em!important;color:#8190a6!important}
+#apple-tab-menu .apple-menu-item .menu-title{font-size:clamp(19px,2.2vw,28px)!important;line-height:1.18!important;font-weight:900!important;color:#f7f9fc!important}
+#apple-tab-menu .apple-menu-item .menu-state{font-size:10px!important;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+#apple-tab-menu .apple-menu-foot{min-height:58px!important;padding:14px 22px!important;background:rgba(255,255,255,.018)!important}
+/* ---------- landing: cinematic but readable ---------- */
+#view-landing{max-width:1500px!important;padding-top:clamp(36px,6vw,84px)!important;gap:clamp(80px,10vw,160px)!important}
+#view-landing>.grid:first-child{min-height:min(780px,82vh)!important;position:relative}
+#view-landing>.grid:first-child:before{content:"";position:absolute;width:480px;height:480px;left:8%;top:5%;border-radius:50%;background:radial-gradient(circle,rgba(10,132,255,.14),transparent 67%);filter:blur(4px);pointer-events:none;animation:v11Float 12s ease-in-out infinite}
+#view-landing>.grid:first-child:after{content:"";position:absolute;width:400px;height:400px;right:4%;bottom:0;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.11),transparent 68%);pointer-events:none;animation:v11Float 14s ease-in-out -3s infinite reverse}
+#view-landing>.grid:first-child>div{position:relative;z-index:1}
+#view-landing>.grid:first-child h1{font-size:clamp(52px,7.2vw,104px)!important;line-height:.99!important;letter-spacing:-.065em!important;text-wrap:balance;max-width:10ch}
+#view-landing>.grid:first-child p{font-size:clamp(17px,1.6vw,23px)!important;line-height:1.7!important;max-width:62ch!important;color:#9faabd!important}
+html:not(.dark) #view-landing>.grid:first-child p{color:#526075!important}
+#view-landing>.grid:first-child .inline-flex{box-shadow:0 12px 38px rgba(10,132,255,.10),inset 0 1px 0 rgba(255,255,255,.08);animation:v11BadgePulse 5s ease-in-out infinite}
+#view-landing>.grid:first-child button{min-height:58px!important;border-radius:19px!important}
+#view-landing>.grid:first-child button:first-child{box-shadow:0 18px 50px rgba(10,132,255,.25)!important}
+#view-landing>.grid:first-child button:first-child:hover{transform:translateY(-3px) scale(1.01)!important}
+#view-landing>.grid:first-child .border-t{border-color:rgba(255,255,255,.10)!important}
+#view-landing>.grid:first-child .border-t>div{min-height:32px}
+/* Hero visual card */
+#view-landing>.grid:first-child .ui-panel{background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 34px 90px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08)!important;backdrop-filter:blur(22px)!important}
+#view-landing>.grid:first-child .ui-panel .relative.w-full{border-radius:28px!important;box-shadow:0 24px 60px rgba(0,0,0,.36)!important;transform:translateZ(0)}
+#view-landing>.grid:first-child .ui-panel .relative.w-full img{transition:transform 1.1s var(--v11-ease),filter 1.1s var(--v11-ease)!important;filter:saturate(.86) contrast(1.03)}
+#view-landing>.grid:first-child .ui-panel:hover img{transform:scale(1.055)!important;filter:saturate(1.02) contrast(1.06)}
+#view-landing>.grid:first-child .ui-panel .relative.w-full:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.08) 48%,transparent 66%);transform:translateX(-120%);animation:v11Sheen 7s ease-in-out infinite;pointer-events:none}
+#view-landing>.grid:first-child .ui-panel .relative.w-full>div:last-child p:first-of-type{font-size:clamp(22px,2.3vw,34px)!important;line-height:1.15!important}
+/* service rail */
+.pd-service-rail{position:relative;overflow:hidden;border-radius:32px!important;border:1px solid rgba(255,255,255,.09)!important;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))!important;box-shadow:0 25px 70px rgba(0,0,0,.18)!important;padding:clamp(20px,3vw,32px)!important}
+.pd-service-rail:before{content:"";position:absolute;inset:-1px;background:conic-gradient(from 90deg,transparent,rgba(10,132,255,.24),transparent 30%,rgba(139,92,246,.20),transparent 62%);filter:blur(28px);opacity:.5;pointer-events:none}
+.pd-service-head,.pd-service-track{position:relative;z-index:1}
+.pd-service-head h2{font-size:clamp(28px,4vw,54px)!important;line-height:1.04!important;letter-spacing:-.045em!important;color:#f3f6fb!important}
+.pd-service-track{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px!important}
+.pd-service-pill{min-height:88px!important;border-radius:21px!important;padding:13px!important;border:1px solid rgba(255,255,255,.08)!important;background:rgba(255,255,255,.035)!important;transition:transform .35s var(--v11-ease),border-color .35s,box-shadow .35s!important}
+.pd-service-pill:hover{transform:translateY(-5px)!important;border-color:rgba(10,132,255,.30)!important;box-shadow:0 18px 44px rgba(0,0,0,.22)!important}
+.pd-service-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 10px 24px rgba(0,0,0,.15)}
+/* feature mosaic readability */
+.pd-feature-mosaic{position:relative}
+.pd-feature-card{min-height:390px!important;border-radius:32px!important;padding:30px!important;box-shadow:0 24px 70px rgba(0,0,0,.18)!important;transition:transform .45s var(--v11-ease),box-shadow .45s var(--v11-ease)!important}
+.pd-feature-card:hover{transform:translateY(-7px)!important;box-shadow:0 34px 90px rgba(0,0,0,.28)!important}
+.pd-feature-card h3{font-size:clamp(29px,3vw,46px)!important;line-height:1.08!important;max-width:13ch!important;text-wrap:balance}
+.pd-feature-card p{font-size:15px!important;line-height:1.75!important;max-width:45ch!important}
+.pd-feature-card .pd-feature-topline{font-size:10px!important;letter-spacing:.14em!important}
+/* story cards from v9, stronger hierarchy */
+.pd-story-card{min-height:440px!important;border-radius:32px!important;padding:30px!important}
+.pd-story-card h3{font-size:clamp(31px,3vw,48px)!important;line-height:1.08!important;max-width:14ch!important}
+.pd-story-card p{font-size:15px!important;line-height:1.72!important;max-width:44ch!important}
+/* page selector */
+#pages-grid-container{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:10px!important;max-height:360px!important;padding:12px!important;border-radius:22px!important;background:rgba(255,255,255,.025)!important;border:1px solid rgba(255,255,255,.08)!important;overflow:auto!important}
+#pages-grid-container .pd-v10-page-card{min-height:112px!important;border-radius:19px!important;padding:10px!important;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.018))!important;border:1px solid rgba(255,255,255,.09)!important;transition:transform .25s var(--v11-ease),border-color .25s,background .25s,box-shadow .25s!important}
+#pages-grid-container .pd-v10-page-card:hover{transform:translateY(-2px)!important;border-color:rgba(10,132,255,.30)!important}
+#pages-grid-container .pd-v10-page-card.is-selected{background:linear-gradient(145deg,rgba(10,132,255,.16),rgba(10,132,255,.045))!important;border-color:rgba(10,132,255,.55)!important;box-shadow:0 10px 30px rgba(10,132,255,.12),inset 0 0 0 1px rgba(10,132,255,.10)!important}
+#pages-grid-container .pd-v10-page-card img{width:100%!important;height:76px!important;object-fit:contain!important;border-radius:11px!important;background:#fff!important}
+#pages-grid-container .pd-v10-page-card label{font-size:12px!important;font-weight:850!important;color:#dfe7f3!important}
+html:not(.dark) #pages-grid-container .pd-v10-page-card label{color:#253047!important}
+/* admin feedback */
+.pd-v11-busy{opacity:.65!important;pointer-events:none!important;position:relative!important}
+.pd-v11-busy:after{content:"";position:absolute;right:10px;top:50%;width:12px;height:12px;margin-top:-6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:v11Spin .7s linear infinite}
+.pd-v11-result-good{animation:v11Pop .45s var(--v11-ease)}
+.pd-v11-result-bad{animation:v11Shake .45s ease}
+/* lightweight interaction */
+.v11-tilt{transform-style:preserve-3d;will-change:transform}
+.v11-tilt>*{transform:translateZ(0)}
+@keyframes v11Float{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(18px,-14px,0) scale(1.03)}}
+@keyframes v11BadgePulse{0%,100%{box-shadow:0 12px 38px rgba(10,132,255,.08),inset 0 1px 0 rgba(255,255,255,.08)}50%{box-shadow:0 16px 48px rgba(10,132,255,.18),inset 0 1px 0 rgba(255,255,255,.12)}}
+@keyframes v11Sheen{0%,58%{transform:translateX(-120%)}72%,100%{transform:translateX(120%)}}
+@keyframes v11Spin{to{transform:rotate(360deg)}}
+@keyframes v11Pop{0%{transform:scale(.96);opacity:.4}100%{transform:scale(1);opacity:1}}
+@keyframes v11Shake{20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@media(max-width:1000px){
+ #apple-tab-menu .apple-menu-nav{grid-template-columns:1fr!important;align-content:start!important}
+ .pd-service-track{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #view-landing>.grid:first-child{min-height:auto!important}
+}
+@media(max-width:640px){
+ #apple-tab-menu{padding:7px!important}
+ #apple-tab-menu .apple-menu-sheet{width:calc(100vw - 14px)!important;height:calc(100dvh - 14px)!important;border-radius:27px!important}
+ #apple-tab-menu .apple-menu-head{min-height:76px!important;padding:14px!important}
+ #apple-tab-menu .apple-menu-nav{padding:14px!important;gap:9px!important}
+ #apple-tab-menu .apple-menu-item{min-height:82px!important;padding:12px!important;grid-template-columns:44px 1fr!important;border-radius:19px!important}
+ #apple-tab-menu .apple-menu-item .menu-icon{width:44px!important;height:44px!important;border-radius:14px!important}
+ #apple-tab-menu .apple-menu-item .menu-title{font-size:17px!important}
+ #apple-tab-menu .apple-menu-item .menu-state{display:none!important}
+ #apple-tab-menu .apple-menu-foot{padding:11px 14px!important;font-size:10px!important}
+ #view-landing>.grid:first-child h1{font-size:clamp(47px,14.5vw,70px)!important;max-width:11ch!important}
+ .pd-service-track{grid-template-columns:1fr!important}
+ .pd-feature-card{min-height:330px!important;padding:24px!important}
+ .pd-feature-card h3,.pd-story-card h3{font-size:34px!important}
+ #pages-grid-container{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-height:310px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+ #view-landing>.grid:first-child:before,#view-landing>.grid:first-child:after{animation:none!important}
+}
+</style>
+
+
+<script id="pd-v11-runtime">
+(()=>{
+'use strict';
+const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+const notify=(title,message,icon='info')=>{
+  if(typeof window.pdToast==='function') return window.pdToast(title,message,icon);
+  if(typeof window.showCustomModal==='function') return window.showCustomModal({title,message,icon});
+  console.warn(title,message);
+};
+const safe=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+/* ---------------------------------------------------------------
+   A. Rebuild the hamburger menu from the index1_2 interaction model.
+   The same view ids are retained, so the existing application logic
+   continues to work. No inline JSON is placed in generated buttons.
+   --------------------------------------------------------------- */
+function rebuildV11Menu(){
+ const menu=q('#apple-tab-menu'); if(!menu) return;
+ menu.innerHTML=`
+   <div class="absolute inset-0" data-v11-menu-backdrop></div>
+   <div class="apple-menu-sheet relative z-10" data-v11-menu-sheet>
+     <header class="apple-menu-head">
+       <div class="apple-menu-brand">
+         <div class="apple-menu-brandmark"><i data-lucide="command" class="w-5 h-5"></i></div>
+         <div>
+           <div class="text-xl font-black tracking-tight text-white">PrintDekD Pro</div>
+           <div class="text-[10px] text-blue-300 font-extrabold uppercase tracking-[0.16em]">KMUTNB ITI Platform</div>
+         </div>
+       </div>
+       <button type="button" class="apple-menu-close" data-v11-menu-close aria-label="ปิดเมนู"><i data-lucide="x" class="w-5 h-5"></i></button>
+     </header>
+     <nav class="apple-menu-nav" aria-label="เมนูหลัก">
+       <button type="button" class="apple-menu-item" data-view="landing" data-menu-link="landing" style="--accent:#3b82f6">
+         <span class="menu-icon"><i data-lucide="house" class="w-5 h-5"></i></span><span><span class="menu-kicker">01 · HOME</span><span class="menu-title block">หน้าแรก</span></span><span class="menu-state">กำลังใช้งาน</span>
+       </button>
+       <button type="button" class="apple-menu-item" data-view="dashboard" data-menu-link="dashboard" style="--accent:#0a84ff">
+         <span class="menu-icon"><i data-lucide="file-up" class="w-5 h-5"></i></span><span><span class="menu-kicker">02 · PRINT</span><span class="menu-title block">สั่งพิมพ์ & คิวงาน</span></span><span class="menu-state">เปิดอยู่</span>
+       </button>
+       <button type="button" class="apple-menu-item" data-view="wallet" data-menu-link="wallet" style="--accent:#f5a400">
+         <span class="menu-icon"><i data-lucide="wallet-cards" class="w-5 h-5"></i></span><span><span class="menu-kicker">03 · WALLET</span><span class="menu-title block">Coins Wallet</span></span><span class="menu-state">เปิดอยู่</span>
+       </button>
+       <button type="button" id="apple-admin-menu-btn" class="hidden apple-menu-item" data-view="admin" data-menu-link="admin" style="--accent:#a855f7">
+         <span class="menu-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></span><span><span class="menu-kicker">04 · ADMIN</span><span class="menu-title block">Admin Backoffice</span></span><span class="menu-state">ผู้ดูแล</span>
+       </button>
+     </nav>
+     <footer class="apple-menu-foot"><span class="flex items-center gap-2 text-emerald-300 font-bold"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></span>ระบบเครื่องพิมพ์ ITI Online</span><span>© 2026 PrintDekD Pro</span></footer>
+   </div>`;
+ menu.addEventListener('click',e=>{
+   const close=e.target.closest('[data-v11-menu-close]');
+   const back=e.target.closest('[data-v11-menu-backdrop]');
+   const item=e.target.closest('[data-menu-link]');
+   if(close||back){window.toggleAppleTabMenu?.(false);return;}
+   if(item){const view=item.dataset.view; if(view==='admin' && window.currentUser?.role!=='admin'){notify('จำกัดสิทธิ์','บัญชีนี้ยังไม่มีสิทธิ์ผู้ดูแล','shield-alert');return;} window.switchView?.(view);window.toggleAppleTabMenu?.(false);}
+ });
+ if(window.lucide) window.lucide.createIcons();
+}
+rebuildV11Menu();
+
+/* ---------------------------------------------------------------
+   B. Security strip copy: short, calm, high contrast.
+   --------------------------------------------------------------- */
+function calmSecurityCopy(){
+ const t=q('#security-title'),c=q('#security-copy');
+ if(!t||!c)return;
+ const ok=!!window.isSecureContext || location.protocol==='https:' || location.hostname==='localhost';
+ t.textContent=ok?'ปลอดภัย โดยไม่รบกวน':'การเชื่อมต่อยังไม่ปลอดภัย';
+ c.textContent=ok?'ระบบตรวจสอบเฉพาะเมื่อจำเป็น • เปิดรายละเอียดได้จากการตั้งค่าระบบ':'ควรเปิดเว็บผ่าน HTTPS ก่อนใช้งานจริง';
+}
+calmSecurityCopy(); setTimeout(calmSecurityCopy,1200);
+
+/* ---------------------------------------------------------------
+   C. Safe admin rendering. Dynamic values are data attributes, not
+   executable inline JavaScript. This removes a common source of
+   "Unexpected end of input" when names/IDs contain quotes.
+   --------------------------------------------------------------- */
+function bindAdminSafeActions(){
+ const users=q('#admin-users-tbody');
+ if(users && !users.dataset.v11Bound){
+  users.dataset.v11Bound='1';
+  users.addEventListener('click',e=>{
+   const b=e.target.closest('[data-pd-role-target]'); if(!b)return;
+   const id=b.dataset.pdRoleTarget, role=b.dataset.pdRole;
+   window.changeUserRole?.(id,role);
+  });
+ }
+ const orders=q('#admin-orders-tbody');
+ if(orders && !orders.dataset.v11Bound){
+  orders.dataset.v11Bound='1';
+  orders.addEventListener('click',e=>{
+   const b=e.target.closest('[data-pd-order-detail]'); if(!b)return;
+   window.openQueueDetailModal?.(b.dataset.pdOrderDetail);
+  });
+ }
+}
+function decorateAdminRows(){
+ bindAdminSafeActions();
+ const users=q('#admin-users-tbody');
+ if(users){
+  qa('#admin-users-tbody tr').forEach(tr=>{
+   const cells=tr.querySelectorAll('td'); if(cells.length<4)return;
+   const old=cells[3].querySelector('button');
+   if(!old)return;
+   const role=(cells[2].textContent||'').trim().toLowerCase();
+   const id=(old.getAttribute('onclick')||'').match(/changeUserRole\((?:"|')?([^,"')]+)/)?.[1]||old.dataset.pdRoleTarget;
+   if(!id)return;
+   const target=role==='admin'?'member':'admin';
+   const b=document.createElement('button');b.type='button';b.className='px-3 py-2 ui-card hover:border-purple-500 rounded-xl text-[11px] font-bold';b.dataset.pdRoleTarget=id;b.dataset.pdRole=target;b.textContent=`สลับสิทธิ์เป็น ${target==='admin'?'Admin':'Member'}`;
+   old.replaceWith(b);
+  });
+ }
+ const orders=q('#admin-orders-tbody');
+ if(orders){
+  qa('#admin-orders-tbody tr').forEach(tr=>{
+   const old=[...tr.querySelectorAll('button')].find(b=>(b.textContent||'').includes('ดูข้อมูล'));
+   if(!old)return;
+   const id=(old.getAttribute('onclick')||'').match(/openQueueDetailModal\((?:"|')?([^\)"']+)/)?.[1];
+   if(!id)return;
+   const b=old.cloneNode(true);b.removeAttribute('onclick');b.dataset.pdOrderDetail=id;b.textContent='ดูข้อมูล';old.replaceWith(b);
+  });
+ }
+}
+
+/* ---------------------------------------------------------------
+   D. Role switching: explicit progress, select() confirmation and
+   exact RLS diagnosis. The UI never claims success without a row.
+   --------------------------------------------------------------- */
+window.changeUserRole=async function(userId,newRole){
+ if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+ if(!['member','admin'].includes(newRole))return notify('สิทธิ์ไม่ถูกต้อง','ระบบไม่อนุญาตสิทธิ์นี้','shield-alert');
+ if(window.currentUser?.id===userId)return notify('เปลี่ยนสิทธิ์ไม่ได้','ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้','shield-alert');
+ const btn=qa('#admin-users-tbody [data-pd-role-target]').find(x=>String(x.dataset.pdRoleTarget)===String(userId));
+ if(btn){btn.classList.add('pd-v11-busy');btn.disabled=true;btn.dataset.oldText=btn.textContent;btn.textContent='กำลังบันทึก…';}
+ try{
+  if(!window.supabaseClient)throw new Error('Supabase ยังไม่เชื่อมต่อ');
+  const r=await window.supabaseClient.from('users').update({role:newRole}).eq('id',userId).select('id,role').maybeSingle();
+  if(r.error)throw r.error;
+  if(!r.data)throw new Error('UPDATE ไม่คืนแถวข้อมูล — ตรวจสอบ RLS Policy ของ public.users ว่าบัญชีผู้ดูแลที่ใช้งานมีสิทธิ์ UPDATE และ SELECT');
+  if(r.data.role!==newRole)throw new Error('ฐานข้อมูลไม่ยืนยัน role ใหม่');
+  notify('สลับสิทธิ์สำเร็จ',`เปลี่ยนเป็น ${newRole.toUpperCase()} แล้ว`,'shield-check');
+  btn?.classList.add('pd-v11-result-good');
+  await window.loadAdminData?.(); setTimeout(decorateAdminRows,120);
+ }catch(err){
+  const raw=err?.message||String(err);
+  let msg=raw;
+  if(/row-level security|permission denied|not authorized|policy/i.test(raw))msg=`${raw}\n\nสาเหตุ: Supabase RLS/Policy ของ users ยังไม่อนุญาต UPDATE role จาก client นี้`;
+  if(/JWT|auth\.uid/i.test(raw))msg=`${raw}\n\nระบบปัจจุบันใช้ session users แบบกำหนดเอง ไม่ใช่ Supabase Auth จึงไม่สามารถใช้ auth.uid() เป็นตัวพิสูจน์ Admin ได้อย่างปลอดภัย`;
+  notify('เปลี่ยนสิทธิ์ไม่สำเร็จ',msg,'shield-alert');
+  btn?.classList.add('pd-v11-result-bad');
+ }finally{
+  if(btn){btn.disabled=false;btn.classList.remove('pd-v11-busy');btn.textContent=btn.dataset.oldText||'สลับสิทธิ์';}
+ }
+};
+
+/* ---------------------------------------------------------------
+   E. Storage upload: documents is the real bucket from the supplied
+   Supabase screen. It is tried first. print-files remains fallback.
+   --------------------------------------------------------------- */
+window.pdV11UploadPrintFile=async function(file,orderId){
+ if(!window.supabaseClient)throw new Error('Supabase ยังไม่เชื่อมต่อ');
+ const preferred=localStorage.getItem('sp_print_bucket')||'documents';
+ const buckets=[...new Set([preferred,'documents','print-files'])];
+ const safeName=String(file.name||'document').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(0,100)||'document';
+ const errors=[];
+ for(const bucket of buckets){
+  const path=`${window.currentUser?.id||'user'}/${orderId}-${Date.now()}-${safeName}`;
+  try{
+   const r=await window.supabaseClient.storage.from(bucket).upload(path,file,{upsert:false,contentType:file.type||'application/octet-stream',cacheControl:'3600'});
+   if(!r.error){localStorage.setItem('sp_print_bucket',bucket);window.PRINT_STORAGE_BUCKET=bucket;return {path,bucket,size:file.size,mime_type:file.type||'application/octet-stream'};}
+   errors.push(`${bucket}: ${r.error.message||'upload failed'}`);
+   if(!/bucket.*not found|not found/i.test(r.error.message||''))break;
+  }catch(e){errors.push(`${bucket}: ${e.message||e}`)}
+ }
+ throw new Error(`อัปโหลดไฟล์ไม่สำเร็จ\n${errors.join('\n')}\n\nBucket documents มีอยู่ในโปรเจกต์ของคุณแล้ว หากยังอัปโหลดไม่ได้ให้ตรวจ Storage Policy สำหรับ INSERT`);
+};
+
+/* ---------------------------------------------------------------
+   F. Order creation compatibility. The visible error in the supplied
+   console is specifically the missing orders.copies column. We stop
+   before upload and show the exact migration instead of wasting a file.
+   --------------------------------------------------------------- */
+async function probeOrdersCopies(){
+ if(!window.supabaseClient)return {ok:false,error:'Supabase ยังไม่เชื่อมต่อ'};
+ const r=await window.supabaseClient.from('orders').select('copies').limit(1);
+ if(r.error)return {ok:false,error:r.error.message};
+ return {ok:true};
+}
+window.pdV11EnsureOrderSchema=async function(){
+ const r=await probeOrdersCopies();
+ if(r.ok)return true;
+ if(/copies.*column|column.*copies|schema cache/i.test(r.error||'')){
+  notify('ฐานข้อมูลยังขาดคอลัมน์ copies','กรุณารัน SQL Migration ที่แนบมากับ v11 แล้วรีเฟรชหน้าเว็บ','database-zap');
+  return false;
+ }
+ return true;
+};
+
+/* Replace the original submit handler with a single controlled path. */
+window.handleOrderSubmit=async function(e){
+ e?.preventDefault();
+ const u=window.currentUser;
+ if(!u)return notify('กรุณาล็อกอิน','กรุณาล็อกอินก่อนทำการสั่งพิมพ์','lock');
+ if(!window.supabaseClient)return notify('ฐานข้อมูลยังไม่พร้อม','กรุณาเชื่อมต่อ Supabase ก่อนสั่งงาน','database-zap');
+ if(!(await window.pdV11EnsureOrderSchema()))return;
+ const val=id=>q('#'+id)?.value?.trim?.()??q('#'+id)?.value??'';
+ const pages=Math.max(1,parseInt(val('printed-pages-input'))||1);
+ const copies=Math.max(1,parseInt(val('copies'))||1);
+ const paper=val('paper-size')||'A4';
+ const isColor=val('color-type')==='color';
+ const isDuplex=val('duplex-type')==='duplex';
+ const notes=val('order-notes');
+ const payMethod=q('input[name="payment_method"]:checked')?.value;
+ const deliveryMethod=q('input[name="delivery_method"]:checked')?.value;
+ if(!payMethod||!deliveryMethod)return notify('ตรวจสอบตัวเลือก','กรุณาเลือกการชำระเงินและการรับสินค้า','alert-triangle');
+ const file=window.selectedFileObj;
+ if(!file)return notify('ยังไม่ได้เลือกไฟล์','กรุณาอัปโหลดเอกสารก่อนสร้างรายการ','file-plus-2');
+ if(typeof window.validateUploadFile==='function'){const chk=window.validateUploadFile(file,{maxMB:window.MAX_PRINT_FILE_MB||20,extensions:['pdf','doc','docx','jpg','jpeg','png']});if(!chk.ok)return notify('ไฟล์ไม่ผ่านการตรวจสอบ',chk.message,'file-warning');}
+ let rn='',rp='',ra='';
+ if(deliveryMethod==='delivery'){
+  rn=val('recipient-name');rp=val('recipient-phone');ra=val('recipient-address');
+  if(!rn||!/^0[0-9\-\s]{8,14}$/.test(rp)||!ra)return notify('ข้อมูลจัดส่งไม่ครบ','กรุณากรอกชื่อ เบอร์โทร และที่อยู่ให้ครบ','map-pin-x');
+ }
+ const rate=(isColor?5:1)+(isDuplex?.5:0), delivery=deliveryMethod==='delivery'?30:0, total=pages*rate*copies+delivery;
+ if(payMethod==='coins'){
+  try{await window.fetchUserWallet?.()}catch(_){return notify('ตรวจสอบ Coins ไม่สำเร็จ','ระบบยังยืนยันยอดล่าสุดไม่ได้ จึงยังไม่หักเงิน','shield-alert');}
+  const balance=Number(window.currentUser?.coins||0);if(balance<total)return notify('Coins ไม่พอ',`มี ${balance.toFixed(2)} Coins แต่ต้องใช้ ${total.toFixed(2)} Coins`,'coins');
+ }
+ let slipUrl='';
+ if(payMethod==='promptpay'){
+  const f=q('#order-slip-file')?.files?.[0];
+  if(!f)return notify('ยังไม่มีสลิป','กรุณาแนบสลิปก่อนสร้างรายการ','image-plus');
+  slipUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)});
+ }
+ const orderId='ORD-'+Math.floor(100000+Math.random()*900000);
+ let uploaded=null,created=false;
+ try{
+  uploaded=await window.pdV11UploadPrintFile(file,orderId);
+  const obj={id:orderId,user_id:u.id,user_name:u.full_name||'',file_name:file.name,file_path:uploaded.path,file_bucket:uploaded.bucket,file_size:file.size,file_mime:file.type||'application/octet-stream',page_count:pages,copies,paper_size:paper,is_color:isColor,is_duplex:isDuplex,delivery_method:deliveryMethod,recipient_name:rn,recipient_phone:rp,recipient_address:ra,delivery_fee:delivery,total_price:total,payment_method:payMethod,slip_url:slipUrl,admin_note:notes,status:'pending',created_at:new Date().toISOString()};
+  const ins=await window.supabaseClient.from('orders').insert([obj]).select('id,copies,file_path,file_bucket,total_price').maybeSingle();
+  if(ins.error)throw ins.error;
+  if(!ins.data)throw new Error('Supabase ไม่คืนรายการที่สร้าง — ตรวจสอบ INSERT/SELECT Policy ของ orders');
+  created=true;
+  if(payMethod==='coins'){
+   const before=Number(u.coins||0),after=Number((before-total).toFixed(2));
+   try{const w=await window.compareAndSwapWalletBalance?.(u.id,before,after);u.coins=Number(w?.balance??after)}catch(err){await window.supabaseClient.from('orders').delete().eq('id',orderId).eq('user_id',u.id);throw new Error(`หัก Coins ไม่สำเร็จ: ${err.message||err}`)}
+  }
+  localStorage.setItem('sp_user',JSON.stringify(u));window.currentUser=u;
+  notify('สร้างรายการสำเร็จ',`#${orderId} • ${pages} หน้า × ${copies} ชุด • ${total.toFixed(2)} Coins`,'check-circle-2');
+  q('#print-form')?.reset();window.selectedFileObj=null;q('#upload-placeholder')?.classList.remove('hidden');q('#file-details')?.classList.add('hidden');q('#preview-file-drawer-btn')?.classList.add('hidden');window.fetchQueues?.();window.fetchUserWallet?.();
+ }catch(err){
+  if(uploaded&&!created){try{await window.supabaseClient.storage.from(uploaded.bucket).remove([uploaded.path])}catch(_){}
+  }
+  notify('สร้างรายการไม่สำเร็จ',err?.message||'ไม่สามารถบันทึกรายการได้','shield-alert');
+ }
+};
+
+/* ---------------------------------------------------------------
+   G. Diagnostics button for admin: no secret, no schema mutation.
+   --------------------------------------------------------------- */
+window.pdV11RunDiagnostics=async function(){
+ const rows=[];
+ if(!window.supabaseClient){rows.push('❌ Supabase: ยังไม่เชื่อมต่อ');}
+ else{
+  rows.push('✅ Supabase: เชื่อมต่อ client แล้ว');
+  try{const b=await window.supabaseClient.storage.listBuckets();const names=(b.data||[]).map(x=>x.name);rows.push(names.includes('documents')?'✅ Storage: documents พบแล้ว':'❌ Storage: ไม่พบ documents');rows.push(names.includes('slips')?'✅ Storage: slips พบแล้ว':'⚠️ Storage: ไม่พบ slips');}catch(e){rows.push('⚠️ Storage ตรวจไม่ได้: '+e.message)}
+  const cp=await probeOrdersCopies();rows.push(cp.ok?'✅ orders.copies: พบ':'❌ orders.copies: ยังไม่มี / schema cache ไม่พบ');
+  try{const r=await window.supabaseClient.from('orders').select('id').limit(1);rows.push(r.error?'❌ orders SELECT: '+r.error.message:'✅ orders SELECT: OK')}catch(e){rows.push('❌ orders SELECT: '+e.message)}
+  try{const r=await window.supabaseClient.from('users').select('id,role').limit(1);rows.push(r.error?'❌ users SELECT: '+r.error.message:'✅ users SELECT: OK')}catch(e){rows.push('❌ users SELECT: '+e.message)}
+ }
+ notify('ตรวจสอบระบบ v11',rows.join('\n'),'activity');
+ return rows;
+};
+
+/* ---------------------------------------------------------------
+   H. Remove visual ambiguity and add a tiny pointer tilt only on
+   fine pointers. This never runs on touch devices.
+   --------------------------------------------------------------- */
+function installLandingMotion(){
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+ if(!window.matchMedia?.('(pointer:fine)').matches)return;
+ qa('#view-landing .pd-feature-card,#view-landing .pd-service-pill').forEach(el=>{
+  if(el.dataset.v11Tilt)return;el.dataset.v11Tilt='1';el.classList.add('v11-tilt');
+  let raf=0;el.addEventListener('pointermove',e=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(800px) rotateX(${(-y*2).toFixed(2)}deg) rotateY(${(x*2).toFixed(2)}deg) translateY(-5px)`})});
+  el.addEventListener('pointerleave',()=>{cancelAnimationFrame(raf);raf=0;el.style.transform=''});
+ });
+}
+installLandingMotion();
+
+/* Keep admin decoration alive after every refresh. */
+const oldLoad=window.loadAdminData;
+if(typeof oldLoad==='function'&&!oldLoad.__v11){
+ window.loadAdminData=async function(){const r=await oldLoad.apply(this,arguments);setTimeout(decorateAdminRows,80);return r};window.loadAdminData.__v11=true;
+}
+setTimeout(decorateAdminRows,700);
+window.addEventListener('load',()=>{setTimeout(decorateAdminRows,300);if(window.lucide)window.lucide.createIcons()});
+})();
+</script>
+
+<style id="pd-v11-motion-library">
+/* v11 motion library: explicit, reusable, reduced-motion friendly utilities. */
+.v11-delay-0{animation-delay:0.000s!important;transition-delay:0.000s!important}
+.v11-delay-1{animation-delay:0.025s!important;transition-delay:0.025s!important}
+.v11-delay-2{animation-delay:0.050s!important;transition-delay:0.050s!important}
+.v11-delay-3{animation-delay:0.075s!important;transition-delay:0.075s!important}
+.v11-delay-4{animation-delay:0.100s!important;transition-delay:0.100s!important}
+.v11-delay-5{animation-delay:0.125s!important;transition-delay:0.125s!important}
+.v11-delay-6{animation-delay:0.150s!important;transition-delay:0.150s!important}
+.v11-delay-7{animation-delay:0.175s!important;transition-delay:0.175s!important}
+.v11-delay-8{animation-delay:0.200s!important;transition-delay:0.200s!important}
+.v11-delay-9{animation-delay:0.225s!important;transition-delay:0.225s!important}
+.v11-delay-10{animation-delay:0.250s!important;transition-delay:0.250s!important}
+.v11-delay-11{animation-delay:0.275s!important;transition-delay:0.275s!important}
+.v11-delay-12{animation-delay:0.300s!important;transition-delay:0.300s!important}
+.v11-delay-13{animation-delay:0.325s!important;transition-delay:0.325s!important}
+.v11-delay-14{animation-delay:0.350s!important;transition-delay:0.350s!important}
+.v11-delay-15{animation-delay:0.375s!important;transition-delay:0.375s!important}
+.v11-delay-16{animation-delay:0.400s!important;transition-delay:0.400s!important}
+.v11-delay-17{animation-delay:0.425s!important;transition-delay:0.425s!important}
+.v11-delay-18{animation-delay:0.450s!important;transition-delay:0.450s!important}
+.v11-delay-19{animation-delay:0.475s!important;transition-delay:0.475s!important}
+.v11-delay-20{animation-delay:0.500s!important;transition-delay:0.500s!important}
+.v11-delay-21{animation-delay:0.525s!important;transition-delay:0.525s!important}
+.v11-delay-22{animation-delay:0.550s!important;transition-delay:0.550s!important}
+.v11-delay-23{animation-delay:0.575s!important;transition-delay:0.575s!important}
+.v11-delay-24{animation-delay:0.600s!important;transition-delay:0.600s!important}
+.v11-delay-25{animation-delay:0.625s!important;transition-delay:0.625s!important}
+.v11-delay-26{animation-delay:0.650s!important;transition-delay:0.650s!important}
+.v11-delay-27{animation-delay:0.675s!important;transition-delay:0.675s!important}
+.v11-delay-28{animation-delay:0.700s!important;transition-delay:0.700s!important}
+.v11-delay-29{animation-delay:0.725s!important;transition-delay:0.725s!important}
+.v11-delay-30{animation-delay:0.750s!important;transition-delay:0.750s!important}
+.v11-delay-31{animation-delay:0.775s!important;transition-delay:0.775s!important}
+.v11-delay-32{animation-delay:0.800s!important;transition-delay:0.800s!important}
+.v11-delay-33{animation-delay:0.825s!important;transition-delay:0.825s!important}
+.v11-delay-34{animation-delay:0.850s!important;transition-delay:0.850s!important}
+.v11-delay-35{animation-delay:0.875s!important;transition-delay:0.875s!important}
+.v11-delay-36{animation-delay:0.900s!important;transition-delay:0.900s!important}
+.v11-delay-37{animation-delay:0.925s!important;transition-delay:0.925s!important}
+.v11-delay-38{animation-delay:0.950s!important;transition-delay:0.950s!important}
+.v11-delay-39{animation-delay:0.975s!important;transition-delay:0.975s!important}
+.v11-delay-40{animation-delay:1.000s!important;transition-delay:1.000s!important}
+.v11-delay-41{animation-delay:1.025s!important;transition-delay:1.025s!important}
+.v11-delay-42{animation-delay:1.050s!important;transition-delay:1.050s!important}
+.v11-delay-43{animation-delay:1.075s!important;transition-delay:1.075s!important}
+.v11-delay-44{animation-delay:1.100s!important;transition-delay:1.100s!important}
+.v11-delay-45{animation-delay:1.125s!important;transition-delay:1.125s!important}
+.v11-delay-46{animation-delay:1.150s!important;transition-delay:1.150s!important}
+.v11-delay-47{animation-delay:1.175s!important;transition-delay:1.175s!important}
+.v11-delay-48{animation-delay:1.200s!important;transition-delay:1.200s!important}
+.v11-delay-49{animation-delay:1.225s!important;transition-delay:1.225s!important}
+.v11-delay-50{animation-delay:1.250s!important;transition-delay:1.250s!important}
+.v11-delay-51{animation-delay:1.275s!important;transition-delay:1.275s!important}
+.v11-delay-52{animation-delay:1.300s!important;transition-delay:1.300s!important}
+.v11-delay-53{animation-delay:1.325s!important;transition-delay:1.325s!important}
+.v11-delay-54{animation-delay:1.350s!important;transition-delay:1.350s!important}
+.v11-delay-55{animation-delay:1.375s!important;transition-delay:1.375s!important}
+.v11-delay-56{animation-delay:1.400s!important;transition-delay:1.400s!important}
+.v11-delay-57{animation-delay:1.425s!important;transition-delay:1.425s!important}
+.v11-delay-58{animation-delay:1.450s!important;transition-delay:1.450s!important}
+.v11-delay-59{animation-delay:1.475s!important;transition-delay:1.475s!important}
+.v11-delay-60{animation-delay:1.500s!important;transition-delay:1.500s!important}
+.v11-delay-61{animation-delay:1.525s!important;transition-delay:1.525s!important}
+.v11-delay-62{animation-delay:1.550s!important;transition-delay:1.550s!important}
+.v11-delay-63{animation-delay:1.575s!important;transition-delay:1.575s!important}
+.v11-delay-64{animation-delay:1.600s!important;transition-delay:1.600s!important}
+.v11-delay-65{animation-delay:1.625s!important;transition-delay:1.625s!important}
+.v11-delay-66{animation-delay:1.650s!important;transition-delay:1.650s!important}
+.v11-delay-67{animation-delay:1.675s!important;transition-delay:1.675s!important}
+.v11-delay-68{animation-delay:1.700s!important;transition-delay:1.700s!important}
+.v11-delay-69{animation-delay:1.725s!important;transition-delay:1.725s!important}
+.v11-delay-70{animation-delay:1.750s!important;transition-delay:1.750s!important}
+.v11-delay-71{animation-delay:1.775s!important;transition-delay:1.775s!important}
+.v11-delay-72{animation-delay:1.800s!important;transition-delay:1.800s!important}
+.v11-delay-73{animation-delay:1.825s!important;transition-delay:1.825s!important}
+.v11-delay-74{animation-delay:1.850s!important;transition-delay:1.850s!important}
+.v11-delay-75{animation-delay:1.875s!important;transition-delay:1.875s!important}
+.v11-delay-76{animation-delay:1.900s!important;transition-delay:1.900s!important}
+.v11-delay-77{animation-delay:1.925s!important;transition-delay:1.925s!important}
+.v11-delay-78{animation-delay:1.950s!important;transition-delay:1.950s!important}
+.v11-delay-79{animation-delay:1.975s!important;transition-delay:1.975s!important}
+.v11-delay-80{animation-delay:2.000s!important;transition-delay:2.000s!important}
+.v11-lift-0{--v11-lift:1px}
+.v11-lift-1{--v11-lift:2px}
+.v11-lift-2{--v11-lift:3px}
+.v11-lift-3{--v11-lift:4px}
+.v11-lift-4{--v11-lift:5px}
+.v11-lift-5{--v11-lift:6px}
+.v11-lift-6{--v11-lift:7px}
+.v11-lift-7{--v11-lift:8px}
+.v11-lift-8{--v11-lift:9px}
+.v11-lift-9{--v11-lift:1px}
+.v11-lift-10{--v11-lift:2px}
+.v11-lift-11{--v11-lift:3px}
+.v11-lift-12{--v11-lift:4px}
+.v11-lift-13{--v11-lift:5px}
+.v11-lift-14{--v11-lift:6px}
+.v11-lift-15{--v11-lift:7px}
+.v11-lift-16{--v11-lift:8px}
+.v11-lift-17{--v11-lift:9px}
+.v11-lift-18{--v11-lift:1px}
+.v11-lift-19{--v11-lift:2px}
+.v11-lift-20{--v11-lift:3px}
+.v11-lift-21{--v11-lift:4px}
+.v11-lift-22{--v11-lift:5px}
+.v11-lift-23{--v11-lift:6px}
+.v11-lift-24{--v11-lift:7px}
+.v11-lift-25{--v11-lift:8px}
+.v11-lift-26{--v11-lift:9px}
+.v11-lift-27{--v11-lift:1px}
+.v11-lift-28{--v11-lift:2px}
+.v11-lift-29{--v11-lift:3px}
+.v11-lift-30{--v11-lift:4px}
+.v11-lift-31{--v11-lift:5px}
+.v11-lift-32{--v11-lift:6px}
+.v11-lift-33{--v11-lift:7px}
+.v11-lift-34{--v11-lift:8px}
+.v11-lift-35{--v11-lift:9px}
+.v11-lift-36{--v11-lift:1px}
+.v11-lift-37{--v11-lift:2px}
+.v11-lift-38{--v11-lift:3px}
+.v11-lift-39{--v11-lift:4px}
+.v11-lift-40{--v11-lift:5px}
+.v11-lift-41{--v11-lift:6px}
+.v11-lift-42{--v11-lift:7px}
+.v11-lift-43{--v11-lift:8px}
+.v11-lift-44{--v11-lift:9px}
+.v11-lift-45{--v11-lift:1px}
+.v11-lift-46{--v11-lift:2px}
+.v11-lift-47{--v11-lift:3px}
+.v11-lift-48{--v11-lift:4px}
+.v11-lift-49{--v11-lift:5px}
+.v11-lift-50{--v11-lift:6px}
+.v11-lift-51{--v11-lift:7px}
+.v11-lift-52{--v11-lift:8px}
+.v11-lift-53{--v11-lift:9px}
+.v11-lift-54{--v11-lift:1px}
+.v11-lift-55{--v11-lift:2px}
+.v11-lift-56{--v11-lift:3px}
+.v11-lift-57{--v11-lift:4px}
+.v11-lift-58{--v11-lift:5px}
+.v11-lift-59{--v11-lift:6px}
+.v11-lift-60{--v11-lift:7px}
+.v11-lift-61{--v11-lift:8px}
+.v11-lift-62{--v11-lift:9px}
+.v11-lift-63{--v11-lift:1px}
+.v11-lift-64{--v11-lift:2px}
+.v11-lift-65{--v11-lift:3px}
+.v11-lift-66{--v11-lift:4px}
+.v11-lift-67{--v11-lift:5px}
+.v11-lift-68{--v11-lift:6px}
+.v11-lift-69{--v11-lift:7px}
+.v11-lift-70{--v11-lift:8px}
+.v11-lift-71{--v11-lift:9px}
+.v11-lift-72{--v11-lift:1px}
+.v11-lift-73{--v11-lift:2px}
+.v11-lift-74{--v11-lift:3px}
+.v11-lift-75{--v11-lift:4px}
+.v11-lift-76{--v11-lift:5px}
+.v11-lift-77{--v11-lift:6px}
+.v11-lift-78{--v11-lift:7px}
+.v11-lift-79{--v11-lift:8px}
+.v11-lift-80{--v11-lift:9px}
+.v11-alpha-0{--v11-alpha:0.040}
+.v11-alpha-1{--v11-alpha:0.055}
+.v11-alpha-2{--v11-alpha:0.070}
+.v11-alpha-3{--v11-alpha:0.085}
+.v11-alpha-4{--v11-alpha:0.100}
+.v11-alpha-5{--v11-alpha:0.115}
+.v11-alpha-6{--v11-alpha:0.130}
+.v11-alpha-7{--v11-alpha:0.145}
+.v11-alpha-8{--v11-alpha:0.160}
+.v11-alpha-9{--v11-alpha:0.175}
+.v11-alpha-10{--v11-alpha:0.040}
+.v11-alpha-11{--v11-alpha:0.055}
+.v11-alpha-12{--v11-alpha:0.070}
+.v11-alpha-13{--v11-alpha:0.085}
+.v11-alpha-14{--v11-alpha:0.100}
+.v11-alpha-15{--v11-alpha:0.115}
+.v11-alpha-16{--v11-alpha:0.130}
+.v11-alpha-17{--v11-alpha:0.145}
+.v11-alpha-18{--v11-alpha:0.160}
+.v11-alpha-19{--v11-alpha:0.175}
+.v11-alpha-20{--v11-alpha:0.040}
+.v11-alpha-21{--v11-alpha:0.055}
+.v11-alpha-22{--v11-alpha:0.070}
+.v11-alpha-23{--v11-alpha:0.085}
+.v11-alpha-24{--v11-alpha:0.100}
+.v11-alpha-25{--v11-alpha:0.115}
+.v11-alpha-26{--v11-alpha:0.130}
+.v11-alpha-27{--v11-alpha:0.145}
+.v11-alpha-28{--v11-alpha:0.160}
+.v11-alpha-29{--v11-alpha:0.175}
+.v11-alpha-30{--v11-alpha:0.040}
+.v11-alpha-31{--v11-alpha:0.055}
+.v11-alpha-32{--v11-alpha:0.070}
+.v11-alpha-33{--v11-alpha:0.085}
+.v11-alpha-34{--v11-alpha:0.100}
+.v11-alpha-35{--v11-alpha:0.115}
+.v11-alpha-36{--v11-alpha:0.130}
+.v11-alpha-37{--v11-alpha:0.145}
+.v11-alpha-38{--v11-alpha:0.160}
+.v11-alpha-39{--v11-alpha:0.175}
+.v11-alpha-40{--v11-alpha:0.040}
+.v11-alpha-41{--v11-alpha:0.055}
+.v11-alpha-42{--v11-alpha:0.070}
+.v11-alpha-43{--v11-alpha:0.085}
+.v11-alpha-44{--v11-alpha:0.100}
+.v11-alpha-45{--v11-alpha:0.115}
+.v11-alpha-46{--v11-alpha:0.130}
+.v11-alpha-47{--v11-alpha:0.145}
+.v11-alpha-48{--v11-alpha:0.160}
+.v11-alpha-49{--v11-alpha:0.175}
+.v11-alpha-50{--v11-alpha:0.040}
+.v11-alpha-51{--v11-alpha:0.055}
+.v11-alpha-52{--v11-alpha:0.070}
+.v11-alpha-53{--v11-alpha:0.085}
+.v11-alpha-54{--v11-alpha:0.100}
+.v11-alpha-55{--v11-alpha:0.115}
+.v11-alpha-56{--v11-alpha:0.130}
+.v11-alpha-57{--v11-alpha:0.145}
+.v11-alpha-58{--v11-alpha:0.160}
+.v11-alpha-59{--v11-alpha:0.175}
+.v11-alpha-60{--v11-alpha:0.040}
+.v11-alpha-61{--v11-alpha:0.055}
+.v11-alpha-62{--v11-alpha:0.070}
+.v11-alpha-63{--v11-alpha:0.085}
+.v11-alpha-64{--v11-alpha:0.100}
+.v11-alpha-65{--v11-alpha:0.115}
+.v11-alpha-66{--v11-alpha:0.130}
+.v11-alpha-67{--v11-alpha:0.145}
+.v11-alpha-68{--v11-alpha:0.160}
+.v11-alpha-69{--v11-alpha:0.175}
+.v11-alpha-70{--v11-alpha:0.040}
+.v11-alpha-71{--v11-alpha:0.055}
+.v11-alpha-72{--v11-alpha:0.070}
+.v11-alpha-73{--v11-alpha:0.085}
+.v11-alpha-74{--v11-alpha:0.100}
+.v11-alpha-75{--v11-alpha:0.115}
+.v11-alpha-76{--v11-alpha:0.130}
+.v11-alpha-77{--v11-alpha:0.145}
+.v11-alpha-78{--v11-alpha:0.160}
+.v11-alpha-79{--v11-alpha:0.175}
+.v11-alpha-80{--v11-alpha:0.040}
+.v11-scale-0{--v11-scale:0.9700}
+.v11-scale-1{--v11-scale:0.9704}
+.v11-scale-2{--v11-scale:0.9708}
+.v11-scale-3{--v11-scale:0.9712}
+.v11-scale-4{--v11-scale:0.9716}
+.v11-scale-5{--v11-scale:0.9720}
+.v11-scale-6{--v11-scale:0.9724}
+.v11-scale-7{--v11-scale:0.9728}
+.v11-scale-8{--v11-scale:0.9732}
+.v11-scale-9{--v11-scale:0.9736}
+.v11-scale-10{--v11-scale:0.9740}
+.v11-scale-11{--v11-scale:0.9744}
+.v11-scale-12{--v11-scale:0.9748}
+.v11-scale-13{--v11-scale:0.9752}
+.v11-scale-14{--v11-scale:0.9756}
+.v11-scale-15{--v11-scale:0.9760}
+.v11-scale-16{--v11-scale:0.9764}
+.v11-scale-17{--v11-scale:0.9768}
+.v11-scale-18{--v11-scale:0.9772}
+.v11-scale-19{--v11-scale:0.9776}
+.v11-scale-20{--v11-scale:0.9780}
+.v11-scale-21{--v11-scale:0.9784}
+.v11-scale-22{--v11-scale:0.9788}
+.v11-scale-23{--v11-scale:0.9792}
+.v11-scale-24{--v11-scale:0.9796}
+.v11-scale-25{--v11-scale:0.9800}
+.v11-scale-26{--v11-scale:0.9804}
+.v11-scale-27{--v11-scale:0.9808}
+.v11-scale-28{--v11-scale:0.9812}
+.v11-scale-29{--v11-scale:0.9816}
+.v11-scale-30{--v11-scale:0.9820}
+.v11-scale-31{--v11-scale:0.9824}
+.v11-scale-32{--v11-scale:0.9828}
+.v11-scale-33{--v11-scale:0.9832}
+.v11-scale-34{--v11-scale:0.9836}
+.v11-scale-35{--v11-scale:0.9840}
+.v11-scale-36{--v11-scale:0.9844}
+.v11-scale-37{--v11-scale:0.9848}
+.v11-scale-38{--v11-scale:0.9852}
+.v11-scale-39{--v11-scale:0.9856}
+.v11-scale-40{--v11-scale:0.9860}
+.v11-scale-41{--v11-scale:0.9864}
+.v11-scale-42{--v11-scale:0.9868}
+.v11-scale-43{--v11-scale:0.9872}
+.v11-scale-44{--v11-scale:0.9876}
+.v11-scale-45{--v11-scale:0.9880}
+.v11-scale-46{--v11-scale:0.9884}
+.v11-scale-47{--v11-scale:0.9888}
+.v11-scale-48{--v11-scale:0.9892}
+.v11-scale-49{--v11-scale:0.9896}
+.v11-scale-50{--v11-scale:0.9900}
+.v11-scale-51{--v11-scale:0.9904}
+.v11-scale-52{--v11-scale:0.9908}
+.v11-scale-53{--v11-scale:0.9912}
+.v11-scale-54{--v11-scale:0.9916}
+.v11-scale-55{--v11-scale:0.9920}
+.v11-scale-56{--v11-scale:0.9924}
+.v11-scale-57{--v11-scale:0.9928}
+.v11-scale-58{--v11-scale:0.9932}
+.v11-scale-59{--v11-scale:0.9936}
+.v11-scale-60{--v11-scale:0.9940}
+.v11-scale-61{--v11-scale:0.9944}
+.v11-scale-62{--v11-scale:0.9948}
+.v11-scale-63{--v11-scale:0.9952}
+.v11-scale-64{--v11-scale:0.9956}
+.v11-scale-65{--v11-scale:0.9960}
+.v11-scale-66{--v11-scale:0.9964}
+.v11-scale-67{--v11-scale:0.9968}
+.v11-scale-68{--v11-scale:0.9972}
+.v11-scale-69{--v11-scale:0.9976}
+.v11-scale-70{--v11-scale:0.9980}
+.v11-scale-71{--v11-scale:0.9984}
+.v11-scale-72{--v11-scale:0.9988}
+.v11-scale-73{--v11-scale:0.9992}
+.v11-scale-74{--v11-scale:0.9996}
+.v11-scale-75{--v11-scale:1.0000}
+.v11-scale-76{--v11-scale:1.0004}
+.v11-scale-77{--v11-scale:1.0008}
+.v11-scale-78{--v11-scale:1.0012}
+.v11-scale-79{--v11-scale:1.0016}
+.v11-scale-80{--v11-scale:1.0020}
+.v11-rotate-0{--v11-rotate:-8deg}
+.v11-rotate-1{--v11-rotate:-7deg}
+.v11-rotate-2{--v11-rotate:-6deg}
+.v11-rotate-3{--v11-rotate:-5deg}
+.v11-rotate-4{--v11-rotate:-4deg}
+.v11-rotate-5{--v11-rotate:-3deg}
+.v11-rotate-6{--v11-rotate:-2deg}
+.v11-rotate-7{--v11-rotate:-1deg}
+.v11-rotate-8{--v11-rotate:0deg}
+.v11-rotate-9{--v11-rotate:1deg}
+.v11-rotate-10{--v11-rotate:2deg}
+.v11-rotate-11{--v11-rotate:3deg}
+.v11-rotate-12{--v11-rotate:4deg}
+.v11-rotate-13{--v11-rotate:5deg}
+.v11-rotate-14{--v11-rotate:6deg}
+.v11-rotate-15{--v11-rotate:7deg}
+.v11-rotate-16{--v11-rotate:8deg}
+.v11-rotate-17{--v11-rotate:-8deg}
+.v11-rotate-18{--v11-rotate:-7deg}
+.v11-rotate-19{--v11-rotate:-6deg}
+.v11-rotate-20{--v11-rotate:-5deg}
+.v11-rotate-21{--v11-rotate:-4deg}
+.v11-rotate-22{--v11-rotate:-3deg}
+.v11-rotate-23{--v11-rotate:-2deg}
+.v11-rotate-24{--v11-rotate:-1deg}
+.v11-rotate-25{--v11-rotate:0deg}
+.v11-rotate-26{--v11-rotate:1deg}
+.v11-rotate-27{--v11-rotate:2deg}
+.v11-rotate-28{--v11-rotate:3deg}
+.v11-rotate-29{--v11-rotate:4deg}
+.v11-rotate-30{--v11-rotate:5deg}
+.v11-rotate-31{--v11-rotate:6deg}
+.v11-rotate-32{--v11-rotate:7deg}
+.v11-rotate-33{--v11-rotate:8deg}
+.v11-rotate-34{--v11-rotate:-8deg}
+.v11-rotate-35{--v11-rotate:-7deg}
+.v11-rotate-36{--v11-rotate:-6deg}
+.v11-rotate-37{--v11-rotate:-5deg}
+.v11-rotate-38{--v11-rotate:-4deg}
+.v11-rotate-39{--v11-rotate:-3deg}
+.v11-rotate-40{--v11-rotate:-2deg}
+.v11-rotate-41{--v11-rotate:-1deg}
+.v11-rotate-42{--v11-rotate:0deg}
+.v11-rotate-43{--v11-rotate:1deg}
+.v11-rotate-44{--v11-rotate:2deg}
+.v11-rotate-45{--v11-rotate:3deg}
+.v11-rotate-46{--v11-rotate:4deg}
+.v11-rotate-47{--v11-rotate:5deg}
+.v11-rotate-48{--v11-rotate:6deg}
+.v11-rotate-49{--v11-rotate:7deg}
+.v11-rotate-50{--v11-rotate:8deg}
+.v11-rotate-51{--v11-rotate:-8deg}
+.v11-rotate-52{--v11-rotate:-7deg}
+.v11-rotate-53{--v11-rotate:-6deg}
+.v11-rotate-54{--v11-rotate:-5deg}
+.v11-rotate-55{--v11-rotate:-4deg}
+.v11-rotate-56{--v11-rotate:-3deg}
+.v11-rotate-57{--v11-rotate:-2deg}
+.v11-rotate-58{--v11-rotate:-1deg}
+.v11-rotate-59{--v11-rotate:0deg}
+.v11-rotate-60{--v11-rotate:1deg}
+.v11-rotate-61{--v11-rotate:2deg}
+.v11-rotate-62{--v11-rotate:3deg}
+.v11-rotate-63{--v11-rotate:4deg}
+.v11-rotate-64{--v11-rotate:5deg}
+.v11-rotate-65{--v11-rotate:6deg}
+.v11-rotate-66{--v11-rotate:7deg}
+.v11-rotate-67{--v11-rotate:8deg}
+.v11-rotate-68{--v11-rotate:-8deg}
+.v11-rotate-69{--v11-rotate:-7deg}
+.v11-rotate-70{--v11-rotate:-6deg}
+.v11-rotate-71{--v11-rotate:-5deg}
+.v11-rotate-72{--v11-rotate:-4deg}
+.v11-rotate-73{--v11-rotate:-3deg}
+.v11-rotate-74{--v11-rotate:-2deg}
+.v11-rotate-75{--v11-rotate:-1deg}
+.v11-rotate-76{--v11-rotate:0deg}
+.v11-rotate-77{--v11-rotate:1deg}
+.v11-rotate-78{--v11-rotate:2deg}
+.v11-rotate-79{--v11-rotate:3deg}
+.v11-rotate-80{--v11-rotate:4deg}
+.v11-blur-0{--v11-blur:0px}
+.v11-blur-1{--v11-blur:1px}
+.v11-blur-2{--v11-blur:2px}
+.v11-blur-3{--v11-blur:3px}
+.v11-blur-4{--v11-blur:4px}
+.v11-blur-5{--v11-blur:5px}
+.v11-blur-6{--v11-blur:6px}
+.v11-blur-7{--v11-blur:7px}
+.v11-blur-8{--v11-blur:0px}
+.v11-blur-9{--v11-blur:1px}
+.v11-blur-10{--v11-blur:2px}
+.v11-blur-11{--v11-blur:3px}
+.v11-blur-12{--v11-blur:4px}
+.v11-blur-13{--v11-blur:5px}
+.v11-blur-14{--v11-blur:6px}
+.v11-blur-15{--v11-blur:7px}
+.v11-blur-16{--v11-blur:0px}
+.v11-blur-17{--v11-blur:1px}
+.v11-blur-18{--v11-blur:2px}
+.v11-blur-19{--v11-blur:3px}
+.v11-blur-20{--v11-blur:4px}
+.v11-blur-21{--v11-blur:5px}
+.v11-blur-22{--v11-blur:6px}
+.v11-blur-23{--v11-blur:7px}
+.v11-blur-24{--v11-blur:0px}
+.v11-blur-25{--v11-blur:1px}
+.v11-blur-26{--v11-blur:2px}
+.v11-blur-27{--v11-blur:3px}
+.v11-blur-28{--v11-blur:4px}
+.v11-blur-29{--v11-blur:5px}
+.v11-blur-30{--v11-blur:6px}
+.v11-blur-31{--v11-blur:7px}
+.v11-blur-32{--v11-blur:0px}
+.v11-blur-33{--v11-blur:1px}
+.v11-blur-34{--v11-blur:2px}
+.v11-blur-35{--v11-blur:3px}
+.v11-blur-36{--v11-blur:4px}
+.v11-blur-37{--v11-blur:5px}
+.v11-blur-38{--v11-blur:6px}
+.v11-blur-39{--v11-blur:7px}
+.v11-blur-40{--v11-blur:0px}
+.v11-blur-41{--v11-blur:1px}
+.v11-blur-42{--v11-blur:2px}
+.v11-blur-43{--v11-blur:3px}
+.v11-blur-44{--v11-blur:4px}
+.v11-blur-45{--v11-blur:5px}
+.v11-blur-46{--v11-blur:6px}
+.v11-blur-47{--v11-blur:7px}
+.v11-blur-48{--v11-blur:0px}
+.v11-blur-49{--v11-blur:1px}
+.v11-blur-50{--v11-blur:2px}
+.v11-blur-51{--v11-blur:3px}
+.v11-blur-52{--v11-blur:4px}
+.v11-blur-53{--v11-blur:5px}
+.v11-blur-54{--v11-blur:6px}
+.v11-blur-55{--v11-blur:7px}
+.v11-blur-56{--v11-blur:0px}
+.v11-blur-57{--v11-blur:1px}
+.v11-blur-58{--v11-blur:2px}
+.v11-blur-59{--v11-blur:3px}
+.v11-blur-60{--v11-blur:4px}
+.v11-blur-61{--v11-blur:5px}
+.v11-blur-62{--v11-blur:6px}
+.v11-blur-63{--v11-blur:7px}
+.v11-blur-64{--v11-blur:0px}
+.v11-blur-65{--v11-blur:1px}
+.v11-blur-66{--v11-blur:2px}
+.v11-blur-67{--v11-blur:3px}
+.v11-blur-68{--v11-blur:4px}
+.v11-blur-69{--v11-blur:5px}
+.v11-blur-70{--v11-blur:6px}
+.v11-blur-71{--v11-blur:7px}
+.v11-blur-72{--v11-blur:0px}
+.v11-blur-73{--v11-blur:1px}
+.v11-blur-74{--v11-blur:2px}
+.v11-blur-75{--v11-blur:3px}
+.v11-blur-76{--v11-blur:4px}
+.v11-blur-77{--v11-blur:5px}
+.v11-blur-78{--v11-blur:6px}
+.v11-blur-79{--v11-blur:7px}
+.v11-blur-80{--v11-blur:0px}
+
+.v11-motion-target{transform:translate3d(0,var(--v11-lift,0),0) rotate(var(--v11-rotate,0)) scale(var(--v11-scale,1));filter:blur(var(--v11-blur,0));opacity:var(--v11-alpha,1)}
+.v11-motion-target:hover{transform:translate3d(0,calc(var(--v11-lift,0) - 2px),0) rotate(0) scale(1.01);filter:blur(0);opacity:1}
+.v11-glass{background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%)}
+.v11-ring{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 0 0 1px rgba(10,132,255,.06),0 20px 60px rgba(0,0,0,.20)}
+.v11-shimmer{position:relative;overflow:hidden}.v11-shimmer:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.08) 48%,transparent 66%);transform:translateX(-120%);animation:v11Sheen 8s ease-in-out infinite;pointer-events:none}
+.v11-focus:focus-visible{outline:2px solid rgba(90,169,255,.85);outline-offset:3px}
+.v11-no-select{-webkit-user-select:none;user-select:none}
+.v11-contain{contain:layout paint style}
+.v11-gpu{transform:translateZ(0);will-change:transform}
+@media(prefers-reduced-motion:reduce){[class*="v11-delay-"],[class*="v11-lift-"],[class*="v11-alpha-"],[class*="v11-scale-"],[class*="v11-rotate-"],[class*="v11-blur-"]{animation:none!important;transition:none!important}.v11-motion-target,.v11-motion-target:hover{transform:none!important;filter:none!important;opacity:1!important}.v11-shimmer:after{display:none!important}}
+</style>
+
+<script id="pd-v12-db-runtime">
+(() => {
+  'use strict';
+
+  /* ================================================================
+     PrintDekD Pro v12 — LIVE DATABASE ALIGNMENT
+     Live schema model:
+       orders        = queue + total_amount + status
+       documents     = uploaded file metadata
+       print_jobs    = copies/color/paper/duplex/page_range
+       deliveries    = delivery information
+       payments      = payment/slip
+       wallets       = Coins balance (SOURCE OF TRUTH)
+       wallet_transactions = Coins ledger
+     This layer intentionally does NOT create orders.copies / total_price /
+     file_name / slip_url etc. Those belong to the normalized child tables.
+     ================================================================ */
+
+  const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+  const $ = (id) => document.getElementById(id);
+  const q = (s, r=document) => r.querySelector(s);
+  const qa = (s, r=document) => [...r.querySelectorAll(s)];
+
+  function v(id){ return ($(id)?.value ?? '').toString().trim(); }
+  function safe(s){ return typeof escapeHtml === 'function' ? escapeHtml(String(s ?? '')) : String(s ?? ''); }
+  function money(n){ return Number(n || 0).toFixed(2); }
+  function notifyV(title, message, icon='info'){
+    if(typeof window.notify === 'function') return window.notify(title,message,icon);
+    if(typeof window.showCustomModal === 'function') return window.showCustomModal({title,message,icon});
+  }
+
+  function getSelectedPageRange() {
+    const mode = q('input[name="page_selection_mode"]:checked')?.value || 'text';
+    const typed = v('page-range-input');
+    if(mode === 'text' && typed) return typed;
+    const checked = qa('#pages-grid-container input[type="checkbox"]').filter(x=>x.checked).map(x=>Number(x.value)).filter(Number.isFinite).sort((a,b)=>a-b);
+    if(!checked.length) {
+      const pages = Math.max(1, parseInt(v('printed-pages-input')) || 1);
+      return `1-${pages}`;
+    }
+    const ranges=[];
+    let start=checked[0], prev=checked[0];
+    for(let i=1;i<checked.length;i++){
+      const n=checked[i];
+      if(n===prev+1){ prev=n; continue; }
+      ranges.push(start===prev?String(start):`${start}-${prev}`);
+      start=prev=n;
+    }
+    ranges.push(start===prev?String(start):`${start}-${prev}`);
+    return ranges.join(', ');
+  }
+
+  async function loadPricingV12(paper) {
+    const client=db();
+    if(!client) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+    const {data,error}=await client.from('pricing')
+      .select('id,paper_size,black_white_price,color_price,duplex_price')
+      .eq('paper_size',paper)
+      .maybeSingle();
+    if(error) throw error;
+    if(!data) throw new Error(`ยังไม่มีราคาสำหรับกระดาษ ${paper} ในตาราง pricing กรุณาตั้งราคาก่อนสั่งพิมพ์`);
+    return data;
+  }
+
+  async function hydrateOrdersV12(orders) {
+    const client=db();
+    if(!client || !orders?.length) return [];
+    const ids=orders.map(o=>o.id).filter(Boolean);
+    const userIds=[...new Set(orders.map(o=>o.user_id).filter(Boolean))];
+
+    const [jobsR, deliveriesR, paymentsR, usersR] = await Promise.all([
+      client.from('print_jobs').select('id,order_id,document_id,copies,color,paper_size,duplex,status,page_range').in('order_id',ids).order('id',{ascending:true}),
+      client.from('deliveries').select('id,order_id,delivery_method,recipient_name,phone_number,delivery_address,delivery_provider,tracking_number').in('order_id',ids),
+      client.from('payments').select('id,order_id,amount,status,payment_method,slip_url,created_at').in('order_id',ids),
+      userIds.length ? client.from('users').select('id,full_name,email').in('id',userIds) : Promise.resolve({data:[],error:null})
+    ]);
+    for(const r of [jobsR,deliveriesR,paymentsR,usersR]) if(r.error) throw r.error;
+
+    const jobs=jobsR.data||[];
+    const docIds=[...new Set(jobs.map(j=>j.document_id).filter(Boolean))];
+    let docs=[];
+    if(docIds.length){
+      const r=await client.from('documents').select('id,user_id,file_name,file_path,page_count,file_size,created_at').in('id',docIds);
+      if(r.error) throw r.error;
+      docs=r.data||[];
+    }
+    const jm=new Map(jobs.map(x=>[String(x.order_id),x]));
+    const dm=new Map(docs.map(x=>[String(x.id),x]));
+    const delm=new Map((deliveriesR.data||[]).map(x=>[String(x.order_id),x]));
+    const paym=new Map((paymentsR.data||[]).map(x=>[String(x.order_id),x]));
+    const um=new Map((usersR.data||[]).map(x=>[String(x.id),x]));
+
+    return orders.map(order=>{
+      const job=jm.get(String(order.id))||{};
+      const doc=dm.get(String(job.document_id))||{};
+      const delivery=delm.get(String(order.id))||{};
+      const payment=paym.get(String(order.id))||{};
+      const user=um.get(String(order.user_id))||{};
+      return {
+        ...order,
+        queue_label: order.queue_number ?? order.id,
+        user_name: user.full_name || '',
+        user_email: user.email || '',
+        file_name: doc.file_name || 'เอกสารพิมพ์',
+        file_path: doc.file_path || '',
+        file_bucket: 'documents',
+        file_size: doc.file_size || 0,
+        file_mime: '',
+        page_count: doc.page_count || 1,
+        copies: job.copies || 1,
+        paper_size: job.paper_size || 'A4',
+        is_color: !!job.color,
+        is_duplex: !!job.duplex,
+        page_range: job.page_range || '',
+        delivery_method: delivery.delivery_method || 'pickup',
+        recipient_name: delivery.recipient_name || '',
+        recipient_phone: delivery.phone_number || '',
+        recipient_address: delivery.delivery_address || '',
+        delivery_provider: delivery.delivery_provider || '',
+        tracking_number: delivery.tracking_number || '',
+        delivery_fee: delivery.delivery_method === 'delivery' ? 30 : 0,
+        total_price: Number(order.total_amount || 0),
+        payment_method: payment.payment_method || '',
+        slip_url: payment.slip_url || '',
+        payment_status: payment.status || '',
+        admin_note: order.admin_note || '',
+        status: order.status || 'queued',
+        created_at: order.created_at
+      };
+    });
+  }
+
+  function renderQueueV12(orders) {
+    const container=$('queue-cards-container');
+    if(!container)return;
+    if(!orders?.length){
+      container.innerHTML=`<div class="p-8 rounded-2xl ui-card text-center space-y-3"><i data-lucide="inbox" class="w-10 h-10 sub-text mx-auto"></i><p class="text-sm font-bold titanium-text">ยังไม่มีคิวงานพิมพ์ในขณะนี้</p><p class="text-xs sub-text">สร้างรายการใหม่ที่แบบฟอร์มด้านซ้ายมือได้ทันที</p></div>`;
+      window.lucide?.createIcons(); return;
+    }
+    container.innerHTML=orders.map(ord=>{
+      const status=ord.status==='printing'
+        ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-500 border border-blue-500/30">🖨️ กำลังพิมพ์</span>'
+        : ord.status==='completed'
+        ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">✅ พิมพ์เสร็จแล้ว</span>'
+        : ord.status==='cancelled'
+        ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">❌ ยกเลิก</span>'
+        : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">⏳ รอคิว</span>';
+      return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" onkeydown="if(event.key==='Enter'||event.key===' ')openQueueDetailModal(${JSON.stringify(ord.id)})">
+        <div class="flex items-center justify-between"><span class="text-xs font-bold font-mono text-blue-500">คิว #${safe(ord.queue_label)}</span>${status}</div>
+        <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${ord.page_count||1} หน้า | ${ord.copies||1} ชุด | ${ord.delivery_method==='delivery'?'🚚 จัดส่งพัสดุ':'📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
+        ${ord.tracking_number?`<div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-xs font-bold text-emerald-500">🚚 Tracking: ${safe(ord.tracking_number)} ${ord.delivery_provider?`(${safe(ord.delivery_provider)})`:''}</div>`:''}
+      </div>`;
+    }).join('');
+    window.lucide?.createIcons();
+  }
+
+  window.fetchQueues=async function(){
+    const container=$('queue-cards-container');
+    if(!container)return;
+    const client=db();
+    if(!client || !window.currentUser?.id){ currentOrdersList=[]; renderQueueV12([]); return; }
+    try{
+      const {data,error}=await client.from('orders').select('id,user_id,queue_number,total_amount,status,estimated_pickup,admin_note,created_at').eq('user_id',window.currentUser.id).order('created_at',{ascending:false});
+      if(error)throw error;
+      const hydrated=await hydrateOrdersV12(data||[]);
+      currentOrdersList=hydrated; window.__pdAdminOrders=hydrated; renderQueueV12(hydrated);
+    }catch(err){
+      container.innerHTML=`<p class="py-8 text-center text-rose-500 text-xs">${safe(err?.message||'ไม่สามารถโหลดข้อมูลคิวงานได้')}</p>`;
+    }
+  };
+
+  window.fetchUserTopups=async function(){
+    const list=$('topup-history-list');
+    if(!list)return;
+    const client=db();
+    if(!client||!window.currentUser?.id){list.innerHTML='<p class="text-center py-8 sub-text text-xs">กรุณาเข้าสู่ระบบและเชื่อมต่อฐานข้อมูล</p>';return;}
+    try{
+      const {data,error}=await client.from('topups').select('id,user_id,amount,status,created_at').eq('user_id',window.currentUser.id).order('created_at',{ascending:false});
+      if(error)throw error;
+      if(!data?.length){list.innerHTML='<p class="text-center py-8 sub-text text-xs">ยังไม่มีประวัติการเติม Coins</p>';return;}
+      list.innerHTML=data.map(tp=>`<div class="p-4 rounded-2xl ui-card border flex items-center justify-between gap-3 text-xs shadow-sm"><div><p class="font-black text-amber-500 text-sm">+${money(tp.amount)} Coins</p><p class="text-[10px] sub-text font-mono mt-0.5">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</p></div><span class="security-badge ${tp.status==='approved'?'good':tp.status==='rejected'?'bad':'warn'}">${tp.status==='approved'?'อนุมัติแล้ว':tp.status==='rejected'?'ปฏิเสธ':'รอตรวจสอบ'}</span></div>`).join('');
+    }catch(err){list.innerHTML=`<p class="text-center py-8 text-rose-500 text-xs">${safe(err?.message||'ไม่สามารถโหลดประวัติได้')}</p>`;}
+  };
+
+  async function uploadToBucketV12(bucket,file,path){
+    const client=db();
+    const {error}=await client.storage.from(bucket).upload(path,file,{upsert:false,contentType:file.type||'application/octet-stream',cacheControl:'3600'});
+    if(error)throw error;
+    return path;
+  }
+
+  async function removeStorageV12(bucket,path){
+    if(!bucket||!path)return;
+    try{await db().storage.from(bucket).remove([path]);}catch(_){}
+  }
+
+  window.handleOrderSubmit=async function(e){
+    e?.preventDefault();
+    const client=db(), user=window.currentUser;
+    if(!user)return notifyV12('กรุณาล็อกอิน','กรุณาล็อกอินก่อนทำการสั่งพิมพ์','lock');
+    if(!client)return notifyV12('ฐานข้อมูลยังไม่พร้อม','กรุณาเชื่อมต่อ Supabase ก่อนสั่งงาน','database-zap');
+
+    const file=window.selectedFileObj;
+    if(!file)return notifyV12('ยังไม่ได้เลือกไฟล์','กรุณาอัปโหลดเอกสารก่อนสร้างรายการ','file-plus-2');
+    if(typeof window.validateUploadFile==='function'){
+      const chk=window.validateUploadFile(file,{maxMB:20,extensions:['pdf','doc','docx','jpg','jpeg','png']});
+      if(!chk.ok)return notifyV12('ไฟล์ไม่ผ่านการตรวจสอบ',chk.message,'file-warning');
+    }
+
+    const pages=Math.max(1,parseInt(v('printed-pages-input'))||1);
+    const copies=Math.max(1,parseInt(v('copies'))||1);
+    const paper=v('paper-size')||'A4';
+    const isColor=v('color-type')==='color';
+    const isDuplex=v('duplex-type')==='duplex';
+    const pageRange=getSelectedPageRange();
+    const payMethod=q('input[name="payment_method"]:checked')?.value;
+    const deliveryMethod=q('input[name="delivery_method"]:checked')?.value;
+    const notes=v('order-notes');
+    if(!payMethod||!deliveryMethod)return notifyV12('ตรวจสอบตัวเลือก','กรุณาเลือกการชำระเงินและการรับสินค้า','alert-triangle');
+
+    let recipientName='',recipientPhone='',recipientAddress='';
+    if(deliveryMethod==='delivery'){
+      recipientName=v('recipient-name');recipientPhone=v('recipient-phone');recipientAddress=v('recipient-address');
+      if(!recipientName||!/^0[0-9\-\s]{8,14}$/.test(recipientPhone)||!recipientAddress)
+        return notifyV12('ข้อมูลจัดส่งไม่ครบ','กรุณากรอกชื่อ เบอร์โทร และที่อยู่ให้ครบถ้วน','map-pin-x');
+    }
+
+    let pricing;
+    try{pricing=await loadPricingV12(paper);}catch(err){return notifyV12('ยังตั้งค่าราคาไม่ครบ',err.message,'badge-alert');}
+    const pageRate=Number(isColor?pricing.color_price:pricing.black_white_price)+(isDuplex?Number(pricing.duplex_price):0);
+    const printCost=pages*pageRate*copies;
+    const deliveryFee=deliveryMethod==='delivery'?30:0;
+    const total=Number((printCost+deliveryFee).toFixed(2));
+
+    if(payMethod==='coins'){
+      try{await window.fetchUserWallet?.();}catch(err){return notifyV12('ตรวจสอบ Coins ไม่สำเร็จ',err.message||'ไม่สามารถอ่าน wallets.balance','shield-alert');}
+      const balance=Number(window.currentUser?.coins||0);
+      if(balance<total)return notifyV12('Coins ไม่พอ',`มี ${money(balance)} Coins แต่ต้องใช้ ${money(total)} Coins`,'coins');
+    }
+
+    const orderId=crypto.randomUUID();
+    const docId=crypto.randomUUID();
+    let documentPath='',slipPath='',orderCreated=false,docCreated=false,jobCreated=false,deliveryCreated=false,paymentCreated=false,walletChanged=false;
+    let walletBefore=0,walletId=null;
+
+    try{
+      const safeName=String(file.name||'document').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(0,100)||'document';
+      documentPath=`${user.id}/${orderId}/${safeName}`;
+      await uploadToBucketV12('documents',file,documentPath);
+
+      const {error:docError}=await client.from('documents').insert([{
+        id:docId,user_id:user.id,file_name:file.name,file_path:documentPath,page_count:pages,file_size:file.size,created_at:new Date().toISOString()
+      }]);
+      if(docError)throw docError;
+      docCreated=true;
+
+      const {data:order,error:orderError}=await client.from('orders').insert([{
+        id:orderId,user_id:user.id,total_amount:total,status:'queued',admin_note:notes||null,created_at:new Date().toISOString()
+      }]).select('id,queue_number,total_amount,status,created_at').single();
+      if(orderError)throw orderError;
+      if(!order)throw new Error('Supabase ไม่คืนข้อมูลออเดอร์');
+      orderCreated=true;
+
+      const {error:jobError}=await client.from('print_jobs').insert([{
+        id:crypto.randomUUID(),order_id:orderId,document_id:docId,copies,color:isColor,paper_size:paper,duplex:isDuplex,status:'queued',page_range:pageRange
+      }]);
+      if(jobError)throw jobError;
+      jobCreated=true;
+
+      if(deliveryMethod==='delivery'){
+        const {error:deliveryError}=await client.from('deliveries').insert([{
+          order_id:orderId,delivery_method:'delivery',recipient_name:recipientName,phone_number:recipientPhone,delivery_address:recipientAddress,delivery_provider:null,tracking_number:null
+        }]);
+        if(deliveryError)throw deliveryError;
+        deliveryCreated=true;
+      }
+
+      if(payMethod==='promptpay'){
+        const slipFile=$('order-slip-file')?.files?.[0];
+        if(!slipFile)throw new Error('กรุณาแนบสลิปก่อนสั่งพิมพ์');
+        const slipName=String(slipFile.name||'slip').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(0,100)||'slip.jpg';
+        slipPath=`${user.id}/${orderId}/${Date.now()}-${slipName}`;
+        await uploadToBucketV12('slips',slipFile,slipPath);
+        const {data:pub}=client.storage.from('slips').getPublicUrl(slipPath);
+        const {error:payError}=await client.from('payments').insert([{order_id:orderId,amount:total,status:'pending',payment_method:'promptpay',slip_url:pub?.publicUrl||slipPath,created_at:new Date().toISOString()}]);
+        if(payError)throw payError;
+        paymentCreated=true;
+      }else{
+        const {error:payError}=await client.from('payments').insert([{order_id:orderId,amount:total,status:'completed',payment_method:'coins',slip_url:null,created_at:new Date().toISOString()}]);
+        if(payError)throw payError;
+        paymentCreated=true;
+
+        const wallet=await window.ensureUserWalletV12(user.id);
+        walletId=wallet.id; walletBefore=Number(wallet.balance||0);
+        const next=Number((walletBefore-total).toFixed(2));
+        if(next<0)throw new Error('ยอด Coins ไม่เพียงพอ');
+        const {data:changed,error:walletError}=await client.from('wallets').update({balance:next,updated_at:new Date().toISOString()}).eq('id',wallet.id).eq('balance',walletBefore).select('id,user_id,balance,updated_at').maybeSingle();
+        if(walletError)throw walletError;
+        if(!changed)throw new Error('ยอด Coins เปลี่ยนระหว่างการทำรายการ กรุณาลองใหม่');
+        walletChanged=true;
+
+        const {error:txError}=await client.from('wallet_transactions').insert([{
+          wallet_id:wallet.id,order_id:orderId,transaction_type:'payment',amount:-total,description:`ชำระค่าพิมพ์คิว #${order.queue_number ?? order.id}`,transaction_date:new Date().toISOString()
+        }]);
+        if(txError)throw txError;
+      }
+
+      await window.fetchUserWallet?.();
+      await window.fetchQueues?.();
+      notifyV12('สร้างรายการสำเร็จ',`คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด • ${money(total)} Coins`,'check-circle-2');
+      $('print-form')?.reset();window.selectedFileObj=null;
+      $('upload-placeholder')?.classList.remove('hidden');$('file-details')?.classList.add('hidden');$('preview-file-drawer-btn')?.classList.add('hidden');
+      if($('pdf-preview-wrapper'))$('pdf-preview-wrapper').innerHTML='<p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>';
+      if($('pages-grid-container'))$('pages-grid-container').innerHTML='<p class="col-span-full text-center text-xs sub-text py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>';
+      toggleDeliveryFields?.();
+    }catch(err){
+      if(walletChanged && walletId){
+        try{await client.from('wallets').update({balance:walletBefore,updated_at:new Date().toISOString()}).eq('id',walletId);}catch(_){}
+      }
+      if(paymentCreated)try{await client.from('payments').delete().eq('order_id',orderId);}catch(_){}
+      if(deliveryCreated)try{await client.from('deliveries').delete().eq('order_id',orderId);}catch(_){}
+      if(jobCreated)try{await client.from('print_jobs').delete().eq('order_id',orderId);}catch(_){}
+      if(orderCreated)try{await client.from('orders').delete().eq('id',orderId);}catch(_){}
+      if(docCreated)try{await client.from('documents').delete().eq('id',docId);}catch(_){}
+      await removeStorageV12('documents',documentPath);
+      await removeStorageV12('slips',slipPath);
+      notifyV12('สร้างรายการไม่สำเร็จ',err?.message||'ไม่สามารถบันทึกข้อมูลได้','shield-alert');
+    }
+  };
+
+  window.ensureUserWalletV12=async function(userId){
+    const client=db();
+    const {data,error}=await client.from('wallets').select('id,user_id,balance,updated_at').eq('user_id',userId).maybeSingle();
+    if(error)throw error;
+    if(data)return data;
+    const {data:created,error:createError}=await client.from('wallets').insert([{user_id:userId,balance:0}]).select('id,user_id,balance,updated_at').single();
+    if(createError)throw createError;
+    return created;
+  };
+
+  window.openStoredPrintFile=async function(filePath,fileBucket='documents'){
+    if(!filePath)return notifyV12('ยังไม่มีไฟล์ออนไลน์','รายการนี้ไม่มีตำแหน่งไฟล์ใน Storage','file-warning');
+    if(/^https?:\/\//i.test(filePath)){window.open(filePath,'_blank','noopener,noreferrer');return;}
+    try{
+      const {data,error}=await db().storage.from(fileBucket||'documents').createSignedUrl(filePath,900);
+      if(error||!data?.signedUrl)throw error||new Error('สร้างลิงก์ไฟล์ชั่วคราวไม่สำเร็จ');
+      window.open(data.signedUrl,'_blank','noopener,noreferrer');
+    }catch(err){notifyV12('เปิดไฟล์ไม่สำเร็จ',err.message||'ตรวจสอบ Storage Policy','file-warning');}
+  };
+
+  window.openQueueDetailModal=async function(orderId){
+    let order=(window.__pdAdminOrders||[]).find(o=>String(o.id)===String(orderId)) || (currentOrdersList||[]).find(o=>String(o.id)===String(orderId));
+    try{
+      if(!order){
+        const r=await db().from('orders').select('id,user_id,queue_number,total_amount,status,estimated_pickup,admin_note,created_at').eq('id',orderId).maybeSingle();
+        if(r.error)throw r.error; order=(await hydrateOrdersV12(r.data?[r.data]:[]))[0];
+      }
+      if(!order)return notifyV12('ไม่พบข้อมูล','ไม่พบรายละเอียดคิวนี้','search-x');
+      const set=(id,val)=>{const e=$(id);if(e)e.textContent=val??'-';};
+      set('qd-modal-order-id',`คิว #${order.queue_number ?? order.id}`);
+      set('qd-modal-filename',order.file_name);
+      set('qd-modal-pages',`${order.page_count||1} หน้า`);
+      set('qd-modal-copies',`${order.copies||1} ชุด`);
+      set('qd-modal-paper',order.paper_size||'A4');
+      set('qd-modal-color',order.is_color?'พิมพ์สี':'ขาว-ดำ');
+      set('qd-modal-duplex',order.is_duplex?'พิมพ์หน้า-หลัง':'หน้าเดียว');
+      set('qd-modal-notes',order.admin_note||'ไม่มีหมายเหตุเพิ่มเติม');
+      set('qd-modal-totalprice',`${money(order.total_price)} ฿`);
+      set('qd-modal-paymethod',order.payment_method==='coins'?'Coins':'PromptPay');
+      set('qd-modal-pickup-info',order.delivery_method==='delivery'?'🚚 การรับสินค้า: จัดส่งพัสดุ':'📍 การรับสินค้า: รับหน้าร้านโดยตรง');
+      const track=$('qd-modal-tracking-box');
+      if(order.delivery_method==='delivery'){
+        set('qd-modal-tracking-num',order.tracking_number?`เลข Tracking: ${order.tracking_number} (${order.delivery_provider||'ผู้ให้บริการขนส่ง'})`:'กำลังเตรียมจัดส่ง');
+        set('qd-modal-recipient-info',`ผู้รับ: ${order.recipient_name||'-'} (${order.recipient_phone||'-'}) | ที่อยู่: ${order.recipient_address||'-'}`);
+        track?.classList.remove('hidden');
+      }else track?.classList.add('hidden');
+      const slip=$('qd-modal-slip-box');
+      if(order.slip_url){const im=$('qd-modal-slip-img');if(im)im.src=order.slip_url;slip?.classList.remove('hidden')}else slip?.classList.add('hidden');
+      const badge=$('qd-modal-status-badge');
+      if(badge){
+        const map={queued:['รอคิว','bg-amber-500/15 text-amber-400'],printing:['กำลังพิมพ์','bg-blue-500/15 text-blue-400'],completed:['พิมพ์เสร็จแล้ว','bg-emerald-500/15 text-emerald-400'],cancelled:['ยกเลิก','bg-rose-500/15 text-rose-400']};
+        const [txt,cls]=map[order.status]||map.queued; badge.textContent=txt; badge.className=`px-3 py-1 rounded-full text-xs font-black ${cls}`;
+      }
+      const modal=$('queue-detail-modal'); if(modal){modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+      window.lucide?.createIcons();
+    }catch(err){notifyV12('เปิดข้อมูลไม่สำเร็จ',err.message||'ไม่สามารถโหลดคิวได้','database-zap');}
+  };
+
+  window.promptTracking=async function(orderId){
+    if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+    const tracking=prompt('กรุณากรอกหมายเลข Tracking พัสดุ:')?.trim();
+    if(!tracking)return;
+    if(tracking.length>100)return notifyV12('Tracking ไม่ถูกต้อง','หมายเลข Tracking ยาวเกินกำหนด','alert-triangle');
+    try{
+      const r=await db().from('deliveries').update({tracking_number:tracking,delivery_provider:'Kerry Express'}).eq('order_id',orderId).select('id,tracking_number,delivery_provider').maybeSingle();
+      if(r.error)throw r.error;
+      if(!r.data)throw new Error('ไม่พบรายการจัดส่งของออเดอร์นี้');
+      notifyV12('บันทึก Tracking สำเร็จ','ข้อมูลถูกบันทึกในตาราง deliveries แล้ว','shield-check');
+      await window.loadAdminData?.();
+    }catch(err){notifyV12('บันทึก Tracking ไม่สำเร็จ',err.message||'เกิดข้อผิดพลาด','shield-alert');}
+  };
+
+  window.updateOrderStatus=async function(orderId,newStatus){
+    if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+    if(!['queued','printing','completed','cancelled'].includes(newStatus))return notifyV12('สถานะไม่ถูกต้อง','สถานะต้องเป็น queued, printing หรือ completed','shield-alert');
+    try{
+      const r=await db().from('orders').update({status:newStatus}).eq('id',orderId).select('id,status').maybeSingle();
+      if(r.error)throw r.error;if(!r.data)throw new Error('ไม่พบออเดอร์หรือ UPDATE ไม่สำเร็จ');
+      notifyV12('อัปเดตสถานะสำเร็จ',`คิว #${orderId} เปลี่ยนเป็น ${newStatus}`,'shield-check');
+      await window.loadAdminData?.(); await window.fetchQueues?.();
+    }catch(err){notifyV12('อัปเดตสถานะไม่สำเร็จ',err.message||'เกิดข้อผิดพลาด','shield-alert');}
+  };
+
+  window.approveTopup=async function(topupId,userId,amount){
+    if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+    const value=Number(amount);
+    if(!Number.isFinite(value)||value<=0)return notifyV12('ยอด Coins ไม่ถูกต้อง','ระบบหยุดการอนุมัติเพื่อป้องกันยอดผิด','shield-alert');
+    try{
+      const claim=await db().from('topups').update({status:'approved'}).eq('id',topupId).eq('status','pending').select('id,user_id,amount').maybeSingle();
+      if(claim.error)throw claim.error;if(!claim.data)return notifyV12('รายการถูกจัดการแล้ว','คำขอนี้ไม่ได้อยู่ในสถานะ pending','shield-check');
+      const wallet=await window.ensureUserWalletV12(userId);
+      const before=Number(wallet.balance||0),after=Number((before+value).toFixed(2));
+      const changed=await db().from('wallets').update({balance:after,updated_at:new Date().toISOString()}).eq('id',wallet.id).eq('balance',before).select('id,balance').maybeSingle();
+      if(changed.error||!changed.data)throw changed.error||new Error('ยอด Coins เปลี่ยนระหว่างการอนุมัติ');
+      const tx=await db().from('wallet_transactions').insert([{wallet_id:wallet.id,order_id:null,transaction_type:'topup',amount:value,description:'เติมเงิน Coins ผ่านสลิปโอนเงิน',transaction_date:new Date().toISOString()}]);
+      if(tx.error)throw tx.error;
+      notifyV12('อนุมัติเรียบร้อย',`เพิ่ม ${money(value)} Coins ให้ผู้ใช้แล้ว`,'shield-check');
+      await window.loadAdminData?.();
+    }catch(err){
+      try{await db().from('topups').update({status:'pending'}).eq('id',topupId).eq('status','approved');}catch(_){}
+      notifyV12('อนุมัติไม่สำเร็จ',err.message||'ระบบยกเลิกรายการเพื่อความปลอดภัย','shield-alert');
+    }
+  };
+
+  window.rejectTopup=async function(topupId){
+    if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+    try{
+      const r=await db().from('topups').update({status:'rejected'}).eq('id',topupId).eq('status','pending').select('id').maybeSingle();
+      if(r.error)throw r.error;if(!r.data)return notifyV12('รายการถูกจัดการแล้ว','คำขอนี้ไม่อยู่ในสถานะ pending แล้ว','shield-check');
+      notifyV12('ปฏิเสธคำขอแล้ว','สถานะถูกบันทึกใน topups','x-circle'); await window.loadAdminData?.();
+    }catch(err){notifyV12('ปฏิเสธรายการไม่สำเร็จ',err.message||'เกิดข้อผิดพลาด','shield-alert');}
+  };
+
+
+  window.handleTopupSubmit=async function(e){
+    e?.preventDefault();
+    const client=db(), user=window.currentUser;
+    if(!user)return notifyV12('กรุณาล็อกอิน','กรุณาล็อกอินก่อนทำรายการเติมเงิน','lock');
+    if(!client)return notifyV12('ฐานข้อมูลยังไม่พร้อม','ระบบไม่รับคำขอเติมเงินในโหมดออฟไลน์','database-zap');
+    const amount=Number($('selected-topup-amount')?.value||20);
+    if(![20,50,100,200,500].includes(amount))return notifyV12('แพ็กเกจไม่ถูกต้อง','กรุณาเลือกจำนวน Coins จากแพ็กเกจที่ระบบกำหนด','shield-alert');
+    const file=$('topup-slip-file')?.files?.[0];
+    if(!file || !/^image\/(png|jpe?g|webp)$/i.test(file.type||'') || file.size>5*1024*1024)
+      return notifyV12('สลิปไม่ผ่านการตรวจสอบ','รองรับ PNG/JPG/WEBP และขนาดไม่เกิน 5 MB','image-off');
+
+    let slipPath='';
+    try{
+      const safeName=String(file.name||'slip').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(0,100)||'slip.jpg';
+      slipPath=`${user.id}/topup-${crypto.randomUUID()}-${safeName}`;
+      await uploadToBucketV12('slips',file,slipPath);
+      const {data:pub}=client.storage.from('slips').getPublicUrl(slipPath);
+      const {error}=await client.from('topups').insert([{
+        user_id:user.id,
+        user_name:user.full_name||'',
+        amount,
+        slip_url:pub?.publicUrl||slipPath,
+        status:'pending',
+        created_at:new Date().toISOString()
+      }]);
+      if(error)throw error;
+      notifyV12('ส่งคำขอสำเร็จ','คำขอเติม Coins ถูกบันทึกแล้ว และรอแอดมินตรวจสอบ','shield-check');
+      $('topup-slip-file').value='';
+      await window.fetchUserTopups?.();
+    }catch(err){
+      await removeStorageV12('slips',slipPath);
+      notifyV12('ส่งคำขอไม่สำเร็จ',err.message||'ไม่สามารถบันทึกข้อมูลได้','shield-alert');
+    }
+  };
+
+  window.loadAdminData=async function(){
+    if(typeof window.assertAdminAccess==='function'&&!window.assertAdminAccess())return;
+    try{
+      const client=db();
+      const [or, tr, ur]=await Promise.all([
+        client.from('orders').select('id,user_id,queue_number,total_amount,status,estimated_pickup,admin_note,created_at').order('created_at',{ascending:false}),
+        client.from('topups').select('*').order('created_at',{ascending:false}),
+        client.from('users').select('id,full_name,email,role')
+      ]);
+      if(or.error)throw or.error;if(tr.error)throw tr.error;if(ur.error)throw ur.error;
+      const orders=await hydrateOrdersV12(or.data||[]);
+      window.__pdAdminOrders=orders; currentOrdersList=orders;
+      const search=(v('pd-admin-search')||'').toLowerCase();
+      const filtered=orders.filter(o=>!search||[o.id,o.queue_number,o.file_name,o.user_name,o.user_email].some(x=>String(x||'').toLowerCase().includes(search)));
+      const tb=$('admin-orders-tbody');
+      if(tb)tb.innerHTML=filtered.map(ord=>`<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
+        <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${safe(ord.queue_number ?? ord.id)}</td>
+        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count||1} หน้า</p>${ord.file_path?`<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)},'documents')" class="mt-1 text-[10px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>`:''}</td>
+        <td class="py-3 px-3">${ord.delivery_method==='delivery'?`<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[150px]">${safe(ord.recipient_name)} (${safe(ord.recipient_phone)})</p>`:`<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
+        <td class="py-3 px-3">${ord.slip_url?`<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>`:'<span class="sub-text">Coins</span>'}</td>
+        <td class="py-3 px-3"><select onchange="updateOrderStatus(${JSON.stringify(ord.id)},this.value)" class="ui-input rounded-xl p-2 text-xs font-bold">
+          <option value="queued" ${ord.status==='queued'?'selected':''}>⏳ รอคิว</option><option value="printing" ${ord.status==='printing'?'selected':''}>🖨️ กำลังพิมพ์</option><option value="completed" ${ord.status==='completed'?'selected':''}>✅ พิมพ์เสร็จแล้ว</option><option value="cancelled" ${ord.status==='cancelled'?'selected':''}>❌ ยกเลิก</option>
+        </select></td>
+        <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method==='delivery'?`<button type="button" onclick="promptTracking(${JSON.stringify(ord.id)})" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold">Tracking</button>`:''}<button type="button" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">ดูข้อมูล</button></td>
+      </tr>`).join('')||'<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
+
+      const topupTb=$('admin-topups-tbody');
+      if(topupTb)topupTb.innerHTML=(tr.data||[]).map(tp=>`<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
+        <td class="py-3 px-3 sub-text text-[10px]">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
+        <td class="py-3 px-3 font-bold titanium-text">${safe(tp.user_name||tp.user_id)}</td>
+        <td class="py-3 px-3 font-black text-amber-500">+${money(tp.amount)} Coins</td>
+        <td class="py-3 px-3">${tp.slip_url?`<button type="button" onclick="openSlipModal(${JSON.stringify(tp.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>`:'-'}</td>
+        <td class="py-3 px-3 font-bold ${tp.status==='approved'?'text-emerald-500':tp.status==='rejected'?'text-rose-500':'text-amber-500'}">${safe(tp.status||'pending')}</td>
+        <td class="py-3 px-3 text-right">${tp.status==='pending'?`<div class="flex gap-2 justify-end"><button type="button" onclick="approveTopup(${JSON.stringify(tp.id)},${JSON.stringify(tp.user_id)},${Number(tp.amount)})" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-[11px]">อนุมัติ</button><button type="button" onclick="rejectTopup(${JSON.stringify(tp.id)})" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-[11px]">ปฏิเสธ</button></div>`:'-'}</td>
+      </tr>`).join('')||'<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
+
+      const userTb=$('admin-users-tbody');
+      if(userTb)userTb.innerHTML=(ur.data||[]).map(u=>`<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role==='admin'?'text-purple-500':'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" onclick="changeUserRole(${JSON.stringify(u.id)},${JSON.stringify(u.role==='admin'?'member':'admin')})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">สลับสิทธิ์เป็น ${u.role==='admin'?'Member':'Admin'}</button></td></tr>`).join('')||'<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
+
+      $('pd-admin-orders-count') && ($('pd-admin-orders-count').textContent=String(orders.length));
+      $('pd-admin-pending-count') && ($('pd-admin-pending-count').textContent=String(orders.filter(o=>o.status==='queued').length));
+      $('pd-admin-topup-count') && ($('pd-admin-topup-count').textContent=String((tr.data||[]).filter(x=>x.status==='pending').length));
+      window.lucide?.createIcons();
+    }catch(err){notifyV12('โหลดข้อมูล Admin ไม่สำเร็จ',err.message||'ไม่สามารถดึงข้อมูลได้','shield-alert');}
+  };
+
+  window.filterAdminWorkspace=()=>window.loadAdminData?.();
+
+  /* Make view switching call the new normalized loaders. */
+  if(typeof window.switchView==='function'){
+    const originalSwitch=window.switchView;
+    window.switchView=function(viewName){
+      const result=originalSwitch.apply(this,arguments);
+      if(viewName==='dashboard')window.fetchQueues?.();
+      if(viewName==='wallet'){window.fetchUserTopups?.();window.fetchUserWallet?.();}
+      if(viewName==='admin')window.loadAdminData?.();
+      return result;
+    };
+  }
+
+  /* Prevent the old schema probe from blocking the new normalized model. */
+  window.pdV11EnsureOrderSchema=async()=>true;
+
+  /* Diagnostics now checks the actual live tables/columns instead of orders.copies. */
+  window.pdV11RunDiagnostics=async function(){
+    const client=db(); const rows=[];
+    if(!client)return ['❌ Supabase: ยังไม่เชื่อมต่อ'];
+    const checks=[
+      ['orders','id,user_id,queue_number,total_amount,status,created_at'],
+      ['documents','id,user_id,file_name,file_path,page_count,file_size,created_at'],
+      ['print_jobs','id,order_id,document_id,copies,color,paper_size,duplex,status,page_range'],
+      ['deliveries','id,order_id,delivery_method,recipient_name,phone_number,delivery_address,delivery_provider,tracking_number'],
+      ['payments','id,order_id,amount,status,payment_method,slip_url,created_at'],
+      ['wallets','id,user_id,balance,updated_at'],
+      ['wallet_transactions','id,wallet_id,order_id,transaction_type,amount,description,transaction_date'],
+      ['pricing','id,paper_size,black_white_price,color_price,duplex_price']
+    ];
+    for(const [table,cols] of checks){
+      try{const r=await client.from(table).select(cols).limit(1);rows.push(r.error?`❌ ${table}: ${r.error.message}`:`✅ ${table}: schema OK`);}catch(e){rows.push(`❌ ${table}: ${e.message}`);}
+    }
+    notifyV12('ตรวจสอบฐานข้อมูล v12',rows.join('\n'),'database');
+    return rows;
+  };
+
+  /* Replace the old hard-coded price display when the user changes A4/A3.
+     The authoritative total is still re-read from pricing at submission time. */
+  window.pdV12RefreshPrice=async function(){
+    try{
+      const paper=v('paper-size')||'A4', p=await loadPricingV12(paper);
+      const pages=Math.max(1,parseInt(v('printed-pages-input'))||1), copies=Math.max(1,parseInt(v('copies'))||1);
+      const color=v('color-type')==='color', duplex=v('duplex-type')==='duplex', delivery=q('input[name="delivery_method"]:checked')?.value==='delivery';
+      const rate=Number(color?p.color_price:p.black_white_price)+(duplex?Number(p.duplex_price):0);
+      const printCost=pages*rate*copies,total=printCost+(delivery?30:0);
+      if($('total-price'))$('total-price').textContent=`${money(total)} ฿`;
+      if($('price-breakdown'))$('price-breakdown').textContent=delivery?`(ค่าพิมพ์ ${money(printCost)} ฿ + ค่าจัดส่ง 30.00 ฿)`:`(${pages} หน้า × ${money(rate)} ฿ × ${copies} ชุด | รับหน้าร้านฟรี)`;
+    }catch(_){}
+  };
+  ['paper-size','copies','color-type','duplex-type','printed-pages-input'].forEach(id=>$(id)?.addEventListener('change',()=>window.pdV12RefreshPrice()));
+  qa('input[name="delivery_method"]').forEach(x=>x.addEventListener('change',()=>window.pdV12RefreshPrice()));
+  setTimeout(()=>window.pdV12RefreshPrice(),700);
+
+  window.addEventListener('load',()=>{
+    window.fetchQueues?.();
+    window.fetchUserTopups?.();
+    if(window.currentUser?.role==='admin')window.loadAdminData?.();
+    window.pdV12RefreshPrice?.();
+  });
 })();
 </script>
 
