@@ -2939,13 +2939,13 @@
           <div class="ui-panel rounded-[40px] p-8 sm:p-10 space-y-6 text-center relative overflow-hidden group shadow-2xl">
             <div class="relative w-full h-80 sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
               <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
+              <div class="pd-hero-scrim absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-black/62 via-black/22 to-transparent pointer-events-none"></div>
               
-              <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+              <div class="pd-hero-status absolute z-20 top-4 right-4 bg-black/58 backdrop-blur-md border border-white/22 px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-300 flex items-center gap-2 shadow-lg shadow-black/20">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span> Online Ready
               </div>
 
-              <div class="absolute bottom-6 left-6 right-6 text-left space-y-1.5">
+              <div class="pd-hero-copy absolute z-20 bottom-5 left-5 right-5 text-left space-y-2">
                 <span class="text-xs font-black text-blue-400 uppercase tracking-widest bg-blue-500/20 border border-blue-500/30 px-3 py-1 rounded-md inline-block">Self Pickup & Delivery</span>
                 <p class="text-2xl sm:text-3xl font-black text-white">เครื่องพิมพ์เลเซอร์คุณภาพสูง</p>
                 <p class="text-xs sm:text-sm text-slate-300">บริการสั่งพิมพ์เอกสารสำหรับนักศึกษาและบุคลากร ITI</p>
@@ -3146,73 +3146,134 @@
     </section>
 
     <!-- VIEW 2: AUTH -->
-    <section id="view-auth" class="hidden py-16 px-4 max-w-md mx-auto">
-      <div class="ui-panel rounded-[32px] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
-        <div class="mb-5 rounded-2xl border border-blue-500/15 bg-blue-500/5 px-4 py-3 flex gap-3 items-start">
-          <i data-lucide="shield-check" class="w-5 h-5 text-blue-500 shrink-0 mt-0.5"></i>
-          <div><p class="text-sm font-extrabold titanium-text">ความปลอดภัยบัญชีเป็นลำดับแรก</p><p class="text-[11px] sub-text leading-relaxed mt-0.5">ระบบจะตรวจสอบข้อมูลก่อนทำรายการสำคัญ และเตือนทันทีเมื่อการเชื่อมต่อฐานข้อมูลยังไม่พร้อม</p></div>
+    <section id="view-auth" class="hidden py-16 px-4 mx-auto">
+      <div class="pd-auth-shell">
+        <div class="pd-auth-intro">
+          <div class="pd-auth-brand-icon" aria-hidden="true"><i data-lucide="printer"></i></div>
+          <span class="pd-auth-kicker">PRINTDEKD PRO · KMUTNB ITI</span>
+          <h1 id="auth-context-title">ยินดีต้อนรับกลับ</h1>
+          <p id="auth-context-copy">เข้าสู่ระบบเพื่อสั่งพิมพ์ ติดตามคิว และจัดการ Coins ของคุณได้จากที่เดียว</p>
+
+          <div class="pd-auth-points">
+            <div class="pd-auth-point">
+              <span><i data-lucide="shield-check"></i></span>
+              <div><strong>บัญชีและข้อมูลสำคัญ</strong><small>ระบบตรวจสอบข้อมูลก่อนทำรายการสำคัญ</small></div>
+            </div>
+            <div class="pd-auth-point">
+              <span><i data-lucide="zap"></i></span>
+              <div><strong>สั่งพิมพ์ได้ทันที</strong><small>อัปโหลดไฟล์ คำนวณราคา และติดตามคิวในหน้าเดียว</small></div>
+            </div>
+            <div class="pd-auth-point">
+              <span><i data-lucide="wallet-cards"></i></span>
+              <div><strong>Coins สะดวกกว่าเดิม</strong><small>ดูยอดคงเหลือและประวัติรายการได้ตลอดเวลา</small></div>
+            </div>
+          </div>
+
+          <div class="pd-auth-security">
+            <span class="pd-auth-security-icon"><i data-lucide="lock-keyhole"></i></span>
+            <div>
+              <strong>พร้อมสำหรับการใช้งานอย่างปลอดภัย</strong>
+              <p>โปรดตรวจสอบข้อมูลก่อนยืนยันการเข้าสู่ระบบหรือสมัครสมาชิก</p>
+            </div>
+          </div>
         </div>
-        
-        <div class="flex bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl mb-8 border border-slate-300/50 dark:border-white/10">
-          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs font-bold rounded-lg text-white bg-blue-600 shadow-sm">เข้าสู่ระบบ</button>
-          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-3 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ลงทะเบียน</button>
+
+        <div class="pd-auth-form-card">
+          <div class="pd-auth-form-head">
+            <div>
+              <span class="pd-auth-form-eyebrow">ACCOUNT CENTER</span>
+              <h2 id="auth-form-title">เข้าสู่ระบบ</h2>
+              <p id="auth-form-copy">ใช้บัญชีของคุณเพื่อเริ่มสั่งพิมพ์ต่อ</p>
+            </div>
+            <div class="pd-auth-status"><span></span> Online</div>
+          </div>
+
+          <div class="pd-auth-tabs" role="tablist" aria-label="เลือกการใช้งานบัญชี">
+            <button type="button" id="tab-login" role="tab" aria-selected="true" aria-controls="form-login" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
+            <button type="button" id="tab-register" role="tab" aria-selected="false" aria-controls="form-register" onclick="switchAuthTab('register')">ลงทะเบียน</button>
+          </div>
+
+          <form id="form-login" onsubmit="handleLogin(event)" class="pd-auth-form">
+            <div class="pd-auth-field">
+              <label for="login-email">อีเมลบัญชี</label>
+              <span class="pd-auth-field-hint">ใช้อีเมลที่ลงทะเบียนไว้กับ PrintDekD Pro</span>
+              <div class="pd-auth-input-wrap">
+                <i data-lucide="mail" aria-hidden="true"></i>
+                <input type="email" id="login-email" autocomplete="email" inputmode="email" placeholder="example@kmutnb.ac.th" required class="ui-input">
+              </div>
+            </div>
+
+            <div class="pd-auth-field">
+              <div class="pd-auth-label-row"><label for="login-password">รหัสผ่าน</label><span>อย่างน้อย 8 ตัวอักษร</span></div>
+              <div class="pd-auth-input-wrap">
+                <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+                <input type="password" id="login-password" autocomplete="current-password" placeholder="กรอกรหัสผ่านของคุณ" required class="ui-input">
+                <button type="button" class="pd-auth-eye" onclick="togglePasswordVisibility('login-password', 'login-eye')" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+                  <i id="login-eye" data-lucide="eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="pd-auth-submit pd-auth-submit-primary">
+              <span>เข้าสู่ระบบ</span><i data-lucide="arrow-right"></i>
+            </button>
+            <p class="pd-auth-switch-note">ยังไม่มีบัญชี? <button type="button" onclick="switchAuthTab('register')">สร้างบัญชีใหม่</button></p>
+          </form>
+
+          <form id="form-register" onsubmit="handleRegister(event)" class="pd-auth-form hidden">
+            <div class="pd-auth-field">
+              <label for="reg-fullname">ชื่อ-นามสกุล</label>
+              <span class="pd-auth-field-hint">ชื่อที่ใช้แสดงในบัญชีและรายการสั่งพิมพ์</span>
+              <div class="pd-auth-input-wrap">
+                <i data-lucide="user-round" aria-hidden="true"></i>
+                <input type="text" id="reg-fullname" autocomplete="name" maxlength="80" placeholder="เช่น สมชาย ใจดี" required class="ui-input">
+              </div>
+            </div>
+
+            <div class="pd-auth-field">
+              <label for="reg-email">อีเมลบัญชี</label>
+              <div class="pd-auth-input-wrap">
+                <i data-lucide="mail" aria-hidden="true"></i>
+                <input type="email" id="reg-email" autocomplete="email" inputmode="email" placeholder="student@kmutnb.ac.th" required class="ui-input">
+              </div>
+            </div>
+
+            <div class="pd-auth-field">
+              <label for="reg-avatar-file">รูปโปรไฟล์ <small>(ไม่บังคับ)</small></label>
+              <div class="pd-auth-avatar-upload">
+                <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" alt="ตัวอย่างรูปโปรไฟล์">
+                <div class="pd-auth-avatar-copy"><strong>เพิ่มรูปของคุณ</strong><span>PNG, JPG, WEBP • ใช้รูปสี่เหลี่ยมจะดูดีที่สุด</span></div>
+                <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)" aria-label="เลือกรูปโปรไฟล์">
+              </div>
+            </div>
+
+            <div class="pd-auth-field">
+              <label for="reg-password">สร้างรหัสผ่าน</label>
+              <div class="pd-auth-input-wrap">
+                <i data-lucide="key-round" aria-hidden="true"></i>
+                <input type="password" id="reg-password" autocomplete="new-password" minlength="8" placeholder="สร้างรหัสผ่านที่ปลอดภัย" required onkeyup="validatePasswordRequirements()" class="ui-input">
+                <button type="button" class="pd-auth-eye" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+                  <i id="reg-eye" data-lucide="eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="pd-auth-password-box">
+              <div class="pd-auth-password-head"><strong>ความปลอดภัยของรหัสผ่าน</strong><span>ต้องผ่านครบทุกข้อ</span></div>
+              <div class="pd-auth-req-grid">
+                <div id="pwd-req-length"><i data-lucide="circle-x"></i> อย่างน้อย 8 ตัวอักษร</div>
+                <div id="pwd-req-upper"><i data-lucide="circle-x"></i> มี A-Z</div>
+                <div id="pwd-req-lower"><i data-lucide="circle-x"></i> มี a-z</div>
+                <div id="pwd-req-num"><i data-lucide="circle-x"></i> มีตัวเลข 0-9</div>
+              </div>
+            </div>
+
+            <button type="submit" id="reg-submit-btn" class="pd-auth-submit pd-auth-submit-register">
+              <span>สร้างบัญชีและเริ่มใช้งาน</span><i data-lucide="arrow-right"></i>
+            </button>
+            <p class="pd-auth-switch-note">มีบัญชีอยู่แล้ว? <button type="button" onclick="switchAuthTab('login')">กลับไปเข้าสู่ระบบ</button></p>
+          </form>
         </div>
-
-        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5">
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">อีเมลบัญชี</label>
-            <input type="email" id="login-email" autocomplete="email" inputmode="email" placeholder="example@kmutnb.ac.th" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
-          </div>
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">รหัสผ่าน</label>
-            <div class="relative">
-              <input type="password" id="login-password" autocomplete="current-password" placeholder="••••••••" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3.5 top-3.5 sub-text hover:text-blue-500">
-                <i id="login-eye" data-lucide="eye" class="w-5 h-5"></i>
-              </button>
-            </div>
-          </div>
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition text-sm">เข้าสู่ระบบ</button>
-        </form>
-
-        <form id="form-register" onsubmit="handleRegister(event)" class="space-y-5 hidden">
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">ชื่อ-นามสกุล</label>
-            <input type="text" id="reg-fullname" autocomplete="name" maxlength="80" placeholder="สมชาย ใจดี" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
-          </div>
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">อีเมลบัญชี</label>
-            <input type="email" id="reg-email" autocomplete="email" inputmode="email" placeholder="student@kmutnb.ac.th" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">รูปโปรไฟล์:</label>
-            <div class="flex items-center gap-3">
-              <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-xl object-cover border border-slate-300 dark:border-white/20">
-              <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)" class="w-full text-xs ui-input rounded-xl p-2">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold mb-2 titanium-text">รหัสผ่าน</label>
-            <div class="relative">
-              <input type="password" id="reg-password" autocomplete="new-password" minlength="8" placeholder="••••••••" required onkeyup="validatePasswordRequirements()" class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500 pr-10">
-              <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute right-3.5 top-3.5 sub-text hover:text-blue-500">
-                <i id="reg-eye" data-lucide="eye" class="w-5 h-5"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="p-4 ui-card rounded-xl text-xs space-y-1.5">
-            <p class="font-bold mb-1 titanium-text">เงื่อนไขความปลอดภัยรหัสผ่าน:</p>
-            <div id="pwd-req-length" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> อย่างน้อย 8 ตัวอักษร</div>
-            <div id="pwd-req-upper" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)</div>
-            <div id="pwd-req-lower" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีภาษาอังกฤษ พิมพ์เล็ก (a-z)</div>
-            <div id="pwd-req-num" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีตัวเลขอย่างน้อย 1 ตัว (0-9)</div>
-          </div>
-
-          <button type="submit" id="reg-submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition opacity-60 text-sm">ยืนยันลงทะเบียน</button>
-        </form>
       </div>
     </section>
 
@@ -7586,6 +7647,603 @@ window.addEventListener('load',()=>{setTimeout(decorateAdminRows,300);if(window.
 })();
 </script>
 
+
+<style id="pd-readability-v13">
+/* ==========================================================
+   PrintDekD Pro v13 — Readability / Contrast Redesign
+   Fixes:
+   - No text is allowed to visually blend into hero imagery.
+   - Landing metrics use opaque, theme-safe surfaces and solid text.
+   - Auth page becomes a larger, calmer two-column account center.
+   - Thai labels, inputs, buttons and helpers are deliberately larger.
+   - Motion stays light: transform/opacity only.
+   ========================================================== */
+
+/* ---------- Landing hero: separate the photo from the typography ---------- */
+#view-landing .group{
+  position:relative!important;
+  isolation:isolate!important;
+}
+#view-landing .group img{
+  filter:brightness(.82) saturate(.90) contrast(1.02)!important;
+}
+#view-landing .group > div.absolute.inset-0{
+  background:linear-gradient(180deg,rgba(4,8,16,.03) 0%,rgba(4,8,16,.18) 46%,rgba(4,8,16,.58) 100%)!important;
+}
+
+/* status badge */
+#view-landing .group > div.absolute.top-4{
+  z-index:4!important;
+  top:16px!important;
+  right:16px!important;
+  min-height:42px!important;
+  padding:0 14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  border-radius:999px!important;
+  background:#f8fafc!important;
+  border:1px solid #dbe4ee!important;
+  color:#0f172a!important;
+  box-shadow:0 12px 32px rgba(15,23,42,.18)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  line-height:1!important;
+}
+html.dark #view-landing .group > div.absolute.top-4{
+  background:#101720!important;
+  border-color:#2b394b!important;
+  color:#f8fafc!important;
+  box-shadow:0 14px 35px rgba(0,0,0,.34)!important;
+}
+#view-landing .group > div.absolute.top-4 .pulse-dot{
+  width:9px!important;height:9px!important;flex:none!important;
+}
+
+/* caption = opaque reading surface */
+#view-landing .group > div.absolute.bottom-6{
+  z-index:4!important;
+  left:16px!important; right:16px!important; bottom:16px!important;
+  padding:18px 20px 19px!important;
+  border-radius:24px!important;
+  background:#f8fafc!important;
+  border:1px solid #d9e2ec!important;
+  box-shadow:0 22px 48px rgba(15,23,42,.18)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  color:#0f172a!important;
+}
+html.dark #view-landing .group > div.absolute.bottom-6{
+  background:#0e141d!important;
+  border-color:#29384a!important;
+  box-shadow:0 22px 52px rgba(0,0,0,.40)!important;
+  color:#f8fafc!important;
+}
+#view-landing .group > div.absolute.bottom-6 > span{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:32px!important;
+  padding:0 10px!important;
+  border-radius:10px!important;
+  background:#e8f2ff!important;
+  border:1px solid #c8def8!important;
+  color:#075bb5!important;
+  font-size:12px!important;
+  line-height:1!important;
+  letter-spacing:.045em!important;
+  text-transform:none!important;
+  font-weight:850!important;
+}
+html.dark #view-landing .group > div.absolute.bottom-6 > span{
+  background:#102845!important;
+  border-color:#244e7b!important;
+  color:#7fc3ff!important;
+}
+#view-landing .group > div.absolute.bottom-6 p.text-2xl{
+  margin-top:12px!important;
+  font-size:clamp(26px,2.35vw,38px)!important;
+  line-height:1.16!important;
+  letter-spacing:-.035em!important;
+  font-weight:850!important;
+  max-width:18ch!important;
+  color:#0f172a!important;
+  text-shadow:none!important;
+  overflow-wrap:anywhere!important;
+  text-wrap:balance!important;
+}
+html.dark #view-landing .group > div.absolute.bottom-6 p.text-2xl{
+  color:#f8fafc!important;
+}
+#view-landing .group > div.absolute.bottom-6 p.text-xs{
+  margin-top:8px!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+  max-width:48ch!important;
+  color:#475569!important;
+}
+html.dark #view-landing .group > div.absolute.bottom-6 p.text-xs{
+  color:#c5cfdb!important;
+}
+
+/* ---------- Landing metric cards: solid, high-contrast cards ---------- */
+#view-landing .grid.grid-cols-3 > div.ui-card{
+  min-height:132px!important;
+  padding:20px 18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:6px!important;
+  background:#f8fafc!important;
+  border:1px solid #d8e1eb!important;
+  box-shadow:0 14px 32px rgba(15,23,42,.07)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card{
+  background:#101720!important;
+  border-color:#2a394a!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.28)!important;
+}
+#view-landing .grid.grid-cols-3 > div.ui-card p:first-child,
+#view-landing .grid.grid-cols-3 > div.ui-card p:last-child{
+  margin:0!important;
+}
+#view-landing .grid.grid-cols-3 > div.ui-card p:first-child{
+  font-size:clamp(24px,2.15vw,32px)!important;
+  line-height:1.12!important;
+  font-weight:850!important;
+  letter-spacing:-.025em!important;
+  background:none!important;
+  -webkit-background-clip:border-box!important;
+  background-clip:border-box!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-shadow:none!important;
+}
+#view-landing .grid.grid-cols-3 > div.ui-card:nth-child(1) p:first-child{color:#175dcc!important}
+#view-landing .grid.grid-cols-3 > div.ui-card:nth-child(2) p:first-child{color:#b56a00!important}
+#view-landing .grid.grid-cols-3 > div.ui-card:nth-child(3) p:first-child{color:#0b8a59!important}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card:nth-child(1) p:first-child{color:#63a8ff!important}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card:nth-child(2) p:first-child{color:#ffc85a!important}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card:nth-child(3) p:first-child{color:#61e0a3!important}
+#view-landing .grid.grid-cols-3 > div.ui-card p:last-child{
+  font-size:15px!important;
+  line-height:1.45!important;
+  font-weight:700!important;
+  color:#334155!important;
+}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card p:last-child{color:#c4ceda!important}
+
+/* Don't make the metrics look like glass; the copy should be foreground, not decoration. */
+#view-landing .grid.grid-cols-3 > div.ui-card:hover{
+  transform:translateY(-4px)!important;
+  box-shadow:0 20px 42px rgba(15,23,42,.11)!important;
+}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card:hover{box-shadow:0 22px 48px rgba(0,0,0,.36)!important}
+
+/* ---------- AUTH: larger, clearer account center ---------- */
+#view-auth{
+  width:min(100%,1120px)!important;
+  max-width:none!important;
+  padding-top:clamp(26px,5vw,78px)!important;
+  padding-bottom:clamp(36px,7vw,90px)!important;
+}
+.pd-auth-shell{
+  display:grid;
+  grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr);
+  min-height:720px;
+  overflow:hidden;
+  border-radius:36px;
+  border:1px solid #d8e1eb;
+  background:#f8fafc;
+  box-shadow:0 30px 90px rgba(15,23,42,.13), inset 0 1px 0 rgba(255,255,255,.92);
+}
+html.dark .pd-auth-shell{
+  border-color:#273548;
+  background:#0d131c;
+  box-shadow:0 36px 110px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+.pd-auth-intro{
+  position:relative;
+  padding:clamp(30px,4vw,54px);
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(145deg,#edf5ff 0%,#f8fafc 58%,#eef3f8 100%);
+  border-right:1px solid #d8e1eb;
+  color:#0f172a;
+}
+html.dark .pd-auth-intro{
+  background:linear-gradient(145deg,#102038 0%,#0c1520 55%,#0b1119 100%);
+  border-right-color:#253447;
+  color:#f8fafc;
+}
+.pd-auth-brand-icon{
+  width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+  background:#0a84ff;color:#fff;box-shadow:0 16px 38px rgba(10,132,255,.28);margin-bottom:28px;
+}
+.pd-auth-brand-icon svg{width:30px;height:30px}
+.pd-auth-kicker{font-size:12px;font-weight:850;letter-spacing:.12em;color:#176bc8}
+html.dark .pd-auth-kicker{color:#7bb8ff}
+.pd-auth-intro h1{
+  margin:12px 0 12px;font-size:clamp(36px,4.5vw,62px);line-height:1.04;letter-spacing:-.045em;font-weight:850;
+}
+.pd-auth-intro > p{
+  max-width:32ch;font-size:18px;line-height:1.7;color:#475569;margin:0;
+}
+html.dark .pd-auth-intro > p{color:#c6d0dc}
+.pd-auth-points{display:grid;gap:13px;margin-top:36px}
+.pd-auth-point{
+  display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;padding:13px 0;
+  border-top:1px solid rgba(100,116,139,.18);
+}
+.pd-auth-point:first-child{border-top:0}
+.pd-auth-point > span{
+  width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:#fff;border:1px solid #d8e1eb;color:#0a72d8;box-shadow:0 8px 20px rgba(15,23,42,.06);
+}
+html.dark .pd-auth-point > span{background:#142233;border-color:#29415c;color:#69b0ff;box-shadow:none}
+.pd-auth-point > span svg{width:20px;height:20px}
+.pd-auth-point strong{display:block;font-size:15px;line-height:1.35;font-weight:800;color:inherit}
+.pd-auth-point small{display:block;margin-top:3px;font-size:13px;line-height:1.5;color:#64748b}
+html.dark .pd-auth-point small{color:#a9b7c7}
+
+.pd-auth-security{
+  margin-top:auto;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;
+  padding:16px;border-radius:19px;background:#fff;border:1px solid #cad8e6;box-shadow:0 14px 30px rgba(15,23,42,.07);
+}
+html.dark .pd-auth-security{background:#101a25;border-color:#29405a;box-shadow:none}
+.pd-auth-security-icon{
+  width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  color:#0b7a55;background:#e8f8f1;border:1px solid #bde7d5;
+}
+html.dark .pd-auth-security-icon{color:#71e0b0;background:#113427;border-color:#245844}
+.pd-auth-security strong{display:block;font-size:14px;line-height:1.35;font-weight:850;color:inherit}
+.pd-auth-security p{margin:5px 0 0;font-size:12.5px;line-height:1.55;color:#64748b}
+html.dark .pd-auth-security p{color:#a8b7c7}
+
+.pd-auth-form-card{
+  padding:clamp(28px,4vw,56px);display:flex;flex-direction:column;min-width:0;background:#fff;color:#0f172a;
+}
+html.dark .pd-auth-form-card{background:#101720;color:#f8fafc}
+.pd-auth-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.pd-auth-form-eyebrow{font-size:11px;font-weight:850;letter-spacing:.12em;color:#64748b}
+html.dark .pd-auth-form-eyebrow{color:#8e9cad}
+.pd-auth-form-head h2{margin:7px 0 5px;font-size:clamp(28px,3.4vw,44px);line-height:1.05;letter-spacing:-.04em;font-weight:850;color:inherit}
+.pd-auth-form-head p{margin:0;color:#64748b;font-size:14px;line-height:1.55}
+html.dark .pd-auth-form-head p{color:#aeb9c7}
+.pd-auth-status{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 11px;border-radius:999px;background:#edf8f3;color:#0b8a59;border:1px solid #c7ead9;font-size:11px;font-weight:850}
+html.dark .pd-auth-status{background:#113427;color:#65e1a8;border-color:#245844}
+.pd-auth-status span{width:7px;height:7px;border-radius:50%;background:#19b36f;box-shadow:0 0 0 5px rgba(25,179,111,.10)}
+
+.pd-auth-tabs{
+  margin:28px 0 26px;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:18px;background:#edf1f6;border:1px solid #dbe3ec;
+}
+html.dark .pd-auth-tabs{background:#0b1118;border-color:#273648}
+.pd-auth-tabs button{
+  min-height:58px;border:0;border-radius:14px;background:transparent;color:#64748b;font-size:16px;font-weight:800;cursor:pointer;
+  transition:background .24s ease,color .24s ease,transform .24s ease,box-shadow .24s ease;
+}
+html.dark .pd-auth-tabs button{color:#a9b5c4}
+.pd-auth-tabs button[aria-selected="true"]{
+  background:#0a84ff;color:#fff;box-shadow:0 12px 25px rgba(10,132,255,.22);
+}
+.pd-auth-tabs button:hover{transform:translateY(-1px)}
+
+.pd-auth-form{display:flex;flex-direction:column;gap:22px;max-width:570px}
+.pd-auth-field{display:flex;flex-direction:column;gap:7px}
+.pd-auth-field label,.pd-auth-label-row label{font-size:15px;font-weight:800;line-height:1.35;color:inherit}
+.pd-auth-field label small{font-size:12px;color:#7a8796;font-weight:700}
+.pd-auth-field-hint{font-size:12px;line-height:1.45;color:#738093;margin-top:-2px}
+html.dark .pd-auth-field-hint{color:#9ba8b7}
+.pd-auth-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pd-auth-label-row > span{font-size:11px;font-weight:700;color:#7a8796}
+html.dark .pd-auth-label-row > span{color:#8997a8}
+.pd-auth-input-wrap{position:relative;display:flex;align-items:center}
+.pd-auth-input-wrap > svg{position:absolute;left:17px;width:20px;height:20px;color:#8090a4;z-index:2;pointer-events:none}
+html.dark .pd-auth-input-wrap > svg{color:#8fa0b4}
+.pd-auth-input-wrap .ui-input{
+  width:100%!important;min-height:62px!important;padding:0 54px 0 50px!important;border-radius:17px!important;
+  background:#f8fafc!important;border:1px solid #c8d4e1!important;color:#0f172a!important;font-size:16px!important;font-weight:550!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 20px rgba(15,23,42,.035)!important;
+}
+html.dark .pd-auth-input-wrap .ui-input{
+  background:#0d141c!important;border-color:#2b3a4c!important;color:#f8fafc!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.pd-auth-input-wrap .ui-input::placeholder{color:#8794a5!important;opacity:1!important}
+html.dark .pd-auth-input-wrap .ui-input::placeholder{color:#7f8da0!important}
+.pd-auth-input-wrap .ui-input:focus{border-color:#0a84ff!important;box-shadow:0 0 0 4px rgba(10,132,255,.12)!important}
+.pd-auth-eye{
+  position:absolute!important;right:8px;top:8px;width:46px;height:46px;min-height:46px!important;padding:0;border:0;border-radius:13px;background:transparent;color:#607087;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;
+}
+html.dark .pd-auth-eye{color:#96a4b5}
+.pd-auth-eye:hover{background:rgba(10,132,255,.08);color:#0a84ff}
+.pd-auth-eye svg{width:20px;height:20px}
+
+.pd-auth-submit{
+  width:100%;min-height:62px;border:0;border-radius:17px;color:#fff;font-size:16px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+  transition:transform .24s ease,box-shadow .24s ease,filter .24s ease;margin-top:2px;
+}
+.pd-auth-submit:hover{transform:translateY(-2px);filter:brightness(1.03)}
+.pd-auth-submit:active{transform:scale(.99)}
+.pd-auth-submit svg{width:20px;height:20px}
+.pd-auth-submit-primary{background:#0a84ff;box-shadow:0 18px 34px rgba(10,132,255,.25)}
+.pd-auth-submit-register{background:#0d9a67;box-shadow:0 18px 34px rgba(13,154,103,.22)}
+
+.pd-auth-switch-note{margin:0;text-align:center;font-size:13px;line-height:1.55;color:#64748b}
+html.dark .pd-auth-switch-note{color:#9eabba}
+.pd-auth-switch-note button{min-height:auto;padding:0;border:0;background:none;color:#0a72d8;font-size:13px;font-weight:850;cursor:pointer}
+html.dark .pd-auth-switch-note button{color:#75b7ff}
+
+.pd-auth-avatar-upload{
+  position:relative;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:12px;border-radius:17px;border:1px dashed #c8d4e1;background:#f8fafc;min-height:82px;overflow:hidden;
+}
+html.dark .pd-auth-avatar-upload{background:#0d141c;border-color:#334459}
+.pd-auth-avatar-upload img{width:56px;height:56px;border-radius:15px;object-fit:cover;border:1px solid #c9d5e2}
+html.dark .pd-auth-avatar-upload img{border-color:#334559}
+.pd-auth-avatar-copy strong{display:block;font-size:14px;line-height:1.35}
+.pd-auth-avatar-copy span{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:#748193}
+html.dark .pd-auth-avatar-copy span{color:#9ba8b7}
+.pd-auth-avatar-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+
+.pd-auth-password-box{padding:15px 16px;border-radius:17px;background:#f7f9fc;border:1px solid #dbe3ec}
+html.dark .pd-auth-password-box{background:#0d141c;border-color:#2a3a4c}
+.pd-auth-password-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pd-auth-password-head strong{font-size:13px;font-weight:850}
+.pd-auth-password-head span{font-size:11px;color:#738093;font-weight:700}
+html.dark .pd-auth-password-head span{color:#909dae}
+.pd-auth-req-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pd-auth-req-grid > div{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#cf3555}
+html.dark .pd-auth-req-grid > div{color:#ff7d95}
+.pd-auth-req-grid svg{width:15px;height:15px;flex:none}
+
+/* Existing password validator may rewrite classes; keep the visual states readable. */
+#pwd-req-length.text-emerald-500,#pwd-req-upper.text-emerald-500,#pwd-req-lower.text-emerald-500,#pwd-req-num.text-emerald-500,
+#pwd-req-length.is-valid,#pwd-req-upper.is-valid,#pwd-req-lower.is-valid,#pwd-req-num.is-valid{color:#0b8a59!important}
+html.dark #pwd-req-length.text-emerald-500,html.dark #pwd-req-upper.text-emerald-500,html.dark #pwd-req-lower.text-emerald-500,html.dark #pwd-req-num.text-emerald-500,
+html.dark #pwd-req-length.is-valid,html.dark #pwd-req-upper.is-valid,html.dark #pwd-req-lower.is-valid,html.dark #pwd-req-num.is-valid{color:#63e0a7!important}
+
+@media (max-width: 900px){
+  .pd-auth-shell{grid-template-columns:1fr;min-height:auto}
+  .pd-auth-intro{padding:28px;border-right:0;border-bottom:1px solid #d8e1eb}
+  html.dark .pd-auth-intro{border-bottom-color:#253447}
+  .pd-auth-intro h1{font-size:40px}
+  .pd-auth-intro > p{font-size:16px}
+  .pd-auth-points{grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+  .pd-auth-point{border:1px solid rgba(100,116,139,.16);border-radius:16px;padding:12px;background:rgba(255,255,255,.72)}
+  html.dark .pd-auth-point{background:rgba(255,255,255,.035);border-color:#26374a}
+  .pd-auth-point:first-child{border-top:1px solid rgba(100,116,139,.16)}
+  .pd-auth-security{margin-top:20px}
+}
+@media (max-width: 640px){
+  #view-auth{padding-left:10px!important;padding-right:10px!important}
+  .pd-auth-shell{border-radius:28px}
+  .pd-auth-intro{padding:24px}
+  .pd-auth-brand-icon{width:56px;height:56px;border-radius:18px;margin-bottom:20px}
+  .pd-auth-kicker{font-size:10px}
+  .pd-auth-intro h1{font-size:34px}
+  .pd-auth-intro > p{font-size:15px;line-height:1.65}
+  .pd-auth-points{grid-template-columns:1fr;margin-top:22px}
+  .pd-auth-point{background:transparent;border-left:0;border-right:0;border-radius:0;padding:10px 0}
+  html.dark .pd-auth-point{background:transparent;border-left:0;border-right:0}
+  .pd-auth-form-card{padding:22px 18px 24px}
+  .pd-auth-form-head{display:block}
+  .pd-auth-status{margin-top:13px}
+  .pd-auth-tabs{margin-top:22px}
+  .pd-auth-tabs button{min-height:56px;font-size:15px}
+  .pd-auth-form{gap:19px}
+  .pd-auth-field label,.pd-auth-label-row label{font-size:14px}
+  .pd-auth-input-wrap .ui-input{min-height:60px!important;font-size:16px!important}
+  .pd-auth-submit{min-height:60px;font-size:15px}
+  .pd-auth-req-grid{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .pd-auth-tabs button,.pd-auth-submit,#view-landing .grid.grid-cols-3 > div.ui-card{transition:none!important}
+  .pd-auth-tabs button:hover,.pd-auth-submit:hover,#view-landing .grid.grid-cols-3 > div.ui-card:hover{transform:none!important}
+}
+</style>
+
+<script id="pd-readability-v13-runtime">
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+
+  const copy = {
+    login: {
+      pageTitle: 'ยินดีต้อนรับกลับ',
+      pageCopy: 'เข้าสู่ระบบเพื่อสั่งพิมพ์ ติดตามคิว และจัดการ Coins ของคุณได้จากที่เดียว',
+      formTitle: 'เข้าสู่ระบบ',
+      formCopy: 'ใช้บัญชีของคุณเพื่อเริ่มสั่งพิมพ์ต่อ'
+    },
+    register: {
+      pageTitle: 'สร้างบัญชี PrintDekD Pro',
+      pageCopy: 'สมัครสมาชิกครั้งเดียว แล้วจัดการงานพิมพ์ คิวรับงาน และ Coins ได้ง่ายขึ้น',
+      formTitle: 'ลงทะเบียน',
+      formCopy: 'สร้างบัญชีใหม่เพื่อเริ่มใช้งาน PrintDekD Pro'
+    }
+  };
+
+  function paintAuthTab(tab) {
+    const isLogin = tab === 'login';
+    const login = $('tab-login'), register = $('tab-register');
+    const loginForm = $('form-login'), registerForm = $('form-register');
+    if (!login || !register || !loginForm || !registerForm) return;
+
+    loginForm.classList.toggle('hidden', !isLogin);
+    registerForm.classList.toggle('hidden', isLogin);
+    login.setAttribute('aria-selected', isLogin ? 'true' : 'false');
+    register.setAttribute('aria-selected', isLogin ? 'false' : 'true');
+
+    const c = copy[isLogin ? 'login' : 'register'];
+    if ($('auth-context-title')) $('auth-context-title').textContent = c.pageTitle;
+    if ($('auth-context-copy')) $('auth-context-copy').textContent = c.pageCopy;
+    if ($('auth-form-title')) $('auth-form-title').textContent = c.formTitle;
+    if ($('auth-form-copy')) $('auth-form-copy').textContent = c.formCopy;
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  window.switchAuthTab = paintAuthTab;
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const active = document.activeElement;
+    if (active?.closest?.('#view-auth')) active.blur();
+  });
+
+  // Make the page start in a deterministic state without changing any auth logic.
+  document.addEventListener('DOMContentLoaded', () => paintAuthTab('login'));
+  window.addEventListener('load', () => {
+    paintAuthTab('login');
+    if (window.lucide) window.lucide.createIcons();
+  });
+})();
+</script>
+
+
+<style id="pd-v14-contrast-fix">
+/* ==========================================================
+   PrintDekD Pro v14 — HERO CONTRAST / READABILITY FIX
+   Priority: text clarity > decorative glass effects.
+   ========================================================== */
+#view-landing > .grid:first-child > .delay-1.apple-reveal.is-scrolled-out {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+#view-landing .pd-hero-scrim {
+  z-index: 5 !important;
+  opacity: .64 !important;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.62) 0%,
+    rgba(0,0,0,.34) 28%,
+    rgba(0,0,0,.12) 62%,
+    transparent 100%
+  ) !important;
+}
+
+#view-landing .pd-hero-copy,
+#view-landing .pd-hero-status {
+  z-index: 20 !important;
+}
+
+#view-landing .pd-hero-copy {
+  padding: 14px 16px 15px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(
+    180deg,
+    rgba(5,10,20,.14) 0%,
+    rgba(5,10,20,.72) 58%,
+    rgba(5,10,20,.84) 100%
+  ) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12) !important;
+  backdrop-filter: blur(5px) saturate(112%) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(112%) !important;
+}
+
+#view-landing .pd-hero-copy > span {
+  color: #d7e9ff !important;
+  background: rgba(10,132,255,.28) !important;
+  border-color: rgba(96,165,250,.50) !important;
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  letter-spacing: .08em !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.28);
+}
+
+#view-landing .pd-hero-copy p.text-2xl,
+#view-landing .pd-hero-copy p.text-2xl.sm\:text-3xl {
+  color: #ffffff !important;
+  font-size: clamp(23px, 2.25vw, 32px) !important;
+  line-height: 1.18 !important;
+  font-weight: 900 !important;
+  letter-spacing: -.025em !important;
+  text-shadow: 0 2px 18px rgba(0,0,0,.55) !important;
+}
+
+#view-landing .pd-hero-copy p.text-xs,
+#view-landing .pd-hero-copy p.text-xs.sm\:text-sm {
+  color: rgba(255,255,255,.92) !important;
+  font-size: clamp(14px, 1vw, 16px) !important;
+  line-height: 1.55 !important;
+  font-weight: 500 !important;
+  text-shadow: 0 2px 14px rgba(0,0,0,.46) !important;
+  max-width: 48ch !important;
+}
+
+#view-landing .pd-hero-status {
+  color: #d1fae5 !important;
+  background: rgba(5,12,20,.72) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  font-size: 13px !important;
+  min-height: 38px !important;
+}
+
+#view-landing .pd-hero-status .pulse-dot {
+  flex: 0 0 auto;
+}
+
+/* Metrics: solid enough to keep hierarchy crisp in both themes. */
+#view-landing .grid.grid-cols-3 > div.ui-card {
+  background: rgba(255,255,255,.92) !important;
+  border-color: rgba(15,23,42,.10) !important;
+  box-shadow: 0 12px 30px rgba(15,23,42,.08) !important;
+}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card {
+  background: rgba(20,24,32,.94) !important;
+  border-color: rgba(255,255,255,.10) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.24) !important;
+}
+#view-landing .grid.grid-cols-3 > div.ui-card p:first-child {
+  text-shadow: none !important;
+}
+#view-landing .grid.grid-cols-3 > div.ui-card p:last-child {
+  color: #425066 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+html.dark #view-landing .grid.grid-cols-3 > div.ui-card p:last-child {
+  color: #cbd5e1 !important;
+}
+
+@media (max-width: 767px) {
+  #view-landing .pd-hero-copy {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    padding: 12px 13px 13px !important;
+    border-radius: 17px !important;
+  }
+  #view-landing .pd-hero-copy p.text-2xl,
+  #view-landing .pd-hero-copy p.text-2xl.sm\:text-3xl {
+    font-size: 21px !important;
+  }
+  #view-landing .pd-hero-copy p.text-xs,
+  #view-landing .pd-hero-copy p.text-xs.sm\:text-sm {
+    font-size: 13px !important;
+  }
+  #view-landing .pd-hero-status {
+    top: 10px !important;
+    right: 10px !important;
+    font-size: 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #view-landing > .grid:first-child > .delay-1.apple-reveal.is-scrolled-out {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+</style>
+
 </body>
 </html>
 <style id="pd-v8-readability-fix">
@@ -8650,4 +9308,3 @@ html:not(.dark) .pd-v10-page-card .pd-page-number{color:#111827!important}
   setTimeout(()=>{installAvatarInput();if(window.lucide)window.lucide.createIcons()},800);
 })();
 </script>
-
