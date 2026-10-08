@@ -76,7 +76,6 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* REUSABLE UI CLASSES FOR CLEAN LIGHT/DARK CONTRAST */
     .ui-card {
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -105,15 +104,9 @@
       color: var(--input-placeholder) !important;
     }
 
-    .titanium-text {
-      color: var(--text-main) !important;
-    }
+    .titanium-text { color: var(--text-main) !important; }
+    .sub-text { color: var(--text-sub) !important; }
 
-    .sub-text {
-      color: var(--text-sub) !important;
-    }
-
-    /* SCROLL REVEAL ANIMATION */
     .apple-reveal {
       opacity: 0;
       transform: translateY(35px) scale(0.98);
@@ -129,28 +122,13 @@
     .delay-1 { transition-delay: 0.1s; }
     .delay-2 { transition-delay: 0.2s; }
     .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
 
-    /* TYPOGRAPHY GRADIENTS */
     .blue-gradient-text {
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .titanium-gradient-text {
-      background: linear-gradient(180deg, var(--text-main) 0%, var(--text-sub) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .gold-gradient-text {
-      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* SCROLLBAR */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 10px; }
@@ -579,7 +557,6 @@
             สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็ว อัปโหลดไฟล์ คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งถึงบ้าน
           </p>
 
-          <!-- PROMINENT HIGH CONTRAST HERO BUTTONS -->
           <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-4">
             <button onclick="handleStartPrinting()" class="px-10 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-lg sm:text-xl shadow-xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
               <i data-lucide="file-up" class="w-6 h-6"></i> เริ่มต้นสั่งพิมพ์งาน
@@ -1208,10 +1185,7 @@
             entry.target.classList.add('is-visible');
           }
         });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -40px 0px'
-      });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
       document.querySelectorAll('.apple-reveal').forEach(el => observer.observe(el));
     }
@@ -1601,14 +1575,31 @@
       }
     }
 
-    function checkSession() {
+    // === FIX 1: AUTO-SYNC ข้อมูลล่าสุดจาก SUPABASE ทุกครั้งที่เข้าเว็บ ===
+    async function checkSession() {
       const savedUser = localStorage.getItem('sp_user');
       if (savedUser) {
         try {
-          currentUser = JSON.parse(savedUser);
+          const localData = JSON.parse(savedUser);
+          currentUser = localData;
+
+          if (supabaseClient && localData.email) {
+            const { data, error } = await supabaseClient
+              .from('users')
+              .select('*')
+              .eq('email', localData.email)
+              .maybeSingle();
+
+            if (!error && data) {
+              currentUser = data;
+              localStorage.setItem('sp_user', JSON.stringify(currentUser));
+            }
+          }
+
           updateUserUI();
           fetchUserWallet();
         } catch (e) {
+          console.error("Session sync error:", e);
           localStorage.removeItem('sp_user');
         }
       }
@@ -1654,6 +1645,7 @@
       }
     }
 
+    // === FIX 2: รองรับทั้ง password_hash และ password เพื่อดึง UUID จริงจาก DB ===
     async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
@@ -1666,18 +1658,19 @@
             .from('users')
             .select('*')
             .eq('email', email)
-            .single();
+            .maybeSingle();
 
-          if (!error && data && data.password === password) {
-            userMatch = data;
+          if (!error && data) {
+            const pwdInDb = data.password_hash || data.password;
+            if (pwdInDb === password) {
+              userMatch = data;
+            }
           }
         }
 
         if (!userMatch) {
           if (email === 'admin@printdekd.com' && password === 'Admin1234') {
-            userMatch = { id: 'admin-01', full_name: 'System Admin', email: email, role: 'admin', coins: 9999 };
-          } else if (password.length >= 6) {
-            userMatch = { id: 'user-' + Date.now(), full_name: email.split('@')[0], email: email, role: 'member', coins: 0 };
+            userMatch = { id: '00000000-0000-0000-0000-000000000000', full_name: 'System Admin', email: email, role: 'admin', coins: 9999 };
           }
         }
 
@@ -1706,10 +1699,9 @@
       const avatarSrc = document.getElementById('reg-avatar-preview').src;
 
       const newUser = {
-        id: 'usr-' + Date.now(),
         full_name: name,
         email: email,
-        password: pwd,
+        password_hash: pwd,
         role: 'member',
         coins: 0,
         avatar_url: avatarSrc
@@ -1717,9 +1709,13 @@
 
       try {
         if (supabaseClient) {
-          await supabaseClient.from('users').insert([newUser]);
+          const { data, error } = await supabaseClient.from('users').insert([newUser]).select().single();
+          if (error) throw error;
+          currentUser = data;
+        } else {
+          currentUser = { id: 'usr-' + Date.now(), ...newUser };
         }
-        currentUser = newUser;
+        
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         updateUserUI();
         showCustomModal({ title: 'ลงทะเบียนสำเร็จ', message: 'ยินดีต้อนรับสมาชิกใหม่!', icon: 'check-circle' });
@@ -1960,7 +1956,7 @@
 
       try {
         let orders = [];
-        if (supabaseClient && currentUser) {
+        if (supabaseClient && currentUser && currentUser.id) {
           const { data, error } = await supabaseClient
             .from('orders')
             .select('*')
@@ -2066,7 +2062,7 @@
 
       try {
         let topups = [];
-        if (supabaseClient && currentUser) {
+        if (supabaseClient && currentUser && currentUser.id) {
           const { data, error } = await supabaseClient
             .from('topups')
             .select('*')
@@ -2096,9 +2092,9 @@
     }
 
     async function fetchUserWallet() {
-      if (!currentUser) return;
+      if (!currentUser || !currentUser.id) return;
       if (supabaseClient) {
-        const { data } = await supabaseClient.from('users').select('coins').eq('id', currentUser.id).single();
+        const { data } = await supabaseClient.from('users').select('coins').eq('id', currentUser.id).maybeSingle();
         if (data) currentUser.coins = data.coins;
       }
       document.getElementById('user-coins-amount').innerText = `${parseFloat(currentUser.coins || 0).toFixed(2)} Coins`;
@@ -2117,7 +2113,6 @@
     async function loadAdminData() {
       if (!supabaseClient) return;
       
-      // Load Orders
       const { data: orders } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
       const ordersTb = document.getElementById('admin-orders-tbody');
       if (ordersTb && orders) {
@@ -2130,7 +2125,7 @@
             </td>
             <td class="py-3 px-3">
               ${ord.delivery_method === 'delivery' 
-                ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
+                ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name \vert{}\vert{} '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
                 : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}
             </td>
             <td class="py-3 px-3">
@@ -2151,7 +2146,6 @@
           </tr>`).join('');
       }
 
-      // Load Topups
       const { data: topups } = await supabaseClient.from('topups').select('*').order('created_at', { ascending: false });
       const topupsTb = document.getElementById('admin-topups-tbody');
       if (topupsTb && topups) {
@@ -2175,7 +2169,6 @@
           </tr>`).join('');
       }
 
-      // Load Users
       const { data: users } = await supabaseClient.from('users').select('*');
       const usersTb = document.getElementById('admin-users-tbody');
       if (usersTb && users) {
@@ -2224,7 +2217,7 @@
       if (!supabaseClient) return;
       await supabaseClient.from('topups').update({ status: 'approved' }).eq('id', topupId);
       
-      const { data: u } = await supabaseClient.from('users').select('coins').eq('id', userId).single();
+      const { data: u } = await supabaseClient.from('users').select('coins').eq('id', userId).maybeSingle();
       const currentCoins = u ? (u.coins || 0) : 0;
       await supabaseClient.from('users').update({ coins: currentCoins + amount }).eq('id', userId);
 
