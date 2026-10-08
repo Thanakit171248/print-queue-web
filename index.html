@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrintDekD Pro — Premium Smart Printing Platform</title>
+  <title>PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
   
-  <!-- Tailwind CSS & Icons -->
+  <!-- Tailwind CSS & Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -13,17 +13,12 @@
       theme: {
         extend: {
           colors: {
-            apple: {
-              bg: '#000000',
-              surface: '#121217',
-              card: '#1c1c1e',
-              panel: '#2c2c2e',
-              border: 'rgba(255, 255, 255, 0.12)',
-              blue: '#2997ff',
-              blueHover: '#0071e3',
-              gold: '#f5c518',
-              text: '#f5f5f7',
-              subtext: '#86868b'
+            brand: {
+              blue: '#2563eb',
+              blueHover: '#1d4ed8',
+              accent: '#3b82f6',
+              gold: '#f59e0b',
+              emerald: '#10b981'
             }
           },
           fontFamily: {
@@ -39,20 +34,90 @@
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #000000;
-      color: #f5f5f7;
-      overflow-x: hidden;
-      selection-background-color: #2997ff;
-      selection-color: #ffffff;
+    :root {
+      --bg-main: #09090b;
+      --bg-ambient-1: rgba(37, 99, 235, 0.12);
+      --bg-ambient-2: rgba(124, 58, 237, 0.08);
+      --text-main: #f4f4f5;
+      --text-sub: #a1a1aa;
+      --card-bg: rgba(24, 24, 27, 0.85);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --panel-bg: rgba(18, 18, 22, 0.92);
+      --input-bg: rgba(0, 0, 0, 0.6);
+      --input-border: rgba(255, 255, 255, 0.18);
+      --input-text: #ffffff;
+      --input-placeholder: #71717a;
+      --nav-bg: rgba(9, 9, 11, 0.85);
+      --shadow-color: rgba(0, 0, 0, 0.5);
     }
 
-    /* APPLE IPHONE SCROLL REVEAL ANIMATION */
+    html:not(.dark) {
+      --bg-main: #f8fafc;
+      --bg-ambient-1: rgba(59, 130, 246, 0.08);
+      --bg-ambient-2: rgba(99, 102, 241, 0.05);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --panel-bg: #ffffff;
+      --input-bg: #f1f5f9;
+      --input-border: #cbd5e1;
+      --input-text: #0f172a;
+      --input-placeholder: #94a3b8;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --shadow-color: rgba(15, 23, 42, 0.08);
+    }
+
+    body {
+      font-family: 'Kanit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* REUSABLE UI CLASSES FOR CLEAN LIGHT/DARK CONTRAST */
+    .ui-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      box-shadow: 0 10px 30px var(--shadow-color);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .ui-panel {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      box-shadow: 0 20px 40px var(--shadow-color);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+
+    .ui-input {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--input-border) !important;
+      color: var(--input-text) !important;
+    }
+
+    .ui-input::placeholder {
+      color: var(--input-placeholder) !important;
+    }
+
+    .titanium-text {
+      color: var(--text-main) !important;
+    }
+
+    .sub-text {
+      color: var(--text-sub) !important;
+    }
+
+    /* SCROLL REVEAL ANIMATION */
     .apple-reveal {
       opacity: 0;
-      transform: translateY(50px) scale(0.97);
-      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(35px) scale(0.98);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
 
@@ -61,7 +126,6 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Staggered delays */
     .delay-1 { transition-delay: 0.1s; }
     .delay-2 { transition-delay: 0.2s; }
     .delay-3 { transition-delay: 0.3s; }
@@ -69,116 +133,63 @@
 
     /* TYPOGRAPHY GRADIENTS */
     .blue-gradient-text {
-      background: linear-gradient(135deg, #2997ff 0%, #7000ff 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .titanium-gradient-text {
-      background: linear-gradient(180deg, #ffffff 0%, #8e8e93 100%);
+      background: linear-gradient(180deg, var(--text-main) 0%, var(--text-sub) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .gold-gradient-text {
-      background: linear-gradient(135deg, #ffe066 0%, #f5c518 100%);
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    /* APPLE GLASSMORPHISM CARDS */
-    .apple-glass-card {
-      background: rgba(22, 22, 26, 0.75);
-      backdrop-filter: blur(40px);
-      -webkit-backdrop-filter: blur(40px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
-    }
-
-    .apple-glass-card:hover {
-      border-color: rgba(41, 151, 255, 0.45);
-      transform: translateY(-4px);
-      box-shadow: 0 35px 80px rgba(41, 151, 255, 0.15);
-    }
-
-    .apple-glass-panel {
-      background: rgba(28, 28, 32, 0.85);
-      backdrop-filter: blur(50px);
-      -webkit-backdrop-filter: blur(50px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-    }
-
-    /* LIGHT MODE OVERRIDES */
-    html:not(.dark) body {
-      background-color: #f5f5f7;
-      color: #1d1d1f;
-    }
-    html:not(.dark) .apple-glass-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
-    }
-    html:not(.dark) .apple-glass-panel {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: rgba(0, 0, 0, 0.1);
-    }
-    html:not(.dark) .titanium-gradient-text {
-      background: linear-gradient(180deg, #1d1d1f 0%, #434344 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    html:not(.dark) .titanium-text { color: #1d1d1f !important; }
-    html:not(.dark) .sub-text { color: #515154 !important; }
-    html:not(.dark) input, html:not(.dark) select, html:not(.dark) textarea {
-      background-color: #ffffff !important;
-      color: #1d1d1f !important;
-      border-color: #d2d2d7 !important;
-    }
-
-    .titanium-text { color: #f5f5f7; }
-    .sub-text { color: #86868b; }
 
     /* SCROLLBAR */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(134, 134, 139, 0.4); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 10px; }
 
     @keyframes slideUpModal {
-      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      from { opacity: 0; transform: translateY(25px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .animate-modal { animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-modal { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative bg-black">
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
 
-  <!-- APPLE AMBIENT LIGHT BACKDROP -->
+  <!-- BACKGROUND AMBIENT GLOW -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent rounded-full blur-[160px]"></div>
-    <div class="absolute top-[40%] -left-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[180px]"></div>
-    <div class="absolute top-[70%] -right-[10%] w-[700px] h-[700px] bg-blue-500/10 rounded-full blur-[180px]"></div>
+    <div class="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent rounded-full blur-[140px]"></div>
+    <div class="absolute top-[45%] -left-[10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[160px]"></div>
+    <div class="absolute top-[75%] -right-[10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[160px]"></div>
   </div>
 
   <!-- SPLASH SCREEN -->
   <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-all duration-700 overflow-hidden">
     <div class="relative z-10 flex flex-col items-center text-center p-6 space-y-8 max-w-2xl">
       <div class="w-28 h-28 bg-white/5 border border-white/15 rounded-[32px] flex items-center justify-center shadow-2xl backdrop-blur-3xl">
-        <i data-lucide="printer" class="w-14 h-14 text-blue-400"></i>
+        <i data-lucide="printer" class="w-14 h-14 text-blue-500"></i>
       </div>
       <div class="space-y-3">
-        <h1 class="text-4xl sm:text-6xl font-black tracking-tight titanium-gradient-text">
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white">
           PRINTDEKD <span class="blue-gradient-text">PRO</span>
         </h1>
         <p class="text-xs sm:text-sm font-semibold tracking-[0.3em] text-blue-400 uppercase">
-          ULTRA SMART PRINTING PLATFORM
+          KMUTNB ITI SMART PRINTING PLATFORM
         </p>
       </div>
       <div class="w-64 space-y-2">
         <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10">
           <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-300 w-0"></div>
         </div>
-        <div class="flex justify-between text-[11px] font-mono text-apple-subtext uppercase">
+        <div class="flex justify-between text-[11px] font-mono text-zinc-400 uppercase">
           <span id="splash-status-text">LOADING SYSTEM...</span>
           <span id="splash-percent-text" class="text-blue-400 font-bold">0%</span>
         </div>
@@ -187,106 +198,107 @@
   </div>
 
   <!-- NAVIGATION OVERLAY MENU -->
-  <div id="apple-tab-menu" class="fixed inset-0 z-50 hidden flex-col justify-between p-6 sm:p-12 bg-black/90 backdrop-blur-3xl transition-all duration-300 opacity-0 pointer-events-none">
+  <div id="apple-tab-menu" class="fixed inset-0 z-50 hidden flex-col justify-between p-6 sm:p-12 bg-black/95 backdrop-blur-3xl transition-all duration-300 opacity-0 pointer-events-none">
     <div class="flex items-center justify-between border-b border-white/10 pb-6 max-w-5xl mx-auto w-full">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+        <div class="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
           <i data-lucide="command" class="w-6 h-6"></i>
         </div>
-        <span class="text-xl font-extrabold text-white tracking-wide">PrintDekD Menu</span>
+        <div>
+          <span class="text-2xl font-black text-white tracking-wide">PrintDekD Pro</span>
+          <span class="block text-xs text-blue-400 font-bold">KMUTNB ITI</span>
+        </div>
       </div>
-      <button onclick="toggleAppleTabMenu(false)" class="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
-        <i data-lucide="x" class="w-6 h-6"></i>
+      <button onclick="toggleAppleTabMenu(false)" class="p-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
+        <i data-lucide="x" class="w-7 h-7"></i>
       </button>
     </div>
 
-    <div class="max-w-3xl mx-auto w-full text-center space-y-6 my-auto">
-      <button onclick="switchView('landing'); toggleAppleTabMenu(false);" class="block w-full text-2xl sm:text-4xl font-extrabold text-white hover:text-blue-400 transition">01. หน้าแรก (Home)</button>
-      <button onclick="switchView('dashboard'); toggleAppleTabMenu(false);" class="block w-full text-2xl sm:text-4xl font-extrabold text-white hover:text-blue-400 transition">02. สั่งพิมพ์เอกสาร & คิวพิมพ์</button>
-      <button onclick="switchView('wallet'); toggleAppleTabMenu(false);" class="block w-full text-2xl sm:text-4xl font-extrabold text-white hover:text-blue-400 transition">03. กระเป๋าเงิน Coins</button>
-      <button id="apple-admin-menu-btn" onclick="switchView('admin'); toggleAppleTabMenu(false);" class="hidden w-full text-2xl sm:text-4xl font-extrabold text-purple-400 hover:text-purple-300 transition">04. Admin Backoffice</button>
+    <div class="max-w-3xl mx-auto w-full text-center space-y-8 my-auto">
+      <button onclick="switchView('landing'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition">01. หน้าแรก (Home)</button>
+      <button onclick="switchView('dashboard'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition">02. สั่งพิมพ์เอกสาร & คิวพิมพ์</button>
+      <button onclick="switchView('wallet'); toggleAppleTabMenu(false);" class="block w-full text-3xl sm:text-5xl font-black text-white hover:text-blue-400 transition">03. กระเป๋าเงิน Coins</button>
+      <button id="apple-admin-menu-btn" onclick="switchView('admin'); toggleAppleTabMenu(false);" class="hidden w-full text-3xl sm:text-5xl font-black text-purple-400 hover:text-purple-300 transition">04. Admin Backoffice</button>
     </div>
 
-    <div class="max-w-5xl mx-auto w-full text-center text-xs text-apple-subtext pt-4 border-t border-white/10">
-      <p>© 2026 PrintDekD Pro System.</p>
+    <div class="max-w-5xl mx-auto w-full text-center text-sm text-zinc-500 pt-6 border-t border-white/10">
+      <p>© 2026 PrintDekD Pro — KMUTNB ITI System.</p>
     </div>
   </div>
 
   <!-- USER PROFILE MODAL -->
   <div id="user-profile-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl" onclick="handleBackdropClick(event, 'user-profile-modal', closeUserProfileModal)">
-    <div class="apple-glass-panel rounded-[36px] max-w-3xl w-full p-8 sm:p-12 shadow-2xl animate-modal relative overflow-hidden" onclick="event.stopPropagation()">
-      <div class="pb-6 border-b border-white/10 mb-8">
+    <div class="ui-panel rounded-[32px] max-w-2xl w-full p-8 sm:p-10 shadow-2xl animate-modal relative overflow-hidden" onclick="event.stopPropagation()">
+      <div class="pb-6 border-b border-slate-200 dark:border-white/10 mb-6">
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xl">
-            <i data-lucide="user-check" class="w-8 h-8"></i>
+          <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg">
+            <i data-lucide="user-check" class="w-7 h-7"></i>
           </div>
           <div>
-            <h3 class="text-2xl sm:text-3xl font-extrabold titanium-text">โปรไฟล์ผู้ใช้งาน</h3>
-            <p class="text-sm sm:text-base sub-text">จัดการข้อมูลสมาชิกและบัญชีของคุณ</p>
+            <h3 class="text-2xl font-extrabold titanium-text">โปรไฟล์ผู้ใช้งาน</h3>
+            <p class="text-sm sub-text">จัดการข้อมูลสมาชิกและบัญชีของคุณ</p>
           </div>
         </div>
       </div>
 
       <!-- VIEW PROFILE SECTION -->
       <div id="profile-view-section" class="space-y-6">
-        <div class="flex flex-col sm:flex-row items-center gap-6 p-6 apple-glass-card rounded-[28px]">
-          <div class="relative group flex-shrink-0">
-            <img id="prof-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80" alt="Profile Picture" class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-blue-500/50 shadow-xl">
-          </div>
+        <div class="flex flex-col sm:flex-row items-center gap-6 p-6 ui-card rounded-2xl">
+          <img id="prof-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80" alt="Profile Picture" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-blue-500/50 shadow-md">
           <div class="text-center sm:text-left space-y-2 flex-grow">
             <h4 id="prof-fullname" class="text-2xl font-bold titanium-text">กรุณาล็อกอิน</h4>
-            <p id="prof-email" class="text-base font-mono text-blue-400">user@example.com</p>
-            <span id="prof-role-badge" class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/20 border border-emerald-500/30 text-emerald-400">Member</span>
+            <p id="prof-email" class="text-sm font-mono text-blue-500 font-medium">user@example.com</p>
+            <span id="prof-role-badge" class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400">Member</span>
           </div>
         </div>
 
-        <div class="p-6 rounded-[28px] bg-gradient-to-r from-amber-500/20 via-amber-500/5 to-transparent border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span class="sub-text block font-medium text-sm">ยอด Coins คงเหลือในกระเป๋า:</span>
-            <span id="prof-coins-amount" class="text-3xl font-black gold-gradient-text">0.00 Coins</span>
+            <span class="sub-text block font-bold text-sm">ยอด Coins คงเหลือ:</span>
+            <span id="prof-coins-amount" class="text-3xl font-black text-amber-500">0.00 Coins</span>
           </div>
-          <button onclick="closeUserProfileModal(); switchView('wallet');" class="w-full sm:w-auto px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-extrabold rounded-2xl transition text-sm shadow-xl">
+          <button onclick="closeUserProfileModal(); switchView('wallet');" class="w-full sm:w-auto px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-extrabold rounded-xl transition text-sm shadow-md">
             + เติม Coins เพิ่ม
           </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <button onclick="toggleProfileEdit(true)" class="py-4 px-6 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/40 font-bold text-base rounded-2xl transition flex items-center justify-center gap-2">
-            <i data-lucide="edit-3" class="w-5 h-5"></i> แก้ไขข้อมูลโปรไฟล์
+          <button onclick="toggleProfileEdit(true)" class="py-3.5 px-5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 font-bold text-sm rounded-xl transition flex items-center justify-center gap-2">
+            <i data-lucide="edit-3" class="w-4 h-4"></i> แก้ไขข้อมูลโปรไฟล์
           </button>
-          <button onclick="handleLogout(); closeUserProfileModal();" class="py-4 px-6 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/40 font-bold text-base rounded-2xl transition flex items-center justify-center gap-2">
-            <i data-lucide="log-out" class="w-5 h-5"></i> ออกจากระบบ
+          <button onclick="handleLogout(); closeUserProfileModal();" class="py-3.5 px-5 bg-rose-600/10 hover:bg-rose-600/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 font-bold text-sm rounded-xl transition flex items-center justify-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i> ออกจากระบบ
           </button>
         </div>
       </div>
 
       <!-- EDIT PROFILE SECTION -->
-      <form id="profile-edit-section" onsubmit="saveProfileChanges(event)" class="space-y-6 hidden">
-        <div class="p-6 apple-glass-card rounded-[28px] space-y-4">
-          <h4 class="font-bold text-lg titanium-text">แก้ไขข้อมูลส่วนตัว</h4>
+      <form id="profile-edit-section" onsubmit="saveProfileChanges(event)" class="space-y-5 hidden">
+        <div class="p-6 ui-card rounded-2xl space-y-4">
+          <h4 class="font-bold text-base titanium-text">แก้ไขข้อมูลส่วนตัว</h4>
           <div>
-            <label class="block text-sm font-bold mb-2 titanium-text">รูปโปรไฟล์ (URL หรือไฟล์):</label>
-            <input type="text" id="edit-avatar-url" placeholder="วาง URL รูปภาพโปรไฟล์" class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm mb-3 titanium-text focus:outline-none focus:border-blue-500">
-            <input type="file" id="edit-avatar-file" accept="image/*" onchange="previewEditAvatarFile(event)" class="w-full text-xs bg-black/60 rounded-xl p-2.5 border border-white/10">
+            <label class="block text-xs font-bold mb-2 titanium-text">รูปโปรไฟล์ (URL หรือไฟล์):</label>
+            <input type="text" id="edit-avatar-url" placeholder="วาง URL รูปภาพโปรไฟล์" class="w-full px-4 py-3 ui-input rounded-xl text-sm mb-3 focus:outline-none focus:border-blue-500">
+            <input type="file" id="edit-avatar-file" accept="image/*" onchange="previewEditAvatarFile(event)" class="w-full text-xs ui-input rounded-xl p-2.5">
           </div>
           <div>
-            <label class="block text-sm font-bold mb-2 titanium-text">ชื่อ-นามสกุล:</label>
-            <input type="text" id="edit-fullname" required class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-base font-bold titanium-text focus:outline-none focus:border-blue-500">
+            <label class="block text-xs font-bold mb-2 titanium-text">ชื่อ-นามสกุล:</label>
+            <input type="text" id="edit-fullname" required class="w-full px-4 py-3 ui-input rounded-xl text-sm font-bold focus:outline-none focus:border-blue-500">
           </div>
         </div>
 
-        <div class="flex gap-4">
-          <button type="button" onclick="toggleProfileEdit(false)" class="flex-1 py-4 bg-white/10 hover:bg-white/20 font-bold text-base rounded-2xl transition titanium-text">
+        <div class="flex gap-3">
+          <button type="button" onclick="toggleProfileEdit(false)" class="flex-1 py-3.5 bg-slate-200 dark:bg-white/10 font-bold text-sm rounded-xl transition titanium-text">
             ยกเลิก
           </button>
-          <button type="submit" class="flex-1 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-2xl transition shadow-xl">
+          <button type="submit" class="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-md">
             บันทึกการเปลี่ยนแปลง
           </button>
         </div>
       </form>
 
-      <div class="mt-8 pt-6 border-t border-white/10 text-center">
-        <button onclick="closeUserProfileModal()" class="w-full py-4 bg-white/10 hover:bg-white/20 text-base font-extrabold rounded-2xl transition titanium-text shadow-md">
+      <div class="mt-6 pt-5 border-t border-slate-200 dark:border-white/10 text-center">
+        <button onclick="closeUserProfileModal()" class="w-full py-3 bg-slate-200 dark:bg-white/10 text-sm font-bold rounded-xl transition titanium-text">
           ปิดหน้าต่าง
         </button>
       </div>
@@ -295,72 +307,72 @@
 
   <!-- QUEUE & ORDER DETAIL MODAL -->
   <div id="queue-detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl" onclick="handleBackdropClick(event, 'queue-detail-modal', closeQueueDetailModal)">
-    <div class="apple-glass-panel rounded-[32px] max-w-2xl w-full p-6 sm:p-8 shadow-2xl animate-modal overflow-hidden flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between pb-4 border-b border-white/10 flex-shrink-0">
+    <div class="ui-panel rounded-[32px] max-w-2xl w-full p-6 sm:p-8 shadow-2xl animate-modal overflow-hidden flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 flex-shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center">
-            <i data-lucide="layers" class="w-6 h-6"></i>
+          <div class="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-500 flex items-center justify-center">
+            <i data-lucide="layers" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-xl font-bold titanium-text">รายละเอียดคิวงานพิมพ์</h3>
+            <h3 class="text-lg font-bold titanium-text">รายละเอียดคิวงานพิมพ์</h3>
             <p class="text-xs sub-text" id="qd-modal-order-id">Queue ID: #---</p>
           </div>
         </div>
-        <button onclick="closeQueueDetailModal()" class="p-2.5 rounded-2xl bg-white/10 hover:bg-rose-500 transition text-white">
+        <button onclick="closeQueueDetailModal()" class="p-2 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-rose-500 hover:text-white transition titanium-text">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <div class="flex-1 overflow-y-auto space-y-5 py-4 pr-1 my-2">
-        <div class="p-4 rounded-2xl apple-glass-card border space-y-2">
+      <div class="flex-1 overflow-y-auto space-y-4 py-4 pr-1 my-2">
+        <div class="p-4 rounded-xl ui-card space-y-2">
           <div class="flex justify-between items-center">
             <span class="text-xs sub-text font-bold uppercase">สถานะคิวปัจจุบัน</span>
-            <span id="qd-modal-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">รอตรวจสอบ</span>
+            <span id="qd-modal-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">รอตรวจสอบ</span>
           </div>
-          <p class="text-xs text-blue-400 font-semibold" id="qd-modal-pickup-info">📍 การรับสินค้า: -</p>
+          <p class="text-xs text-blue-500 font-bold" id="qd-modal-pickup-info">📍 การรับสินค้า: -</p>
         </div>
 
-        <div id="qd-modal-tracking-box" class="hidden p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
-          <span class="text-xs font-bold text-emerald-400 block">🚚 ข้อมูลจัดส่งพัสดุ:</span>
-          <p id="qd-modal-tracking-num" class="text-sm font-mono font-bold text-white">Tracking: -</p>
+        <div id="qd-modal-tracking-box" class="hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">🚚 ข้อมูลจัดส่งพัสดุ:</span>
+          <p id="qd-modal-tracking-num" class="text-sm font-mono font-bold titanium-text">Tracking: -</p>
           <p id="qd-modal-recipient-info" class="text-xs sub-text">ผู้รับ: -</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">ชื่อไฟล์เอกสาร</span>
             <span id="qd-modal-filename" class="font-bold titanium-text block truncate mt-0.5">-</span>
           </div>
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">จำนวนหน้า</span>
-            <span id="qd-modal-pages" class="font-extrabold text-blue-400 block mt-0.5">0 หน้า</span>
+            <span id="qd-modal-pages" class="font-extrabold text-blue-500 block mt-0.5">0 หน้า</span>
           </div>
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">จำนวนชุด</span>
             <span id="qd-modal-copies" class="font-bold titanium-text block mt-0.5">1 ชุด</span>
           </div>
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">ขนาดกระดาษ</span>
             <span id="qd-modal-paper" class="font-bold titanium-text block mt-0.5">A4</span>
           </div>
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">ประเภทสี</span>
             <span id="qd-modal-color" class="font-bold titanium-text block mt-0.5">ขาว-ดำ</span>
           </div>
-          <div class="p-4 rounded-2xl apple-glass-card border">
+          <div class="p-3.5 rounded-xl ui-card">
             <span class="sub-text block text-[11px]">รูปแบบพิมพ์</span>
             <span id="qd-modal-duplex" class="font-bold titanium-text block mt-0.5">หน้าเดียว</span>
           </div>
         </div>
 
-        <div class="p-4 rounded-2xl apple-glass-card border space-y-1">
+        <div class="p-4 rounded-xl ui-card space-y-1">
           <span class="text-xs sub-text font-bold block">ช่วงหน้า / หมายเหตุเพิ่มเติม:</span>
-          <p id="qd-modal-notes" class="text-xs titanium-text bg-black/40 p-3 rounded-xl border border-white/5 font-mono">ไม่มีหมายเหตุ</p>
+          <p id="qd-modal-notes" class="text-xs titanium-text ui-input p-3 rounded-lg font-mono">ไม่มีหมายเหตุ</p>
         </div>
 
-        <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
+        <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
           <div>
-            <span class="text-xs sub-text block">ช่องทางชำระเงิน: <strong id="qd-modal-paymethod" class="text-amber-400">Coins</strong></span>
+            <span class="text-xs sub-text block">ช่องทางชำระเงิน: <strong id="qd-modal-paymethod" class="text-amber-500">Coins</strong></span>
             <span id="qd-modal-delivery-fee-text" class="text-xs sub-text block">ราคารวมสุทธิ</span>
           </div>
           <span id="qd-modal-totalprice" class="text-2xl font-black blue-gradient-text">0.00 ฿</span>
@@ -368,14 +380,14 @@
 
         <div id="qd-modal-slip-box" class="hidden space-y-2">
           <span class="text-xs font-bold titanium-text block">หลักฐานสลิปการโอนเงิน:</span>
-          <div class="p-2 bg-black/60 rounded-2xl border border-white/10 text-center">
-            <img id="qd-modal-slip-img" src="" alt="สลิปโอนเงิน" class="max-h-64 mx-auto rounded-xl object-contain cursor-pointer hover:scale-105 transition" onclick="openSlipModal(this.src)">
+          <div class="p-2 ui-card rounded-xl text-center">
+            <img id="qd-modal-slip-img" src="" alt="สลิปโอนเงิน" class="max-h-60 mx-auto rounded-lg object-contain cursor-pointer hover:scale-105 transition" onclick="openSlipModal(this.src)">
           </div>
         </div>
       </div>
 
-      <div class="pt-4 border-t border-white/10 flex-shrink-0">
-        <button onclick="closeQueueDetailModal()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-2xl shadow-lg transition">
+      <div class="pt-3 border-t border-slate-200 dark:border-white/10 flex-shrink-0">
+        <button onclick="closeQueueDetailModal()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-md transition">
           ปิดหน้าต่าง
         </button>
       </div>
@@ -384,89 +396,89 @@
 
   <!-- NOTIFICATION MODAL -->
   <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
-    <div class="apple-glass-panel rounded-[32px] max-w-sm w-full p-6 sm:p-8 shadow-2xl animate-modal text-center relative overflow-hidden">
-      <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-blue-500/20 text-blue-400 border border-blue-500/30">
-        <i id="modal-icon" data-lucide="info" class="w-7 h-7"></i>
+    <div class="ui-panel rounded-[28px] max-w-sm w-full p-6 text-center relative overflow-hidden animate-modal">
+      <div class="w-12 h-12 rounded-xl mx-auto flex items-center justify-center mb-3 bg-blue-500/20 text-blue-500 border border-blue-500/30">
+        <i id="modal-icon" data-lucide="info" class="w-6 h-6"></i>
       </div>
-      <h3 id="modal-title" class="text-xl font-bold titanium-text mb-2">แจ้งเตือน</h3>
-      <p id="modal-message" class="text-sm sub-text mb-6 leading-relaxed">รายละเอียดข้อความ</p>
-      <div id="modal-actions" class="flex gap-3 justify-center">
-        <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 font-semibold text-xs rounded-2xl transition">ยกเลิก</button>
-        <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-2xl shadow-lg transition">ตกลง</button>
+      <h3 id="modal-title" class="text-lg font-bold titanium-text mb-1.5">แจ้งเตือน</h3>
+      <p id="modal-message" class="text-xs sub-text mb-5 leading-relaxed">รายละเอียดข้อความ</p>
+      <div id="modal-actions" class="flex gap-2.5 justify-center">
+        <button id="modal-cancel-btn" onclick="closeModal()" class="hidden flex-1 px-4 py-2.5 bg-slate-200 dark:bg-white/10 font-bold text-xs rounded-xl transition titanium-text">ยกเลิก</button>
+        <button id="modal-confirm-btn" onclick="closeModal()" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-md transition">ตกลง</button>
       </div>
     </div>
   </div>
 
   <!-- FILE PREVIEW DRAWER (PDF ZOOM) -->
   <div id="file-preview-drawer" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl">
-    <div class="apple-glass-panel rounded-[36px] max-w-5xl w-full p-6 sm:p-8 shadow-2xl animate-modal flex flex-col h-[88vh] overflow-hidden border border-white/15">
-      <div class="flex justify-between items-center pb-4 border-b border-white/10 flex-shrink-0">
+    <div class="ui-panel rounded-[32px] max-w-5xl w-full p-6 sm:p-8 shadow-2xl animate-modal flex flex-col h-[88vh] overflow-hidden">
+      <div class="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-white/10 flex-shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
-            <i data-lucide="file-text" class="w-6 h-6"></i>
+          <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-500 flex items-center justify-center">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-lg font-bold titanium-text" id="preview-modal-filename">เอกสาร.pdf</h3>
+            <h3 class="text-base font-bold titanium-text" id="preview-modal-filename">เอกสาร.pdf</h3>
             <p class="text-xs sub-text" id="preview-modal-filesize">ขนาดไฟล์: 0 MB</p>
           </div>
         </div>
-        <button onclick="toggleFilePreviewDrawer(false)" class="p-2.5 rounded-2xl bg-white/10 hover:bg-rose-500 transition text-white">
+        <button onclick="toggleFilePreviewDrawer(false)" class="p-2 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-rose-500 hover:text-white transition titanium-text">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
       <div class="grid grid-cols-3 gap-3 my-4 flex-shrink-0 text-center text-xs">
-        <div class="p-3.5 rounded-2xl apple-glass-card border">
+        <div class="p-3 rounded-xl ui-card">
           <span class="text-[11px] sub-text block">จำนวนหน้าทั้งหมด</span>
-          <span id="preview-modal-pages" class="text-base font-extrabold text-blue-400">0 หน้า</span>
+          <span id="preview-modal-pages" class="text-sm font-extrabold text-blue-500">0 หน้า</span>
         </div>
-        <div class="p-3.5 rounded-2xl apple-glass-card border">
+        <div class="p-3 rounded-xl ui-card">
           <span class="text-[11px] sub-text block">ชนิดไฟล์</span>
-          <span id="preview-modal-type" class="text-base font-extrabold text-emerald-400">PDF</span>
+          <span id="preview-modal-type" class="text-sm font-extrabold text-emerald-500">PDF</span>
         </div>
-        <div class="p-3.5 rounded-2xl apple-glass-card border">
+        <div class="p-3 rounded-xl ui-card">
           <span class="text-[11px] sub-text block">สถานะไฟล์</span>
-          <span class="text-base font-extrabold text-purple-400">พร้อมพิมพ์</span>
+          <span class="text-sm font-extrabold text-purple-500">พร้อมพิมพ์</span>
         </div>
       </div>
 
-      <div class="flex items-center justify-between bg-black/60 px-4 py-2.5 rounded-2xl border border-white/10 flex-shrink-0 mb-3">
+      <div class="flex items-center justify-between ui-input px-4 py-2.5 rounded-xl flex-shrink-0 mb-3">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold titanium-text mr-2">ซูม:</span>
-          <button onclick="changeZoom(-0.15)" class="p-2 rounded-xl bg-white/10 hover:bg-blue-600 transition" title="ซูมออก"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
+          <button onclick="changeZoom(-0.15)" class="p-1.5 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition" title="ซูมออก"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
           <span id="zoom-level-text" class="text-xs font-mono font-bold w-12 text-center titanium-text">100%</span>
-          <button onclick="changeZoom(0.15)" class="p-2 rounded-xl bg-white/10 hover:bg-blue-600 transition" title="ซูมเข้า"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
-          <button onclick="resetZoom()" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white/10 hover:bg-blue-600 transition">รีเซ็ต</button>
+          <button onclick="changeZoom(0.15)" class="p-1.5 rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition" title="ซูมเข้า"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+          <button onclick="resetZoom()" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-slate-200 dark:bg-white/10 hover:bg-blue-600 hover:text-white transition">รีเซ็ต</button>
         </div>
       </div>
 
-      <div class="flex-1 overflow-auto p-4 rounded-2xl bg-black/80 border border-white/10 flex justify-center items-start">
+      <div class="flex-1 overflow-auto p-4 rounded-xl ui-input flex justify-center items-start">
         <div id="pdf-preview-wrapper" class="transition-transform duration-200 ease-out flex flex-col items-center space-y-6 origin-top">
           <p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>
         </div>
       </div>
 
-      <div class="pt-4 border-t border-white/10 flex-shrink-0 mt-3">
-        <button onclick="toggleFilePreviewDrawer(false)" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-2xl shadow-lg transition">ปิดพรีวิว</button>
+      <div class="pt-3 border-t border-slate-200 dark:border-white/10 flex-shrink-0 mt-3">
+        <button onclick="toggleFilePreviewDrawer(false)" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-md transition">ปิดพรีวิว</button>
       </div>
     </div>
   </div>
 
   <!-- SLIP PREVIEW MODAL -->
   <div id="slip-preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl">
-    <div class="apple-glass-panel rounded-[32px] max-w-md w-full p-6 shadow-2xl animate-modal">
-      <div class="flex justify-between items-center mb-4 pb-3 border-b border-white/10">
-        <h3 class="text-base font-bold flex items-center gap-2 titanium-text">
-          <i data-lucide="file-check" class="w-5 h-5 text-blue-400"></i> สลิปการโอนเงิน
+    <div class="ui-panel rounded-[28px] max-w-md w-full p-6 shadow-2xl animate-modal">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200 dark:border-white/10">
+        <h3 class="text-sm font-bold flex items-center gap-2 titanium-text">
+          <i data-lucide="file-check" class="w-4 h-4 text-blue-500"></i> สลิปการโอนเงิน
         </h3>
-        <button onclick="closeSlipModal()" class="p-1 rounded-full hover:bg-white/10 transition">
+        <button onclick="closeSlipModal()" class="p-1 rounded-full hover:bg-white/10 transition titanium-text">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
-      <div class="text-center bg-black/90 rounded-2xl p-2 mb-4 border border-white/10 max-h-96 flex items-center justify-center overflow-hidden">
-        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-88 object-contain rounded-xl shadow-2xl">
+      <div class="text-center ui-input rounded-xl p-2 mb-4 max-h-96 flex items-center justify-center overflow-hidden">
+        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-80 object-contain rounded-lg shadow-lg">
       </div>
-      <button onclick="closeSlipModal()" class="w-full py-3 bg-white/10 text-xs font-bold rounded-2xl border border-white/10 transition">ปิดหน้าต่าง</button>
+      <button onclick="closeSlipModal()" class="w-full py-2.5 bg-slate-200 dark:bg-white/10 text-xs font-bold rounded-xl transition titanium-text">ปิดหน้าต่าง</button>
     </div>
   </div>
 
@@ -477,67 +489,67 @@
         <i data-lucide="settings" class="w-4 h-4"></i> ตั้งค่าเชื่อมต่อ Supabase Database (Admin)
       </div>
       <div class="flex gap-2 w-full md:w-auto">
-        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3.5 py-2 bg-black/60 border border-amber-500/30 rounded-xl text-xs text-white w-full sm:w-60 focus:outline-none">
-        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3.5 py-2 bg-black/60 border border-amber-500/30 rounded-xl text-xs text-white w-full sm:w-60 focus:outline-none">
+        <input type="text" id="supabase-url" placeholder="Project URL" class="px-3.5 py-2 ui-input rounded-xl text-xs w-full sm:w-60 focus:outline-none">
+        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3.5 py-2 ui-input rounded-xl text-xs w-full sm:w-60 focus:outline-none">
         <button onclick="saveAndInitSupabase()" class="bg-amber-500 hover:bg-amber-400 text-black font-bold px-4 py-2 rounded-xl shadow-md transition">บันทึก</button>
       </div>
     </div>
   </div>
 
   <!-- NAVBAR -->
-  <nav class="sticky top-0 z-40 bg-black/70 backdrop-blur-2xl border-b border-white/10 transition-all duration-300">
+  <nav class="sticky top-0 z-40 bg-[var(--nav-bg)] backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 transition-all duration-300">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <button onclick="toggleAppleTabMenu(true)" class="p-2.5 rounded-2xl bg-white/10 hover:bg-blue-600/30 border border-white/10 transition text-white flex items-center justify-center shadow-sm" title="เมนูนำทาง">
-          <i data-lucide="menu" class="w-5 h-5"></i>
+        <button onclick="toggleAppleTabMenu(true)" class="p-2.5 rounded-xl ui-card hover:border-blue-500 transition flex items-center justify-center shadow-sm" title="เมนูนำทาง">
+          <i data-lucide="menu" class="w-5 h-5 titanium-text"></i>
         </button>
 
         <a href="javascript:void(0)" onclick="switchView('landing')" class="flex items-center gap-2.5 group">
-          <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+          <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
             <i data-lucide="printer" class="w-5 h-5"></i>
           </div>
           <div>
-            <span class="text-lg font-black blue-gradient-text tracking-wide">PrintDekD</span>
-            <span class="text-[9px] bg-blue-500/20 border border-blue-400/30 text-blue-400 font-bold px-2 py-0.5 rounded-full ml-1 uppercase">Pro</span>
+            <span class="text-lg sm:text-xl font-black blue-gradient-text tracking-wide">PrintDekD</span>
+            <span class="text-[10px] bg-blue-600/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-extrabold px-2 py-0.5 rounded-md ml-1 uppercase">KMUTNB ITI</span>
           </div>
         </a>
       </div>
 
-      <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/10 text-xs font-semibold">
-        <button onclick="switchView('landing')" class="px-4 py-2 rounded-xl transition hover:text-blue-400">หน้าแรก</button>
-        <button onclick="switchView('dashboard')" class="px-4 py-2 rounded-xl transition hover:text-blue-400">สั่งพิมพ์ / คิวงาน</button>
-        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden px-4 py-2 rounded-xl transition hover:text-amber-400 flex items-center gap-1.5">
-          <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-500"></i> Coins
+      <div class="hidden md:flex items-center gap-1.5 bg-slate-200/60 dark:bg-white/5 p-1.5 rounded-2xl border border-slate-300/50 dark:border-white/10 text-xs sm:text-sm font-bold">
+        <button onclick="switchView('landing')" class="px-4 py-2 rounded-xl transition hover:text-blue-500 titanium-text">หน้าแรก</button>
+        <button onclick="switchView('dashboard')" class="px-4 py-2 rounded-xl transition hover:text-blue-500 titanium-text">สั่งพิมพ์ / คิวงาน</button>
+        <button id="nav-wallet-btn" onclick="switchView('wallet')" class="hidden px-4 py-2 rounded-xl transition hover:text-amber-500 titanium-text flex items-center gap-1.5">
+          <i data-lucide="coins" class="w-4 h-4 text-amber-500"></i> Coins
         </button>
         <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-500 hover:text-amber-400 px-3 py-2 text-xs font-bold transition">⚙️ DB Config</button>
       </div>
 
       <div class="flex items-center gap-3">
-        <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-white/10 hover:bg-blue-500/20 transition flex items-center justify-center text-amber-400" title="สลับธีม">
-          <i id="theme-icon" data-lucide="sun" class="w-4 h-4"></i>
+        <button onclick="toggleTheme()" class="p-2.5 rounded-xl ui-card hover:border-amber-400 transition flex items-center justify-center text-amber-500" title="สลับธีม">
+          <i id="theme-icon" data-lucide="sun" class="w-5 h-5"></i>
         </button>
 
-        <div id="user-coins-badge" class="hidden flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-2xl cursor-pointer hover:bg-amber-500/20 transition" onclick="switchView('wallet')">
+        <div id="user-coins-badge" class="hidden flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-xl cursor-pointer hover:bg-amber-500/20 transition" onclick="switchView('wallet')">
           <i data-lucide="coins" class="w-4 h-4 text-amber-500"></i>
-          <span id="user-coins-amount" class="text-xs font-extrabold text-amber-400">0 Coins</span>
+          <span id="user-coins-amount" class="text-xs font-extrabold text-amber-500">0 Coins</span>
         </div>
 
         <div id="guest-buttons" class="flex gap-2">
-          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs font-semibold px-3 py-2 hover:text-blue-400 transition">เข้าสู่ระบบ</button>
-          <button onclick="switchView('auth'); switchAuthTab('register')" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-2xl shadow-md transition">ลงทะเบียน</button>
+          <button onclick="switchView('auth'); switchAuthTab('login')" class="text-xs sm:text-sm font-bold px-3 py-2 hover:text-blue-500 transition titanium-text">เข้าสู่ระบบ</button>
+          <button onclick="switchView('auth'); switchAuthTab('register')" class="text-xs sm:text-sm font-extrabold bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl shadow-md transition">ลงทะเบียน</button>
         </div>
 
         <div id="user-profile-menu" class="hidden flex items-center gap-2">
-          <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-1.5 bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 text-xs font-bold rounded-xl flex items-center gap-1 transition">
+          <button id="admin-menu-btn" onclick="switchView('admin')" class="hidden px-3 py-1.5 bg-purple-500/15 border border-purple-500/30 text-purple-600 dark:text-purple-300 hover:bg-purple-500/25 text-xs font-bold rounded-xl flex items-center gap-1 transition">
             <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin
           </button>
 
-          <button onclick="openUserProfileModal()" class="flex items-center gap-2 p-1 bg-white/10 hover:bg-white/20 rounded-2xl border border-white/10 transition pr-3">
-            <img id="nav-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="w-7 h-7 rounded-xl object-cover">
+          <button onclick="openUserProfileModal()" class="flex items-center gap-2 p-1 ui-card rounded-xl transition pr-3">
+            <img id="nav-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="w-7 h-7 rounded-lg object-cover">
             <span id="user-display-name" class="text-xs font-bold titanium-text hidden sm:inline max-w-[100px] truncate">ผู้ใช้</span>
           </button>
 
-          <button onclick="handleLogout()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl transition" title="ออกจากระบบ">
+          <button onclick="handleLogout()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 rounded-xl transition" title="ออกจากระบบ">
             <i data-lucide="log-out" class="w-4 h-4"></i>
           </button>
         </div>
@@ -548,59 +560,60 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow z-10 relative">
 
-    <!-- VIEW 1: LANDING PAGE (APPLE IPHONE STYLE - SCROLL-TRIGGERED FADE ANIMATIONS) -->
-    <section id="view-landing" class="py-16 sm:py-24 px-4 max-w-6xl mx-auto space-y-36 sm:space-y-48">
+    <!-- VIEW 1: LANDING PAGE -->
+    <section id="view-landing" class="py-16 sm:py-24 px-4 max-w-6xl mx-auto space-y-32 sm:space-y-40">
       
       <!-- HERO SECTION -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[75vh] apple-reveal">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[70vh] apple-reveal">
         <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
-          <div class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs sm:text-sm font-bold tracking-wider shadow-xl">
-            <i data-lucide="sparkles" class="w-4 h-4"></i> PrintDekD Pro — Ultra Smart Printing Platform
+          <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-extrabold shadow-sm">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> PrintDekD Pro — KMUTNB ITI
           </div>
           
-          <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black leading-[1.08] tracking-tight titanium-gradient-text">
+          <h1 class="text-5xl sm:text-7xl font-black leading-[1.12] tracking-tight titanium-text">
             นวัตกรรมงานพิมพ์ <br>
-            <span class="blue-gradient-text">สไตล์ iPhone</span>
+            <span class="blue-gradient-text">KMUTNB ITI</span>
           </h1>
           
-          <p class="sub-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-            สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็วแบบไร้รอยต่อ อัปโหลดไฟล์ คัดเลือกช่วงหน้า คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งพัสดุถึงบ้าน
+          <p class="sub-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
+            สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็ว อัปโหลดไฟล์ คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งถึงบ้าน
           </p>
 
+          <!-- PROMINENT HIGH CONTRAST HERO BUTTONS -->
           <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-4">
-            <button onclick="handleStartPrinting()" class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-lg px-10 py-4.5 rounded-2xl shadow-2xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
+            <button onclick="handleStartPrinting()" class="px-10 py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-lg sm:text-xl shadow-xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
               <i data-lucide="file-up" class="w-6 h-6"></i> เริ่มต้นสั่งพิมพ์งาน
             </button>
-            <button onclick="switchView('dashboard')" class="apple-glass-card border font-bold text-lg px-9 py-4.5 rounded-2xl flex items-center justify-center gap-2 transition hover:border-blue-400 titanium-text shadow-xl">
-              <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i> เช็กสถานะคิวงาน
+            <button onclick="switchView('dashboard')" class="px-9 py-5 rounded-2xl ui-card hover:border-blue-500 font-extrabold text-lg sm:text-xl flex items-center justify-center gap-3 transition shadow-lg titanium-text">
+              <i data-lucide="clock" class="w-6 h-6 text-blue-500"></i> เช็กสถานะคิวงาน
             </button>
           </div>
         </div>
 
         <div class="lg:col-span-5 delay-1 apple-reveal">
-          <div class="apple-glass-card rounded-[40px] p-8 border shadow-2xl space-y-6 text-center relative overflow-hidden group">
-            <div class="relative w-full h-88 sm:h-96 rounded-[30px] overflow-hidden shadow-2xl border border-white/15">
-              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000 ease-out">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent"></div>
-              <div class="absolute bottom-6 left-6 right-6 text-left space-y-1.5">
-                <span class="text-xs uppercase font-extrabold text-blue-400 tracking-widest">Self Pickup & Home Delivery</span>
-                <p class="text-2xl font-black text-white">เครื่องพิมพ์เลเซอร์คมชัดสูง</p>
-                <p class="text-xs sm:text-sm text-slate-300">เลือกรับหน้าร้านฟรี หรือจัดส่งพัสดุถึงหน้าบ้าน</p>
+          <div class="ui-panel rounded-[36px] p-8 space-y-6 text-center relative overflow-hidden group">
+            <div class="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
+              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+              <div class="absolute bottom-6 left-6 right-6 text-left space-y-1">
+                <span class="text-xs font-black text-blue-400 uppercase tracking-widest">Self Pickup & Delivery</span>
+                <p class="text-2xl font-black text-white">เครื่องพิมพ์เลเซอร์คุณภาพสูง</p>
+                <p class="text-xs text-slate-300">บริการสั่งพิมพ์สำหรับนักศึกษาและบุคลากร ITI</p>
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-3 text-center text-xs">
-              <div class="p-4 rounded-2xl apple-glass-card border">
-                <p class="blue-gradient-text font-black text-2xl">100%</p>
-                <p class="text-xs font-semibold sub-text mt-1">ความคมชัดสูง</p>
+              <div class="p-3.5 rounded-xl ui-card">
+                <p class="blue-gradient-text font-black text-xl">100%</p>
+                <p class="text-xs font-bold sub-text mt-1">คมชัดสูง</p>
               </div>
-              <div class="p-4 rounded-2xl apple-glass-card border">
-                <p class="text-amber-400 font-black text-2xl">Coins</p>
-                <p class="text-xs font-semibold sub-text mt-1">จ่ายสะดวก</p>
+              <div class="p-3.5 rounded-xl ui-card">
+                <p class="text-amber-500 font-black text-xl">Coins</p>
+                <p class="text-xs font-bold sub-text mt-1">จ่ายสะดวก</p>
               </div>
-              <div class="p-4 rounded-2xl apple-glass-card border">
-                <p class="text-emerald-400 font-black text-2xl">Delivery</p>
-                <p class="text-xs font-semibold sub-text mt-1">ส่งถึงบ้าน</p>
+              <div class="p-3.5 rounded-xl ui-card">
+                <p class="text-emerald-500 font-black text-xl">Express</p>
+                <p class="text-xs font-bold sub-text mt-1">จัดส่งเร็ว</p>
               </div>
             </div>
           </div>
@@ -608,43 +621,43 @@
       </div>
 
       <!-- FEATURE SHOWCASE GRID -->
-      <div class="space-y-16">
-        <div class="text-center space-y-4 max-w-3xl mx-auto apple-reveal">
-          <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text tracking-tight">
+      <div class="space-y-12">
+        <div class="text-center space-y-3 max-w-3xl mx-auto apple-reveal">
+          <h2 class="text-3xl sm:text-5xl font-black titanium-text tracking-tight">
             ออกแบบมาเพื่อความสมบูรณ์แบบ
           </h2>
-          <p class="sub-text text-lg sm:text-xl leading-relaxed">
+          <p class="sub-text text-base sm:text-lg">
             สัมผัสประสบการณ์การใช้งานระดับพรีเมียม ตอบโจทย์การสั่งพิมพ์เอกสารทุกประเภท
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
-          <div class="apple-glass-card p-8 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-1">
-            <div class="w-16 h-16 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center shadow-lg">
-              <i data-lucide="zap" class="w-8 h-8"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div class="ui-panel p-8 sm:p-10 rounded-[32px] space-y-5 apple-reveal delay-1">
+            <div class="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-500 flex items-center justify-center shadow-md">
+              <i data-lucide="zap" class="w-7 h-7"></i>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">พรีวิว PDF สมบูรณ์แบบ</h3>
-            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
-              รองรับการเปิดดูพรีวิวหน้าเอกสาร PDF จริงแบบ Slide-out พร้อมระบบซูมขยาย คัดเลือกหน้าพิมพ์ได้แม่นยำที่สุด
+            <h3 class="text-2xl font-bold titanium-text">พรีวิว PDF สมบูรณ์แบบ</h3>
+            <p class="text-base sub-text leading-relaxed">
+              รองรับการเปิดดูพรีวิวหน้าเอกสาร PDF จริงแบบ Slide-out พร้อมระบบซูมขยาย คัดเลือกหน้าพิมพ์ได้แม่นยำ
             </p>
           </div>
 
-          <div class="apple-glass-card p-8 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-2">
-            <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shadow-lg">
-              <i data-lucide="wallet" class="w-8 h-8"></i>
+          <div class="ui-panel p-8 sm:p-10 rounded-[32px] space-y-5 apple-reveal delay-2">
+            <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center shadow-md">
+              <i data-lucide="wallet" class="w-7 h-7"></i>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">PrintDekD Wallet</h3>
-            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
+            <h3 class="text-2xl font-bold titanium-text">PrintDekD Wallet</h3>
+            <p class="text-base sub-text leading-relaxed">
               ระบบเติม Coins สั่งพิมพ์ง่ายดายทันทีในคลิกเดียว ไม่ต้องโอนจ่ายย่อยทุกครั้ง หักชำระเงินอัตโนมัติ
             </p>
           </div>
 
-          <div class="apple-glass-card p-8 sm:p-12 rounded-[36px] border shadow-2xl space-y-6 apple-reveal delay-3">
-            <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-lg">
-              <i data-lucide="truck" class="w-8 h-8"></i>
+          <div class="ui-panel p-8 sm:p-10 rounded-[32px] space-y-5 apple-reveal delay-3">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center shadow-md">
+              <i data-lucide="truck" class="w-7 h-7"></i>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">จัดส่งพัสดุ & รับหน้าร้าน</h3>
-            <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
+            <h3 class="text-2xl font-bold titanium-text">จัดส่งพัสดุ & รับหน้าร้าน</h3>
+            <p class="text-base sub-text leading-relaxed">
               เลือกรับเอกสารหน้าร้านได้ฟรี หรือให้จัดส่งพัสดุถึงบ้าน พร้อมติดตามสถานะและเลข Tracking ได้เรียลไทม์
             </p>
           </div>
@@ -652,39 +665,39 @@
       </div>
 
       <!-- INTERACTIVE PRICE ESTIMATOR -->
-      <div class="apple-glass-panel p-8 sm:p-14 rounded-[40px] border shadow-2xl relative overflow-hidden space-y-10 apple-reveal">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-8">
+      <div class="ui-panel p-8 sm:p-12 rounded-[36px] relative overflow-hidden space-y-8 apple-reveal">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-6">
           <div>
-            <span class="text-xs uppercase tracking-widest font-extrabold text-blue-400 block mb-2">Live Demo Estimator</span>
-            <h2 class="text-3xl sm:text-5xl font-black titanium-text">ทดลองคำนวณราคาพิมพ์เอกสาร</h2>
+            <span class="text-xs uppercase font-extrabold text-blue-500 block mb-1">Estimator</span>
+            <h2 class="text-2xl sm:text-4xl font-black titanium-text">ทดลองคำนวณราคาพิมพ์เอกสาร</h2>
           </div>
-          <button onclick="handleStartPrinting()" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-2xl shadow-xl transition flex items-center gap-2 self-start md:self-auto">
+          <button onclick="handleStartPrinting()" class="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl shadow-lg transition flex items-center gap-2 self-start md:self-auto">
             สั่งพิมพ์จริงทันที <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div class="lg:col-span-7 space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-6">
             <div>
-              <div class="flex justify-between text-base font-bold titanium-text mb-3">
+              <div class="flex justify-between text-sm font-bold titanium-text mb-2">
                 <span>จำนวนหน้าที่ต้องการพิมพ์:</span>
-                <span id="demo-page-val" class="text-blue-400 font-extrabold text-2xl">10 หน้า</span>
+                <span id="demo-page-val" class="text-blue-500 font-extrabold text-xl">10 หน้า</span>
               </div>
-              <input type="range" id="demo-page-slider" min="1" max="100" value="10" oninput="updateDemoPrice()" class="w-full accent-blue-500 h-3 bg-black/60 rounded-lg cursor-pointer">
+              <input type="range" id="demo-page-slider" min="1" max="100" value="10" oninput="updateDemoPrice()" class="w-full accent-blue-600 h-2.5 bg-slate-200 dark:bg-black/60 rounded-lg cursor-pointer">
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-bold mb-2 titanium-text">ประเภทสี:</label>
-                <select id="demo-color-select" onchange="updateDemoPrice()" class="w-full p-4 bg-black/60 border border-white/15 rounded-2xl text-base titanium-text font-semibold focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-2 titanium-text">ประเภทสี:</label>
+                <select id="demo-color-select" onchange="updateDemoPrice()" class="w-full p-3.5 ui-input rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
                   <option value="1">ขาว-ดำ (1.00 ฿ / หน้า)</option>
                   <option value="5">พิมพ์สี (5.00 ฿ / หน้า)</option>
                 </select>
               </div>
 
               <div>
-                <label class="block text-sm font-bold mb-2 titanium-text">การจัดส่ง:</label>
-                <select id="demo-delivery-select" onchange="updateDemoPrice()" class="w-full p-4 bg-black/60 border border-white/15 rounded-2xl text-base titanium-text font-semibold focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-2 titanium-text">การจัดส่ง:</label>
+                <select id="demo-delivery-select" onchange="updateDemoPrice()" class="w-full p-3.5 ui-input rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500">
                   <option value="0">รับที่หน้าร้าน (ฟรี 0 ฿)</option>
                   <option value="30">จัดส่งปลายทาง (+30 ฿)</option>
                 </select>
@@ -692,81 +705,11 @@
             </div>
           </div>
 
-          <div class="lg:col-span-5 apple-glass-card p-10 rounded-[32px] border text-center space-y-4 bg-gradient-to-b from-blue-600/15 to-transparent">
-            <span class="text-xs sub-text font-bold block uppercase tracking-wider">ประมาณการราคาเบื้องต้น</span>
-            <div id="demo-total-price" class="text-5xl sm:text-6xl font-black blue-gradient-text">10.00 ฿</div>
+          <div class="lg:col-span-5 ui-card p-8 rounded-2xl text-center space-y-2">
+            <span class="text-xs sub-text font-bold block uppercase">ประมาณการราคาเบื้องต้น</span>
+            <div id="demo-total-price" class="text-4xl sm:text-5xl font-black blue-gradient-text">10.00 ฿</div>
             <p class="text-xs sub-text" id="demo-delivery-hint">(รับสินค้าฟรีหน้าร้าน - ไม่มีค่าธรรมเนียมแอบแฝง)</p>
           </div>
-        </div>
-      </div>
-
-      <!-- HOW IT WORKS STEP-BY-STEP -->
-      <div class="space-y-16">
-        <div class="text-center space-y-3 apple-reveal">
-          <span class="text-xs font-extrabold tracking-widest text-blue-400 uppercase">Simple 4-Step Process</span>
-          <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text">ขั้นตอนการสั่งพิมพ์ง่ายๆ</h2>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-1">
-            <span class="text-5xl font-black text-blue-500/30">01</span>
-            <h4 class="text-2xl font-bold titanium-text">1. อัปโหลดไฟล์</h4>
-            <p class="text-base sub-text leading-relaxed font-light">เลือกไฟล์ PDF หรือรูปภาพที่คุณต้องการพิมพ์ลงในระบบ</p>
-          </div>
-
-          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-2">
-            <span class="text-5xl font-black text-blue-500/30">02</span>
-            <h4 class="text-2xl font-bold titanium-text">2. ปรับแต่ง & เลือกจัดส่ง</h4>
-            <p class="text-base sub-text leading-relaxed font-light">ระบุช่วงหน้า พิมพ์สี/ขาวดำ เลือกรับหน้าร้าน หรือจัดส่งถึงบ้าน</p>
-          </div>
-
-          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-3">
-            <span class="text-5xl font-black text-amber-500/30">03</span>
-            <h4 class="text-2xl font-bold titanium-text">3. ชำระผ่าน Coins</h4>
-            <p class="text-base sub-text leading-relaxed font-light">ชำระเงินผ่าน PrintDekD Coins หรือ PromptPay Direct ได้ทันที</p>
-          </div>
-
-          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-4">
-            <span class="text-5xl font-black text-emerald-500/30">04</span>
-            <h4 class="text-2xl font-bold titanium-text">4. รอรับเอกสาร</h4>
-            <p class="text-base sub-text leading-relaxed font-light">รับงานหน้าร้าน หรือรอรับพัสดุที่บ้านพร้อมเลข Tracking เช็กได้ 24 ชม.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- FAQ ACCORDION -->
-      <div class="space-y-12 max-w-4xl mx-auto apple-reveal">
-        <div class="text-center space-y-3">
-          <h2 class="text-4xl sm:text-5xl font-extrabold titanium-text">คำถามที่พบบ่อย (FAQ)</h2>
-          <p class="text-base sm:text-lg sub-text">ข้อสงสัยเกี่ยวกับการสั่งพิมพ์และการรับเอกสาร</p>
-        </div>
-
-        <div class="space-y-6">
-          <div class="p-8 sm:p-10 rounded-[32px] apple-glass-card border space-y-3">
-            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: สามารถสั่งพิมพ์ไฟล์รูปแบบใดได้บ้าง?</h4>
-            <p class="text-base sub-text leading-relaxed font-light">รองรับไฟล์ PDF, Word (DOCX), และรูปภาพ (JPG, PNG) ระบบจะคำนวณจำนวนหน้าให้อัตโนมัติ</p>
-          </div>
-
-          <div class="p-8 sm:p-10 rounded-[32px] apple-glass-card border space-y-3">
-            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: ค่าจัดส่งพัสดุคิดอย่างไร?</h4>
-            <p class="text-base sub-text leading-relaxed font-light">หากเลือกรับที่หน้าร้านจะไม่มีค่าจัดส่ง (ฟรี 0 ฿) และหากเลือกจัดส่งถึงบ้าน คิดค่าจัดส่งเหมาจ่ายเพียง 30.00 ฿ ทั่วประเทศ</p>
-          </div>
-
-          <div class="p-8 sm:p-10 rounded-[32px] apple-glass-card border space-y-3">
-            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: เติม Coins แล้วยอดเข้าทันทีหรือไม่?</h4>
-            <p class="text-base sub-text leading-relaxed font-light">เมื่อสแกนโอนเงิน PromptPay และแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าอย่างรวดเร็ว</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- BOTTOM CTA BANNER -->
-      <div class="apple-glass-panel rounded-[40px] p-10 sm:p-20 border text-center space-y-8 relative overflow-hidden bg-gradient-to-tr from-blue-950/40 via-black to-indigo-950/40 apple-reveal">
-        <div class="max-w-2xl mx-auto space-y-6">
-          <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text">พร้อมเริ่มต้นสั่งพิมพ์แล้วหรือยัง?</h2>
-          <p class="text-base sm:text-lg sub-text">สั่งพิมพ์เอกสารของคุณอย่างรวดเร็ว ด้วยเทคโนโลยีที่ล้ำสมัยที่สุด</p>
-          <button onclick="handleStartPrinting()" class="px-12 py-5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-lg rounded-2xl shadow-2xl transition hover:scale-105 inline-flex items-center gap-3">
-            <i data-lucide="printer" class="w-6 h-6"></i> สั่งพิมพ์ทันทีที่ PrintDekD Pro
-          </button>
         </div>
       </div>
 
@@ -774,60 +717,60 @@
 
     <!-- VIEW 2: AUTH -->
     <section id="view-auth" class="hidden py-16 px-4 max-w-md mx-auto">
-      <div class="apple-glass-panel rounded-[36px] p-8 sm:p-10 border shadow-2xl relative overflow-hidden">
-        <div class="flex bg-white/5 p-1 rounded-2xl mb-8 border border-white/10">
-          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs font-bold rounded-xl text-white bg-blue-600 shadow-sm">เข้าสู่ระบบ</button>
-          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-3 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">ลงทะเบียน</button>
+      <div class="ui-panel rounded-[32px] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div class="flex bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl mb-8 border border-slate-300/50 dark:border-white/10">
+          <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-3 text-xs font-bold rounded-lg text-white bg-blue-600 shadow-sm">เข้าสู่ระบบ</button>
+          <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-3 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ลงทะเบียน</button>
         </div>
 
         <!-- LOGIN FORM -->
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5">
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">อีเมลบัญชี</label>
-            <input type="email" id="login-email" required class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm focus:outline-none focus:border-blue-500 titanium-text">
+            <label class="block text-xs font-bold mb-2 titanium-text">อีเมลบัญชี</label>
+            <input type="email" id="login-email" placeholder="example@kmutnb.ac.th" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">รหัสผ่าน</label>
+            <label class="block text-xs font-bold mb-2 titanium-text">รหัสผ่าน</label>
             <div class="relative">
-              <input type="password" id="login-password" required class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10 titanium-text">
-              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3.5 top-4 text-apple-subtext hover:text-blue-400">
-                <i id="login-eye" data-lucide="eye" class="w-4 h-4"></i>
+              <input type="password" id="login-password" placeholder="••••••••" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3.5 top-3.5 sub-text hover:text-blue-500">
+                <i id="login-eye" data-lucide="eye" class="w-5 h-5"></i>
               </button>
             </div>
           </div>
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/25 transition text-base">เข้าสู่ระบบ</button>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition text-sm">เข้าสู่ระบบ</button>
         </form>
 
         <!-- REGISTER FORM -->
         <form id="form-register" onsubmit="handleRegister(event)" class="space-y-5 hidden">
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">ชื่อ-นามสกุล</label>
-            <input type="text" id="reg-fullname" required class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm focus:outline-none focus:border-blue-500 titanium-text">
+            <label class="block text-xs font-bold mb-2 titanium-text">ชื่อ-นามสกุล</label>
+            <input type="text" id="reg-fullname" placeholder="สมชาย ใจดี" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">อีเมลบัญชี</label>
-            <input type="email" id="reg-email" required class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm focus:outline-none focus:border-blue-500 titanium-text">
+            <label class="block text-xs font-bold mb-2 titanium-text">อีเมลบัญชี</label>
+            <input type="email" id="reg-email" placeholder="student@kmutnb.ac.th" required class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500">
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">รูปโปรไฟล์ (อัปโหลดรูปภาพหรือเลือกรูป):</label>
-            <div class="flex items-center gap-3 mb-2">
-              <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-2xl object-cover border border-white/20">
-              <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)" class="w-full text-xs bg-black/60 rounded-xl p-2 border border-white/10">
+            <label class="block text-xs font-bold mb-2 titanium-text">รูปโปรไฟล์:</label>
+            <div class="flex items-center gap-3">
+              <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-xl object-cover border border-slate-300 dark:border-white/20">
+              <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)" class="w-full text-xs ui-input rounded-xl p-2">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-semibold mb-2 titanium-text">รหัสผ่าน</label>
+            <label class="block text-xs font-bold mb-2 titanium-text">รหัสผ่าน</label>
             <div class="relative">
-              <input type="password" id="reg-password" required onkeyup="validatePasswordRequirements()" class="w-full px-4 py-3.5 bg-black/60 border border-white/15 rounded-2xl text-sm focus:outline-none focus:border-blue-500 pr-10 titanium-text">
-              <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute right-3.5 top-4 text-apple-subtext hover:text-blue-400">
-                <i id="reg-eye" data-lucide="eye" class="w-4 h-4"></i>
+              <input type="password" id="reg-password" placeholder="••••••••" required onkeyup="validatePasswordRequirements()" class="w-full px-4 py-3.5 ui-input rounded-xl text-sm focus:outline-none focus:border-blue-500 pr-10">
+              <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute right-3.5 top-3.5 sub-text hover:text-blue-500">
+                <i id="reg-eye" data-lucide="eye" class="w-5 h-5"></i>
               </button>
             </div>
           </div>
 
-          <div class="p-4 bg-black/40 rounded-2xl border border-white/10 text-xs space-y-1.5">
+          <div class="p-4 ui-card rounded-xl text-xs space-y-1.5">
             <p class="font-bold mb-1 titanium-text">เงื่อนไขความปลอดภัยรหัสผ่าน:</p>
             <div id="pwd-req-length" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> อย่างน้อย 8 ตัวอักษร</div>
             <div id="pwd-req-upper" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)</div>
@@ -835,7 +778,7 @@
             <div id="pwd-req-num" class="flex items-center gap-1.5 text-rose-500 font-medium"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i> มีตัวเลขอย่างน้อย 1 ตัว (0-9)</div>
           </div>
 
-          <button type="submit" id="reg-submit-btn" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-500/25 transition opacity-60 text-base">ยืนยันลงทะเบียน</button>
+          <button type="submit" id="reg-submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition opacity-60 text-sm">ยืนยันลงทะเบียน</button>
         </form>
       </div>
     </section>
@@ -845,10 +788,10 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <!-- ORDER FORM -->
-        <div class="lg:col-span-6 apple-glass-panel p-6 sm:p-10 rounded-[36px] border shadow-xl space-y-6">
-          <div class="flex items-center gap-3 pb-4 border-b border-white/10">
-            <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
-              <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px] space-y-6">
+          <div class="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-white/10">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-500 flex items-center justify-center">
+              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
             </div>
             <div>
               <h2 class="text-xl font-bold titanium-text">สร้างรายการสั่งพิมพ์</h2>
@@ -858,48 +801,48 @@
 
           <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-6">
             <div>
-              <label class="block text-xs font-semibold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, JPG)</label>
-              <div class="relative border-2 border-dashed hover:border-blue-500 border-white/20 rounded-2xl p-8 text-center transition bg-black/40 cursor-pointer group" onclick="document.getElementById('file-input').click()">
+              <label class="block text-xs font-bold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, JPG)</label>
+              <div class="relative border-2 border-dashed hover:border-blue-500 border-slate-300 dark:border-white/20 rounded-2xl p-6 text-center transition ui-input cursor-pointer group" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" required onchange="handleFileSelect(event)" class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                <div id="upload-placeholder" class="space-y-3">
-                  <i data-lucide="file-plus" class="w-10 h-10 text-blue-400 mx-auto group-hover:scale-110 transition"></i>
+                <div id="upload-placeholder" class="space-y-2">
+                  <i data-lucide="file-plus" class="w-10 h-10 text-blue-500 mx-auto group-hover:scale-110 transition"></i>
                   <p class="text-sm font-bold titanium-text">คลิกเลือกไฟล์ หรือ ลากไฟล์มาวางที่นี่</p>
                 </div>
-                <div id="file-details" class="hidden text-left bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between">
+                <div id="file-details" class="hidden text-left ui-card p-3.5 rounded-xl flex items-center justify-between">
                   <div class="flex items-center gap-2 overflow-hidden">
-                    <i data-lucide="file-text" class="w-5 h-5 text-blue-400"></i>
+                    <i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i>
                     <span id="file-info-name" class="text-xs font-bold truncate max-w-xs titanium-text">doc.pdf</span>
                   </div>
-                  <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-md font-bold">พร้อมพิมพ์</span>
+                  <span class="text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-md font-bold">พร้อมพิมพ์</span>
                 </div>
               </div>
 
-              <button type="button" id="preview-file-drawer-btn" onclick="toggleFilePreviewDrawer(true)" class="hidden w-full mt-3 py-3 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+              <button type="button" id="preview-file-drawer-btn" onclick="toggleFilePreviewDrawer(true)" class="hidden w-full mt-3 py-2.5 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
                 <i data-lucide="eye" class="w-4 h-4"></i> ดูพรีวิวไฟล์เอกสาร (Slide Preview)
               </button>
             </div>
 
             <!-- Page Selection -->
-            <div class="p-5 bg-blue-500/10 rounded-2xl border border-blue-500/20 space-y-4">
-              <div class="flex items-center justify-between border-b border-blue-500/20 pb-3">
+            <div class="p-4 rounded-2xl ui-card space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                 <div>
                   <span class="text-[11px] sub-text block">จำนวนหน้าทั้งหมด:</span>
-                  <span id="total-pages-display" class="text-base font-extrabold text-blue-400">0 หน้า</span>
+                  <span id="total-pages-display" class="text-sm font-extrabold text-blue-500">0 หน้า</span>
                 </div>
                 <div class="text-right">
                   <span class="text-[11px] sub-text block">หน้าที่เลือกพิมพ์:</span>
-                  <span id="selected-pages-count-display" class="text-base font-extrabold text-emerald-400">0 หน้า</span>
+                  <span id="selected-pages-count-display" class="text-sm font-extrabold text-emerald-500">0 หน้า</span>
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-bold mb-2 titanium-text">รูปแบบการเลือกหน้าพิมพ์:</label>
                 <div class="grid grid-cols-2 gap-3 text-xs">
-                  <label class="border border-white/15 p-3.5 rounded-xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
+                  <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-blue-500 titanium-text font-bold">
                     <input type="radio" name="page_selection_mode" value="text" checked onchange="togglePageSelectionMode()">
                     <span>ระบุช่วงหน้า</span>
                   </label>
-                  <label class="border border-white/15 p-3.5 rounded-xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
+                  <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-blue-500 titanium-text font-bold">
                     <input type="radio" name="page_selection_mode" value="grid" onchange="togglePageSelectionMode()">
                     <span>ตารางเลือกรายหน้า</span>
                   </label>
@@ -909,17 +852,17 @@
               <div id="page-mode-text-box" class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="text-[11px] font-semibold sub-text block mb-1">จำนวนหน้าที่พิมพ์:</label>
-                    <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs font-bold titanium-text">
+                    <label class="text-[11px] font-bold sub-text block mb-1">จำนวนหน้าที่พิมพ์:</label>
+                    <input type="number" id="printed-pages-input" min="1" value="1" onchange="calculatePrice()" class="w-full px-3.5 py-2.5 ui-input rounded-xl text-xs font-bold">
                   </div>
                   <div>
-                    <label class="text-[11px] font-semibold sub-text block mb-1">ระบุช่วงหน้า (เช่น 1-5):</label>
-                    <input type="text" id="page-range-input" placeholder="เช่น 1-3, 5" onchange="calculatePrice()" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text">
+                    <label class="text-[11px] font-bold sub-text block mb-1">ระบุช่วงหน้า (เช่น 1-5):</label>
+                    <input type="text" id="page-range-input" placeholder="เช่น 1-3, 5" onchange="calculatePrice()" class="w-full px-3.5 py-2.5 ui-input rounded-xl text-xs">
                   </div>
                 </div>
                 <div>
-                  <label class="text-[11px] font-semibold sub-text block mb-1">หมายเหตุเพิ่มเติม:</label>
-                  <textarea id="order-notes" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติม..." class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text leading-relaxed"></textarea>
+                  <label class="text-[11px] font-bold sub-text block mb-1">หมายเหตุเพิ่มเติม:</label>
+                  <textarea id="order-notes" rows="2" placeholder="ระบุรายละเอียดเพิ่มเติม..." class="w-full px-3.5 py-2.5 ui-input rounded-xl text-xs leading-relaxed"></textarea>
                 </div>
               </div>
 
@@ -927,11 +870,11 @@
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold titanium-text">รายการหน้าในเอกสาร:</span>
                   <div class="flex gap-2">
-                    <button type="button" onclick="selectAllPages(true)" class="px-2.5 py-1 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-[10px] font-bold">เลือกทั้งหมด</button>
-                    <button type="button" onclick="selectAllPages(false)" class="px-2.5 py-1 bg-white/10 sub-text border border-white/10 rounded-lg text-[10px] font-bold">ยกเลิก</button>
+                    <button type="button" onclick="selectAllPages(true)" class="px-2.5 py-1 bg-blue-500/20 text-blue-500 rounded-lg text-[10px] font-bold">เลือกทั้งหมด</button>
+                    <button type="button" onclick="selectAllPages(false)" class="px-2.5 py-1 bg-slate-200 dark:bg-white/10 sub-text rounded-lg text-[10px] font-bold">ยกเลิก</button>
                   </div>
                 </div>
-                <div id="pages-grid-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 bg-black/60 rounded-xl border border-white/10">
+                <div id="pages-grid-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-36 overflow-y-auto p-2 ui-input rounded-xl">
                   <p class="col-span-full text-center text-xs sub-text py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>
                 </div>
               </div>
@@ -939,137 +882,137 @@
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold mb-1 titanium-text">ขนาดกระดาษ</label>
-                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3.5 py-3 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-1 titanium-text">ขนาดกระดาษ</label>
+                <select id="paper-size" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
                   <option value="A4">A4</option>
                   <option value="A3">A3</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold mb-1 titanium-text">จำนวนชุด</label>
-                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3.5 py-3 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-1 titanium-text">จำนวนชุด</label>
+                <input type="number" id="copies" min="1" value="1" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold mb-1 titanium-text">ประเภทสี</label>
-                <select id="color-type" onchange="calculatePrice()" class="w-full px-3.5 py-3 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-1 titanium-text">ประเภทสี</label>
+                <select id="color-type" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
                   <option value="bw">ขาว-ดำ (1.00 ฿/หน้า)</option>
                   <option value="color">พิมพ์สี (5.00 ฿/หน้า)</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold mb-1 titanium-text">การพิมพ์</label>
-                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3.5 py-3 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                <label class="block text-xs font-bold mb-1 titanium-text">การพิมพ์</label>
+                <select id="duplex-type" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold focus:outline-none focus:border-blue-500">
                   <option value="single">หน้าเดียว</option>
                   <option value="duplex">พิมพ์หน้า-หลัง (+0.50 ฿)</option>
                 </select>
               </div>
             </div>
 
-            <!-- SHIPPING / DELIVERY OPTIONS (ADDED FROM INDEX COPY 3) -->
-            <div class="pt-3 border-t border-white/10">
-              <label class="block text-xs font-bold mb-3 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
+            <!-- SHIPPING / DELIVERY OPTIONS -->
+            <div class="pt-3 border-t border-slate-200 dark:border-white/10">
+              <label class="block text-xs font-bold mb-2.5 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-emerald-500 titanium-text transition">
+                <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-emerald-500 transition font-bold">
                   <input type="radio" name="delivery_method" value="pickup" checked onchange="toggleDeliveryFields()">
                   <div>
-                    <p class="text-xs font-bold flex items-center gap-1">
-                      <i data-lucide="store" class="w-3.5 h-3.5 text-emerald-400"></i> รับที่หน้าร้าน
+                    <p class="text-xs font-bold flex items-center gap-1 titanium-text">
+                      <i data-lucide="store" class="w-3.5 h-3.5 text-emerald-500"></i> รับที่หน้าร้าน
                     </p>
                     <p class="text-[10px] sub-text">ฟรีค่าบริการ (0 ฿)</p>
                   </div>
                 </label>
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text transition">
+                <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-blue-500 transition font-bold">
                   <input type="radio" name="delivery_method" value="delivery" onchange="toggleDeliveryFields()">
                   <div>
-                    <p class="text-xs font-bold flex items-center gap-1">
-                      <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-400"></i> จัดส่งพัสดุถึงบ้าน
+                    <p class="text-xs font-bold flex items-center gap-1 titanium-text">
+                      <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> จัดส่งพัสดุถึงบ้าน
                     </p>
-                    <p class="text-[10px] text-blue-400 font-bold">+ค่าส่ง 30.00 ฿</p>
+                    <p class="text-[10px] text-blue-500 font-bold">+ค่าส่ง 30.00 ฿</p>
                   </div>
                 </label>
               </div>
 
-              <div id="delivery-address-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">
-                <p class="text-xs font-bold text-blue-400 flex items-center gap-1">
+              <div id="delivery-address-box" class="hidden space-y-2.5 bg-blue-500/10 p-3.5 rounded-xl border border-blue-500/20">
+                <p class="text-xs font-bold text-blue-500 flex items-center gap-1">
                   <i data-lucide="map-pin" class="w-4 h-4"></i> กรอกที่อยู่จัดส่งพัสดุ
                 </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="text" id="recipient-name" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
-                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input type="text" id="recipient-name" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full px-3 py-2 ui-input rounded-lg text-xs">
+                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" class="w-full px-3 py-2 ui-input rounded-lg text-xs">
                 </div>
-                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด (บ้านเลขที่, ถนน, ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์)..." class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด..." class="w-full px-3 py-2 ui-input rounded-lg text-xs leading-relaxed"></textarea>
               </div>
             </div>
 
             <!-- Payment Channels -->
-            <div class="pt-3 border-t border-white/10">
-              <label class="block text-xs font-bold mb-3 titanium-text">3. ช่องทางการชำระเงิน</label>
+            <div class="pt-3 border-t border-slate-200 dark:border-white/10">
+              <label class="block text-xs font-bold mb-2.5 titanium-text">3. ช่องทางการชำระเงิน</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-amber-500 titanium-text">
+                <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-amber-500 font-bold">
                   <input type="radio" name="payment_method" value="coins" checked onchange="togglePaymentFields()">
                   <div>
-                    <p class="text-xs font-bold flex items-center gap-1">
+                    <p class="text-xs font-bold flex items-center gap-1 titanium-text">
                       <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-500"></i> Coins
                     </p>
                     <p class="text-[10px] sub-text">หัก Coins ทันที</p>
                   </div>
                 </label>
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
+                <label class="ui-input p-3 rounded-xl flex items-center gap-2 cursor-pointer hover:border-blue-500 font-bold">
                   <input type="radio" name="payment_method" value="promptpay" onchange="togglePaymentFields()">
                   <div>
-                    <p class="text-xs font-bold">PromptPay Direct</p>
+                    <p class="text-xs font-bold titanium-text">PromptPay Direct</p>
                     <p class="text-[10px] sub-text">โอนแนบสลิป</p>
                   </div>
                 </label>
               </div>
 
-              <div id="promptpay-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 text-center">
-                <p class="text-xs font-bold text-blue-400">สแกน QR Code โอนเงิน PromptPay</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-32 h-32 mx-auto rounded-xl border border-white/20">
+              <div id="promptpay-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-xl border border-blue-500/20 text-center">
+                <p class="text-xs font-bold text-blue-500">สแกน QR Code โอนเงิน PromptPay</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-28 h-28 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm">
                 <p class="text-[10px] sub-text">ร้าน PrintDekD Pro (พร้อมเพย์: 089-999-9999)</p>
                 <div>
-                  <label class="block text-xs font-semibold mb-1 text-left titanium-text">แนบสลิปโอนเงิน (Image):</label>
-                  <input type="file" id="order-slip-file" accept="image/*" class="w-full text-xs bg-black/60 rounded-xl p-2 border border-white/10">
+                  <label class="block text-xs font-bold mb-1 text-left titanium-text">แนบสลิปโอนเงิน (Image):</label>
+                  <input type="file" id="order-slip-file" accept="image/*" class="w-full text-xs ui-input rounded-lg p-2">
                 </div>
               </div>
             </div>
 
             <!-- Total Price -->
-            <div class="p-5 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
+            <div class="p-4 rounded-xl ui-card flex items-center justify-between">
               <div>
                 <span class="text-xs font-bold sub-text block">ราคารวมสุทธิ:</span>
                 <span id="price-breakdown" class="text-[10px] sub-text">(ค่าพิมพ์ + ค่าจัดส่ง)</span>
               </div>
-              <span id="total-price" class="text-3xl font-extrabold blue-gradient-text">1.00 ฿</span>
+              <span id="total-price" class="text-2xl font-black blue-gradient-text">1.00 ฿</span>
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition text-base">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-base">
               <i data-lucide="send" class="w-5 h-5"></i> ยืนยันการสั่งพิมพ์
             </button>
           </form>
         </div>
 
         <!-- QUEUE LIST -->
-        <div class="lg:col-span-6 apple-glass-panel p-6 sm:p-10 rounded-[36px] border shadow-xl">
-          <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+        <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
-                <i data-lucide="activity" class="w-6 h-6"></i>
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-500 flex items-center justify-center">
+                <i data-lucide="activity" class="w-5 h-5"></i>
               </div>
               <div>
                 <h2 class="text-xl font-bold titanium-text">ติดตามคิวงานพิมพ์ & จัดส่ง</h2>
                 <p class="text-xs sub-text">สถานะงานพิมพ์ หน้าร้าน และเลข Tracking จัดส่ง</p>
               </div>
             </div>
-            <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs flex items-center gap-1.5 transition titanium-text">
+            <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="px-3 py-2 ui-card rounded-xl text-xs flex items-center gap-1.5 transition titanium-text font-bold">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช
             </button>
           </div>
 
-          <div id="queue-cards-container" class="space-y-4">
+          <div id="queue-cards-container" class="space-y-3.5">
             <p class="py-12 text-center sub-text text-xs">กำลังโหลดข้อมูลคิว...</p>
           </div>
         </div>
@@ -1079,10 +1022,10 @@
     <!-- VIEW 4: WALLET -->
     <section id="view-wallet" class="hidden py-10 px-4 max-w-4xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div class="md:col-span-6 apple-glass-panel p-6 sm:p-10 rounded-[36px] border shadow-xl">
-          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 border border-amber-500/30 flex items-center justify-center">
-              <i data-lucide="wallet" class="w-6 h-6"></i>
+        <div class="md:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
+          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
             </div>
             <div>
               <h2 class="text-xl font-bold titanium-text">เติม Coins เข้ากระเป๋าเงิน</h2>
@@ -1090,40 +1033,40 @@
             </div>
           </div>
 
-          <form onsubmit="handleTopupSubmit(event)" class="space-y-6">
+          <form onsubmit="handleTopupSubmit(event)" class="space-y-5">
             <div>
-              <label class="block text-xs font-bold mb-3 titanium-text">1. เลือกจำนวนเงินเติม:</label>
-              <div class="grid grid-cols-3 gap-3">
-                <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-3.5 border border-amber-500/50 bg-amber-500/10 rounded-2xl font-bold text-xs text-amber-500 text-center transition hover:scale-105">20 บาท<br><span class="text-[10px] font-normal sub-text">(20 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-3.5 border border-white/15 rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text">50 บาท<br><span class="text-[10px] font-normal sub-text">(50 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-3.5 border border-white/15 rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text">100 บาท<br><span class="text-[10px] font-normal sub-text">(100 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-3.5 border border-white/15 rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text">200 บาท<br><span class="text-[10px] font-normal sub-text">(200 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-3.5 border border-white/15 rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text">500 บาท<br><span class="text-[10px] font-normal sub-text">(500 Coins)</span></button>
+              <label class="block text-xs font-bold mb-2.5 titanium-text">1. เลือกจำนวนเงินเติม:</label>
+              <div class="grid grid-cols-3 gap-2.5">
+                <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-3 border border-amber-500 bg-amber-500/10 rounded-xl font-bold text-xs text-amber-500 text-center transition">20 บาท<br><span class="text-[10px] font-normal sub-text">(20 Coins)</span></button>
+                <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">50 บาท<br><span class="text-[10px] font-normal sub-text">(50 Coins)</span></button>
+                <button type="button" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">100 บาท<br><span class="text-[10px] font-normal sub-text">(100 Coins)</span></button>
+                <button type="button" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">200 บาท<br><span class="text-[10px] font-normal sub-text">(200 Coins)</span></button>
+                <button type="button" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">500 บาท<br><span class="text-[10px] font-normal sub-text">(500 Coins)</span></button>
               </div>
               <input type="hidden" id="selected-topup-amount" value="20">
             </div>
 
-            <div class="bg-amber-500/10 p-5 rounded-2xl border border-amber-500/20 text-center space-y-2">
-              <p class="text-xs font-bold text-amber-500">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-base font-extrabold text-amber-400">20.00</span> บาท</p>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-36 h-36 mx-auto rounded-xl border border-white/20 shadow-lg">
+            <div class="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20 text-center space-y-2">
+              <p class="text-xs font-bold text-amber-500">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-base font-extrabold">20.00</span> บาท</p>
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-32 h-32 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm">
               <p class="text-[10px] sub-text">พร้อมเพย์: 089-999-9999 (ร้าน PrintDekD Pro)</p>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold mb-1 titanium-text">2. แนบสลิปการโอนเงิน:</label>
-              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs bg-black/60 rounded-xl p-2.5 border border-white/10">
+              <label class="block text-xs font-bold mb-1 titanium-text">2. แนบสลิปการโอนเงิน:</label>
+              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs ui-input rounded-xl p-2">
             </div>
 
-            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-4 rounded-2xl shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transition text-base">
-              <i data-lucide="send" class="w-5 h-5"></i> ส่งคำขอเติม Coins ให้แอดมินอนุมัติ
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition text-sm">
+              <i data-lucide="send" class="w-4 h-4"></i> ส่งคำขอเติม Coins ให้แอดมินอนุมัติ
             </button>
           </form>
         </div>
 
-        <div class="md:col-span-6 apple-glass-panel p-6 sm:p-10 rounded-[36px] border shadow-xl">
-          <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+        <div class="md:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <h2 class="text-xl font-bold titanium-text">ประวัติการเติม Coins</h2>
-            <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs flex items-center gap-1 transition titanium-text">
+            <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="px-3 py-1.5 ui-card rounded-xl text-xs flex items-center gap-1 transition titanium-text font-bold">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช
             </button>
           </div>
@@ -1138,36 +1081,36 @@
     <section id="view-admin" class="hidden py-10 px-4 max-w-6xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
-          <h1 class="text-3xl font-extrabold titanium-text mt-1">จัดการออเดอร์ การจัดส่ง สลิปโอนเงิน & เติม Coins</h1>
+          <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold titanium-text mt-1">จัดการออเดอร์ การจัดส่ง สลิปโอนเงิน & เติม Coins</h1>
         </div>
-        <button id="refresh-admin-btn" onclick="animateRefresh('refresh-admin-btn', loadAdminData)" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-2xl shadow-lg shadow-purple-500/25 flex items-center gap-2 transition">
+        <button id="refresh-admin-btn" onclick="animateRefresh('refresh-admin-btn', loadAdminData)" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition self-start sm:self-auto">
           <i data-lucide="refresh-cw" class="w-4 h-4 refresh-icon"></i> ดึงข้อมูลล่าสุด
         </button>
       </div>
 
-      <div class="flex bg-white/5 p-1 rounded-2xl mb-6 max-w-md border border-white/10">
-        <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')" class="flex-1 py-2.5 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-md">จัดการงานพิมพ์</button>
-        <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')" class="flex-1 py-2.5 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">อนุมัติเติม Coins</button>
-        <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2.5 text-xs font-bold rounded-xl opacity-70 hover:opacity-100">จัดการสมาชิก</button>
+      <div class="flex bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl mb-6 max-w-md border border-slate-300/50 dark:border-white/10">
+        <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
+        <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')" class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">อนุมัติเติม Coins</button>
+        <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">จัดการสมาชิก</button>
       </div>
 
       <!-- ADMIN ORDERS TAB -->
-      <div id="admin-tab-orders" class="apple-glass-panel p-6 sm:p-8 rounded-[32px] border shadow-xl space-y-4">
+      <div id="admin-tab-orders" class="ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">รายการสั่งพิมพ์ (รับหน้าร้าน / จัดส่งพัสดุ)</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-white/10 sub-text uppercase font-bold">
-                <th class="py-3.5 px-3">คิว</th>
-                <th class="py-3.5 px-3">ไฟล์ & ยอด</th>
-                <th class="py-3.5 px-3">การจัดส่ง & ที่อยู่</th>
-                <th class="py-3.5 px-3">ชำระเงิน / สลิป</th>
-                <th class="py-3.5 px-3">สถานะงานพิมพ์</th>
-                <th class="py-3.5 px-3 text-right">การจัดการ</th>
+              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+                <th class="py-3 px-3">คิว</th>
+                <th class="py-3 px-3">ไฟล์ & ยอด</th>
+                <th class="py-3 px-3">การจัดส่ง & ที่อยู่</th>
+                <th class="py-3 px-3">ชำระเงิน / สลิป</th>
+                <th class="py-3 px-3">สถานะงานพิมพ์</th>
+                <th class="py-3 px-3 text-right">การจัดการ</th>
               </tr>
             </thead>
-            <tbody id="admin-orders-tbody" class="divide-y divide-white/10">
+            <tbody id="admin-orders-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
               <tr><td colspan="6" class="py-8 text-center sub-text">กำลังโหลดรายการ...</td></tr>
             </tbody>
           </table>
@@ -1175,21 +1118,21 @@
       </div>
 
       <!-- ADMIN TOPUPS TAB -->
-      <div id="admin-tab-topups" class="hidden apple-glass-panel p-6 sm:p-8 rounded-[32px] border shadow-xl space-y-4">
+      <div id="admin-tab-topups" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">คำขอเติม Coins (อนุมัติสลิปโอนเงิน)</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-white/10 sub-text uppercase font-bold">
-                <th class="py-3.5 px-3">วันที่</th>
-                <th class="py-3.5 px-3">ผู้ใช้งาน</th>
-                <th class="py-3.5 px-3">ยอดเงิน / Coins</th>
-                <th class="py-3.5 px-3">รูปสลิป</th>
-                <th class="py-3.5 px-3">สถานะ</th>
-                <th class="py-3.5 px-3 text-right">อนุมัติคำขอ</th>
+              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+                <th class="py-3 px-3">วันที่</th>
+                <th class="py-3 px-3">ผู้ใช้งาน</th>
+                <th class="py-3 px-3">ยอดเงิน / Coins</th>
+                <th class="py-3 px-3">รูปสลิป</th>
+                <th class="py-3 px-3">สถานะ</th>
+                <th class="py-3 px-3 text-right">อนุมัติคำขอ</th>
               </tr>
             </thead>
-            <tbody id="admin-topups-tbody" class="divide-y divide-white/10">
+            <tbody id="admin-topups-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
               <tr><td colspan="6" class="py-8 text-center sub-text">กำลังโหลดคำขอเติมเงิน...</td></tr>
             </tbody>
           </table>
@@ -1197,19 +1140,19 @@
       </div>
 
       <!-- ADMIN USERS TAB -->
-      <div id="admin-tab-users" class="hidden apple-glass-panel p-6 sm:p-8 rounded-[32px] border shadow-xl space-y-4">
+      <div id="admin-tab-users" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">สิทธิ์สมาชิกในระบบ</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="border-b border-white/10 sub-text uppercase font-bold">
-                <th class="py-3.5 px-3">ชื่อ-นามสกุล</th>
-                <th class="py-3.5 px-3">อีเมล</th>
-                <th class="py-3.5 px-3">สิทธิ์</th>
-                <th class="py-3.5 px-3 text-right">จัดการ</th>
+              <tr class="border-b border-slate-200 dark:border-white/10 sub-text uppercase font-bold">
+                <th class="py-3 px-3">ชื่อ-นามสกุล</th>
+                <th class="py-3 px-3">อีเมล</th>
+                <th class="py-3 px-3">สิทธิ์</th>
+                <th class="py-3 px-3 text-right">จัดการ</th>
               </tr>
             </thead>
-            <tbody id="admin-users-tbody" class="divide-y divide-white/10">
+            <tbody id="admin-users-tbody" class="divide-y divide-slate-200 dark:divide-white/10">
               <tr><td colspan="4" class="py-8 text-center sub-text">กำลังโหลดสมาชิก...</td></tr>
             </tbody>
           </table>
@@ -1258,7 +1201,6 @@
       if (savedUrl && savedKey) initSupabase(savedUrl, savedKey);
     });
 
-    /* APPLE SCROLL INTERSECTION OBSERVER */
     function initAppleScrollObserver() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1299,10 +1241,10 @@
       const roleBadge = document.getElementById('prof-role-badge');
       if (currentUser.role === 'admin') {
         roleBadge.innerText = 'ผู้ดูแลระบบ (Admin)';
-        roleBadge.className = 'inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-purple-500/20 border border-purple-500/30 text-purple-300';
+        roleBadge.className = 'inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30';
       } else {
         roleBadge.innerText = 'สมาชิกทั่วไป (Member)';
-        roleBadge.className = 'inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/20 border border-emerald-500/30 text-emerald-400';
+        roleBadge.className = 'inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
       }
 
       toggleProfileEdit(false);
@@ -1442,16 +1384,16 @@
       const statusBadge = document.getElementById('qd-modal-status-badge');
       if (order.status === 'completed') {
         statusBadge.innerText = isDelivery ? '✅ พิมพ์เสร็จแล้ว (กำลังจัดส่ง)' : '✅ พิมพ์เสร็จแล้ว (พร้อมรับหน้าร้าน)';
-        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
       } else if (order.status === 'printing') {
         statusBadge.innerText = '🖨️ กำลังพิมพ์เอกสาร...';
-        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30';
       } else if (order.status === 'cancelled') {
         statusBadge.innerText = '❌ ยกเลิกรายการ';
-        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30';
       } else {
         statusBadge.innerText = '⏳ รอยืนยันคิว / ตรวจสลิป';
-        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30';
       }
 
       const slipBox = document.getElementById('qd-modal-slip-box');
@@ -1552,7 +1494,7 @@
     function updateReqStatus(elementId, isValid, text) {
       const el = document.getElementById(elementId);
       if (!el) return;
-      el.className = isValid ? 'flex items-center gap-1.5 text-emerald-400 font-medium' : 'flex items-center gap-1.5 text-rose-500 font-medium';
+      el.className = isValid ? 'flex items-center gap-1.5 text-emerald-500 font-medium' : 'flex items-center gap-1.5 text-rose-500 font-medium';
       el.innerHTML = `<i data-lucide="${isValid ? 'check-circle' : 'x-circle'}" class="w-3.5 h-3.5"></i> ${text}`;
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
@@ -1633,8 +1575,8 @@
       document.getElementById('form-login').classList.toggle('hidden', !isLogin);
       document.getElementById('form-register').classList.toggle('hidden', isLogin);
 
-      document.getElementById('tab-login').className = isLogin ? 'flex-1 py-3 text-xs font-bold rounded-xl text-white bg-blue-600 shadow-sm' : 'flex-1 py-3 text-xs font-bold rounded-xl opacity-70 hover:opacity-100';
-      document.getElementById('tab-register').className = !isLogin ? 'flex-1 py-3 text-xs font-bold rounded-xl text-white bg-emerald-600 shadow-sm' : 'flex-1 py-3 text-xs font-bold rounded-xl opacity-70 hover:opacity-100';
+      document.getElementById('tab-login').className = isLogin ? 'flex-1 py-3 text-xs font-bold rounded-lg text-white bg-blue-600 shadow-sm' : 'flex-1 py-3 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100';
+      document.getElementById('tab-register').className = !isLogin ? 'flex-1 py-3 text-xs font-bold rounded-lg text-white bg-emerald-600 shadow-sm' : 'flex-1 py-3 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100';
     }
 
     function toggleConfigPanel() { document.getElementById('config-panel').classList.toggle('hidden'); }
@@ -1841,8 +1783,8 @@
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const gridItem = document.createElement('label');
-        gridItem.className = 'border border-white/10 p-2 rounded-xl text-center bg-black/50 cursor-pointer flex flex-col items-center gap-1 hover:border-blue-500';
-        gridItem.innerHTML = `<input type="checkbox" checked value="${i}" onchange="updateGridSelectedCount()" class="accent-blue-500"><span class="text-[10px] font-bold titanium-text">หน้า ${i}</span>`;
+        gridItem.className = 'ui-card p-2 rounded-xl text-center cursor-pointer flex flex-col items-center gap-1 hover:border-blue-500';
+        gridItem.innerHTML = `<input type="checkbox" checked value="${i}" onchange="updateGridSelectedCount()" class="accent-blue-600"><span class="text-[10px] font-bold titanium-text">หน้า ${i}</span>`;
         grid.appendChild(gridItem);
 
         pdf.getPage(i).then(page => {
@@ -1851,7 +1793,7 @@
           const context = canvas.getContext('2d');
           canvas.height = viewport.height;
           canvas.width = viewport.width;
-          canvas.className = 'rounded-xl shadow-2xl border border-white/10 max-w-full';
+          canvas.className = 'rounded-xl shadow-xl border border-slate-200 dark:border-white/10 max-w-full';
 
           page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
             const pageCard = document.createElement('div');
@@ -2030,7 +1972,7 @@
         currentOrdersList = orders;
         renderQueueCards(orders);
       } catch (err) {
-        container.innerHTML = '<p class="py-8 text-center text-rose-400 text-xs">ไม่สามารถโหลดข้อมูลคิวงานได้</p>';
+        container.innerHTML = '<p class="py-8 text-center text-rose-500 text-xs">ไม่สามารถโหลดข้อมูลคิวงานได้</p>';
       }
     }
 
@@ -2038,8 +1980,8 @@
       const container = document.getElementById('queue-cards-container');
       if (!orders || orders.length === 0) {
         container.innerHTML = `
-          <div class="p-8 rounded-3xl border border-white/10 apple-glass-card text-center space-y-3">
-            <i data-lucide="inbox" class="w-10 h-10 text-apple-subtext mx-auto"></i>
+          <div class="p-8 rounded-2xl ui-card text-center space-y-3">
+            <i data-lucide="inbox" class="w-10 h-10 sub-text mx-auto"></i>
             <p class="text-sm font-bold titanium-text">ยังไม่มีคิวงานพิมพ์ในขณะนี้</p>
             <p class="text-xs sub-text">สร้างรายการใหม่ที่แบบฟอร์มด้านซ้ายมือได้ทันที</p>
           </div>`;
@@ -2048,17 +1990,17 @@
       }
 
       container.innerHTML = orders.map(ord => {
-        let statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">⏳ รอดำเนินการ</span>';
-        if (ord.status === 'completed') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">✅ พิมพ์เสร็จแล้ว</span>';
-        else if (ord.status === 'printing') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">🖨️ กำลังพิมพ์</span>';
-        else if (ord.status === 'cancelled') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">❌ ยกเลิก</span>';
+        let statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">⏳ รอดำเนินการ</span>';
+        if (ord.status === 'completed') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">✅ พิมพ์เสร็จแล้ว</span>';
+        else if (ord.status === 'printing') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30">🖨️ กำลังพิมพ์</span>';
+        else if (ord.status === 'cancelled') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30">❌ ยกเลิก</span>';
 
         const isDelivery = ord.delivery_method === 'delivery';
 
         return `
-          <div class="p-5 rounded-2xl apple-glass-card border space-y-3 hover:border-blue-500/50 transition cursor-pointer" onclick="openQueueDetailModal('${ord.id}')">
+          <div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" onclick="openQueueDetailModal('${ord.id}')">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold font-mono text-blue-400">#${ord.id}</span>
+              <span class="text-xs font-bold font-mono text-blue-500">#${ord.id}</span>
               ${statusTag}
             </div>
             <div class="flex items-center justify-between">
@@ -2068,7 +2010,7 @@
               </div>
               <span class="text-lg font-black blue-gradient-text">${parseFloat(ord.total_price).toFixed(2)} ฿</span>
             </div>
-            ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/30 text-xs font-bold text-emerald-400">🚚 Tracking: ${ord.tracking_number} (${ord.courier_name || 'Kerry'})</div>` : ''}
+            ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-xs font-bold text-emerald-600 dark:text-emerald-400">🚚 Tracking: ${ord.tracking_number} (${ord.courier_name || 'Kerry'})</div>` : ''}
           </div>`;
       }).join('');
       if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -2080,9 +2022,9 @@
 
       document.querySelectorAll('.topup-pkg-btn').forEach(btn => {
         if (btn.innerText.includes(`${amt} บาท`)) {
-          btn.className = 'topup-pkg-btn p-3.5 border border-amber-500/50 bg-amber-500/10 rounded-2xl font-bold text-xs text-amber-500 text-center transition hover:scale-105';
+          btn.className = 'topup-pkg-btn p-3 border border-amber-500 bg-amber-500/10 rounded-xl font-bold text-xs text-amber-500 text-center transition';
         } else {
-          btn.className = 'topup-pkg-btn p-3.5 border border-white/15 rounded-2xl font-bold text-xs text-center transition hover:scale-105 titanium-text';
+          btn.className = 'topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition';
         }
       });
     }
@@ -2139,17 +2081,17 @@
         }
 
         list.innerHTML = topups.map(tp => `
-          <div class="p-4 rounded-2xl apple-glass-card border flex items-center justify-between text-xs">
+          <div class="p-3.5 rounded-xl ui-card border flex items-center justify-between text-xs">
             <div>
               <p class="font-bold titanium-text">+${tp.amount} Coins</p>
               <p class="text-[10px] sub-text">${new Date(tp.created_at).toLocaleString('th-TH')}</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full font-bold ${tp.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400' : tp.status === 'rejected' ? 'bg-rose-500/20 text-rose-400' : 'bg-amber-500/20 text-amber-400'}">
+            <span class="px-2.5 py-1 rounded-full font-bold ${tp.status === 'approved' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : tp.status === 'rejected' ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400' : 'bg-amber-500/20 text-amber-500'}">
               ${tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธ' : 'รออนุมัติ'}
             </span>
           </div>`).join('');
       } catch (e) {
-        list.innerHTML = '<p class="text-center py-8 text-rose-400 text-xs">โหลดประวัติล้มเหลว</p>';
+        list.innerHTML = '<p class="text-center py-8 text-rose-500 text-xs">โหลดประวัติล้มเหลว</p>';
       }
     }
 
@@ -2180,22 +2122,22 @@
       const ordersTb = document.getElementById('admin-orders-tbody');
       if (ordersTb && orders) {
         ordersTb.innerHTML = orders.map(ord => `
-          <tr class="hover:bg-white/5 transition">
-            <td class="py-3 px-3 font-mono text-blue-400 font-bold">#${ord.id}</td>
+          <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
+            <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${ord.id}</td>
             <td class="py-3 px-3">
               <p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p>
               <p class="sub-text text-[10px]">${ord.total_price} ฿ (${ord.page_count} หน้า)</p>
             </td>
             <td class="py-3 px-3">
               ${ord.delivery_method === 'delivery' 
-                ? `<p class="text-blue-400 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
-                : `<p class="text-emerald-400 font-bold">📍 หน้าร้าน</p>`}
+                ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name \vert{}\vert{} '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
+                : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}
             </td>
             <td class="py-3 px-3">
-              ${ord.slip_url ? `<button onclick="openSlipModal('${ord.slip_url}')" class="text-blue-400 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}
+              ${ord.slip_url ? `<button onclick="openSlipModal('${ord.slip_url}')" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}
             </td>
             <td class="py-3 px-3">
-              <select onchange="updateOrderStatus('${ord.id}', this.value)" class="bg-black/60 border border-white/20 rounded-xl p-1.5 text-xs text-white">
+              <select onchange="updateOrderStatus('${ord.id}', this.value)" class="ui-input rounded-lg p-1 text-xs">
                 <option value="pending" ${ord.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
                 <option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
                 <option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
@@ -2204,7 +2146,7 @@
             </td>
             <td class="py-3 px-3 text-right space-x-1">
               ${ord.delivery_method === 'delivery' ? `<button onclick="promptTracking('${ord.id}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-bold">Tracking</button>` : ''}
-              <button onclick="openQueueDetailModal('${ord.id}')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[11px] font-bold">ดูข้อมูล</button>
+              <button onclick="openQueueDetailModal('${ord.id}')" class="px-2.5 py-1 ui-card rounded-lg text-[11px] font-bold">ดูข้อมูล</button>
             </td>
           </tr>`).join('');
       }
@@ -2214,14 +2156,14 @@
       const topupsTb = document.getElementById('admin-topups-tbody');
       if (topupsTb && topups) {
         topupsTb.innerHTML = topups.map(tp => `
-          <tr class="hover:bg-white/5 transition">
+          <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
             <td class="py-3 px-3 sub-text text-[10px]">${new Date(tp.created_at).toLocaleString('th-TH')}</td>
             <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(tp.user_name || tp.user_id)}</td>
-            <td class="py-3 px-3 font-black text-amber-400">+${tp.amount} Coins</td>
+            <td class="py-3 px-3 font-black text-amber-500">+${tp.amount} Coins</td>
             <td class="py-3 px-3">
-              ${tp.slip_url ? `<button onclick="openSlipModal('${tp.slip_url}')" class="text-blue-400 underline font-bold">ดูสลิป</button>` : '-'}
+              ${tp.slip_url ? `<button onclick="openSlipModal('${tp.slip_url}')" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}
             </td>
-            <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-400' : tp.status === 'rejected' ? 'text-rose-400' : 'text-amber-400'}">
+            <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">
               ${tp.status}
             </td>
             <td class="py-3 px-3 text-right space-x-1">
@@ -2238,12 +2180,12 @@
       const usersTb = document.getElementById('admin-users-tbody');
       if (usersTb && users) {
         usersTb.innerHTML = users.map(u => `
-          <tr class="hover:bg-white/5 transition">
+          <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
             <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(u.full_name)}</td>
             <td class="py-3 px-3 sub-text">${escapeHtml(u.email)}</td>
-            <td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-400' : 'text-emerald-400'}">${u.role}</td>
+            <td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${u.role}</td>
             <td class="py-3 px-3 text-right">
-              <button onclick="changeUserRole('${u.id}', '${u.role === 'admin' ? 'member' : 'admin'}')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[11px] font-bold">
+              <button onclick="changeUserRole('${u.id}', '${u.role === 'admin' ? 'member' : 'admin'}')" class="px-3 py-1 ui-card hover:border-purple-500 rounded-lg text-[11px] font-bold">
                 สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}
               </button>
             </td>
@@ -2265,11 +2207,11 @@
     function switchAdminTab(tab) {
       ['orders', 'topups', 'users'].forEach(t => {
         document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-        document.getElementById(`admin-tab-${t}-btn`).className = 'flex-1 py-2.5 text-xs font-bold rounded-xl opacity-70 hover:opacity-100';
+        document.getElementById(`admin-tab-${t}-btn`).className = 'flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100';
       });
 
       document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
-      document.getElementById(`admin-tab-${tab}-btn`).className = 'flex-1 py-2.5 text-xs font-bold rounded-xl bg-purple-600 text-white shadow-md';
+      document.getElementById(`admin-tab-${tab}-btn`).className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm';
     }
 
     async function updateOrderStatus(orderId, newStatus) {
