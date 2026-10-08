@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PrintDekD Pro - Premium Smart Printing Experience</title>
+  <title>PrintDekD Pro — Premium Smart Printing Platform</title>
   
   <!-- Tailwind CSS & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@
           colors: {
             apple: {
               bg: '#000000',
-              surface: '#121215',
+              surface: '#121217',
               card: '#1c1c1e',
               panel: '#2c2c2e',
               border: 'rgba(255, 255, 255, 0.12)',
@@ -48,11 +48,11 @@
       selection-color: #ffffff;
     }
 
-    /* APPLE SCROLL REVEAL ANIMATION */
+    /* APPLE IPHONE SCROLL REVEAL ANIMATION */
     .apple-reveal {
       opacity: 0;
-      transform: translateY(60px) scale(0.95);
-      transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(50px) scale(0.97);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
 
@@ -61,13 +61,13 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Staggered animation delays */
-    .delay-1 { transition-delay: 0.12s; }
-    .delay-2 { transition-delay: 0.24s; }
-    .delay-3 { transition-delay: 0.36s; }
-    .delay-4 { transition-delay: 0.48s; }
+    /* Staggered delays */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
 
-    /* TYPOGRAPHY & GRADIENTS */
+    /* TYPOGRAPHY GRADIENTS */
     .blue-gradient-text {
       background: linear-gradient(135deg, #2997ff 0%, #7000ff 100%);
       -webkit-background-clip: text;
@@ -99,7 +99,7 @@
     .apple-glass-card:hover {
       border-color: rgba(41, 151, 255, 0.45);
       transform: translateY(-4px);
-      box-shadow: 0 35px 80px rgba(41, 151, 255, 0.12);
+      box-shadow: 0 35px 80px rgba(41, 151, 255, 0.15);
     }
 
     .apple-glass-panel {
@@ -109,13 +109,13 @@
       border: 1px solid rgba(255, 255, 255, 0.14);
     }
 
-    /* CUSTOM LIGHT MODE OVERRIDES IF SWITCHED */
+    /* LIGHT MODE OVERRIDES */
     html:not(.dark) body {
       background-color: #f5f5f7;
       color: #1d1d1f;
     }
     html:not(.dark) .apple-glass-card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.9);
       border-color: rgba(0, 0, 0, 0.08);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
     }
@@ -129,7 +129,12 @@
       -webkit-text-fill-color: transparent;
     }
     html:not(.dark) .titanium-text { color: #1d1d1f !important; }
-    html:not(.dark) .sub-text { color: #6e6e73 !important; }
+    html:not(.dark) .sub-text { color: #515154 !important; }
+    html:not(.dark) input, html:not(.dark) select, html:not(.dark) textarea {
+      background-color: #ffffff !important;
+      color: #1d1d1f !important;
+      border-color: #d2d2d7 !important;
+    }
 
     .titanium-text { color: #f5f5f7; }
     .sub-text { color: #86868b; }
@@ -148,7 +153,7 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative bg-black">
 
-  <!-- APPLE AMBIENT GLOW BACKGROUND -->
+  <!-- APPLE AMBIENT LIGHT BACKDROP -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
     <div class="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-blue-600/15 via-indigo-600/10 to-transparent rounded-full blur-[160px]"></div>
     <div class="absolute top-[40%] -left-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[180px]"></div>
@@ -166,7 +171,7 @@
           PRINTDEKD <span class="blue-gradient-text">PRO</span>
         </h1>
         <p class="text-xs sm:text-sm font-semibold tracking-[0.3em] text-blue-400 uppercase">
-          ULTRA SMART PRINTING SYSTEM
+          ULTRA SMART PRINTING PLATFORM
         </p>
       </div>
       <div class="w-64 space-y-2">
@@ -312,7 +317,13 @@
             <span class="text-xs sub-text font-bold uppercase">สถานะคิวปัจจุบัน</span>
             <span id="qd-modal-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">รอตรวจสอบ</span>
           </div>
-          <p class="text-xs text-blue-400 font-semibold leading-relaxed" id="qd-modal-pickup-info">📍 การรับสินค้า: รับหน้าร้านโดยตรงเมื่อพิมพ์เสร็จ</p>
+          <p class="text-xs text-blue-400 font-semibold" id="qd-modal-pickup-info">📍 การรับสินค้า: -</p>
+        </div>
+
+        <div id="qd-modal-tracking-box" class="hidden p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <span class="text-xs font-bold text-emerald-400 block">🚚 ข้อมูลจัดส่งพัสดุ:</span>
+          <p id="qd-modal-tracking-num" class="text-sm font-mono font-bold text-white">Tracking: -</p>
+          <p id="qd-modal-recipient-info" class="text-xs sub-text">ผู้รับ: -</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
@@ -350,7 +361,7 @@
         <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
           <div>
             <span class="text-xs sub-text block">ช่องทางชำระเงิน: <strong id="qd-modal-paymethod" class="text-amber-400">Coins</strong></span>
-            <span class="text-xs sub-text block">ค่าบริการสุทธิ (รวมค่าพิมพ์และค่าจัดส่ง)</span>
+            <span id="qd-modal-delivery-fee-text" class="text-xs sub-text block">ราคารวมสุทธิ</span>
           </div>
           <span id="qd-modal-totalprice" class="text-2xl font-black blue-gradient-text">0.00 ฿</span>
         </div>
@@ -537,7 +548,7 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow z-10 relative">
 
-    <!-- VIEW 1: LANDING PAGE -->
+    <!-- VIEW 1: LANDING PAGE (APPLE IPHONE STYLE - SCROLL-TRIGGERED FADE ANIMATIONS) -->
     <section id="view-landing" class="py-16 sm:py-24 px-4 max-w-6xl mx-auto space-y-36 sm:space-y-48">
       
       <!-- HERO SECTION -->
@@ -553,7 +564,7 @@
           </h1>
           
           <p class="sub-text text-lg sm:text-2xl leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-            สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็วแบบไร้รอยต่อ อัปโหลดไฟล์ คัดเลือกช่วงหน้า คำนวณราคาเรียลไทม์ ชำระผ่าน Coins เลือกรับหน้าร้านหรือจัดส่งถึงบ้านคุณ
+            สั่งงานพิมพ์เอกสารได้สะดวกรวดเร็วแบบไร้รอยต่อ อัปโหลดไฟล์ คัดเลือกช่วงหน้า คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งพัสดุถึงบ้าน
           </p>
 
           <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-4">
@@ -572,9 +583,9 @@
               <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000 ease-out">
               <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent"></div>
               <div class="absolute bottom-6 left-6 right-6 text-left space-y-1.5">
-                <span class="text-xs uppercase font-extrabold text-blue-400 tracking-widest">Self Pickup & Delivery</span>
+                <span class="text-xs uppercase font-extrabold text-blue-400 tracking-widest">Self Pickup & Home Delivery</span>
                 <p class="text-2xl font-black text-white">เครื่องพิมพ์เลเซอร์คมชัดสูง</p>
-                <p class="text-xs sm:text-sm text-slate-300">พิมพ์เสร็จรับงานหน้าร้าน หรือจัดส่งตรงถึงหน้าบ้าน</p>
+                <p class="text-xs sm:text-sm text-slate-300">เลือกรับหน้าร้านฟรี หรือจัดส่งพัสดุถึงหน้าบ้าน</p>
               </div>
             </div>
 
@@ -588,15 +599,15 @@
                 <p class="text-xs font-semibold sub-text mt-1">จ่ายสะดวก</p>
               </div>
               <div class="p-4 rounded-2xl apple-glass-card border">
-                <p class="text-emerald-400 font-black text-2xl">Express</p>
-                <p class="text-xs font-semibold sub-text mt-1">ส่งไวทั่วไทย</p>
+                <p class="text-emerald-400 font-black text-2xl">Delivery</p>
+                <p class="text-xs font-semibold sub-text mt-1">ส่งถึงบ้าน</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- FEATURE GRID -->
+      <!-- FEATURE SHOWCASE GRID -->
       <div class="space-y-16">
         <div class="text-center space-y-4 max-w-3xl mx-auto apple-reveal">
           <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text tracking-tight">
@@ -632,9 +643,9 @@
             <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-lg">
               <i data-lucide="truck" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">รับหน้าร้าน & จัดส่งพัสดุ</h3>
+            <h3 class="text-2xl sm:text-3xl font-bold titanium-text">จัดส่งพัสดุ & รับหน้าร้าน</h3>
             <p class="text-base sm:text-lg sub-text leading-relaxed font-light">
-              เลือกรับสินค้าฟรีที่หน้าร้านโดยตรง หรือเลือกให้จัดส่งพัสดุถึงบ้านคุณด้วยระบบที่ปลอดภัย
+              เลือกรับเอกสารหน้าร้านได้ฟรี หรือให้จัดส่งพัสดุถึงบ้าน พร้อมติดตามสถานะและเลข Tracking ได้เรียลไทม์
             </p>
           </div>
         </div>
@@ -672,8 +683,11 @@
               </div>
 
               <div>
-                <label class="block text-sm font-bold mb-2 titanium-text">จำนวนชุด:</label>
-                <input type="number" id="demo-copies-input" min="1" value="1" oninput="updateDemoPrice()" class="w-full p-4 bg-black/60 border border-white/15 rounded-2xl text-base titanium-text font-bold focus:outline-none focus:border-blue-500">
+                <label class="block text-sm font-bold mb-2 titanium-text">การจัดส่ง:</label>
+                <select id="demo-delivery-select" onchange="updateDemoPrice()" class="w-full p-4 bg-black/60 border border-white/15 rounded-2xl text-base titanium-text font-semibold focus:outline-none focus:border-blue-500">
+                  <option value="0">รับที่หน้าร้าน (ฟรี 0 ฿)</option>
+                  <option value="30">จัดส่งปลายทาง (+30 ฿)</option>
+                </select>
               </div>
             </div>
           </div>
@@ -681,7 +695,41 @@
           <div class="lg:col-span-5 apple-glass-card p-10 rounded-[32px] border text-center space-y-4 bg-gradient-to-b from-blue-600/15 to-transparent">
             <span class="text-xs sub-text font-bold block uppercase tracking-wider">ประมาณการราคาเบื้องต้น</span>
             <div id="demo-total-price" class="text-5xl sm:text-6xl font-black blue-gradient-text">10.00 ฿</div>
-            <p class="text-xs sub-text">(รับสินค้าฟรีหน้าร้าน หรือเลือกจัดส่งพัสดุเพิ่มเติม)</p>
+            <p class="text-xs sub-text" id="demo-delivery-hint">(รับสินค้าฟรีหน้าร้าน - ไม่มีค่าธรรมเนียมแอบแฝง)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS STEP-BY-STEP -->
+      <div class="space-y-16">
+        <div class="text-center space-y-3 apple-reveal">
+          <span class="text-xs font-extrabold tracking-widest text-blue-400 uppercase">Simple 4-Step Process</span>
+          <h2 class="text-4xl sm:text-6xl font-black titanium-gradient-text">ขั้นตอนการสั่งพิมพ์ง่ายๆ</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-1">
+            <span class="text-5xl font-black text-blue-500/30">01</span>
+            <h4 class="text-2xl font-bold titanium-text">1. อัปโหลดไฟล์</h4>
+            <p class="text-base sub-text leading-relaxed font-light">เลือกไฟล์ PDF หรือรูปภาพที่คุณต้องการพิมพ์ลงในระบบ</p>
+          </div>
+
+          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-2">
+            <span class="text-5xl font-black text-blue-500/30">02</span>
+            <h4 class="text-2xl font-bold titanium-text">2. ปรับแต่ง & เลือกจัดส่ง</h4>
+            <p class="text-base sub-text leading-relaxed font-light">ระบุช่วงหน้า พิมพ์สี/ขาวดำ เลือกรับหน้าร้าน หรือจัดส่งถึงบ้าน</p>
+          </div>
+
+          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-3">
+            <span class="text-5xl font-black text-amber-500/30">03</span>
+            <h4 class="text-2xl font-bold titanium-text">3. ชำระผ่าน Coins</h4>
+            <p class="text-base sub-text leading-relaxed font-light">ชำระเงินผ่าน PrintDekD Coins หรือ PromptPay Direct ได้ทันที</p>
+          </div>
+
+          <div class="p-8 sm:p-10 rounded-[36px] apple-glass-card border space-y-6 relative apple-reveal delay-4">
+            <span class="text-5xl font-black text-emerald-500/30">04</span>
+            <h4 class="text-2xl font-bold titanium-text">4. รอรับเอกสาร</h4>
+            <p class="text-base sub-text leading-relaxed font-light">รับงานหน้าร้าน หรือรอรับพัสดุที่บ้านพร้อมเลข Tracking เช็กได้ 24 ชม.</p>
           </div>
         </div>
       </div>
@@ -700,13 +748,13 @@
           </div>
 
           <div class="p-8 sm:p-10 rounded-[32px] apple-glass-card border space-y-3">
-            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: เติม Coins แล้วยอดเข้าทันทีหรือไม่?</h4>
-            <p class="text-base sub-text leading-relaxed font-light">เมื่อสแกนโอนเงิน PromptPay และแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าอย่างรวดเร็ว</p>
+            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: ค่าจัดส่งพัสดุคิดอย่างไร?</h4>
+            <p class="text-base sub-text leading-relaxed font-light">หากเลือกรับที่หน้าร้านจะไม่มีค่าจัดส่ง (ฟรี 0 ฿) และหากเลือกจัดส่งถึงบ้าน คิดค่าจัดส่งเหมาจ่ายเพียง 30.00 ฿ ทั่วประเทศ</p>
           </div>
 
           <div class="p-8 sm:p-10 rounded-[32px] apple-glass-card border space-y-3">
-            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: เลือกวิธีการจัดส่งได้กี่แบบ?</h4>
-            <p class="text-base sub-text leading-relaxed font-light">สามารถเลือกได้ 2 แบบคือ รับที่หน้าร้านฟรี (Self Pickup) หรือเลือกจัดส่งปลายทาง (+ค่าจัดส่ง 30 บาท)</p>
+            <h4 class="text-lg sm:text-xl font-bold text-blue-400">Q: เติม Coins แล้วยอดเข้าทันทีหรือไม่?</h4>
+            <p class="text-base sub-text leading-relaxed font-light">เมื่อสแกนโอนเงิน PromptPay และแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าอย่างรวดเร็ว</p>
           </div>
         </div>
       </div>
@@ -804,7 +852,7 @@
             </div>
             <div>
               <h2 class="text-xl font-bold titanium-text">สร้างรายการสั่งพิมพ์</h2>
-              <p class="text-xs sub-text">อัปโหลดไฟล์ เลือกรูปแบบพิมพ์ และการจัดส่ง</p>
+              <p class="text-xs sub-text">อัปโหลดไฟล์ เลือกรูปแบบ พิมพ์เสร็จมารับหน้าร้าน หรือจัดส่งถึงบ้าน</p>
             </div>
           </div>
 
@@ -845,7 +893,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold mb-2 titanium-text">รูปแบบการเลือกหน้าพิมพ์ Mode:</label>
+                <label class="block text-xs font-bold mb-2 titanium-text">รูปแบบการเลือกหน้าพิมพ์:</label>
                 <div class="grid grid-cols-2 gap-3 text-xs">
                   <label class="border border-white/15 p-3.5 rounded-xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
                     <input type="radio" name="page_selection_mode" value="text" checked onchange="togglePageSelectionMode()">
@@ -920,36 +968,43 @@
               </div>
             </div>
 
-            <!-- 2. SHIPPING / DELIVERY OPTIONS (นำเข้าจาก index copy 3) -->
+            <!-- SHIPPING / DELIVERY OPTIONS (ADDED FROM INDEX COPY 3) -->
             <div class="pt-3 border-t border-white/10">
               <label class="block text-xs font-bold mb-3 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
+                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-emerald-500 titanium-text transition">
                   <input type="radio" name="delivery_method" value="pickup" checked onchange="toggleDeliveryFields()">
                   <div>
-                    <p class="text-xs font-bold">รับที่ร้าน (Self Pickup)</p>
-                    <p class="text-[10px] sub-text">ฟรี (0 ฿)</p>
+                    <p class="text-xs font-bold flex items-center gap-1">
+                      <i data-lucide="store" class="w-3.5 h-3.5 text-emerald-400"></i> รับที่หน้าร้าน
+                    </p>
+                    <p class="text-[10px] sub-text">ฟรีค่าบริการ (0 ฿)</p>
                   </div>
                 </label>
-                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text">
+                <label class="border border-white/15 p-3.5 rounded-2xl flex items-center gap-2 cursor-pointer bg-black/40 hover:border-blue-500 titanium-text transition">
                   <input type="radio" name="delivery_method" value="delivery" onchange="toggleDeliveryFields()">
                   <div>
-                    <p class="text-xs font-bold">จัดส่งปลายทาง</p>
-                    <p class="text-[10px] text-indigo-400 font-bold">+ค่าส่ง 30.00 ฿</p>
+                    <p class="text-xs font-bold flex items-center gap-1">
+                      <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-400"></i> จัดส่งพัสดุถึงบ้าน
+                    </p>
+                    <p class="text-[10px] text-blue-400 font-bold">+ค่าส่ง 30.00 ฿</p>
                   </div>
                 </label>
               </div>
 
-              <div id="delivery-address-box" class="hidden space-y-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+              <div id="delivery-address-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">
+                <p class="text-xs font-bold text-blue-400 flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-4 h-4"></i> กรอกที่อยู่จัดส่งพัสดุ
+                </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input type="text" id="recipient-name" placeholder="ชื่อผู้รับ" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
-                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                  <input type="text" id="recipient-name" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
+                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500">
                 </div>
-                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด..." class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
+                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด (บ้านเลขที่, ถนน, ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์)..." class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 rounded-xl text-xs titanium-text focus:outline-none focus:border-blue-500 leading-relaxed"></textarea>
               </div>
             </div>
 
-            <!-- 3. Payment Channels -->
+            <!-- Payment Channels -->
             <div class="pt-3 border-t border-white/10">
               <label class="block text-xs font-bold mb-3 titanium-text">3. ช่องทางการชำระเงิน</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -1005,8 +1060,8 @@
                 <i data-lucide="activity" class="w-6 h-6"></i>
               </div>
               <div>
-                <h2 class="text-xl font-bold titanium-text">ติดตามคิวงานพิมพ์</h2>
-                <p class="text-xs sub-text">สถานะงานพิมพ์ และรายละเอียดการรับ/จัดส่ง</p>
+                <h2 class="text-xl font-bold titanium-text">ติดตามคิวงานพิมพ์ & จัดส่ง</h2>
+                <p class="text-xs sub-text">สถานะงานพิมพ์ หน้าร้าน และเลข Tracking จัดส่ง</p>
               </div>
             </div>
             <button id="refresh-queue-btn" onclick="animateRefresh('refresh-queue-btn', fetchQueues)" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs flex items-center gap-1.5 transition titanium-text">
@@ -1084,7 +1139,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <span class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full font-bold">Admin Backoffice</span>
-          <h1 class="text-3xl font-extrabold titanium-text mt-1">จัดการออเดอร์ สลิปโอนเงิน & เติม Coins</h1>
+          <h1 class="text-3xl font-extrabold titanium-text mt-1">จัดการออเดอร์ การจัดส่ง สลิปโอนเงิน & เติม Coins</h1>
         </div>
         <button id="refresh-admin-btn" onclick="animateRefresh('refresh-admin-btn', loadAdminData)" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-2xl shadow-lg shadow-purple-500/25 flex items-center gap-2 transition">
           <i data-lucide="refresh-cw" class="w-4 h-4 refresh-icon"></i> ดึงข้อมูลล่าสุด
@@ -1099,17 +1154,17 @@
 
       <!-- ADMIN ORDERS TAB -->
       <div id="admin-tab-orders" class="apple-glass-panel p-6 sm:p-8 rounded-[32px] border shadow-xl space-y-4">
-        <h2 class="text-lg font-bold titanium-text">รายการสั่งพิมพ์ (หน้าร้าน / จัดส่ง)</h2>
+        <h2 class="text-lg font-bold titanium-text">รายการสั่งพิมพ์ (รับหน้าร้าน / จัดส่งพัสดุ)</h2>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
               <tr class="border-b border-white/10 sub-text uppercase font-bold">
                 <th class="py-3.5 px-3">คิว</th>
                 <th class="py-3.5 px-3">ไฟล์ & ยอด</th>
-                <th class="py-3.5 px-3">การรับ/จัดส่ง</th>
+                <th class="py-3.5 px-3">การจัดส่ง & ที่อยู่</th>
                 <th class="py-3.5 px-3">ชำระเงิน / สลิป</th>
                 <th class="py-3.5 px-3">สถานะงานพิมพ์</th>
-                <th class="py-3.5 px-3 text-right">รายละเอียดคิว</th>
+                <th class="py-3.5 px-3 text-right">การจัดการ</th>
               </tr>
             </thead>
             <tbody id="admin-orders-tbody" class="divide-y divide-white/10">
@@ -1213,7 +1268,7 @@
         });
       }, {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        rootMargin: '0px 0px -40px 0px'
       });
 
       document.querySelectorAll('.apple-reveal').forEach(el => observer.observe(el));
@@ -1341,11 +1396,18 @@
     function updateDemoPrice() {
       const pages = parseInt(document.getElementById('demo-page-slider').value) || 1;
       const rate = parseFloat(document.getElementById('demo-color-select').value) || 1;
-      const copies = parseInt(document.getElementById('demo-copies-input').value) || 1;
+      const deliveryFee = parseFloat(document.getElementById('demo-delivery-select').value) || 0;
       
       document.getElementById('demo-page-val').innerText = `${pages} หน้า`;
-      const total = pages * rate * copies;
+      const total = (pages * rate) + deliveryFee;
       document.getElementById('demo-total-price').innerText = `${total.toFixed(2)} ฿`;
+
+      const hintEl = document.getElementById('demo-delivery-hint');
+      if (hintEl) {
+        hintEl.innerText = deliveryFee > 0 
+          ? `(รวมค่าบริการพิมพ์ ${ (pages * rate).toFixed(2) } ฿ + ค่าจัดส่งพัสดุ 30.00 ฿)`
+          : `(รับสินค้าฟรีหน้าร้าน - ไม่มีค่าบริการจัดส่ง)`;
+      }
     }
 
     function openQueueDetailModal(orderId) {
@@ -1363,16 +1425,23 @@
       document.getElementById('qd-modal-totalprice').innerText = `${parseFloat(order.total_price || 0).toFixed(2)} ฿`;
       document.getElementById('qd-modal-paymethod').innerText = order.payment_method === 'coins' ? 'Coins' : 'PromptPay Direct';
 
-      const pickupInfo = document.getElementById('qd-modal-pickup-info');
-      if (order.delivery_method === 'delivery') {
-        pickupInfo.innerText = `🚚 การจัดส่ง: จัดส่งปลายทาง (${order.recipient_name || '-'} Tel: ${order.recipient_phone || '-'}) ที่อยู่: ${order.recipient_address || '-'}`;
+      const isDelivery = order.delivery_method === 'delivery';
+      document.getElementById('qd-modal-pickup-info').innerText = isDelivery 
+        ? `🚚 การรับสินค้า: จัดส่งพัสดุถึงบ้าน (ค่าส่ง +30 ฿)` 
+        : `📍 การรับสินค้า: รับหน้าร้านโดยตรงเมื่อพิมพ์เสร็จ`;
+
+      const trackingBox = document.getElementById('qd-modal-tracking-box');
+      if (isDelivery) {
+        document.getElementById('qd-modal-tracking-num').innerText = order.tracking_number ? `เลข Tracking: ${order.tracking_number} (${order.courier_name || 'Kerry Express'})` : `สถานะพัสดุ: กำลังเตรียมจัดส่ง`;
+        document.getElementById('qd-modal-recipient-info').innerText = `ผู้รับ: ${order.recipient_name || '-'} (${order.recipient_phone || '-'}) | ที่อยู่: ${order.recipient_address || '-'}`;
+        trackingBox.classList.remove('hidden');
       } else {
-        pickupInfo.innerText = '📍 การรับสินค้า: รับหน้าร้านโดยตรงเมื่อพิมพ์เสร็จ';
+        trackingBox.classList.add('hidden');
       }
 
       const statusBadge = document.getElementById('qd-modal-status-badge');
       if (order.status === 'completed') {
-        statusBadge.innerText = order.delivery_method === 'delivery' ? '✅ พิมพ์เสร็จแล้ว (พร้อมจัดส่ง)' : '✅ พิมพ์เสร็จแล้ว (พร้อมรับหน้าร้าน)';
+        statusBadge.innerText = isDelivery ? '✅ พิมพ์เสร็จแล้ว (กำลังจัดส่ง)' : '✅ พิมพ์เสร็จแล้ว (พร้อมรับหน้าร้าน)';
         statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
       } else if (order.status === 'printing') {
         statusBadge.innerText = '🖨️ กำลังพิมพ์เอกสาร...';
@@ -1813,13 +1882,10 @@
       document.getElementById('page-mode-grid-box').classList.toggle('hidden', mode !== 'grid');
     }
 
-    /* TOGGLE SHIPPING ADDRESS FIELDS */
     function toggleDeliveryFields() {
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked')?.value || 'pickup';
+      const isDelivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
       const addressBox = document.getElementById('delivery-address-box');
-      if (addressBox) {
-        addressBox.classList.toggle('hidden', deliveryMethod !== 'delivery');
-      }
+      if (addressBox) addressBox.classList.toggle('hidden', !isDelivery);
       calculatePrice();
     }
 
@@ -1828,21 +1894,19 @@
       const copies = parseInt(document.getElementById('copies').value) || 1;
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked')?.value || 'pickup';
+      const isDelivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
 
       let pageRate = isColor ? 5.0 : 1.0;
       if (isDuplex) pageRate += 0.5;
 
       const printCost = pages * pageRate * copies;
-      const deliveryFee = deliveryMethod === 'delivery' ? 30.0 : 0.0;
+      const deliveryFee = isDelivery ? 30.0 : 0.0;
       const total = printCost + deliveryFee;
 
       document.getElementById('total-price').innerText = `${total.toFixed(2)} ฿`;
-      if (deliveryFee > 0) {
-        document.getElementById('price-breakdown').innerText = `(ค่าพิมพ์ ${printCost.toFixed(2)} ฿ + ค่าส่ง ${deliveryFee.toFixed(2)} ฿)`;
-      } else {
-        document.getElementById('price-breakdown').innerText = `(${pages} หน้า x ${pageRate.toFixed(2)} ฿ x ${copies} ชุด | รับหน้าร้าน)`;
-      }
+      document.getElementById('price-breakdown').innerText = isDelivery
+        ? `(ค่าพิมพ์ ${printCost.toFixed(2)} ฿ + ค่าจัดส่ง 30.00 ฿)`
+        : `(${pages} หน้า x ${pageRate.toFixed(2)} ฿ x ${copies} ชุด | รับหน้าร้านฟรี)`;
       return total;
     }
 
@@ -1862,23 +1926,24 @@
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
       const notes = document.getElementById('order-notes').value.trim();
       const payMethod = document.querySelector('input[name="payment_method"]:checked').value;
-      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked')?.value || 'pickup';
-
-      let pageRate = isColor ? 5.0 : 1.0;
-      if (isDuplex) pageRate += 0.5;
-      const printCost = pages * pageRate * copies;
-      const deliveryFee = deliveryMethod === 'delivery' ? 30.0 : 0.0;
-      const totalPrice = printCost + deliveryFee;
+      const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked').value;
 
       let recipientName = '', recipientPhone = '', recipientAddress = '';
       if (deliveryMethod === 'delivery') {
         recipientName = document.getElementById('recipient-name').value.trim();
         recipientPhone = document.getElementById('recipient-phone').value.trim();
         recipientAddress = document.getElementById('recipient-address').value.trim();
+
         if (!recipientName || !recipientPhone || !recipientAddress) {
-          return showCustomModal({ title: 'ข้อมูลจัดส่งไม่ครบถ้วน', message: 'กรุณากรอกชื่อผู้รับ เบอร์โทรศัพท์ และที่อยู่จัดส่งให้ครบถ้วน', icon: 'alert-triangle' });
+          return showCustomModal({ title: 'กรอกข้อมูลจัดส่งไม่ครบ', message: 'กรุณากรอกชื่อ เบอร์โทรศัพท์ และที่อยู่จัดส่งพัสดุให้ครบถ้วน', icon: 'alert-triangle' });
         }
       }
+
+      let pageRate = isColor ? 5.0 : 1.0;
+      if (isDuplex) pageRate += 0.5;
+      const printCost = pages * pageRate * copies;
+      const deliveryFee = deliveryMethod === 'delivery' ? 30.0 : 0.0;
+      const totalPrice = printCost + deliveryFee;
 
       if (payMethod === 'coins') {
         if ((currentUser.coins || 0) < totalPrice) {
@@ -1930,14 +1995,17 @@
           }
         }
 
-        showCustomModal({ title: 'สร้างคำขอพิมพ์สำเร็จ', message: 'คิวงานพิมพ์ของคุณถูกบันทึกเรียบร้อยแล้ว!', icon: 'check-circle' });
+        const successMsg = deliveryMethod === 'delivery'
+          ? 'คิวงานพิมพ์ของคุณถูกบันทึกเรียบร้อยแล้ว! ระบบจะจัดส่งพัสดุตามที่อยู่ที่ระบุพร้อมแจ้งเลข Tracking'
+          : 'คิวงานพิมพ์ของคุณถูกบันทึกเรียบร้อยแล้ว! สามารถเข้ามารับงานได้ที่หน้าร้านเมื่อสถานะเปลี่ยนเป็น "พิมพ์เสร็จแล้ว"';
+
+        showCustomModal({ title: 'สร้างคำขอพิมพ์สำเร็จ', message: successMsg, icon: 'check-circle' });
         document.getElementById('print-form').reset();
         selectedFileObj = null;
         document.getElementById('upload-placeholder').classList.remove('hidden');
         document.getElementById('file-details').classList.add('hidden');
         document.getElementById('preview-file-drawer-btn').classList.add('hidden');
         toggleDeliveryFields();
-        togglePaymentFields();
         fetchQueues();
       } catch (err) {
         showCustomModal({ title: 'เกิดข้อผิดพลาด', message: err.message, icon: 'alert-triangle' });
@@ -1985,7 +2053,7 @@
         else if (ord.status === 'printing') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">🖨️ กำลังพิมพ์</span>';
         else if (ord.status === 'cancelled') statusTag = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">❌ ยกเลิก</span>';
 
-        const deliveryText = ord.delivery_method === 'delivery' ? '🚚 จัดส่งปลายทาง' : '📍 รับหน้าร้าน';
+        const isDelivery = ord.delivery_method === 'delivery';
 
         return `
           <div class="p-5 rounded-2xl apple-glass-card border space-y-3 hover:border-blue-500/50 transition cursor-pointer" onclick="openQueueDetailModal('${ord.id}')">
@@ -1996,10 +2064,11 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-bold titanium-text truncate max-w-[200px]">${escapeHtml(ord.file_name)}</p>
-                <p class="text-[11px] sub-text">${ord.page_count} หน้า | ${ord.copies} ชุด | ${ord.paper_size} | ${deliveryText}</p>
+                <p class="text-[11px] sub-text">${ord.page_count} หน้า | ${ord.copies} ชุด | ${isDelivery ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p>
               </div>
               <span class="text-lg font-black blue-gradient-text">${parseFloat(ord.total_price).toFixed(2)} ฿</span>
             </div>
+            ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/30 text-xs font-bold text-emerald-400">🚚 Tracking: ${ord.tracking_number} (${ord.courier_name || 'Kerry'})</div>` : ''}
           </div>`;
       }).join('');
       if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -2117,8 +2186,10 @@
               <p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p>
               <p class="sub-text text-[10px]">${ord.total_price} ฿ (${ord.page_count} หน้า)</p>
             </td>
-            <td class="py-3 px-3 font-bold text-xs">
-              ${ord.delivery_method === 'delivery' ? `<span class="text-indigo-400">🚚 จัดส่ง</span><br><span class="sub-text text-[10px] truncate block max-w-[120px]">${escapeHtml(ord.recipient_name)} (${escapeHtml(ord.recipient_phone)})</span>` : '<span class="text-emerald-400">📍 รับหน้าร้าน</span>'}
+            <td class="py-3 px-3">
+              ${ord.delivery_method === 'delivery' 
+                ? `<p class="text-blue-400 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name \vert{}\vert{} '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
+                : `<p class="text-emerald-400 font-bold">📍 หน้าร้าน</p>`}
             </td>
             <td class="py-3 px-3">
               ${ord.slip_url ? `<button onclick="openSlipModal('${ord.slip_url}')" class="text-blue-400 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}
@@ -2131,7 +2202,8 @@
                 <option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
               </select>
             </td>
-            <td class="py-3 px-3 text-right">
+            <td class="py-3 px-3 text-right space-x-1">
+              ${ord.delivery_method === 'delivery' ? `<button onclick="promptTracking('${ord.id}')" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-bold">Tracking</button>` : ''}
               <button onclick="openQueueDetailModal('${ord.id}')" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-[11px] font-bold">ดูข้อมูล</button>
             </td>
           </tr>`).join('');
@@ -2177,6 +2249,17 @@
             </td>
           </tr>`).join('');
       }
+    }
+
+    async function promptTracking(orderId) {
+      const trackNo = prompt("กรุณากรอกหมายเลข Tracking พัสดุ:");
+      if (!trackNo) return;
+
+      if (supabaseClient) {
+        await supabaseClient.from('orders').update({ tracking_number: trackNo, courier_name: 'Kerry Express' }).eq('id', orderId);
+      }
+      showCustomModal({ title: 'บันทึกสำเร็จ', message: `บันทึกหมายเลข Tracking: ${trackNo} สำหรับออเดอร์ #${orderId} แล้ว`, icon: 'check-circle' });
+      loadAdminData();
     }
 
     function switchAdminTab(tab) {
