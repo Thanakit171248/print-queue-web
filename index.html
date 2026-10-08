@@ -2,7 +2,8 @@
 <html lang="th" class="dark scroll-smooth">
 
 <head>
-  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0>
+  <meta charset=" UTF-8">
   <!-- SECURITY META HEADERS (Cybersecurity Standards) -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-Frame-Options" content="DENY">
@@ -476,7 +477,8 @@
             <div class="flex items-center gap-3 titanium-text font-bold">
               <div
                 class="p-2 bg-blue-500/10 text-blue-500 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                <i data-lucide="edit-3" class="w-5 h-5"></i></div>
+                <i data-lucide="edit-3" class="w-5 h-5"></i>
+              </div>
               ตั้งค่าและแก้ไขข้อมูลส่วนตัว
             </div>
             <i data-lucide="chevron-right" class="w-5 h-5 sub-text"></i>
@@ -487,7 +489,8 @@
             <div class="flex items-center gap-3 text-rose-500 font-bold">
               <div
                 class="p-2 bg-rose-500/10 rounded-lg group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                <i data-lucide="log-out" class="w-5 h-5"></i></div>
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+              </div>
               ออกจากระบบอย่างปลอดภัย
             </div>
           </button>
@@ -1986,23 +1989,44 @@
     }
 
     function validatePasswordRequirements() {
-      const pwd = document.getElementById('reg-password').value;
-      const submitBtn = document.getElementById('reg-submit-btn');
+      const pwdInput = document.getElementById('reg-password');
+      if (!pwdInput) return;
 
-      const reqs = {
-        length: pwd.length >= 8,
-        upper: /[A-Z]/.test(pwd),
-        lower: /[a-z]/.test(pwd),
-        num: /[0-9]/.test(pwd)
+      const pwd = pwdInput.value || '';
+
+      const checks = {
+        'pwd-req-length': pwd.length >= 8,
+        'pwd-req-upper': /[A-Z]/.test(pwd),
+        'pwd-req-lower': /[a-z]/.test(pwd),
+        'pwd-req-num': /[0-9]/.test(pwd)
       };
 
-      updateReqStatus('pwd-req-length', reqs.length, 'อย่างน้อย 8 ตัวอักษร');
-      updateReqStatus('pwd-req-upper', reqs.upper, 'มีภาษาอังกฤษ พิมพ์ใหญ่ (A-Z)');
-      updateReqStatus('pwd-req-lower', reqs.lower, 'มีภาษาอังกฤษ พิมพ์เล็ก (a-z)');
-      updateReqStatus('pwd-req-num', reqs.num, 'มีตัวเลขอย่างน้อย 1 ตัว (0-9)');
+      let allValid = true;
 
-      isPasswordValid = reqs.length && reqs.upper && reqs.lower && reqs.num;
-      submitBtn.classList.toggle('opacity-60', !isPasswordValid);
+      for (const [id, isValid] of Object.entries(checks)) {
+        const el = document.getElementById(id);
+        if (!el) continue; // ป้องกัน Error หากดึง Element ไม่เจอ
+
+        if (isValid) {
+          el.classList.remove('text-rose-500');
+          el.classList.add('text-emerald-500');
+        } else {
+          el.classList.remove('text-emerald-500');
+          el.classList.add('text-rose-500');
+          allValid = false;
+        }
+      }
+
+      // ปรับสถานะปุ่มยืนยันลงทะเบียน (ต้องตรงกับ id="reg-submit-btn" ใน HTML)
+      const regBtn = document.getElementById('reg-submit-btn');
+      if (regBtn) {
+        regBtn.disabled = !allValid;
+        if (allValid) {
+          regBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+        } else {
+          regBtn.classList.add('opacity-60', 'cursor-not-allowed');
+        }
+      }
     }
 
     function updateReqStatus(elementId, isValid, text) {
@@ -2026,6 +2050,88 @@
     function resetZoom() {
       currentPdfZoom = 1.0;
       changeZoom(0);
+    }
+
+    function handleLogout() {
+      // 1. ล้างข้อมูล Auth/Session จาก LocalStorage
+      localStorage.removeItem('currentUser');
+
+      // 2. อัปเดต UI กลับเป็น Guest
+      updateUI(null);
+
+      // 3. แสดง Modal แจ้งเตือนออกจากระบบเรียบร้อย
+      showModal('แจ้งเตือน', 'คุณได้ออกจากระบบเรียบร้อยแล้ว', 'info');
+
+      // 4. สลับกลับไปหน้าหลัก
+      if (typeof switchView === 'function') {
+        switchView('landing');
+      }
+    }
+
+    function updateUI(user = null) {
+      // Elements ใน Navbar & Control
+      const guestButtons = document.getElementById('guest-buttons');
+      const userProfileMenu = document.getElementById('user-profile-menu');
+      const userCoinsBadge = document.getElementById('user-coins-badge');
+      const navWalletBtn = document.getElementById('nav-wallet-btn');
+
+      // Element แสดงข้อมูลใน Navbar
+      const userDisplayName = document.getElementById('user-display-name');
+      const navAvatarImg = document.getElementById('nav-avatar-img');
+      const userCoinsAmount = document.getElementById('user-coins-amount');
+
+      // Element แสดงข้อมูลใน User Profile Modal
+      const profFullname = document.getElementById('prof-fullname');
+      const profEmail = document.getElementById('prof-email');
+      const profAvatarImg = document.getElementById('prof-avatar-img');
+      const profCoinsAmount = document.getElementById('prof-coins-amount');
+
+      // Element แสดงข้อมูลใน เมนู 3 ขีด (Apple Tab Menu) *** จุดสำคัญ ***
+      const menuUserName = document.getElementById('menu-user-name');
+      const menuUserEmail = document.getElementById('menu-user-email');
+      const menuAvatarImg = document.getElementById('menu-avatar-img');
+      const menuCoins = document.getElementById('menu-coins');
+
+      if (user) {
+        // 1. สลับปุ่มแสดงผล
+        guestButtons?.classList.add('hidden');
+        userProfileMenu?.classList.remove('hidden');
+        userCoinsBadge?.classList.remove('hidden');
+        navWalletBtn?.classList.remove('hidden');
+
+        const displayName = user.fullname || user.email.split('@')[0];
+        const avatar = user.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80';
+        const coinsFormatted = (user.coins || 0).toFixed(2);
+
+        // 2. อัปเดตข้อมูลใน Navbar
+        if (userDisplayName) userDisplayName.textContent = displayName;
+        if (navAvatarImg) navAvatarImg.src = avatar;
+        if (userCoinsAmount) userCoinsAmount.textContent = `${coinsFormatted} Coins`;
+
+        // 3. อัปเดตข้อมูลใน Profile Modal
+        if (profFullname) profFullname.textContent = displayName;
+        if (profEmail) profEmail.textContent = user.email;
+        if (profAvatarImg) profAvatarImg.src = avatar;
+        if (profCoinsAmount) profCoinsAmount.textContent = `${coinsFormatted} Coins`;
+
+        // 4. อัปเดตข้อมูลใน เมนู 3 ขีด (แก้ปัญหาเมนูขึ้น 'กรุณาล็อกอิน')
+        if (menuUserName) menuUserName.textContent = displayName;
+        if (menuUserEmail) menuUserEmail.textContent = user.email;
+        if (menuAvatarImg) menuAvatarImg.src = avatar;
+        if (menuCoins) menuCoins.textContent = coinsFormatted;
+
+      } else {
+        // สถานะยังไม่ได้ล็อกอิน (Guest)
+        guestButtons?.classList.remove('hidden');
+        userProfileMenu?.classList.add('hidden');
+        userCoinsBadge?.classList.add('hidden');
+        navWalletBtn?.classList.add('hidden');
+
+        // รีเซ็ตข้อมูลเมนู 3 ขีดกลับเป็นค่าเริ่มต้น
+        if (menuUserName) menuUserName.textContent = 'กรุณาล็อกอิน';
+        if (menuUserEmail) menuUserEmail.textContent = 'ตรวจสอบข้อมูลความปลอดภัย 100%';
+        if (menuCoins) menuCoins.textContent = '0.00';
+      }
     }
 
     function showCustomModal({ title, message = '', icon = 'info', showCancel = false, onConfirm = null }) {
