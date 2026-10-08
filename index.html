@@ -2337,7 +2337,7 @@
             </td>
             <td class="py-2.5 px-3">
               ${ord.delivery_method === 'delivery' 
-                ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[110px]">${escapeHtml(ord.recipient_name \vert{}\vert{} '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
+                ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[110px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` 
                 : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}
             </td>
             <td class="py-2.5 px-3">
