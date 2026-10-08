@@ -3,8 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SECURITY META HEADERS (Cybersecurity Standards) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <title>PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
   
+  <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
+
   <!-- Tailwind CSS & Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -41,14 +50,14 @@
       --bg-ambient-2: rgba(124, 58, 237, 0.12);
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
-      --card-bg: rgba(18, 20, 29, 0.75);
-      --card-border: rgba(255, 255, 255, 0.12);
-      --panel-bg: rgba(13, 15, 23, 0.88);
+      --card-bg: rgba(18, 20, 29, 0.85);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --panel-bg: rgba(13, 15, 23, 0.92);
       --input-bg: rgba(0, 0, 0, 0.65);
-      --input-border: rgba(255, 255, 255, 0.16);
+      --input-border: rgba(255, 255, 255, 0.18);
       --input-text: #ffffff;
       --input-placeholder: #64748b;
-      --nav-bg: rgba(7, 8, 12, 0.85);
+      --nav-bg: rgba(7, 8, 12, 0.88);
       --shadow-color: rgba(0, 0, 0, 0.6);
     }
 
@@ -59,13 +68,13 @@
       --text-main: #0f172a;
       --text-sub: #475569;
       --card-bg: #ffffff;
-      --card-border: #e2e8f0;
+      --card-border: #cbd5e1;
       --panel-bg: #ffffff;
       --input-bg: #f1f5f9;
-      --input-border: #cbd5e1;
+      --input-border: #94a3b8;
       --input-text: #0f172a;
-      --input-placeholder: #94a3b8;
-      --nav-bg: rgba(255, 255, 255, 0.92);
+      --input-placeholder: #64748b;
+      --nav-bg: rgba(255, 255, 255, 0.94);
       --shadow-color: rgba(15, 23, 42, 0.08);
     }
 
@@ -108,7 +117,7 @@
     .titanium-text { color: var(--text-main) !important; }
     .sub-text { color: var(--text-sub) !important; }
 
-    /* ADVANCED CONTINUOUS SCROLL ANIMATION (FADE IN & FADE OUT ON SCROLL) */
+    /* ADVANCED CONTINUOUS SCROLL ANIMATION */
     .apple-reveal {
       opacity: 0;
       transform: translateY(45px) scale(0.97);
@@ -148,7 +157,6 @@
     }
     .animate-modal { animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    /* Pulse Glow effect for dynamic status */
     .pulse-dot {
       box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       animation: pulse-green 2s infinite;
@@ -544,7 +552,7 @@
         <button id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden text-amber-500 hover:text-amber-400 px-4 py-2.5 text-xs font-bold transition">⚙️ DB Config</button>
       </div>
 
-      <!-- Right: User Actions, Theme Toggle & Live Printer Status -->
+      <!-- Right: User Actions, Theme Toggle & Live Status -->
       <div class="flex items-center gap-3.5">
 
         <button onclick="toggleTheme()" class="p-3 rounded-2xl ui-card hover:border-amber-400 transition-all flex items-center justify-center text-amber-500 shadow-md hover:scale-105 active:scale-95" title="สลับธีม">
@@ -582,15 +590,11 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-grow z-10 relative">
 
-    <!-- VIEW 1: LANDING PAGE (FULL WIDTH & EXPANDED DESIGN) -->
+    <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-16 sm:py-24 px-6 sm:px-12 max-w-[1400px] mx-auto space-y-36 sm:space-y-48">
       
-      <!-- HERO SECTION WITH EXPANDED FULL-WIDTH TEXT -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center min-h-[75vh] apple-reveal">
-        
-        <!-- Left Column: Full-Width Typography & Direct Call-to-Actions -->
         <div class="lg:col-span-7 space-y-10 text-center lg:text-left">
-          
           <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-extrabold shadow-sm backdrop-blur-xl">
             <i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i> PrintDekD Pro — KMUTNB ITI Smart Printing Platform
           </div>
@@ -600,7 +604,6 @@
             <span class="blue-gradient-text">KMUTNB ITI</span>
           </h1>
           
-          <!-- Full-Width Unconstrained Description Paragraph -->
           <p class="sub-text text-lg sm:text-2xl lg:text-3xl leading-relaxed font-normal w-full">
             สั่งงานพิมพ์เอกสารออนไลน์ได้สะดวกรวดเร็ว อัปโหลดไฟล์ คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งพัสดุถึงบ้านในระบบเดียว
           </p>
@@ -614,7 +617,6 @@
             </button>
           </div>
 
-          <!-- Feature Trust Highlights -->
           <div class="pt-6 border-t border-slate-200/60 dark:border-white/10 grid grid-cols-3 gap-4 text-xs sm:text-sm sub-text font-bold">
             <div class="flex items-center gap-2 justify-center lg:justify-start">
               <i data-lucide="shield-check" class="w-5 h-5 text-emerald-500"></i> พิมพ์เร็ว คมชัด 100%
@@ -628,14 +630,12 @@
           </div>
         </div>
 
-        <!-- Right Column: Interactive Printer Hero Showcase Card -->
         <div class="lg:col-span-5 delay-1 apple-reveal">
           <div class="ui-panel rounded-[40px] p-8 sm:p-10 space-y-6 text-center relative overflow-hidden group shadow-2xl">
             <div class="relative w-full h-80 sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
               <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
               <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
               
-              <!-- Floating Glass Badge over Image -->
               <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-400 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span> Online Ready
               </div>
@@ -665,7 +665,6 @@
         </div>
       </div>
 
-      <!-- FEATURE SHOWCASE GRID WITH CONTINUOUS FADE SCROLL -->
       <div class="space-y-16">
         <div class="text-center space-y-4 max-w-4xl mx-auto apple-reveal">
           <span class="text-xs font-black uppercase text-blue-500 tracking-widest bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20">Powerful Capabilities</span>
@@ -710,7 +709,6 @@
         </div>
       </div>
 
-      <!-- INTERACTIVE PRICE ESTIMATOR -->
       <div class="ui-panel p-8 sm:p-14 rounded-[40px] relative overflow-hidden space-y-10 apple-reveal">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 dark:border-white/10 pb-8">
           <div>
@@ -769,7 +767,6 @@
           <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-3 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ลงทะเบียน</button>
         </div>
 
-        <!-- LOGIN FORM -->
         <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5">
           <div>
             <label class="block text-xs font-bold mb-2 titanium-text">อีเมลบัญชี</label>
@@ -787,7 +784,6 @@
           <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition text-sm">เข้าสู่ระบบ</button>
         </form>
 
-        <!-- REGISTER FORM -->
         <form id="form-register" onsubmit="handleRegister(event)" class="space-y-5 hidden">
           <div>
             <label class="block text-xs font-bold mb-2 titanium-text">ชื่อ-นามสกุล</label>
@@ -833,7 +829,6 @@
     <section id="view-dashboard" class="hidden py-10 px-4 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- ORDER FORM -->
         <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px] space-y-6">
           <div class="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-white/10">
             <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-500 flex items-center justify-center">
@@ -868,7 +863,6 @@
               </button>
             </div>
 
-            <!-- Page Selection -->
             <div class="p-4 rounded-2xl ui-card space-y-4">
               <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                 <div>
@@ -957,7 +951,6 @@
               </div>
             </div>
 
-            <!-- SHIPPING / DELIVERY OPTIONS -->
             <div class="pt-3 border-t border-slate-200 dark:border-white/10">
               <label class="block text-xs font-bold mb-2.5 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -993,7 +986,6 @@
               </div>
             </div>
 
-            <!-- Payment Channels -->
             <div class="pt-3 border-t border-slate-200 dark:border-white/10">
               <label class="block text-xs font-bold mb-2.5 titanium-text">3. ช่องทางการชำระเงิน</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -1026,7 +1018,6 @@
               </div>
             </div>
 
-            <!-- Total Price -->
             <div class="p-4 rounded-xl ui-card flex items-center justify-between">
               <div>
                 <span class="text-xs font-bold sub-text block">ราคารวมสุทธิ:</span>
@@ -1041,7 +1032,6 @@
           </form>
         </div>
 
-        <!-- QUEUE LIST -->
         <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
             <div class="flex items-center gap-3">
@@ -1065,59 +1055,115 @@
       </div>
     </section>
 
-    <!-- VIEW 4: WALLET -->
-    <section id="view-wallet" class="hidden py-10 px-4 max-w-4xl mx-auto">
+    <!-- VIEW 4: REDESIGNED WALLET (Apple & Banana IT Style Layout) -->
+    <section id="view-wallet" class="hidden py-10 px-4 max-w-5xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div class="md:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
-          <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
-              <i data-lucide="wallet" class="w-5 h-5"></i>
+        
+        <!-- TOPUP FORM CARD -->
+        <div class="md:col-span-7 ui-panel p-6 sm:p-10 rounded-[36px] space-y-7 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center gap-4 pb-5 border-b border-slate-200 dark:border-white/10">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 border border-amber-500/30 flex items-center justify-center shadow-md">
+              <i data-lucide="wallet" class="w-6 h-6"></i>
             </div>
             <div>
-              <h2 class="text-xl font-bold titanium-text">เติม Coins เข้ากระเป๋าเงิน</h2>
-              <p class="text-xs sub-text">เลือกแพ็กเกจ โอน PromptPay แนบสลิป</p>
+              <h2 class="text-2xl font-black titanium-text tracking-tight">เติม Coins เข้ากระเป๋าเงิน</h2>
+              <p class="text-xs sub-text font-medium mt-0.5">เลือกแพ็กเกจ โอน PromptPay แล้วแนบสลิปยืนยัน</p>
             </div>
           </div>
 
-          <form onsubmit="handleTopupSubmit(event)" class="space-y-5">
-            <div>
-              <label class="block text-xs font-bold mb-2.5 titanium-text">1. เลือกจำนวนเงินเติม:</label>
-              <div class="grid grid-cols-3 gap-2.5">
-                <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-3 border border-amber-500 bg-amber-500/10 rounded-xl font-bold text-xs text-amber-500 text-center transition">20 บาท<br><span class="text-[10px] font-normal sub-text">(20 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">50 บาท<br><span class="text-[10px] font-normal sub-text">(50 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">100 บาท<br><span class="text-[10px] font-normal sub-text">(100 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">200 บาท<br><span class="text-[10px] font-normal sub-text">(200 Coins)</span></button>
-                <button type="button" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition">500 บาท<br><span class="text-[10px] font-normal sub-text">(500 Coins)</span></button>
+          <form onsubmit="handleTopupSubmit(event)" class="space-y-7">
+            
+            <!-- Step 1: Package Selection -->
+            <div class="space-y-3">
+              <label class="block text-xs font-black uppercase text-amber-500 tracking-wider flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500 text-amber-500 flex items-center justify-center text-[10px]">1</span>
+                เลือกจำนวนเงินที่ต้องการเติม:
+              </label>
+              
+              <div class="grid grid-cols-3 gap-3">
+                <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-4 border-2 border-amber-500 bg-amber-500/20 text-amber-400 font-black rounded-2xl text-center transition shadow-lg scale-105 active:scale-95">
+                  <span class="text-base block">20 บาท</span>
+                  <span class="text-[11px] font-bold opacity-80 block mt-0.5">(20 Coins)</span>
+                </button>
+                <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                  <span class="text-base block titanium-text">50 บาท</span>
+                  <span class="text-[11px] sub-text block mt-0.5">(50 Coins)</span>
+                </button>
+                <button type="button" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                  <span class="text-base block titanium-text">100 บาท</span>
+                  <span class="text-[11px] sub-text block mt-0.5">(100 Coins)</span>
+                </button>
+                <button type="button" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                  <span class="text-base block titanium-text">200 บาท</span>
+                  <span class="text-[11px] sub-text block mt-0.5">(200 Coins)</span>
+                </button>
+                <button type="button" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                  <span class="text-base block titanium-text">500 บาท</span>
+                  <span class="text-[11px] sub-text block mt-0.5">(500 Coins)</span>
+                </button>
               </div>
               <input type="hidden" id="selected-topup-amount" value="20">
             </div>
 
-            <div class="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20 text-center space-y-2">
-              <p class="text-xs font-bold text-amber-500">สแกนโอนเงินยอด <span id="topup-qr-amount" class="text-base font-extrabold">20.00</span> บาท</p>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-32 h-32 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm">
-              <p class="text-[10px] sub-text">พร้อมเพย์: 089-999-9999 (ร้าน PrintDekD Pro)</p>
+            <!-- Step 2: QR Code & Copy PromptPay -->
+            <div class="space-y-3">
+              <label class="block text-xs font-black uppercase text-amber-500 tracking-wider flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500 text-amber-500 flex items-center justify-center text-[10px]">2</span>
+                สแกน QR Code หรือคัดลอกเบอร์เพื่อโอนเงิน:
+              </label>
+
+              <div class="bg-gradient-to-b from-amber-500/10 via-amber-500/5 to-transparent p-6 rounded-3xl border border-amber-500/30 text-center space-y-4 shadow-inner">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 font-extrabold text-sm">
+                  ยอดโอนชำระ: <span id="topup-qr-amount" class="text-lg font-black text-amber-400">20.00</span> บาท
+                </div>
+
+                <div class="p-3 bg-white rounded-2xl inline-block shadow-xl border-4 border-amber-500/30">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-36 h-36 mx-auto rounded-lg">
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+                  <p class="text-xs font-bold titanium-text">
+                    พร้อมเพย์: <span class="font-mono text-amber-400 text-sm font-black">089-999-9999</span> (ร้าน PrintDekD Pro)
+                  </p>
+                  <button type="button" onclick="copyPromptPay()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกเบอร์
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-bold mb-1 titanium-text">2. แนบสลิปการโอนเงิน:</label>
-              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs ui-input rounded-xl p-2">
+            <!-- Step 3: Attach Payment Slip -->
+            <div class="space-y-2">
+              <label class="block text-xs font-black uppercase text-amber-500 tracking-wider flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500 text-amber-500 flex items-center justify-center text-[10px]">3</span>
+                แนบสลิปการโอนเงิน (Image):
+              </label>
+              <input type="file" id="topup-slip-file" required accept="image/*" class="w-full text-xs ui-input rounded-2xl p-3 font-semibold focus:outline-none border focus:border-amber-500">
             </div>
 
-            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition text-sm">
-              <i data-lucide="send" class="w-4 h-4"></i> ส่งคำขอเติม Coins ให้แอดมินอนุมัติ
+            <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2.5 transition text-base hover:scale-[1.02] active:scale-95">
+              <i data-lucide="send" class="w-5 h-5"></i> ยืนยันการส่งคำขอเติม Coins
             </button>
           </form>
         </div>
 
-        <div class="md:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px]">
-          <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
-            <h2 class="text-xl font-bold titanium-text">ประวัติการเติม Coins</h2>
-            <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="px-3 py-1.5 ui-card rounded-xl text-xs flex items-center gap-1 transition titanium-text font-bold">
-              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช
-            </button>
+        <!-- TOPUP HISTORY CARD -->
+        <div class="md:col-span-5 ui-panel p-6 sm:p-8 rounded-[36px] flex flex-col justify-between space-y-6">
+          <div>
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+              <h2 class="text-xl font-bold titanium-text">ประวัติการเติม Coins</h2>
+              <button id="refresh-wallet-btn" onclick="animateRefresh('refresh-wallet-btn', fetchUserTopups)" class="px-3 py-1.5 ui-card rounded-xl text-xs flex items-center gap-1.5 transition titanium-text font-bold hover:border-amber-500">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 refresh-icon"></i> รีเฟรช
+              </button>
+            </div>
+            <div id="topup-history-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+              <p class="text-center py-8 sub-text text-xs">กำลังโหลดประวัติ...</p>
+            </div>
           </div>
-          <div id="topup-history-list" class="space-y-3">
-            <p class="text-center py-8 sub-text text-xs">กำลังโหลดประวัติ...</p>
+
+          <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs sub-text space-y-1 text-center">
+            <p class="font-bold titanium-text">💡 คำแนะนำการอนุมัติ:</p>
+            <p>เมื่อแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าของคุณภายใน 1-3 นาที</p>
           </div>
         </div>
       </div>
@@ -1141,7 +1187,6 @@
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">จัดการสมาชิก</button>
       </div>
 
-      <!-- ADMIN ORDERS TAB -->
       <div id="admin-tab-orders" class="ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">รายการสั่งพิมพ์ (รับหน้าร้าน / จัดส่งพัสดุ)</h2>
         <div class="overflow-x-auto">
@@ -1163,7 +1208,6 @@
         </div>
       </div>
 
-      <!-- ADMIN TOPUPS TAB -->
       <div id="admin-tab-topups" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">คำขอเติม Coins (อนุมัติสลิปโอนเงิน)</h2>
         <div class="overflow-x-auto">
@@ -1185,7 +1229,6 @@
         </div>
       </div>
 
-      <!-- ADMIN USERS TAB -->
       <div id="admin-tab-users" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">สิทธิ์สมาชิกในระบบ</h2>
         <div class="overflow-x-auto">
@@ -1222,6 +1265,7 @@
     let currentOrdersList = [];
     let tempAvatarUrl = '';
 
+    // XSS DATA SANITIZATION FUNCTION
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
@@ -1247,21 +1291,16 @@
       if (savedUrl && savedKey) initSupabase(savedUrl, savedKey);
     });
 
-    /* ADVANCED CONTINUOUS SCROLL FADE IN & FADE OUT OBSERVER */
     function initAppleContinuousScrollObserver() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            // Visible on screen -> Fade In & Slide Up into place
             entry.target.classList.add('is-visible');
             entry.target.classList.remove('is-scrolled-out');
           } else {
-            // Out of viewport
             if (entry.boundingClientRect.top < 0) {
-              // Scrolled past top -> Fade Out & Blur smoothly
               entry.target.classList.add('is-scrolled-out');
             } else {
-              // Below viewport -> reset visibility
               entry.target.classList.remove('is-visible');
             }
           }
@@ -1276,6 +1315,14 @@
 
     function handleBackdropClick(event, modalId, closeFn) {
       if (event.target.id === modalId) closeFn();
+    }
+
+    function copyPromptPay() {
+      navigator.clipboard.writeText('0899999999').then(() => {
+        showCustomModal({ title: 'คัดลอกสำเร็จ', message: 'คัดลอกเบอร์พร้อมเพย์ 089-999-9999 เรียบร้อยแล้ว', icon: 'check-circle' });
+      }).catch(() => {
+        showCustomModal({ title: 'แจ้งเตือน', message: 'เบอร์พร้อมเพย์คือ 089-999-9999', icon: 'info' });
+      });
     }
 
     function openUserProfileModal() {
@@ -1394,7 +1441,7 @@
     }
 
     function updateDemoPrice() {
-      const pages = parseInt(document.getElementById('demo-page-slider').value) || 1;
+      const pages = Math.max(1, parseInt(document.getElementById('demo-page-slider').value) || 1);
       const rate = parseFloat(document.getElementById('demo-color-select').value) || 1;
       const deliveryFee = parseFloat(document.getElementById('demo-delivery-select').value) || 0;
       
@@ -1778,14 +1825,14 @@
       const name = document.getElementById('reg-fullname').value.trim();
       const email = document.getElementById('reg-email').value.trim();
       const pwd = document.getElementById('reg-password').value;
-      const avatarSrc = document.getElementById('reg-avatar-preview').src;
 
+      // ป้องกัน Error 400 ด้วยการส่งฟิลด์มาตรฐาน
       const newUser = {
         full_name: name,
         email: email,
         password_hash: pwd,
         role: 'member',
-        avatar_url: avatarSrc
+        avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'
       };
 
       try {
@@ -1794,7 +1841,7 @@
           if (error) throw error;
           currentUser = data;
         } else {
-          currentUser = { id: 'usr-' + Date.now(), ...newUser };
+          currentUser = { id: 'usr-' + Date.now(), ...newUser, coins: 0 };
         }
         
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
@@ -1909,8 +1956,8 @@
     }
 
     function calculatePrice() {
-      const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
-      const copies = parseInt(document.getElementById('copies').value) || 1;
+      const pages = Math.max(1, parseInt(document.getElementById('printed-pages-input').value) || 1);
+      const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
       const isDelivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
@@ -1938,8 +1985,8 @@
       e.preventDefault();
       if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอิน', message: 'กรุณาล็อกอินก่อนทำการสั่งพิมพ์', icon: 'lock' });
 
-      const pages = parseInt(document.getElementById('printed-pages-input').value) || 1;
-      const copies = parseInt(document.getElementById('copies').value) || 1;
+      const pages = Math.max(1, parseInt(document.getElementById('printed-pages-input').value) || 1);
+      const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
       const paper = document.getElementById('paper-size').value;
       const isColor = document.getElementById('color-type').value === 'color';
       const isDuplex = document.getElementById('duplex-type').value === 'duplex';
@@ -2099,9 +2146,9 @@
 
       document.querySelectorAll('.topup-pkg-btn').forEach(btn => {
         if (btn.innerText.includes(`${amt} บาท`)) {
-          btn.className = 'topup-pkg-btn p-3 border border-amber-500 bg-amber-500/10 rounded-xl font-bold text-xs text-amber-500 text-center transition';
+          btn.className = 'topup-pkg-btn p-4 border-2 border-amber-500 bg-amber-500/20 text-amber-400 font-black rounded-2xl text-center transition shadow-lg scale-105 active:scale-95';
         } else {
-          btn.className = 'topup-pkg-btn p-3 ui-input rounded-xl font-bold text-xs text-center transition';
+          btn.className = 'topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95';
         }
       });
     }
@@ -2158,12 +2205,12 @@
         }
 
         list.innerHTML = topups.map(tp => `
-          <div class="p-3.5 rounded-xl ui-card border flex items-center justify-between text-xs">
+          <div class="p-4 rounded-2xl ui-card border flex items-center justify-between text-xs space-x-2 shadow-sm">
             <div>
-              <p class="font-bold titanium-text">+${tp.amount} Coins</p>
-              <p class="text-[10px] sub-text">${new Date(tp.created_at).toLocaleString('th-TH')}</p>
+              <p class="font-black text-amber-500 text-sm">+${tp.amount} Coins</p>
+              <p class="text-[10px] sub-text font-mono mt-0.5">${new Date(tp.created_at).toLocaleString('th-TH')}</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full font-bold ${tp.status === 'approved' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : tp.status === 'rejected' ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400' : 'bg-amber-500/20 text-amber-500'}">
+            <span class="px-3 py-1 rounded-full font-bold text-[11px] ${tp.status === 'approved' ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : tp.status === 'rejected' ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30' : 'bg-amber-500/20 text-amber-500 border border-amber-500/30'}">
               ${tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธ' : 'รออนุมัติ'}
             </span>
           </div>`).join('');
