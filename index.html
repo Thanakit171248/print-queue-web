@@ -479,6 +479,211 @@
       .apple-reveal { opacity:1 !important; transform:none !important; filter:none !important; }
     }
 
+
+    /* ==========================================================
+       PRINTDEKD PRO — ADVANCED PRODUCT DESIGN SYSTEM v4
+       "Native commerce app" feel: calm, precise, touch-first.
+       ========================================================== */
+    :root {
+      --pd-blue: #0a72ff;
+      --pd-indigo: #6557f7;
+      --pd-gold: #e1a000;
+      --pd-green: #19a66a;
+      --pd-red: #d93557;
+      --pd-line: rgba(14,22,36,.10);
+      --pd-surface: rgba(255,255,255,.94);
+      --pd-shadow: 0 16px 52px rgba(15,23,42,.075);
+      --pd-shadow-deep: 0 30px 90px rgba(15,23,42,.12);
+    }
+    html.dark {
+      --pd-line: rgba(255,255,255,.095);
+      --pd-surface: rgba(17,20,28,.93);
+      --pd-shadow: 0 16px 52px rgba(0,0,0,.26);
+      --pd-shadow-deep: 0 34px 95px rgba(0,0,0,.38);
+    }
+
+    body {
+      background:
+        radial-gradient(900px 420px at 50% -12%, rgba(10,114,255,.09), transparent 66%),
+        radial-gradient(780px 420px at 100% 15%, rgba(101,87,247,.065), transparent 68%),
+        var(--bg-main) !important;
+    }
+
+    .ui-card, .ui-panel {
+      background: var(--pd-surface) !important;
+      border: 1px solid var(--pd-line) !important;
+      box-shadow: var(--pd-shadow) !important;
+      backdrop-filter: blur(22px) saturate(118%) !important;
+      -webkit-backdrop-filter: blur(22px) saturate(118%) !important;
+    }
+    .ui-panel { box-shadow: var(--pd-shadow-deep) !important; }
+
+    button { min-height: 46px; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(10,114,255,.22) !important;
+      outline-offset: 3px;
+    }
+
+    /* Desktop navigation: one active state, never ambiguous. */
+    .nav-link {
+      font-weight: 850 !important;
+      color: var(--text-sub) !important;
+      transition: transform .24s ease, color .24s ease, background .24s ease, box-shadow .24s ease !important;
+    }
+    .nav-link:hover { transform: translateY(-1px); }
+    .nav-link.is-active {
+      color: var(--pd-blue) !important;
+      background: rgba(10,114,255,.105) !important;
+      box-shadow: inset 0 0 0 1px rgba(10,114,255,.13) !important;
+    }
+    .nav-link.is-active::after {
+      height: 3px !important;
+      bottom: 3px !important;
+      box-shadow: 0 0 16px rgba(10,114,255,.30);
+      opacity: 1 !important;
+    }
+
+    /* Security strip becomes a product status bar. */
+    #security-strip { margin-top: 12px; }
+    .security-strip-inner {
+      background: var(--pd-surface) !important;
+      border: 1px solid var(--pd-line) !important;
+      box-shadow: var(--pd-shadow) !important;
+      border-radius: 20px !important;
+      min-height: 56px !important;
+    }
+    .security-action {
+      border: 1px solid rgba(10,114,255,.16);
+      border-radius: 13px !important;
+      font-weight: 900 !important;
+    }
+
+    /* Hamburger menu — large but not oversized; feels like a real app sheet. */
+    #apple-tab-menu {
+      background: rgba(5,8,14,.54) !important;
+      backdrop-filter: blur(32px) saturate(125%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(125%) !important;
+    }
+    #apple-tab-menu .apple-menu-sheet {
+      width: min(1060px, calc(100% - 20px)) !important;
+      height: min(850px, calc(100dvh - 20px)) !important;
+      margin: 10px auto !important;
+      border-radius: 34px !important;
+      background:
+        radial-gradient(650px 260px at 12% -8%, rgba(10,114,255,.15), transparent 66%),
+        linear-gradient(180deg, rgba(19,22,29,.985), rgba(10,13,19,.985)) !important;
+      border: 1px solid rgba(255,255,255,.10) !important;
+      box-shadow: 0 42px 130px rgba(0,0,0,.58) !important;
+    }
+    .apple-menu-nav {
+      width: min(860px, 100%);
+      margin-inline: auto;
+      gap: 10px !important;
+      align-content: center !important;
+    }
+    .apple-menu-item {
+      min-height: 80px !important;
+      border-radius: 22px !important;
+      background: rgba(255,255,255,.034) !important;
+      border: 1px solid rgba(255,255,255,.08) !important;
+      transition: transform .28s cubic-bezier(.16,1,.3,1), border-color .28s ease, box-shadow .28s ease, background .28s ease !important;
+    }
+    .apple-menu-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(430px 120px at 0% 50%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 72%);
+      opacity: 0;
+      transition: opacity .30s ease;
+      pointer-events: none;
+    }
+    .apple-menu-item:hover,
+    .apple-menu-item.is-active {
+      transform: translateY(-1px) !important;
+      border-color: color-mix(in srgb, var(--accent) 48%, transparent) !important;
+      box-shadow: 0 16px 46px rgba(0,0,0,.22) !important;
+    }
+    .apple-menu-item:hover::before,
+    .apple-menu-item.is-active::before { opacity: 1; }
+    .apple-menu-item.is-active {
+      box-shadow:
+        inset 3px 0 0 var(--accent),
+        0 18px 50px rgba(0,0,0,.24) !important;
+      background: linear-gradient(95deg, color-mix(in srgb, var(--accent) 9%, transparent), rgba(255,255,255,.045)) !important;
+    }
+    .apple-menu-item .menu-title {
+      font-size: clamp(17px, 2.1vw, 23px) !important;
+      font-weight: 850 !important;
+    }
+    .apple-menu-item .menu-icon {
+      width: 48px !important;
+      height: 48px !important;
+      border-radius: 16px !important;
+    }
+
+    /* Profile: identity first, money second, risk visible without fear. */
+    .profile-shell {
+      background:
+        radial-gradient(520px 230px at 10% -10%, rgba(10,114,255,.085), transparent 70%),
+        var(--pd-surface-strong) !important;
+      border: 1px solid var(--pd-line) !important;
+      box-shadow: var(--pd-shadow-deep) !important;
+    }
+    .profile-hero {
+      border-radius: 28px !important;
+      border-color: rgba(10,114,255,.14) !important;
+      background:
+        linear-gradient(135deg, rgba(10,114,255,.075), rgba(101,87,247,.035) 50%, rgba(255,255,255,.35)) !important;
+    }
+    html.dark .profile-hero {
+      background:
+        linear-gradient(135deg, rgba(10,114,255,.12), rgba(101,87,247,.055) 50%, rgba(255,255,255,.025)) !important;
+    }
+    .profile-avatar-xl {
+      width: 116px !important;
+      height: 116px !important;
+      border-radius: 34px !important;
+      border-width: 4px !important;
+      box-shadow: 0 20px 50px rgba(15,23,42,.16) !important;
+    }
+    .security-card {
+      border-radius: 22px !important;
+      background: linear-gradient(145deg, rgba(10,114,255,.055), rgba(101,87,247,.022)) !important;
+    }
+
+    /* Wallet: premium finance treatment. */
+    #view-wallet .ui-panel:first-child {
+      background:
+        radial-gradient(440px 230px at 90% -8%, rgba(245,166,35,.13), transparent 70%),
+        var(--pd-surface) !important;
+    }
+    #view-wallet .topup-pkg-btn {
+      min-height: 84px !important;
+      border-radius: 20px !important;
+    }
+    #view-wallet .topup-pkg-btn:hover { transform: translateY(-2px) !important; }
+
+    /* Dashboard: make every group read like a deliberate step. */
+    #view-dashboard .ui-panel,
+    #view-wallet .ui-panel,
+    #view-admin .ui-panel { border-radius: 28px !important; }
+
+    @media (max-width: 767px) {
+      #security-strip { width: calc(100% - 14px) !important; }
+      #apple-tab-menu .apple-menu-sheet {
+        width: calc(100% - 8px) !important;
+        height: calc(100dvh - 8px) !important;
+        margin: 4px auto !important;
+        border-radius: 28px !important;
+      }
+      .apple-menu-nav { padding: 12px !important; align-content: start !important; }
+      .apple-menu-item { min-height: 74px !important; }
+      .profile-avatar-xl {
+        width: 88px !important;
+        height: 88px !important;
+        border-radius: 26px !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
@@ -1993,7 +2198,7 @@
           .from('users')
           .update({ full_name: newName, avatar_url: newAvatar })
           .eq('id', currentUser.id)
-          .select('id,full_name,email,role,coins,avatar_url')
+          .select('id,full_name,email,role,avatar_url')
           .single();
         if (error) throw error;
         currentUser = sanitizeUserRecord(data) || { ...currentUser, full_name:newName, avatar_url:newAvatar };
@@ -2244,6 +2449,18 @@
 
     function closeSlipModal() { document.getElementById('slip-preview-modal').classList.add('hidden'); }
 
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const menu = document.getElementById('apple-tab-menu');
+      if (menu && !menu.classList.contains('hidden')) toggleAppleTabMenu(false);
+      const profile = document.getElementById('user-profile-modal');
+      if (profile && !profile.classList.contains('hidden')) closeUserProfileModal();
+      const queue = document.getElementById('queue-detail-modal');
+      if (queue && !queue.classList.contains('hidden')) closeQueueDetailModal();
+      const modal = document.getElementById('custom-modal');
+      if (modal && !modal.classList.contains('hidden')) closeModal();
+    });
+
     function switchView(viewName) {
       const allowed = ['landing','auth','dashboard','wallet','admin'];
       if (!allowed.includes(viewName)) viewName = 'landing';
@@ -2337,7 +2554,7 @@
         if (!supabaseClient) {
           currentUser = sanitizeUserRecord(localData);
         } else {
-          const { data, error } = await supabaseClient.from('users').select('id,full_name,email,role,coins,avatar_url').eq('id', localData.id).maybeSingle();
+          const { data, error } = await supabaseClient.from('users').select('id,full_name,email,role,avatar_url').eq('id', localData.id).maybeSingle();
           if (error || !data) throw new Error(error?.message || 'ไม่พบผู้ใช้งานในฐานข้อมูล');
           currentUser = sanitizeUserRecord(data);
         }
@@ -2410,10 +2627,10 @@
       if (!email || password.length === 0) return showCustomModal({ title:'ตรวจสอบข้อมูล', message:'กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน', icon:'alert-triangle' });
 
       try {
-        let query = await supabaseClient.from('users').select('id,full_name,email,role,coins,avatar_url,password_hash,password').eq('email', email).maybeSingle();
-        if (query.error && /column .*password/i.test(query.error.message || '')) {
-          query = await supabaseClient.from('users').select('*').eq('email', email).maybeSingle();
-        }
+        const query = await supabaseClient.from('users')
+          .select('id,full_name,email,role,avatar_url,password_hash')
+          .eq('email', email)
+          .maybeSingle();
         const { data, error } = query;
         if (error) throw error;
 
@@ -2472,7 +2689,7 @@
           avatar_url: avatarUrl
         };
 
-        const { data, error } = await supabaseClient.from('users').insert([newUser]).select('id,full_name,email,role,coins,avatar_url').single();
+        const { data, error } = await supabaseClient.from('users').insert([newUser]).select('id,full_name,email,role,avatar_url').single();
         if (error) throw error;
         currentUser = { ...data, password_hash: undefined, password: undefined };
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
@@ -2693,13 +2910,16 @@
         if (payMethod === 'coins') {
           const beforeCoins = parseFloat(currentUser.coins || 0);
           const afterCoins = Number((beforeCoins - totalPrice).toFixed(2));
-          const { data:coinUpdate, error:coinError } = await supabaseClient
-            .from('users').update({ coins:afterCoins }).eq('id',currentUser.id).eq('coins',beforeCoins).select('id,coins').maybeSingle();
-          if (coinError || !coinUpdate) {
-            if (orderCreated) await supabaseClient.from('orders').delete().eq('id',orderObj.id).eq('user_id',currentUser.id);
-            throw new Error(coinError?.message || 'ยอด Coins ถูกเปลี่ยนระหว่างการชำระเงิน กรุณาลองใหม่');
+          let coinUpdate;
+          try {
+            coinUpdate = await compareAndSwapWalletBalance(currentUser.id, beforeCoins, afterCoins);
+          } catch (coinError) {
+            if (orderCreated) {
+              await supabaseClient.from('orders').delete().eq('id',orderObj.id).eq('user_id',currentUser.id);
+            }
+            throw coinError;
           }
-          currentUser.coins = coinUpdate.coins;
+          currentUser.coins = Number(coinUpdate.balance || 0);
         }
 
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
@@ -2833,19 +3053,104 @@
       } catch (e) { list.innerHTML = '<p class="text-center py-8 text-rose-500 text-xs">ไม่สามารถโหลดประวัติได้ · กรุณาตรวจสอบฐานข้อมูล</p>'; }
     }
 
-    async function fetchUserWallet() {
-      if (!currentUser || !currentUser.id) return;
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient.from('users').select('coins').eq('id', currentUser.id).maybeSingle();
-        if (error) throw error;
-        if (data) currentUser.coins = data.coins;
+    /* ==========================================================
+       WALLET SOURCE OF TRUTH
+       users      -> identity/profile
+       wallets    -> balance
+       currentUser.coins stays as a UI/cache field only.
+       ========================================================== */
+
+    async function ensureUserWallet(userId) {
+      if (!supabaseClient || !userId) throw new Error('ไม่สามารถสร้างกระเป๋าในโหมดออฟไลน์ได้');
+
+      const { data: existing, error: readError } = await supabaseClient
+        .from('wallets')
+        .select('id,user_id,balance,updated_at')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (readError) throw readError;
+      if (existing) return existing;
+
+      const { data: created, error: createError } = await supabaseClient
+        .from('wallets')
+        .insert([{ user_id: userId, balance: 0 }])
+        .select('id,user_id,balance,updated_at')
+        .maybeSingle();
+
+      if (createError) {
+        // Recover from a concurrent create when the wallet row appeared just after the read.
+        const { data: raced, error: racedError } = await supabaseClient
+          .from('wallets')
+          .select('id,user_id,balance,updated_at')
+          .eq('user_id', userId)
+          .maybeSingle();
+        if (racedError || !raced) throw createError || racedError || new Error('สร้างกระเป๋า Coins ไม่สำเร็จ');
+        return raced;
       }
-      const amount = parseFloat(currentUser.coins || 0).toFixed(2);
-      document.getElementById('user-coins-amount').innerText = `${amount} Coins`;
-      document.getElementById('prof-coins-amount').innerText = `${amount} Coins`;
+      return created;
+    }
+
+    async function fetchUserWallet() {
+      if (!currentUser || !currentUser.id) return 0;
+      if (!supabaseClient) throw new Error('Supabase ยังไม่พร้อม');
+
+      let { data, error } = await supabaseClient
+        .from('wallets')
+        .select('id,user_id,balance,updated_at')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) data = await ensureUserWallet(currentUser.id);
+
+      const balance = Number(data?.balance || 0);
+      if (!Number.isFinite(balance) || balance < 0) {
+        throw new Error('ตรวจสอบข้อมูล: wallets.balance ไม่ถูกต้อง');
+      }
+
+      currentUser.coins = Number(balance.toFixed(2));
+      const amount = currentUser.coins.toFixed(2);
+
+      const coinEls = [
+        document.getElementById('user-coins-amount'),
+        document.getElementById('prof-coins-amount'),
+        document.getElementById('menu-coins')
+      ];
+      if (coinEls[0]) coinEls[0].innerText = `${amount} Coins`;
+      if (coinEls[1]) coinEls[1].innerText = `${amount} Coins`;
+      if (coinEls[2]) coinEls[2].innerText = amount;
+
       localStorage.setItem('sp_user', JSON.stringify(currentUser));
       touchSession();
+      return currentUser.coins;
     }
+
+    async function compareAndSwapWalletBalance(userId, expectedBalance, nextBalance) {
+      if (!supabaseClient || !userId) throw new Error('ฐานข้อมูลยังไม่พร้อม');
+
+      const before = Number(expectedBalance);
+      const after = Number(nextBalance);
+      if (!Number.isFinite(before) || !Number.isFinite(after) || before < 0 || after < 0) {
+        throw new Error('ตรวจสอบข้อมูล: ยอด Coins ไม่ถูกต้อง');
+      }
+
+      const { data, error } = await supabaseClient
+        .from('wallets')
+        .update({
+          balance: Number(after.toFixed(2)),
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+        .eq('balance', Number(before.toFixed(2)))
+        .select('id,user_id,balance,updated_at')
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error('ยอด Coins ถูกเปลี่ยนระหว่างการทำรายการ กรุณาตรวจสอบยอดแล้วลองใหม่');
+      return data;
+    }
+
 
     function readFileAsDataURL(file) {
       return new Promise((resolve, reject) => {
@@ -2962,14 +3267,14 @@
         if (claimError) throw claimError;
         if (!claimed) return showCustomModal({ title:'รายการถูกจัดการแล้ว', message:'คำขอนี้ไม่ได้อยู่ในสถานะรออนุมัติ จึงไม่เพิ่ม Coins ซ้ำ', icon:'shield-check' });
 
-        const { data:u, error:userReadError } = await supabaseClient.from('users').select('coins').eq('id',userId).maybeSingle();
-        if (userReadError || !u) throw userReadError || new Error('ไม่พบบัญชีผู้ใช้');
-        const before = Number(u.coins || 0);
+        const wallet = await ensureUserWallet(userId);
+        const before = Number(wallet.balance || 0);
         const after = Number((before + numericAmount).toFixed(2));
-        const { data:updatedUser, error:userUpdateError } = await supabaseClient.from('users').update({ coins:after }).eq('id',userId).eq('coins',before).select('id,coins').maybeSingle();
-        if (userUpdateError || !updatedUser) {
+        try {
+          await compareAndSwapWalletBalance(userId, before, after);
+        } catch (walletUpdateError) {
           await supabaseClient.from('topups').update({ status:'pending' }).eq('id',topupId).eq('status','approved');
-          throw userUpdateError || new Error('ยอด Coins เปลี่ยนพร้อมกัน กรุณาลองใหม่');
+          throw walletUpdateError;
         }
         showCustomModal({ title:'อนุมัติเรียบร้อย', message:`เพิ่ม ${numericAmount.toFixed(2)} Coins ให้ผู้ใช้แล้ว`, icon:'shield-check' });
         loadAdminData();
