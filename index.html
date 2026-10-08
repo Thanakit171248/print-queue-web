@@ -2289,6 +2289,21 @@
     })();
   </script>
 
+
+<style id="pd-renovation-v6">
+/* ==========================================================
+   DESIGNER ADVANCED v6 — ACCOUNT / ORDER / ADMIN RENOVATION
+   ========================================================== */
+.pd-account-wrap{position:relative}.pd-account-trigger{min-height:50px;display:flex;align-items:center;gap:9px;padding:5px 9px 5px 5px;border:1px solid var(--pd-stroke);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.035));color:var(--pd-white);box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.12);transition:.35s var(--pd-ease);cursor:pointer}.pd-account-trigger:hover{transform:translateY(-2px);border-color:rgba(10,132,255,.35);box-shadow:0 16px 40px rgba(10,132,255,.12),inset 0 1px 0 rgba(255,255,255,.12)}.pd-account-trigger.is-open{border-color:rgba(10,132,255,.48);box-shadow:0 18px 55px rgba(10,132,255,.16)}.pd-account-avatar-wrap{position:relative;display:inline-flex}.pd-account-avatar-wrap .nav-profile-avatar{width:38px;height:38px;border-radius:13px;border:2px solid rgba(255,255,255,.20)}.pd-account-online{position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#32d583;border:2px solid #10131a;box-shadow:0 0 12px rgba(50,213,131,.7)}.pd-account-copy{display:flex;flex-direction:column;align-items:flex-start;line-height:1.08;min-width:70px}.pd-account-kicker{font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--pd-dim)}.pd-account-name{max-width:110px;font-size:12px;font-weight:900;color:var(--pd-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.pd-account-role-dot{width:8px;height:8px;border-radius:50%;background:#35d07f;box-shadow:0 0 12px rgba(53,208,127,.6)}.pd-account-role-dot.admin{background:#a855f7;box-shadow:0 0 12px rgba(168,85,247,.65)}.pd-account-chevron{color:var(--pd-muted);transition:transform .35s var(--pd-ease)}.pd-account-trigger.is-open .pd-account-chevron{transform:rotate(180deg)}
+.pd-account-popover{position:absolute;right:0;top:calc(100% + 10px);width:min(370px,calc(100vw - 24px));padding:10px;border:1px solid var(--pd-stroke-strong);border-radius:26px;background:rgba(14,17,23,.88);backdrop-filter:blur(35px) saturate(155%);-webkit-backdrop-filter:blur(35px) saturate(155%);box-shadow:0 35px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.09);opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transform-origin:top right;transition:.38s var(--pd-ease);z-index:100}.pd-account-popover.is-open{opacity:1;visibility:visible;transform:none}.pd-account-popover::before{content:"";position:absolute;right:24px;top:-5px;width:10px;height:10px;transform:rotate(45deg);background:#11141b;border-left:1px solid rgba(255,255,255,.10);border-top:1px solid rgba(255,255,255,.10)}html:not(.dark) .pd-account-popover{background:rgba(255,255,255,.90);box-shadow:0 35px 90px rgba(15,23,42,.16),inset 0 1px 0 #fff}.pd-account-popover-head{display:flex;align-items:center;justify-content:space-between;padding:8px 8px 10px}.pd-account-popover-title{display:flex;flex-direction:column;gap:4px}.pd-account-popover-title strong{font-size:19px;letter-spacing:-.03em}.pd-account-role-badge{font-size:9px;font-weight:950;letter-spacing:.10em;padding:7px 9px;border-radius:999px;background:rgba(53,208,127,.10);color:#35d07f;border:1px solid rgba(53,208,127,.18)}.pd-account-role-badge.admin{background:rgba(168,85,247,.11);color:#c084fc;border-color:rgba(168,85,247,.22)}.pd-account-balance{display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:linear-gradient(135deg,rgba(245,185,63,.13),rgba(255,255,255,.035));border:1px solid rgba(245,185,63,.18);cursor:pointer;transition:.28s ease}.pd-account-balance:hover{transform:translateY(-1px);border-color:rgba(245,185,63,.36)}.pd-balance-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#f5b93f;background:rgba(245,185,63,.12)}.pd-account-balance span:nth-child(2){display:flex;flex-direction:column;gap:2px}.pd-account-balance small{font-size:9px;color:var(--pd-muted);font-weight:800}.pd-account-balance strong{font-size:18px;color:#f5b93f;line-height:1}.pd-balance-arrow{margin-left:auto;color:#f5b93f}.pd-account-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.pd-account-action{min-height:72px;display:flex;align-items:center;gap:9px;text-align:left;padding:9px;border:1px solid var(--pd-stroke);border-radius:18px;background:rgba(255,255,255,.035);color:var(--pd-white);transition:.28s var(--pd-ease);cursor:pointer}.pd-account-action:hover{transform:translateY(-2px);background:rgba(255,255,255,.07);border-color:rgba(10,132,255,.28)}.pd-account-action.danger:hover{border-color:rgba(255,95,115,.30);background:rgba(255,95,115,.06)}.pd-account-action-icon{width:35px;height:35px;display:flex;align-items:center;justify-content:center;border-radius:12px;flex:0 0 auto}.pd-account-action-icon.blue{color:#5ba7ff;background:rgba(10,132,255,.12)}.pd-account-action-icon.green{color:#35d07f;background:rgba(53,208,127,.11)}.pd-account-action-icon.purple{color:#c084fc;background:rgba(168,85,247,.11)}.pd-account-action-icon.red{color:#ff7182;background:rgba(255,95,115,.10)}.pd-account-action span:last-child{display:flex;flex-direction:column;gap:2px;min-width:0}.pd-account-action b{font-size:11px;font-weight:900}.pd-account-action small{font-size:9px;color:var(--pd-muted);white-space:nowrap}.pd-account-popover-foot{display:flex;align-items:center;gap:6px;padding:10px 8px 2px;color:var(--pd-dim);font-size:9px;font-weight:800}
+.pd-order-hero{position:relative;overflow:hidden;margin-bottom:12px;padding:30px;border:1px solid var(--pd-stroke);border-radius:34px;background:radial-gradient(550px 220px at 5% 0%,rgba(10,132,255,.15),transparent 72%),radial-gradient(420px 200px at 100% 100%,rgba(139,92,246,.10),transparent 72%),var(--pd-surface-0);box-shadow:var(--pd-shadow)}.pd-order-hero-main h1{max-width:780px;margin:9px 0 8px;font-size:clamp(30px,4.2vw,58px);line-height:1.03;letter-spacing:-.045em;font-weight:950}.pd-order-hero-main p{max-width:760px;color:var(--pd-muted);font-size:14px;line-height:1.7}.pd-order-stepper{display:flex;align-items:center;gap:9px;margin-top:24px}.pd-order-stepper span{display:flex;align-items:center;gap:7px;color:var(--pd-dim);font-size:10px;font-weight:900}.pd-order-stepper b{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--pd-stroke);font-size:9px}.pd-order-stepper span.is-current{color:#5ba7ff}.pd-order-stepper span.is-current b{background:rgba(10,132,255,.15);border-color:rgba(10,132,255,.32);box-shadow:0 0 25px rgba(10,132,255,.15)}.pd-order-stepper i{width:34px;height:1px;background:var(--pd-stroke)}.pd-order-shortcuts{position:absolute;right:22px;bottom:22px;display:flex;gap:7px}.pd-order-shortcuts button{min-height:38px;padding:0 11px;border:1px solid var(--pd-stroke);border-radius:13px;background:rgba(255,255,255,.055);color:var(--pd-muted);font-size:10px;font-weight:900;display:inline-flex;align-items:center;gap:6px;transition:.25s ease}.pd-order-shortcuts button:hover{color:var(--pd-white);border-color:rgba(10,132,255,.35);transform:translateY(-2px)}.pd-live-order-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;padding:10px 14px;border:1px solid var(--pd-stroke);border-radius:18px;background:rgba(255,255,255,.035);box-shadow:var(--pd-shadow)}.pd-live-order-strip>div:first-child{display:flex;align-items:center;gap:9px;min-width:0}.pd-live-order-strip small{display:block;color:var(--pd-muted);font-size:9px;margin-top:2px}.pd-live-dot{width:8px;height:8px;border-radius:50%;background:#35d07f;box-shadow:0 0 0 5px rgba(53,208,127,.10),0 0 14px rgba(53,208,127,.55);animation:pdPulse 2s infinite}.pd-live-price{text-align:right}.pd-live-price strong{display:block;color:#f5b93f;font-size:17px}.pd-live-price small{font-size:8px}.pd-admin-commandbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(260px,1.6fr);gap:9px;margin-bottom:12px}.pd-admin-stat,.pd-admin-search{min-height:68px;padding:12px 14px;border:1px solid var(--pd-stroke);border-radius:18px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;justify-content:center}.pd-admin-stat span{font-size:9px;color:var(--pd-muted);font-weight:850}.pd-admin-stat strong{font-size:20px;letter-spacing:-.03em;margin-top:3px}.pd-admin-search{flex-direction:row;align-items:center;gap:8px}.pd-admin-search i{color:var(--pd-muted);flex:0 0 auto}.pd-admin-search input{width:100%;border:0;outline:0;background:transparent;color:var(--pd-white);font-size:12px}.pd-admin-search input::placeholder{color:var(--pd-dim)}
+#file-input:focus-visible + #upload-placeholder{outline:2px solid rgba(10,132,255,.35)}
+.pd-click-flash{box-shadow:0 0 0 4px rgba(10,132,255,.12)!important}.pd-upload-drag{border-color:rgba(10,132,255,.65)!important;background:rgba(10,132,255,.08)!important;transform:scale(1.01)}
+@keyframes pdPulse{50%{transform:scale(1.18);opacity:.7}}
+@media(max-width:900px){.pd-order-hero{padding:22px}.pd-order-shortcuts{position:static;display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:18px}.pd-order-shortcuts button{justify-content:center}.pd-admin-commandbar{grid-template-columns:1fr 1fr}.pd-admin-search{grid-column:1/-1}.pd-account-copy{display:none}.pd-account-trigger{padding-right:7px}.pd-account-role-dot{display:none}}
+@media(max-width:520px){.pd-account-popover{right:-5px}.pd-account-grid{grid-template-columns:1fr}.pd-order-stepper{gap:5px}.pd-order-stepper i{width:16px}.pd-order-stepper span small{display:none}.pd-order-hero-main p{font-size:12px}.pd-live-order-strip{padding:9px 11px}.pd-live-price strong{font-size:15px}}
+</style>
+
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
 
@@ -2717,17 +2732,51 @@
           <button type="button" onclick="switchView('auth'); switchAuthTab('register')" class="min-h-[46px] px-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-sm shadow-lg shadow-blue-600/20 transition active:scale-[.98]">สมัครสมาชิก</button>
         </div>
 
-        <div id="user-profile-menu" class="hidden items-center gap-2">
-          <button type="button" id="admin-menu-btn" onclick="switchView('admin')" class="hidden min-h-[44px] px-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-700 dark:text-purple-200 text-xs font-extrabold items-center gap-1.5 transition hover:bg-purple-500/15">
-            <i data-lucide="shield-check" class="w-4 h-4"></i><span>Admin</span>
-          </button>
-          <button type="button" onclick="openUserProfileModal()" class="nav-profile-btn ui-card flex items-center gap-2.5 transition hover:border-blue-500 shadow-sm" aria-label="เปิดโปรไฟล์ผู้ใช้งาน">
-            <img loading="lazy" decoding="async" id="nav-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="รูปโปรไฟล์" class="nav-profile-avatar object-cover">
-            <span id="user-display-name" class="text-sm font-extrabold titanium-text hidden md:inline max-w-[130px] truncate">ผู้ใช้</span>
-          </button>
-          <button type="button" onclick="handleLogout()" class="nav-icon-btn bg-rose-500/8 text-rose-500 border border-rose-500/15 hover:bg-rose-500/12" title="ออกจากระบบ" aria-label="ออกจากระบบ">
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-          </button>
+        <div id="user-profile-menu" class="hidden items-center">
+          <div class="pd-account-wrap">
+            <button type="button" id="pd-account-trigger" class="pd-account-trigger" onclick="togglePDAccountMenu()" aria-haspopup="menu" aria-expanded="false" aria-controls="pd-account-popover" aria-label="เปิดศูนย์บัญชีผู้ใช้งาน">
+              <span class="pd-account-avatar-wrap">
+                <img loading="lazy" decoding="async" id="nav-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80" alt="รูปโปรไฟล์" class="nav-profile-avatar object-cover">
+                <span class="pd-account-online" aria-hidden="true"></span>
+              </span>
+              <span class="pd-account-copy">
+                <span class="pd-account-kicker">บัญชีของฉัน</span>
+                <span id="user-display-name" class="pd-account-name">ผู้ใช้</span>
+              </span>
+              <span id="pd-account-role-dot" class="pd-account-role-dot" title="สมาชิก"></span>
+              <i data-lucide="chevron-down" class="pd-account-chevron w-4 h-4"></i>
+            </button>
+
+            <div id="pd-account-popover" class="pd-account-popover" role="menu" aria-label="ศูนย์บัญชี" aria-hidden="true">
+              <div class="pd-account-popover-head">
+                <div class="pd-account-popover-title">
+                  <span class="pd-eyebrow">ACCOUNT CENTER</span>
+                  <strong>ศูนย์บัญชี</strong>
+                </div>
+                <span id="pd-account-role-badge" class="pd-account-role-badge">MEMBER</span>
+              </div>
+              <div class="pd-account-balance" onclick="switchView('wallet'); closePDAccountMenu();" role="button" tabindex="0">
+                <span class="pd-balance-icon"><i data-lucide="coins" class="w-4 h-4"></i></span>
+                <span><small>ยอด Coins</small><strong id="pd-account-coins">0.00</strong></span>
+                <span class="pd-balance-arrow"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+              </div>
+              <div class="pd-account-grid">
+                <button type="button" class="pd-account-action" onclick="openUserProfileModal(); closePDAccountMenu();" role="menuitem">
+                  <span class="pd-account-action-icon blue"><i data-lucide="user-round" class="w-4 h-4"></i></span><span><b>โปรไฟล์</b><small>ข้อมูลบัญชี</small></span>
+                </button>
+                <button type="button" class="pd-account-action" onclick="switchView('dashboard'); closePDAccountMenu();" role="menuitem">
+                  <span class="pd-account-action-icon green"><i data-lucide="printer" class="w-4 h-4"></i></span><span><b>สั่งพิมพ์</b><small>สร้างงานใหม่</small></span>
+                </button>
+                <button type="button" id="admin-menu-btn" class="hidden pd-account-action" onclick="switchView('admin'); closePDAccountMenu();" role="menuitem">
+                  <span class="pd-account-action-icon purple"><i data-lucide="shield-check" class="w-4 h-4"></i></span><span><b>Admin</b><small>ดูแลระบบ</small></span>
+                </button>
+                <button type="button" class="pd-account-action danger" onclick="handleLogout(); closePDAccountMenu();" role="menuitem">
+                  <span class="pd-account-action-icon red"><i data-lucide="log-out" class="w-4 h-4"></i></span><span><b>ออกจากระบบ</b><small>สิ้นสุดเซสชัน</small></span>
+                </button>
+              </div>
+              <div class="pd-account-popover-foot"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i><span>เซสชันถูกปกป้อง • PrintDekD Pro</span></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -3169,6 +3218,25 @@
 
     <!-- VIEW 3: DASHBOARD & ORDER FORM -->
     <section id="view-dashboard" class="hidden py-10 px-4 max-w-6xl mx-auto">
+      <div class="pd-order-hero apple-reveal">
+        <div class="pd-order-hero-main">
+          <span class="pd-eyebrow">SMART PRINT FLOW</span>
+          <h1>อัปโหลด → ปรับงาน → จ่าย Coins → รอรับงาน</h1>
+          <p>ระบบจัดลำดับขั้นตอนให้เอง พร้อมคำนวณราคาแบบเรียลไทม์ บันทึกแบบร่าง และติดตามคิวจากหน้าจอเดียว</p>
+        </div>
+        <div class="pd-order-stepper" aria-label="ขั้นตอนการสั่งพิมพ์">
+          <span class="is-current"><b>01</b><small>ไฟล์</small></span><i></i><span><b>02</b><small>ตั้งค่า</small></span><i></i><span><b>03</b><small>ชำระ</small></span><i></i><span><b>04</b><small>ติดตาม</small></span>
+        </div>
+        <div class="pd-order-shortcuts">
+          <button type="button" onclick="document.getElementById('file-input')?.click()"><i data-lucide="upload" class="w-4 h-4"></i>อัปโหลดทันที</button>
+          <button type="button" onclick="restoreLastPrintOrder()"><i data-lucide="rotate-ccw" class="w-4 h-4"></i>ใช้รายการล่าสุด</button>
+          <button type="button" onclick="clearPrintDraft(true)"><i data-lucide="eraser" class="w-4 h-4"></i>ล้างแบบร่าง</button>
+        </div>
+      </div>
+      <div class="pd-live-order-strip" id="pd-live-order-strip">
+        <div><span class="pd-live-dot"></span><b id="pd-live-order-title">พร้อมสร้างงานพิมพ์</b><small id="pd-live-order-copy">อัปโหลดไฟล์เพื่อเริ่มต้น</small></div>
+        <div class="pd-live-price"><small>ราคาปัจจุบัน</small><strong id="pd-live-total">1.00 ฿</strong></div>
+      </div>
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px] space-y-6">
@@ -3190,6 +3258,11 @@
                 <div id="upload-placeholder" class="space-y-2">
                   <i data-lucide="file-plus" class="w-10 h-10 text-blue-500 mx-auto group-hover:scale-110 transition"></i>
                   <p class="text-sm font-bold titanium-text">คลิกเลือกไฟล์ หรือ ลากไฟล์มาวางที่นี่</p>
+                  <p class="text-[10px] sub-text">PDF, DOC, DOCX, JPG, PNG • สูงสุด 20 MB • ระบบตรวจสอบไฟล์ก่อนส่ง</p>
+                  <div id="pd-upload-progress" class="hidden mt-3 mx-auto max-w-sm text-left">
+                    <div class="flex items-center justify-between text-[10px] font-bold mb-1"><span id="pd-upload-status">กำลังตรวจสอบไฟล์…</span><span id="pd-upload-percent">0%</span></div>
+                    <div class="h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden"><span id="pd-upload-progress-bar" class="block h-full w-0 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all"></span></div>
+                  </div>
                 </div>
                 <div id="file-details" class="hidden text-left ui-card p-3.5 rounded-xl flex items-center justify-between">
                   <div class="flex items-center gap-2 overflow-hidden">
@@ -3365,7 +3438,10 @@
                 <span class="text-xs font-bold sub-text block">ราคารวมสุทธิ:</span>
                 <span id="price-breakdown" class="text-[10px] sub-text">(ค่าพิมพ์ + ค่าจัดส่ง)</span>
               </div>
-              <span id="total-price" class="text-2xl font-black blue-gradient-text">1.00 ฿</span>
+              <div class="text-right">
+                <span id="total-price" class="text-2xl font-black blue-gradient-text">1.00 ฿</span>
+                <span id="pd-coin-equivalent" class="block text-[10px] font-bold text-amber-500 mt-0.5">≈ 1.00 Coins</span>
+              </div>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-base">
@@ -3523,7 +3599,13 @@
         </button>
       </div>
 
-      <div class="flex bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl mb-6 max-w-md border border-slate-300/50 dark:border-white/10">
+      <div class="pd-admin-commandbar">
+        <div class="pd-admin-stat"><span>งานทั้งหมด</span><strong id="pd-admin-orders-count">—</strong></div>
+        <div class="pd-admin-stat"><span>รอคิว</span><strong id="pd-admin-pending-count">—</strong></div>
+        <div class="pd-admin-stat"><span>รอเติม Coins</span><strong id="pd-admin-topup-count">—</strong></div>
+        <div class="pd-admin-search"><i data-lucide="search" class="w-4 h-4"></i><input id="pd-admin-search" type="search" placeholder="ค้นหาออเดอร์ / สมาชิก / ไฟล์…" oninput="filterAdminWorkspace(this.value)"></div>
+      </div>
+      <div class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')" class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">อนุมัติเติม Coins</button>
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')" class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">จัดการสมาชิก</button>
@@ -3601,6 +3683,8 @@
     let supabaseClient = null;
     let currentUser = null;
     let selectedFileObj = null;
+    window.currentUser = currentUser;
+    window.selectedFileObj = selectedFileObj;
     let detectedPageCount = 1;
     let currentPdfZoom = 1.0;
     let isPasswordValid = false;
@@ -3615,6 +3699,7 @@
     const LOGIN_WINDOW_MS = 5 * 60 * 1000;
     const LOGIN_MAX_ATTEMPTS = 5;
     const ALLOWED_TOPUP_AMOUNTS = [20, 50, 100, 200, 500];
+    const PRINT_STORAGE_BUCKET = localStorage.getItem('sp_print_bucket') || 'print-files';
 
     function formatBytes(bytes) {
       const units = ['B', 'KB', 'MB', 'GB'];
@@ -4353,6 +4438,7 @@
       } catch (e) {
         console.error('Session sync error:', e);
         currentUser = null;
+        window.currentUser = currentUser;
         localStorage.removeItem('sp_user');
         localStorage.removeItem('sp_session_at');
         updateUserUI();
@@ -4434,6 +4520,7 @@
         }
 
         currentUser = { ...data, password_hash: undefined, password: undefined };
+        window.currentUser = currentUser;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
         touchSession();
         updateUserUI();
@@ -4490,6 +4577,7 @@
 
     function handleLogout() {
       currentUser = null;
+      window.currentUser = currentUser;
       localStorage.removeItem('sp_user');
       localStorage.removeItem('sp_session_at');
       resetLoginAttempts();
@@ -4508,6 +4596,7 @@
       }
 
       selectedFileObj = file;
+      window.selectedFileObj = selectedFileObj;
       document.getElementById('upload-placeholder').classList.add('hidden');
       document.getElementById('file-details').classList.remove('hidden');
       document.getElementById('preview-file-drawer-btn').classList.remove('hidden');
@@ -4628,7 +4717,29 @@
       document.getElementById('promptpay-box').classList.toggle('hidden', method !== 'promptpay');
     }
 
-    async function handleOrderSubmit(e) {
+    async function uploadPrintFile(file, orderId) {
+      if (!supabaseClient) throw new Error('ฐานข้อมูลยังไม่พร้อมสำหรับการอัปโหลดไฟล์');
+      if (!file) throw new Error('ไม่พบไฟล์เอกสาร');
+      const safeName = String(file.name || 'document').replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0,120) || 'document';
+      const path = `${currentUser.id}/${orderId}-${Date.now()}-${safeName}`;
+      const { error } = await supabaseClient.storage.from(PRINT_STORAGE_BUCKET).upload(path, file, { upsert:false, contentType:file.type || 'application/octet-stream', cacheControl:'3600' });
+      if (error) throw new Error(`อัปโหลดไฟล์ไม่สำเร็จ: ${error.message || 'ตรวจสอบ Storage bucket และ Policy'}`);
+      return { path, bucket:PRINT_STORAGE_BUCKET, size:file.size, mime_type:file.type || 'application/octet-stream' };
+    }
+
+    async function openStoredPrintFile(filePath) {
+      if (!assertAdminAccess() && !currentUser) return;
+      if (!filePath) return showCustomModal({ title:'ยังไม่มีไฟล์ออนไลน์', message:'รายการนี้ไม่มีตำแหน่งไฟล์ที่เก็บใน Storage', icon:'file-warning' });
+      try {
+        const { data, error } = await supabaseClient.storage.from(PRINT_STORAGE_BUCKET).createSignedUrl(filePath, 900);
+        if (error || !data?.signedUrl) throw error || new Error('สร้างลิงก์ไฟล์ชั่วคราวไม่สำเร็จ');
+        window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        showCustomModal({ title:'เปิดไฟล์ไม่สำเร็จ', message:err.message || 'ตรวจสอบ Storage Policy ของ Supabase', icon:'file-warning' });
+      }
+    }
+
+        async function handleOrderSubmit(e) {
       e.preventDefault();
       if (!currentUser) return showCustomModal({ title:'กรุณาล็อกอิน', message:'กรุณาล็อกอินก่อนทำการสั่งพิมพ์', icon:'lock' });
       if (!supabaseClient) return showCustomModal({ title:'ฐานข้อมูลยังไม่พร้อม', message:'ระบบจะหยุดรายการสำคัญไว้ก่อนจนกว่าจะเชื่อมต่อ Supabase สำเร็จ', icon:'database-zap' });
@@ -4679,9 +4790,18 @@
         slipUrl = await readFileAsDataURL(slipFile);
       }
 
+      const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+      let uploadedPrintFile = null;
+      try {
+        uploadedPrintFile = await uploadPrintFile(selectedFileObj, orderId);
+      } catch (uploadError) {
+        return showCustomModal({ title:'อัปโหลดเอกสารไม่สำเร็จ', message:`${uploadError.message || 'ไม่สามารถเก็บไฟล์บนระบบออนไลน์ได้'} กรุณาตรวจสอบ Storage bucket "${PRINT_STORAGE_BUCKET}" และ Policy ของ Supabase`, icon:'cloud-off' });
+      }
+
       const orderObj = {
-        id:'ORD-' + Math.floor(100000 + Math.random() * 900000), user_id:currentUser.id, user_name:currentUser.full_name,
-        file_name:selectedFileObj.name, page_count:pages, copies, paper_size:paper, is_color:isColor, is_duplex:isDuplex,
+        id:orderId, user_id:currentUser.id, user_name:currentUser.full_name,
+        file_name:selectedFileObj.name, file_path:uploadedPrintFile.path, file_bucket:uploadedPrintFile.bucket, file_size:uploadedPrintFile.size, file_mime:uploadedPrintFile.mime_type,
+        page_count:pages, copies, paper_size:paper, is_color:isColor, is_duplex:isDuplex,
         delivery_method:deliveryMethod, recipient_name:recipientName, recipient_phone:recipientPhone, recipient_address:recipientAddress,
         delivery_fee:deliveryFee, total_price:totalPrice, payment_method:payMethod, slip_url:slipUrl, admin_note:notes,
         status:'pending', created_at:new Date().toISOString()
@@ -4717,6 +4837,7 @@
         showCustomModal({ title:'สร้างคำขอพิมพ์สำเร็จ', message:successMsg, icon:'shield-check' });
         document.getElementById('print-form').reset();
         selectedFileObj = null;
+        window.selectedFileObj = selectedFileObj;
         document.getElementById('upload-placeholder').classList.remove('hidden');
         document.getElementById('file-details').classList.add('hidden');
         document.getElementById('preview-file-drawer-btn').classList.add('hidden');
@@ -4726,6 +4847,7 @@
         fetchQueues();
         await fetchUserWallet();
       } catch (err) {
+        try { if (uploadedPrintFile?.path && !orderCreated) await supabaseClient.storage.from(PRINT_STORAGE_BUCKET).remove([uploadedPrintFile.path]); } catch (_) {}
         showCustomModal({ title:'สร้างรายการไม่สำเร็จ', message:err.message || 'ไม่สามารถบันทึกข้อมูลได้ ระบบยังไม่ถือว่ารายการสำเร็จ', icon:'shield-alert' });
       }
     }
@@ -4957,7 +5079,7 @@
           ordersTb.innerHTML = (orders || []).map(ord => `
             <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
               <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${escapeHtml(ord.id)}</td>
-              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p></td>
+              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p>${ord.file_path ? `<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)})" class="mt-1 text-[10px] font-black text-blue-500 hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> เปิดไฟล์</button>` : '<span class="text-[10px] sub-text">ไม่มีไฟล์ Storage</span>'}</td>
               <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
               <td class="py-3 px-3">${ord.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
               <td class="py-3 px-3">
@@ -5502,5 +5624,151 @@
     })();
 
   </script>
+
+<script>
+/* ==========================================================
+   DESIGNER ADVANCED v6 — CONVENIENCE ENGINE
+   ========================================================== */
+(() => {
+  const q = (id) => document.getElementById(id);
+  const DRAFT_KEY = 'pd_print_draft_v6';
+  const LAST_KEY = 'pd_last_print_v6';
+
+  function accountMenu(open) {
+    const pop = q('pd-account-popover'), trigger = q('pd-account-trigger');
+    if (!pop || !trigger) return;
+    const next = open === undefined ? !pop.classList.contains('is-open') : !!open;
+    pop.classList.toggle('is-open', next); trigger.classList.toggle('is-open', next);
+    trigger.setAttribute('aria-expanded', String(next)); pop.setAttribute('aria-hidden', String(!next));
+  }
+  window.togglePDAccountMenu = () => accountMenu();
+  window.closePDAccountMenu = () => accountMenu(false);
+
+  function syncAccountCenter() {
+    if (!window.currentUser) return;
+    const name = q('user-display-name'), coins = q('pd-account-coins'), badge = q('pd-account-role-badge'), dot = q('pd-account-role-dot');
+    const amount = Number(window.currentUser.coins || 0).toFixed(2);
+    if (name) name.textContent = window.currentUser.full_name || 'สมาชิก';
+    if (coins) coins.textContent = amount;
+    if (badge) { badge.textContent = window.currentUser.role === 'admin' ? 'ADMIN' : 'MEMBER'; badge.classList.toggle('admin', window.currentUser.role === 'admin'); }
+    if (dot) dot.classList.toggle('admin', window.currentUser.role === 'admin');
+  }
+
+  function saveDraft(){
+    if (!window.currentUser) return;
+    const ids=['paper-size','copies','color-type','duplex-type','printed-pages-input','page-range-input','order-notes','recipient-name','recipient-phone','recipient-address'];
+    const data={savedAt:Date.now(), values:{}};
+    ids.forEach(id=>{const el=q(id); if(el) data.values[id]=el.value;});
+    const delivery=document.querySelector('input[name="delivery_method"]:checked'); const payment=document.querySelector('input[name="payment_method"]:checked');
+    if(delivery) data.delivery=delivery.value; if(payment) data.payment=payment.value;
+    try{localStorage.setItem(DRAFT_KEY,JSON.stringify(data));}catch{}
+  }
+  function restoreDraft(silent=false){
+    if(!window.currentUser) return false;
+    let data; try{data=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null')}catch{return false}
+    if(!data?.values) return false;
+    Object.entries(data.values).forEach(([id,val])=>{const el=q(id); if(el && val !== undefined) el.value=val;});
+    if(data.delivery){const el=document.querySelector(`input[name="delivery_method"][value="${CSS.escape(data.delivery)}"]`); if(el) el.checked=true;}
+    if(data.payment){const el=document.querySelector(`input[name="payment_method"][value="${CSS.escape(data.payment)}"]`); if(el) el.checked=true;}
+    if(typeof window.toggleDeliveryFields==='function') window.toggleDeliveryFields();
+    if(typeof window.togglePaymentFields==='function') window.togglePaymentFields();
+    if(typeof window.calculatePrice==='function') window.calculatePrice();
+    if(!silent && window.pdToast) window.pdToast('คืนค่าแบบร่างแล้ว','ตั้งค่าการสั่งพิมพ์ล่าสุดกลับมาให้คุณแล้ว','check-circle');
+    return true;
+  }
+  window.clearPrintDraft = (notify=false) => { try{localStorage.removeItem(DRAFT_KEY)}catch{}; if(notify && window.pdToast) window.pdToast('ล้างแบบร่างแล้ว','พร้อมเริ่มรายการใหม่','eraser'); };
+  window.restoreLastPrintOrder = () => {
+    let data; try{data=JSON.parse(localStorage.getItem(LAST_KEY)||'null')}catch{}
+    if(!data){ if(window.pdToast) window.pdToast('ยังไม่มีรายการล่าสุด','สร้างรายการแรกแล้วระบบจะจำการตั้งค่าไว้ให้','info'); return; }
+    if(typeof window.switchView==='function') window.switchView('dashboard');
+    setTimeout(()=>{
+      Object.entries(data).forEach(([id,val])=>{const el=q(id); if(el && val !== undefined) el.value=val;});
+      if(data.delivery){const el=document.querySelector(`input[name="delivery_method"][value="${CSS.escape(data.delivery)}"]`); if(el) el.checked=true;}
+      if(data.payment){const el=document.querySelector(`input[name="payment_method"][value="${CSS.escape(data.payment)}"]`); if(el) el.checked=true;}
+      if(typeof window.toggleDeliveryFields==='function') window.toggleDeliveryFields();
+      if(typeof window.togglePaymentFields==='function') window.togglePaymentFields();
+      if(typeof window.calculatePrice==='function') window.calculatePrice();
+      window.scrollTo({top:0,behavior:'smooth'});
+      if(window.pdToast) window.pdToast('ใช้รายการล่าสุด','ตั้งค่าการพิมพ์เดิมถูกนำกลับมาแล้ว','rotate-ccw');
+    },120);
+  };
+
+  function setLiveState(title,copy){ if(q('pd-live-order-title')) q('pd-live-order-title').textContent=title; if(q('pd-live-order-copy')) q('pd-live-order-copy').textContent=copy; }
+  function updateLivePrice(total){
+    const n=Number(total)||0; if(q('pd-live-total')) q('pd-live-total').textContent=`${n.toFixed(2)} ฿`; if(q('pd-coin-equivalent')) q('pd-coin-equivalent').textContent=`≈ ${n.toFixed(2)} Coins`;
+    if(window.currentUser && Number(window.currentUser.coins||0)<n) setLiveState('Coins ไม่พอสำหรับรายการนี้',`ต้องการ ${n.toFixed(2)} Coins • เติม Coins ได้จาก Wallet`); else setLiveState(window.selectedFileObj?'พร้อมคำนวณและส่งงาน':'พร้อมสร้างงานพิมพ์',window.selectedFileObj?'ระบบกำลังติดตามการตั้งค่าแบบเรียลไทม์':'อัปโหลดไฟล์เพื่อเริ่มต้น');
+  }
+
+  // Enhance the existing calculator without replacing its pricing rules.
+  const originalCalc = window.calculatePrice;
+  if(typeof originalCalc === 'function'){
+    window.calculatePrice = function(){ const total=originalCalc.apply(this,arguments); updateLivePrice(total); saveDraft(); return total; };
+  }
+
+  function wireUploadUX(){
+    const zone=q('upload-placeholder')?.parentElement, input=q('file-input'); if(!zone||!input||zone.dataset.pdWired) return; zone.dataset.pdWired='1';
+    ['dragenter','dragover'].forEach(evt=>zone.addEventListener(evt,e=>{e.preventDefault();zone.classList.add('pd-upload-drag')}));
+    ['dragleave','drop'].forEach(evt=>zone.addEventListener(evt,e=>{e.preventDefault();zone.classList.remove('pd-upload-drag')}));
+    zone.addEventListener('drop',e=>{const file=e.dataTransfer?.files?.[0];if(!file)return;const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}));});
+  }
+
+  function wireDraft(){
+    const form=q('print-form'); if(!form||form.dataset.pdDraftWired)return; form.dataset.pdDraftWired='1';
+    form.addEventListener('input',saveDraft); form.addEventListener('change',saveDraft);
+    setTimeout(()=>{wireUploadUX(); if(localStorage.getItem(DRAFT_KEY)) restoreDraft(true);},250);
+  }
+
+  function enhanceFileSelection(){
+    const original=window.handleFileSelect; if(typeof original!=='function'||original.__pdWrapped)return;
+    const wrapped=function(e){
+      const file=e.target?.files?.[0]; if(file){const bar=q('pd-upload-progress'), pct=q('pd-upload-percent'), status=q('pd-upload-status'), fill=q('pd-upload-progress-bar'); bar?.classList.remove('hidden'); let p=0; const timer=setInterval(()=>{p=Math.min(100,p+20); if(pct)pct.textContent=p+'%'; if(fill)fill.style.width=p+'%'; if(p>=100){clearInterval(timer);if(status)status.textContent='ตรวจสอบไฟล์สำเร็จ';}},35);}
+      const result=original.call(this,e); setTimeout(()=>{wireUploadUX(); updateLivePrice(typeof window.calculatePrice==='function'?window.calculatePrice():1);},100); return result;
+    }; wrapped.__pdWrapped=true; window.handleFileSelect=wrapped;
+  }
+
+  function addShortcuts(){
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){accountMenu(false);return;}
+      const tag=(e.target?.tagName||'').toLowerCase(); if(['input','textarea','select'].includes(tag)||e.target?.isContentEditable)return;
+      if((e.key==='p'||e.key==='P') && window.currentUser){e.preventDefault();window.switchView?.('dashboard');}
+      if((e.key==='u'||e.key==='U') && window.currentUser){e.preventDefault();window.switchView?.('dashboard');setTimeout(()=>q('file-input')?.click(),120);}
+      if((e.key==='w'||e.key==='W') && window.currentUser){e.preventDefault();window.switchView?.('wallet');}
+    });
+    document.addEventListener('click',e=>{const wrap=q('pd-account-wrap');if(wrap&&!wrap.contains(e.target))accountMenu(false);});
+  }
+
+  // Wrap updateUserUI so the account center always reflects role + Coins.
+  const originalUpdate=window.updateUserUI;
+  if(typeof originalUpdate==='function' && !originalUpdate.__pdWrapped){
+    const wrapped=function(){const r=originalUpdate.apply(this,arguments); window.currentUser = currentUser; setTimeout(syncAccountCenter,0);return r}; wrapped.__pdWrapped=true; window.updateUserUI=wrapped;
+  }
+
+  const originalLogout=window.handleLogout;
+  if(typeof originalLogout==='function' && !originalLogout.__pdWrapped){
+    const wrapped=function(){accountMenu(false);clearPrintDraft(false);return originalLogout.apply(this,arguments)}; wrapped.__pdWrapped=true; window.handleLogout=wrapped;
+  }
+
+  // Keep original success flow but remember useful print preferences.
+  const originalSubmit=window.handleOrderSubmit;
+  if(typeof originalSubmit==='function' && !originalSubmit.__pdWrapped){
+    const wrapped=async function(e){
+      const ids=['paper-size','copies','color-type','duplex-type','printed-pages-input','page-range-input','order-notes','recipient-name','recipient-phone','recipient-address'];
+      const snapshot={}; ids.forEach(id=>{const el=q(id);if(el)snapshot[id]=el.value}); const delivery=document.querySelector('input[name="delivery_method"]:checked');const payment=document.querySelector('input[name="payment_method"]:checked');if(delivery)snapshot.delivery=delivery.value;if(payment)snapshot.payment=payment.value;
+      const before=localStorage.getItem(DRAFT_KEY); const r=await originalSubmit.call(this,e); setTimeout(()=>{ if(window.selectedFileObj===null){try{localStorage.setItem(LAST_KEY,JSON.stringify(snapshot));localStorage.removeItem(DRAFT_KEY)}catch{}} else if(before){try{localStorage.setItem(DRAFT_KEY,before)}catch{}} },400); return r;
+    }; wrapped.__pdWrapped=true; window.handleOrderSubmit=wrapped;
+  }
+
+  function adminStats(){
+    const orders=document.querySelectorAll('#admin-orders-tbody tr'); const pending=[...orders].filter(r=>r.innerText.includes('รอคิว')).length; const topups=document.querySelectorAll('#admin-topups-tbody tr'); const waiting=[...topups].filter(r=>r.innerText.includes('pending')||r.innerText.includes('รอ')).length;
+    if(q('pd-admin-orders-count'))q('pd-admin-orders-count').textContent=orders.length||0; if(q('pd-admin-pending-count'))q('pd-admin-pending-count').textContent=pending; if(q('pd-admin-topup-count'))q('pd-admin-topup-count').textContent=waiting;
+  }
+  window.filterAdminWorkspace=function(term){const needle=(term||'').trim().toLowerCase();['#admin-orders-tbody','#admin-topups-tbody','#admin-users-tbody'].forEach(sel=>document.querySelectorAll(`${sel} tr`).forEach(row=>{row.style.display=!needle||row.innerText.toLowerCase().includes(needle)?'':'none'}));};
+  const oldLoad=window.loadAdminData;
+  if(typeof oldLoad==='function' && !oldLoad.__pdWrapped){window.loadAdminData=async function(){const r=await oldLoad.apply(this,arguments);setTimeout(adminStats,100);return r};window.loadAdminData.__pdWrapped=true;}
+
+  window.addEventListener('load',()=>{wireDraft();enhanceFileSelection();addShortcuts();setTimeout(()=>{syncAccountCenter();wireUploadUX();adminStats()},800);});
+})();
+</script>
+
 </body>
 </html>
