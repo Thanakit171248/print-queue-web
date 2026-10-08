@@ -6023,3 +6023,634 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
 
 </body>
 </html>
+<style id="pd-v8-readability-fix">
+/* ==========================================================
+   PRINTDEKD PRO — v8 Visual QA / Readability Pass
+   Goal: typography hierarchy, no overlaps, stronger contrast,
+   stable square crop interaction.
+   ========================================================== */
+:root{
+  --pd8-title:clamp(34px,4vw,54px);
+  --pd8-body:15px;
+  --pd8-small:12px;
+  --pd8-radius:28px;
+}
+
+/* ---------- Global text rhythm ---------- */
+.pd-story-section{gap:36px!important}
+.pd-section-heading{gap:34px!important}
+.pd-section-heading h2{font-size:clamp(38px,5.2vw,70px)!important;line-height:1.02!important;letter-spacing:-.045em!important}
+.pd-section-heading p{font-size:16px!important;line-height:1.75!important}
+.pd-eyebrow{font-size:11px!important;letter-spacing:.12em!important}
+
+/* ---------- Story cards: reserve space instead of layering text over badges ---------- */
+.pd-story-card{
+  min-height:430px!important;
+  padding:28px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+.pd-story-top{flex:0 0 auto!important}
+.pd-story-copy{margin-top:54px!important;max-width:720px!important}
+.pd-story-copy h3,
+.pd-story-card h3{
+  font-size:clamp(34px,3.4vw,48px)!important;
+  line-height:1.04!important;
+  letter-spacing:-.04em!important;
+  font-weight:650!important;
+  max-width:12ch;
+  text-wrap:balance;
+}
+.pd-story-copy h3 strong,.pd-story-card h3 strong{font-weight:950!important}
+.pd-story-copy p,.pd-story-card>p{
+  margin-top:14px!important;
+  max-width:48ch!important;
+  font-size:15px!important;
+  line-height:1.72!important;
+  color:rgba(255,255,255,.72)!important;
+}
+html:not(.dark) .pd-story-copy p,html:not(.dark) .pd-story-card>p{color:rgba(15,23,42,.67)!important}
+.pd-story-icon{margin-top:48px!important;width:54px!important;height:54px!important;flex:0 0 auto}
+
+/* Bottom utility panels are now in normal flow, preventing collisions. */
+.pd-flow-visual,.pd-balance-preview,.pd-security-preview,.pd-inline-action,.pd-mini-progress{
+  position:static!important;
+  left:auto!important;right:auto!important;bottom:auto!important;
+  margin-top:auto!important;
+  width:100%!important;
+  flex:0 0 auto!important;
+}
+.pd-flow-visual{min-height:54px!important;padding:9px 12px!important}
+.pd-flow-visual span{font-size:12px!important}
+.pd-balance-preview{grid-template-columns:auto 1fr auto!important;margin-top:22px!important}
+.pd-balance-preview b{font-size:26px!important}
+.pd-security-preview{margin-top:22px!important}
+.pd-inline-action{margin-top:22px!important;font-size:12px!important}
+.pd-mini-progress{margin-top:24px!important}
+.pd-story-card>p{margin-bottom:0!important}
+
+/* Small cards get a calmer hierarchy. */
+.pd-story-card:not(.pd-span-7) h3{max-width:10ch!important}
+.pd-story-card:not(.pd-span-7){min-height:390px!important}
+
+/* ---------- Landing hero: keep image text readable on every theme ---------- */
+#view-landing > .grid:first-child .group{isolation:isolate}
+#view-landing > .grid:first-child .group::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(2,6,23,.04) 0%,rgba(2,6,23,.18) 34%,rgba(2,6,23,.86) 100%);
+}
+#view-landing > .grid:first-child .group img{position:relative;z-index:0}
+#view-landing > .grid:first-child .group>div.absolute.top-4{z-index:3!important}
+#view-landing > .grid:first-child .group>div.absolute.bottom-6{z-index:3!important}
+#view-landing > .grid:first-child .group>div.absolute.bottom-6 p.text-2xl{
+  font-size:clamp(22px,2.5vw,34px)!important;line-height:1.12!important;text-wrap:balance;
+}
+#view-landing > .grid:first-child .group>div.absolute.bottom-6 p.text-xs{
+  font-size:13px!important;line-height:1.55!important;max-width:38ch;
+}
+#view-landing > .grid:first-child .group>div.absolute.bottom-6 span{font-size:11px!important}
+#view-landing .grid.grid-cols-3>div.ui-card{min-height:108px!important;padding:18px!important}
+#view-landing .grid.grid-cols-3>div.ui-card p{line-height:1.3!important}
+#view-landing .grid.grid-cols-3>div.ui-card p:first-child{font-size:25px!important}
+#view-landing .grid.grid-cols-3>div.ui-card p:last-child{font-size:14px!important}
+
+/* ---------- Profile view: larger, cleaner information hierarchy ---------- */
+.profile-hero{gap:24px!important;padding:22px!important;border-radius:28px!important}
+.profile-avatar-xl{width:132px!important;height:132px!important;border-radius:30px!important;object-fit:cover!important;flex:0 0 auto!important}
+.profile-hero .profile-meta-label{font-size:11px!important}
+.profile-hero h4{font-size:clamp(24px,3vw,34px)!important;line-height:1.1!important}
+.profile-hero #prof-email{font-size:15px!important}
+.profile-hero .security-badge{font-size:12px!important;padding:8px 12px!important}
+.profile-action{min-width:170px!important}
+
+/* ---------- Account center / nav ---------- */
+.pd-account-popover-title strong{font-size:25px!important;line-height:1.1!important}
+.pd-account-action{min-height:92px!important}
+.pd-account-action b{font-size:15px!important;line-height:1.25!important}
+.pd-account-action small{font-size:11px!important;line-height:1.35!important}
+.pd-account-balance strong{font-size:25px!important}
+
+/* ---------- Profile editor ---------- */
+.pd-avatar-stage{min-height:310px!important}
+.pd-avatar-preview{width:174px!important;height:174px!important;border-radius:30px!important}
+.pd-field-card{padding:18px!important}
+.pd-field-card label{font-size:13px!important}
+.pd-field-card input{font-size:15px!important}
+
+/* ---------- Square cropper ---------- */
+#pd-crop-modal{background:rgba(2,6,23,.78)!important}
+.pd-crop-shell{width:min(820px,100%)!important;padding:20px!important;border-radius:30px!important}
+.pd-crop-stage{
+  height:min(64vh,560px)!important;min-height:340px!important;
+  border-radius:24px!important;touch-action:none!important;
+  background:repeating-conic-gradient(rgba(255,255,255,.045) 0 25%,transparent 0 50%) 0/24px 24px,rgba(0,0,0,.34)!important;
+}
+.pd-crop-stage img{
+  position:absolute!important;left:50%!important;top:50%!important;
+  max-width:none!important;width:auto!important;height:auto!important;
+  user-select:none!important;-webkit-user-drag:none!important;
+  touch-action:none!important;cursor:grab!important;
+  will-change:transform!important;transform-origin:center center!important;
+}
+.pd-crop-stage img.is-dragging{cursor:grabbing!important}
+.pd-crop-frame{
+  width:280px!important;height:280px!important;border-radius:24px!important;
+  border:2px solid rgba(255,255,255,.96)!important;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.48),0 0 0 1px rgba(10,132,255,.65),0 14px 50px rgba(0,0,0,.20)!important;
+}
+.pd-crop-frame::after{content:"";position:absolute;inset:18px;border:1px dashed rgba(255,255,255,.22);border-radius:12px}
+.pd-crop-controls{grid-template-columns:minmax(0,1fr) auto auto!important}
+.pd-crop-controls input{height:38px!important}
+.pd-crop-controls button{min-height:50px!important;font-size:13px!important}
+.pd-crop-shell h3{font-size:22px!important}
+.pd-crop-shell p{font-size:13px!important}
+
+/* ---------- Upload file card ---------- */
+#file-details{min-height:72px!important}
+#file-details .pd-file-remove{font-size:13px!important;min-height:46px!important}
+
+/* ---------- Better small screens ---------- */
+@media(max-width:900px){
+  .pd-story-card,.pd-story-card:not(.pd-span-7){min-height:380px!important}
+  .pd-story-copy{margin-top:42px!important}
+  .pd-story-copy h3,.pd-story-card h3{font-size:clamp(31px,7vw,42px)!important}
+  .pd-section-heading{grid-template-columns:1fr!important;gap:18px!important}
+  .pd-section-heading p{justify-self:start!important}
+  .profile-hero{grid-template-columns:1fr!important}
+  .profile-avatar-xl{width:118px!important;height:118px!important}
+  .profile-action{min-width:0!important;display:grid!important;grid-template-columns:1fr 1fr}
+  .pd-crop-frame{width:240px!important;height:240px!important}
+}
+@media(max-width:640px){
+  .pd-story-card,.pd-story-card:not(.pd-span-7){min-height:350px!important;padding:22px!important}
+  .pd-story-copy{margin-top:34px!important}
+  .pd-story-copy h3,.pd-story-card h3{font-size:32px!important;line-height:1.06!important}
+  .pd-story-copy p,.pd-story-card>p{font-size:14px!important;line-height:1.65!important}
+  .pd-flow-visual{gap:5px!important}
+  .pd-flow-visual span{font-size:10px!important}
+  .pd-flow-visual b{min-width:8px}
+  .profile-action{grid-template-columns:1fr!important}
+  .pd-crop-shell{padding:14px!important}
+  .pd-crop-stage{min-height:300px!important;height:52vh!important}
+  .pd-crop-frame{width:220px!important;height:220px!important;border-radius:20px!important}
+  .pd-crop-controls{grid-template-columns:1fr 1fr!important}
+  .pd-crop-controls input{grid-column:1/-1}
+}
+</style>
+
+<script id="pd-v8-visual-qa">
+(()=>{
+  'use strict';
+  const $=id=>document.getElementById(id);
+  let cropState={src:'',naturalW:0,naturalH:0,baseW:0,baseH:0,zoom:1,x:0,y:0,raf:0,drag:false,pid:null,lastX:0,lastY:0};
+  let cropImg=null;
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+  function cropFrameSize(){
+    const frame=$('pd-crop-stage')?.querySelector('.pd-crop-frame');
+    return frame?frame.getBoundingClientRect():null;
+  }
+  function cropRender(){
+    if(cropState.raf)return;
+    cropState.raf=requestAnimationFrame(()=>{
+      cropState.raf=0;
+      if(!cropImg)return;
+      const stage=$('pd-crop-stage');
+      if(!stage)return;
+      const frame=cropFrameSize();
+      if(!frame)return;
+      const stageR=stage.getBoundingClientRect();
+      const frameW=frame.width,frameH=frame.height;
+      const w=cropState.baseW*cropState.zoom,h=cropState.baseH*cropState.zoom;
+      const maxX=Math.max(0,(w-frameW)/2),maxY=Math.max(0,(h-frameH)/2);
+      cropState.x=clamp(cropState.x,-maxX,maxX);
+      cropState.y=clamp(cropState.y,-maxY,maxY);
+      cropImg.style.transform=`translate3d(calc(-50% + ${cropState.x}px),calc(-50% + ${cropState.y}px),0) scale(${cropState.zoom})`;
+    });
+  }
+  function cropFit(){
+    const stage=$('pd-crop-stage');
+    if(!stage||!cropImg||!cropState.naturalW)return;
+    const frame=cropFrameSize(),sr=stage.getBoundingClientRect();
+    const fw=frame?.width||280,fh=frame?.height||280;
+    const cover=Math.max(fw/cropState.naturalW,fh/cropState.naturalH)*1.04;
+    cropState.baseW=cropState.naturalW*cover;
+    cropState.baseH=cropState.naturalH*cover;
+    cropState.zoom=1;cropState.x=0;cropState.y=0;
+    cropImg.style.width=`${cropState.naturalW}px`;
+    cropImg.style.height=`${cropState.naturalH}px`;
+    $('pd-crop-zoom')&&($('pd-crop-zoom').value='1');
+    cropRender();
+  }
+  function bindCrop(){
+    const stage=$('pd-crop-stage');
+    if(!stage||stage.dataset.v8bound)return;
+    stage.dataset.v8bound='1';
+    stage.addEventListener('pointerdown',e=>{
+      if(e.button!==undefined&&e.button!==0)return;
+      cropState.drag=true;cropState.pid=e.pointerId;cropState.lastX=e.clientX;cropState.lastY=e.clientY;
+      cropImg?.classList.add('is-dragging');stage.setPointerCapture?.(e.pointerId);
+    },{passive:true});
+    stage.addEventListener('pointermove',e=>{
+      if(!cropState.drag||e.pointerId!==cropState.pid)return;
+      cropState.x+=e.clientX-cropState.lastX;cropState.y+=e.clientY-cropState.lastY;
+      cropState.lastX=e.clientX;cropState.lastY=e.clientY;cropRender();
+    },{passive:true});
+    const end=()=>{cropState.drag=false;cropImg?.classList.remove('is-dragging')};
+    stage.addEventListener('pointerup',end,{passive:true});stage.addEventListener('pointercancel',end,{passive:true});stage.addEventListener('lostpointercapture',end,{passive:true});
+  }
+  function setupCropper(){
+    const modal=$('pd-crop-modal');if(!modal)return;
+    bindCrop();
+    const z=$('pd-crop-zoom');
+    if(z&&!z.dataset.v8bound){z.dataset.v8bound='1';z.addEventListener('input',()=>{cropState.zoom=Number(z.value)||1;cropRender()},{passive:true})}
+    const reset=$('pd-crop-reset');
+    if(reset&&!reset.dataset.v8bound){reset.dataset.v8bound='1';reset.addEventListener('click',()=>{cropState.zoom=1;cropState.x=0;cropState.y=0;if(z)z.value='1';cropRender()})}
+  }
+  function openSquareCrop(file){
+    if(!file)return;
+    ensureCropModal();setupCropper();
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const src=ev.target.result;
+      const image=new Image();
+      image.onload=()=>{
+        cropImg=$('pd-crop-image');cropState.src=src;cropState.naturalW=image.naturalWidth;cropState.naturalH=image.naturalHeight;
+        cropImg.src=src;cropImg.onload=()=>{cropFit();$('pd-crop-modal').classList.add('is-open');$('pd-crop-modal').setAttribute('aria-hidden','false');requestAnimationFrame(cropFit)};
+      };
+      image.src=src;
+    };
+    reader.readAsDataURL(file);
+  }
+  function applySquareCrop(){
+    if(!cropImg||!cropState.naturalW)return;
+    const frame=cropFrameSize();
+    const fw=frame?.width||280;
+    const displayScale=(cropState.baseW*cropState.zoom)/cropState.naturalW;
+    const sourceSize=fw/displayScale;
+    const leftSource=(cropState.naturalW-sourceSize)/2-(cropState.x/displayScale);
+    const topSource=(cropState.naturalH-sourceSize)/2-(cropState.y/displayScale);
+    const sx=clamp(leftSource,0,Math.max(0,cropState.naturalW-sourceSize));
+    const sy=clamp(topSource,0,Math.max(0,cropState.naturalH-sourceSize));
+    const size=512,canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+    const ctx=canvas.getContext('2d');
+    const source=new Image();source.onload=()=>{
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      ctx.drawImage(source,sx,sy,sourceSize,sourceSize,0,0,size,size);
+      const out=canvas.toDataURL('image/webp',.90);
+      const url=$('edit-avatar-url');if(url)url.value=out;
+      const pv=$('pd-edit-avatar-preview');if(pv)pv.src=out;
+      window.tempAvatarUrl=out;
+      $('pd-crop-modal')?.classList.remove('is-open');$('pd-crop-modal')?.setAttribute('aria-hidden','true');
+    };source.src=cropState.src;
+  }
+  window.previewEditAvatarFileV8=function(e){
+    const file=e?.target?.files?.[0];if(!file)return;
+    const allowed=['image/png','image/jpeg','image/webp'];
+    if(!allowed.includes(file.type)){e.target.value='';return showCustomModal({title:'รูปแบบไฟล์ไม่รองรับ',message:'รองรับเฉพาะ PNG, JPG/JPEG และ WEBP เท่านั้น',icon:'image-off'});}
+    if(file.size>2*1024*1024){e.target.value='';return showCustomModal({title:'รูปภาพใหญ่เกินไป',message:'ขนาดสูงสุด 2 MB',icon:'image-off'});}
+    openSquareCrop(file);
+  };
+  window.openSquareCrop=openSquareCrop;
+  window.applySquareCrop=applySquareCrop;
+
+  /* Replace the old crop controls once the modal is created. */
+  const observer=new MutationObserver(()=>{
+    const modal=$('pd-crop-modal');
+    if(modal){
+      const frame=modal.querySelector('.pd-crop-frame');
+      if(frame)frame.style.borderRadius='24px';
+      const title=modal.querySelector('h3');if(title)title.textContent='จัดวางรูปโปรไฟล์แบบสี่เหลี่ยม';
+      const desc=modal.querySelector('p');if(desc)desc.textContent='ลากเพื่อจัดตำแหน่ง • ซูมอย่างลื่น • ครอปสี่เหลี่ยม';
+      const apply=$('pd-crop-apply');if(apply&&!apply.dataset.v8bound){apply.dataset.v8bound='1';apply.onclick=applySquareCrop}
+      setupCropper();
+    }
+    const input=$('edit-avatar-file');
+    if(input&&!input.dataset.v8bound){input.dataset.v8bound='1';input.onchange=window.previewEditAvatarFileV8}
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>{setupCropper();const input=$('edit-avatar-file');if(input&&!input.dataset.v8bound){input.dataset.v8bound='1';input.onchange=window.previewEditAvatarFileV8}},500);
+})();
+</script>
+
+<style id="pd-v9-polish">
+/* ==========================================================
+   PRINTDEKD PRO v9 — Responsive Typography + Visual QA Pass
+   Goals: readable Thai, zero text collisions, device-adaptive
+   layouts, stable square cropper, premium but lightweight motion.
+   ========================================================== */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --pd-font-ui:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --pd-font-display:'IBM Plex Sans Thai','Noto Sans Thai',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --pd-v9-body:clamp(14px,.28vw + 12px,16px);
+  --pd-v9-leading:1.68;
+}
+html,body,button,input,textarea,select{font-family:var(--pd-font-ui)!important}
+body{font-size:var(--pd-v9-body);line-height:var(--pd-v9-leading);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+
+/* Display text: less oversized than the previous pass, more room for Thai glyphs. */
+.pd-section-heading h2,.pd-final-cta h2{font-family:var(--pd-font-display)!important;font-size:clamp(36px,4.6vw,64px)!important;line-height:1.08!important;letter-spacing:-.035em!important;font-weight:800!important;max-width:13ch}
+.pd-section-heading p,.pd-final-cta p{font-size:clamp(14px,.35vw + 12px,17px)!important;line-height:1.75!important;max-width:48ch!important}
+.pd-eyebrow{font-size:12px!important;line-height:1.3!important;letter-spacing:.06em!important;font-weight:700!important}
+
+/* ---------- Story rail: every text block owns its space ---------- */
+.pd-story-grid{align-items:stretch!important}
+.pd-story-card{
+  min-height:430px!important;
+  padding:clamp(24px,2.5vw,34px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  transform:none!important;
+}
+.pd-story-card .pd-story-top{flex:none!important}
+.pd-story-copy{margin-top:46px!important;max-width:100%!important}
+.pd-story-copy h3,.pd-story-card h3{
+  font-family:var(--pd-font-display)!important;
+  font-size:clamp(30px,2.7vw,46px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.035em!important;
+  font-weight:600!important;
+  max-width:15ch!important;
+  text-wrap:balance!important;
+  overflow-wrap:anywhere!important;
+}
+.pd-story-copy h3 strong,.pd-story-card h3 strong{font-weight:800!important}
+.pd-story-copy p,.pd-story-card>p{
+  font-size:clamp(14px,.2vw + 13px,16px)!important;
+  line-height:1.72!important;
+  max-width:46ch!important;
+  margin-top:14px!important;
+  overflow-wrap:anywhere!important;
+}
+.pd-story-icon{margin-top:38px!important;flex:none!important}
+.pd-story-card>.pd-story-icon + h3{margin-top:18px!important}
+.pd-story-card:not(.pd-span-7) h3{max-width:13ch!important}
+
+/* Bottom controls are normal-flow blocks. No absolute overlap. */
+.pd-flow-visual,.pd-mini-progress,.pd-balance-preview,.pd-security-preview,.pd-inline-action{
+  position:static!important;inset:auto!important;width:100%!important;margin-top:auto!important;flex:none!important
+}
+.pd-flow-visual{min-height:56px!important;padding:10px 12px!important}
+.pd-flow-visual span{font-size:12px!important;line-height:1.3!important;white-space:nowrap}
+.pd-flow-visual b{min-width:16px}
+.pd-mini-progress{padding-top:20px!important}
+.pd-balance-preview,.pd-security-preview,.pd-inline-action{margin-top:20px!important}
+.pd-balance-preview b{font-size:25px!important}
+.pd-inline-action{min-height:48px!important;font-size:13px!important}
+
+/* Theme-safe text colors. */
+.pd-story-dark,.pd-story-blue,.pd-story-gold,.pd-story-violet{color:#fff!important}
+.pd-story-dark p,.pd-story-blue p,.pd-story-gold p,.pd-story-violet p{color:rgba(255,255,255,.76)!important}
+.pd-story-glass{color:#101828!important}
+.pd-story-glass p{color:rgba(15,23,42,.68)!important}
+
+/* ---------- Landing hero image: readable text panel instead of text on a photo ---------- */
+#view-landing .pd-hero-media,
+#view-landing .group{isolation:isolate}
+#view-landing .group img{filter:saturate(.92) contrast(.98)!important}
+#view-landing .group>div.absolute.bottom-6{
+  left:20px!important;right:20px!important;bottom:18px!important;
+  padding:18px 20px!important;border-radius:22px!important;
+  background:linear-gradient(180deg,rgba(5,10,20,.08),rgba(5,10,20,.86))!important;
+  backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;
+}
+#view-landing .group>div.absolute.bottom-6 p.text-2xl{font-size:clamp(20px,2.1vw,30px)!important;line-height:1.2!important;max-width:17ch!important;color:#fff!important;text-shadow:0 2px 16px rgba(0,0,0,.35)}
+#view-landing .group>div.absolute.bottom-6 p.text-xs{font-size:14px!important;line-height:1.55!important;max-width:42ch!important;color:rgba(255,255,255,.86)!important}
+
+/* Landing metric cards: consistent hierarchy. */
+#view-landing .grid.grid-cols-3>div.ui-card{min-height:124px!important;padding:18px 20px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:5px!important}
+#view-landing .grid.grid-cols-3>div.ui-card p:first-child{font-size:clamp(22px,2vw,28px)!important;line-height:1.15!important;font-weight:800!important}
+#view-landing .grid.grid-cols-3>div.ui-card p:last-child{font-size:14px!important;line-height:1.5!important}
+
+/* ---------- Profile preview ---------- */
+.profile-hero{align-items:center!important}
+.profile-hero h4{font-size:clamp(24px,2.6vw,34px)!important;line-height:1.15!important;letter-spacing:-.025em!important}
+.profile-hero #prof-email{font-size:15px!important;line-height:1.5!important;overflow-wrap:anywhere}
+.profile-avatar-xl{width:136px!important;height:136px!important;object-fit:cover!important;border-radius:32px!important;box-shadow:0 18px 55px rgba(0,0,0,.16)!important}
+
+/* ---------- Account Center / top tabs ---------- */
+#pd-account-popover{font-size:14px!important}
+.pd-account-popover-title strong{font-size:clamp(22px,2vw,28px)!important}
+.pd-account-action{min-height:96px!important;padding:16px!important}
+.pd-account-action b{font-size:15px!important;line-height:1.3!important}
+.pd-account-action small{font-size:12px!important;line-height:1.45!important}
+.pd-account-balance strong{font-size:27px!important}
+
+/* Common nav/tab controls — never squeeze Thai labels. */
+#main-nav button,#main-nav a,.nav-tab,.tab-button,[role="tab"]{min-height:52px!important;font-size:14px!important;font-weight:700!important;line-height:1.25!important;white-space:nowrap}
+
+/* ---------- Stable square cropper ---------- */
+#pd-crop-modal{padding:18px!important;background:rgba(2,6,23,.72)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.pd-crop-shell{width:min(860px,calc(100vw - 28px))!important;padding:22px!important;border-radius:28px!important}
+.pd-crop-stage{
+  position:relative!important;height:min(60vh,560px)!important;min-height:320px!important;
+  overflow:hidden!important;touch-action:none!important;user-select:none!important;
+  display:grid!important;place-items:center!important;
+}
+.pd-crop-stage img{
+  position:absolute!important;left:50%!important;top:50%!important;max-width:none!important;max-height:none!important;
+  width:auto!important;height:auto!important;margin:0!important;
+  transform-origin:center center!important;will-change:transform!important;
+  transition:none!important;cursor:grab!important;user-select:none!important;-webkit-user-drag:none!important;
+}
+.pd-crop-stage img.is-dragging{cursor:grabbing!important}
+.pd-crop-frame{
+  position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+  width:min(320px,68vw)!important;height:min(320px,68vw)!important;border-radius:18px!important;
+  border:2px solid rgba(255,255,255,.96)!important;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.48),0 0 0 1px rgba(10,132,255,.72),0 18px 60px rgba(0,0,0,.24)!important;
+  pointer-events:none!important;z-index:5!important;
+}
+.pd-crop-frame::after{content:"";position:absolute;inset:16px;border:1px dashed rgba(255,255,255,.24);border-radius:10px}
+.pd-crop-shell h3{font-size:clamp(20px,2vw,26px)!important;line-height:1.25!important}
+.pd-crop-shell p{font-size:14px!important;line-height:1.6!important}
+.pd-crop-controls{gap:12px!important;align-items:center!important}
+.pd-crop-controls input{height:44px!important}
+.pd-crop-controls button{min-height:48px!important;font-size:14px!important;font-weight:700!important}
+
+/* ---------- Upload card ---------- */
+#file-details{min-height:78px!important}
+#file-details .pd-file-remove{min-height:44px!important;font-size:13px!important;font-weight:700!important}
+
+/* ---------- Responsive device modes ---------- */
+@media (min-width:1280px){
+  .pd-story-card{min-height:440px!important}
+  .pd-story-copy h3,.pd-story-card h3{font-size:clamp(34px,2.45vw,48px)!important}
+}
+@media (min-width:768px) and (max-width:1199px){
+  .pd-story-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  .pd-span-7,.pd-span-5{grid-column:span 6!important}
+  .pd-span-4{grid-column:span 3!important}
+  .pd-story-card{min-height:390px!important}
+  .pd-story-copy h3,.pd-story-card h3{font-size:clamp(30px,4vw,42px)!important}
+}
+@media (max-width:767px){
+  .pd-story-grid{grid-template-columns:1fr!important;gap:14px!important}
+  .pd-span-7,.pd-span-5,.pd-span-4{grid-column:1!important}
+  .pd-story-card{min-height:360px!important;padding:22px!important;border-radius:24px!important}
+  .pd-story-copy{margin-top:34px!important}
+  .pd-story-copy h3,.pd-story-card h3{font-size:32px!important;line-height:1.14!important;max-width:14ch!important}
+  .pd-story-copy p,.pd-story-card>p{font-size:14px!important;line-height:1.68!important}
+  .pd-story-icon{margin-top:28px!important;width:52px!important;height:52px!important}
+  .pd-flow-visual span{font-size:10px!important}
+  .pd-flow-visual{gap:6px!important}
+  .pd-section-heading h2,.pd-final-cta h2{font-size:38px!important;max-width:12ch!important}
+  #view-landing .grid.grid-cols-3{grid-template-columns:1fr!important}
+  #view-landing .group>div.absolute.bottom-6{left:12px!important;right:12px!important;bottom:12px!important;padding:14px!important}
+  #view-landing .group>div.absolute.bottom-6 p.text-2xl{font-size:21px!important}
+  .profile-hero{grid-template-columns:1fr!important}
+  .profile-avatar-xl{width:112px!important;height:112px!important}
+  .pd-account-action{min-height:88px!important}
+  .pd-crop-shell{padding:14px!important;width:calc(100vw - 18px)!important}
+  .pd-crop-stage{height:52vh!important;min-height:300px!important}
+  .pd-crop-frame{width:min(240px,70vw)!important;height:min(240px,70vw)!important}
+  .pd-crop-controls{grid-template-columns:1fr 1fr!important}
+  .pd-crop-controls input{grid-column:1/-1}
+}
+
+/* Lightweight motion: opacity/transform only; no continuous heavy filters. */
+.pd-story-card,.ui-card,.profile-hero,.pd-account-action{transition:transform .32s cubic-bezier(.22,.61,.36,1),box-shadow .32s ease,border-color .32s ease!important}
+.pd-story-card:hover{transform:translateY(-4px)!important}
+.pd-story-card:active{transform:translateY(-1px) scale(.995)!important}
+.pd-story-card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.08) 48%,transparent 76%);
+  transform:translateX(-120%);transition:transform .7s ease,opacity .25s ease;z-index:0
+}
+.pd-story-card:hover::before{opacity:1;transform:translateX(120%)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .pd-story-card:hover{transform:none!important}
+}
+</style>
+
+<script id="pd-v9-runtime">
+(()=>{
+  'use strict';
+  const $=id=>document.getElementById(id);
+
+  /* Prevent duplicate crop listeners from older versions: replace the stage once. */
+  function stabilizeCropStage(){
+    const stage=$('pd-crop-stage');
+    if(!stage||stage.dataset.pd9stable)return stage;
+    const clone=stage.cloneNode(true);
+    clone.dataset.pd9stable='1';
+    clone.dataset.v8bound='1'; /* tells v8 binder not to attach a second pointer stream */
+    stage.replaceWith(clone);
+    return clone;
+  }
+
+  const crop={x:0,y:0,zoom:1,baseW:0,baseH:0,nw:0,nh:0,raf:0,drag:false,pid:null,lx:0,ly:0,img:null};
+  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+  function frame(){return $('pd-crop-stage')?.querySelector('.pd-crop-frame')?.getBoundingClientRect()||null}
+  function render(){
+    if(crop.raf)return;
+    crop.raf=requestAnimationFrame(()=>{
+      crop.raf=0;if(!crop.img)return;
+      const f=frame();if(!f)return;
+      const w=crop.baseW*crop.zoom,h=crop.baseH*crop.zoom;
+      crop.x=clamp(crop.x,-Math.max(0,(w-f.width)/2),Math.max(0,(w-f.width)/2));
+      crop.y=clamp(crop.y,-Math.max(0,(h-f.height)/2),Math.max(0,(h-f.height)/2));
+      crop.img.style.transform=`translate3d(calc(-50% + ${crop.x}px),calc(-50% + ${crop.y}px),0) scale(${crop.zoom})`;
+    });
+  }
+  function fit(){
+    const stage=$('pd-crop-stage');if(!stage||!crop.img||!crop.nw)return;
+    const f=frame();if(!f)return;
+    const cover=Math.max(f.width/crop.nw,f.height/crop.nh)*1.015;
+    crop.baseW=crop.nw*cover;crop.baseH=crop.nh*cover;crop.x=0;crop.y=0;crop.zoom=1;
+    crop.img.style.width=`${crop.nw}px`;crop.img.style.height=`${crop.nh}px`;
+    const z=$('pd-crop-zoom');if(z)z.value='1';render();
+  }
+  function bind(){
+    const stage=stabilizeCropStage();if(!stage||stage.dataset.pd9bound)return;
+    stage.dataset.pd9bound='1';
+    stage.addEventListener('pointerdown',e=>{
+      if(e.button!==undefined&&e.button!==0)return;
+      crop.drag=true;crop.pid=e.pointerId;crop.lx=e.clientX;crop.ly=e.clientY;
+      stage.setPointerCapture?.(e.pointerId);crop.img?.classList.add('is-dragging');e.preventDefault();
+    },{passive:false});
+    stage.addEventListener('pointermove',e=>{
+      if(!crop.drag||e.pointerId!==crop.pid)return;
+      crop.x+=e.clientX-crop.lx;crop.y+=e.clientY-crop.ly;crop.lx=e.clientX;crop.ly=e.clientY;render();e.preventDefault();
+    },{passive:false});
+    const end=()=>{crop.drag=false;crop.img?.classList.remove('is-dragging')};
+    stage.addEventListener('pointerup',end,{passive:true});stage.addEventListener('pointercancel',end,{passive:true});
+  }
+  function open(file){
+    if(!file)return;
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)){
+      const fi=$('edit-avatar-file'); if(fi) fi.value='';
+      return window.showCustomModal?.({title:'รูปแบบไฟล์ไม่รองรับ',message:'รองรับ PNG, JPG/JPEG และ WEBP เท่านั้น',icon:'image-off'});
+    }
+    if(file.size>2*1024*1024)return window.showCustomModal?.({title:'รูปภาพใหญ่เกินไป',message:'ขนาดสูงสุด 2 MB',icon:'image-off'});
+    stabilizeCropStage();bind();
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const src=ev.target.result,img=new Image();
+      img.onload=()=>{
+        const stage=$('pd-crop-stage');if(!stage)return;
+        crop.img=$('pd-crop-image');crop.nw=img.naturalWidth;crop.nh=img.naturalHeight;crop.img.src=src;
+        crop.img.onload=()=>{fit();$('pd-crop-modal')?.classList.add('is-open');$('pd-crop-modal')?.setAttribute('aria-hidden','false');requestAnimationFrame(fit)};
+      };img.src=src;
+    };reader.readAsDataURL(file);
+  }
+  function apply(){
+    if(!crop.img||!crop.nw)return;
+    const f=frame();if(!f)return;
+    const scale=(crop.baseW*crop.zoom)/crop.nw;
+    const sourceSize=Math.min(crop.nw,crop.nh)/crop.zoom;
+    const cx=crop.nw/2-(crop.x/scale),cy=crop.nh/2-(crop.y/scale);
+    const sx=clamp(cx-sourceSize/2,0,Math.max(0,crop.nw-sourceSize));
+    const sy=clamp(cy-sourceSize/2,0,Math.max(0,crop.nh-sourceSize));
+    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
+    const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;
+    const source=new Image();source.onload=()=>{
+      ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(source,sx,sy,sourceSize,sourceSize,0,0,512,512);
+      const out=canvas.toDataURL('image/webp',.9);const url=$('edit-avatar-url');if(url)url.value=out;
+      const pv=$('pd-edit-avatar-preview');if(pv)pv.src=out;window.tempAvatarUrl=out;
+      $('pd-crop-modal')?.classList.remove('is-open');$('pd-crop-modal')?.setAttribute('aria-hidden','true');
+    };source.src=crop.img.src;
+  }
+  function install(){
+    const input=$('edit-avatar-file');
+    if(input&&!input.dataset.pd9){
+      input.dataset.pd9='1'; input.dataset.v8bound='1'; input.accept='image/png,image/jpeg,image/webp';
+      input.onchange=e=>{const f=e.target.files?.[0]; if(f) open(f)};
+    }
+    const modal=$('pd-crop-modal');if(modal){
+      stabilizeCropStage();bind();
+      const z=$('pd-crop-zoom');if(z&&!z.dataset.pd9){z.dataset.pd9='1';z.addEventListener('input',()=>{crop.zoom=Math.max(1,Number(z.value)||1);render()},{passive:true})}
+      const reset=$('pd-crop-reset');if(reset&&!reset.dataset.pd9){reset.dataset.pd9='1';reset.addEventListener('click',()=>{crop.x=0;crop.y=0;crop.zoom=1;if(z)z.value='1';render()})}
+      const applyBtn=$('pd-crop-apply');if(applyBtn&&!applyBtn.dataset.pd9){applyBtn.dataset.pd9='1';applyBtn.onclick=apply}
+    }
+  }
+  window.openSquareCropV9=open;window.applySquareCropV9=apply;
+  const mo=new MutationObserver(install);mo.observe(document.body,{childList:true,subtree:true});
+  setTimeout(install,300);
+
+  /* Small, cheap scroll polish — no scroll-linked blur or expensive paints. */
+  let ticking=false;
+  window.addEventListener('scroll',()=>{
+    if(ticking)return;ticking=true;requestAnimationFrame(()=>{
+      ticking=false;document.documentElement.style.setProperty('--pd-scroll-y',`${window.scrollY}px`);
+      document.body.classList.toggle('pd-scrolled',window.scrollY>24);
+    });
+  },{passive:true});
+
+  /* Responsive text QA: add a class to containers whose text actually overflows. */
+  function textQA(){
+    document.querySelectorAll('.pd-story-card h3,.pd-story-card>p,.pd-section-heading h2,.pd-account-action b').forEach(el=>{
+      const bad=el.scrollHeight>el.clientHeight+2 || el.scrollWidth>el.clientWidth+2;
+      el.classList.toggle('pd-text-overflow',bad);
+    });
+  }
+  const ro=new ResizeObserver(()=>requestAnimationFrame(textQA));ro.observe(document.documentElement);
+  window.addEventListener('resize',textQA,{passive:true});setTimeout(textQA,500);
+})();
+</script>
