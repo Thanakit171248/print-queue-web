@@ -684,951 +684,1613 @@
         border-radius: 26px !important;
       }
     }
-
+  
     /* ==========================================================
-       PRINTDEKD PRO — DESIGNER ADVANCED / v5
-       Inspired by the compositional discipline of Apple's current
-       iPhone experience: large typography, clear hierarchy,
-       responsive structure, restrained color, purposeful motion.
+       PRINTDEKD PRO — DESIGNER ADVANCED v5
+       A complete visual layer over the functional application.
+       Principles:
+       - dark-first
+       - oversized readable typography
+       - liquid glass surfaces
+       - cinematic product storytelling
+       - calm hierarchy
+       - clear action priority
+       - touch-friendly controls
+       - reduced-motion support
        ========================================================== */
+
     :root {
-      --pd5-bg: #f5f6f8;
-      --pd5-surface: rgba(255,255,255,.93);
-      --pd5-surface-solid: #ffffff;
-      --pd5-text: #17181c;
-      --pd5-sub: #687180;
-      --pd5-line: rgba(24,31,43,.095);
-      --pd5-blue: #0a74ff;
-      --pd5-blue-2: #4b7dff;
-      --pd5-indigo: #7b61ff;
-      --pd5-gold: #e6a300;
-      --pd5-green: #22a86b;
-      --pd5-red: #d83f58;
-      --pd5-shadow-a: 0 8px 30px rgba(12,18,29,.055);
-      --pd5-shadow-b: 0 28px 90px rgba(12,18,29,.09);
-      --pd5-radius-xl: 34px;
-      --pd5-radius-lg: 26px;
-      --pd5-radius-md: 20px;
-    }
-    html.dark {
-      --pd5-bg: #080a0e;
-      --pd5-surface: rgba(18,21,28,.92);
-      --pd5-surface-solid: #11151b;
-      --pd5-text: #f4f6fa;
-      --pd5-sub: #a3adbb;
-      --pd5-line: rgba(255,255,255,.095);
-      --pd5-shadow-a: 0 10px 34px rgba(0,0,0,.22);
-      --pd5-shadow-b: 0 34px 100px rgba(0,0,0,.36);
+      --pd-bg: #050608;
+      --pd-bg-2: #0a0c10;
+      --pd-surface-0: rgba(255,255,255,.045);
+      --pd-surface-1: rgba(255,255,255,.07);
+      --pd-surface-2: rgba(255,255,255,.10);
+      --pd-stroke: rgba(255,255,255,.10);
+      --pd-stroke-strong: rgba(255,255,255,.16);
+      --pd-white: #f5f7fb;
+      --pd-muted: #9ba4b2;
+      --pd-dim: #687282;
+      --pd-blue: #0a84ff;
+      --pd-cyan: #35b7ff;
+      --pd-purple: #8b5cf6;
+      --pd-gold: #f5b93f;
+      --pd-green: #35d07f;
+      --pd-red: #ff5f73;
+      --pd-radius-sm: 14px;
+      --pd-radius-md: 22px;
+      --pd-radius-lg: 32px;
+      --pd-radius-xl: 42px;
+      --pd-ease: cubic-bezier(.16,1,.3,1);
+      --pd-ease-soft: cubic-bezier(.22,1,.36,1);
+      --pd-shadow: 0 24px 90px rgba(0,0,0,.30);
+      --pd-shadow-deep: 0 45px 150px rgba(0,0,0,.48);
+      --pd-max: 1440px;
     }
 
-    html, body { min-height: 100%; }
-    html { background: var(--pd5-bg); }
+    html:not(.dark) {
+      --pd-bg: #f4f5f7;
+      --pd-bg-2: #ffffff;
+      --pd-surface-0: rgba(0,0,0,.035);
+      --pd-surface-1: rgba(255,255,255,.76);
+      --pd-surface-2: rgba(255,255,255,.94);
+      --pd-stroke: rgba(0,0,0,.08);
+      --pd-stroke-strong: rgba(0,0,0,.13);
+      --pd-white: #15171a;
+      --pd-muted: #616a76;
+      --pd-dim: #8b929c;
+      --pd-shadow: 0 24px 80px rgba(18,25,38,.10);
+      --pd-shadow-deep: 0 40px 110px rgba(18,25,38,.15);
+    }
+
+    html { background: var(--pd-bg); }
+    html.dark { color-scheme: dark; }
     body {
+      min-width: 320px;
       background:
-        radial-gradient(1100px 520px at 50% -14%, rgba(10,116,255,.075), transparent 68%),
-        radial-gradient(900px 520px at 96% 14%, rgba(123,97,255,.055), transparent 70%),
-        var(--pd5-bg) !important;
-      color: var(--pd5-text) !important;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Kanit", "Noto Sans Thai", sans-serif !important;
-      letter-spacing: -0.013em;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+        radial-gradient(900px 520px at 50% -10%, rgba(10,132,255,.16), transparent 68%),
+        radial-gradient(700px 520px at 95% 18%, rgba(139,92,246,.09), transparent 70%),
+        radial-gradient(620px 500px at 0% 75%, rgba(10,132,255,.07), transparent 70%),
+        var(--pd-bg) !important;
+      color: var(--pd-white);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Kanit", "Noto Sans Thai", sans-serif;
+      font-size: 16px;
+      letter-spacing: -.012em;
+      overflow-x: clip;
     }
-    html.dark body {
+
+    body::before {
+      z-index: -2;
       background:
-        radial-gradient(1000px 460px at 50% -16%, rgba(10,116,255,.12), transparent 68%),
-        radial-gradient(900px 520px at 95% 12%, rgba(123,97,255,.075), transparent 70%),
-        var(--pd5-bg) !important;
+        linear-gradient(180deg, rgba(255,255,255,.035), transparent 16%),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.025), transparent 34%);
+      opacity: 1;
     }
 
-    /* --- readability & width --- */
-    nav.sticky > .navbar-inner,
-    #security-strip,
-    main,
-    footer {
-      width: 100%;
-      max-width: 1680px;
-      margin-inline: auto;
-    }
-    #view-landing {
-      width: min(1560px, calc(100% - 64px)) !important;
-      max-width: 1560px !important;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-      gap: clamp(88px, 8vw, 148px) !important;
-    }
-    #view-dashboard, #view-wallet, #view-admin {
-      width: min(1560px, calc(100% - 48px));
-      max-width: 1560px !important;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-    #view-auth {
-      width: min(620px, calc(100% - 40px));
-      max-width: 620px !important;
+    html:not(.dark) body::before {
+      background: linear-gradient(180deg, rgba(255,255,255,.65), transparent 26%);
     }
 
-    .ui-card, .ui-panel {
-      background: var(--pd5-surface) !important;
-      border: 1px solid var(--pd5-line) !important;
-      box-shadow: var(--pd5-shadow-a) !important;
-      backdrop-filter: blur(25px) saturate(115%) !important;
-      -webkit-backdrop-filter: blur(25px) saturate(115%) !important;
+    ::selection { background: rgba(10,132,255,.34); color: #fff; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148,163,184,.22);
+      border: 3px solid transparent;
+      background-clip: padding-box;
+      border-radius: 999px;
     }
-    .ui-panel {
-      box-shadow: var(--pd5-shadow-b) !important;
-    }
-    .titanium-text { color: var(--pd5-text) !important; }
-    .sub-text { color: var(--pd5-sub) !important; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.40); border-width: 2px; }
 
-    /* --- top bar --- */
-    nav.sticky {
-      position: sticky !important;
+    .pd-scroll-progress {
+      position: fixed;
+      z-index: 9999;
       top: 0;
-      z-index: 80 !important;
-      background: color-mix(in srgb, var(--pd5-surface-solid) 84%, transparent) !important;
-      border-bottom: 1px solid var(--pd5-line) !important;
-      box-shadow: 0 8px 28px rgba(10,18,31,.045) !important;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      pointer-events: none;
+      background: transparent;
     }
-    html.dark nav.sticky {
-      background: rgba(9,11,15,.82) !important;
-      box-shadow: 0 12px 35px rgba(0,0,0,.24) !important;
+    .pd-scroll-progress span {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: 0 999px 999px 0;
+      background: linear-gradient(90deg, var(--pd-blue), var(--pd-cyan), var(--pd-purple));
+      box-shadow: 0 0 14px rgba(10,132,255,.8);
+      transition: width .12s linear;
     }
-    .navbar-inner {
-      min-height: 74px;
-      padding-block: 11px !important;
+
+    .pd-ambient-orb {
+      position: fixed;
+      z-index: -1;
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(10,132,255,.16), rgba(10,132,255,.04) 36%, transparent 70%);
+      filter: blur(18px);
+      transform: translate3d(-50%,-50%,0);
+      opacity: .55;
+      transition: opacity .5s ease;
     }
+
+    .pd-cursor-glow {
+      position: fixed;
+      z-index: 9998;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(10,132,255,.11), transparent 68%);
+      transform: translate3d(-50%,-50%,0);
+      opacity: 0;
+      mix-blend-mode: screen;
+      transition: opacity .25s ease;
+    }
+
+    .pd-live-island {
+      position: fixed;
+      z-index: 55;
+      top: 10px;
+      left: 50%;
+      transform: translate(-50%,-80px) scale(.92);
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 999px;
+      background: rgba(16,18,23,.72);
+      color: #f5f7fb;
+      box-shadow: 0 14px 45px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(28px) saturate(150%);
+      -webkit-backdrop-filter: blur(28px) saturate(150%);
+      opacity: 0;
+      transition: transform .7s var(--pd-ease), opacity .5s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .pd-live-island.is-visible { transform: translate(-50%,0) scale(1); opacity: 1; }
+    .pd-island-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--pd-green);
+      box-shadow: 0 0 0 5px rgba(53,208,127,.12), 0 0 16px rgba(53,208,127,.7);
+      animation: pd-island-pulse 2s infinite;
+    }
+    #pd-island-label { font-size: 11px; font-weight: 800; letter-spacing: .01em; }
+    #pd-island-time { color: rgba(255,255,255,.48); font-size: 10px; font-variant-numeric: tabular-nums; }
+
+    @keyframes pd-island-pulse {
+      0%,100% { transform: scale(.85); opacity: .72; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    .pd-quick-dock {
+      position: fixed;
+      z-index: 45;
+      left: 18px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 24px;
+      background: rgba(15,17,22,.70);
+      box-shadow: 0 24px 70px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(30px) saturate(150%);
+      -webkit-backdrop-filter: blur(30px) saturate(150%);
+      transition: transform .5s var(--pd-ease), opacity .4s ease;
+    }
+    html:not(.dark) .pd-quick-dock { background: rgba(255,255,255,.76); }
+    .pd-quick-dock.is-hidden { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+    .pd-dock-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      width: 44px;
+      min-height: 44px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 15px;
+      overflow: hidden;
+      background: transparent;
+      color: var(--pd-muted);
+      cursor: pointer;
+      transition: width .42s var(--pd-ease), color .25s ease, background .25s ease, transform .25s var(--pd-ease);
+    }
+    .pd-dock-button svg { width: 18px; height: 18px; flex: 0 0 auto; }
+    .pd-dock-button span { font-size: 12px; font-weight: 850; opacity: 0; transform: translateX(-6px); transition: opacity .25s ease, transform .35s var(--pd-ease); white-space: nowrap; }
+    .pd-dock-button:hover { width: 122px; color: #fff; background: rgba(255,255,255,.08); transform: translateX(2px); }
+    html:not(.dark) .pd-dock-button:hover { color: #111; background: rgba(0,0,0,.06); }
+    .pd-dock-button:hover span { opacity: 1; transform: none; }
+    .pd-dock-button:active { transform: scale(.95); }
+
+    .pd-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--pd-muted);
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .pd-eyebrow::before {
+      content: "";
+      width: 16px;
+      height: 1px;
+      background: currentColor;
+      opacity: .65;
+    }
+
+    /* Premium navbar */
+    nav.sticky {
+      top: 0 !important;
+      margin: 0 auto;
+      width: 100%;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      padding-top: env(safe-area-inset-top);
+      transition: transform .5s var(--pd-ease), padding .45s var(--pd-ease);
+    }
+    nav.sticky > .navbar-inner {
+      width: min(var(--pd-max), calc(100% - 28px));
+      margin-top: 12px;
+      min-height: 68px;
+      padding: 7px 8px 7px 10px !important;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 24px;
+      background: rgba(11,13,18,.68);
+      box-shadow: 0 18px 70px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.07);
+      backdrop-filter: blur(30px) saturate(150%);
+      -webkit-backdrop-filter: blur(30px) saturate(150%);
+      transition: min-height .45s var(--pd-ease), background .45s ease, border-color .45s ease, box-shadow .45s ease, transform .45s var(--pd-ease);
+    }
+    html:not(.dark) nav.sticky > .navbar-inner {
+      background: rgba(255,255,255,.74);
+      box-shadow: 0 18px 65px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.95);
+    }
+    nav.sticky.is-compact > .navbar-inner {
+      min-height: 58px;
+      margin-top: 7px;
+      border-radius: 20px;
+      background: rgba(9,11,15,.84);
+    }
+    html:not(.dark) nav.sticky.is-compact > .navbar-inner { background: rgba(255,255,255,.90); }
     .nav-brand-icon {
       width: 48px !important;
       height: 48px !important;
-      border-radius: 16px !important;
-      box-shadow: 0 14px 28px rgba(10,116,255,.22) !important;
-    }
-    .nav-icon-btn {
-      width: 48px !important;
-      min-width: 48px;
-      height: 48px !important;
-      min-height: 48px !important;
-      border-radius: 16px !important;
-      border-color: var(--pd5-line) !important;
-      background: var(--pd5-surface) !important;
-      box-shadow: var(--pd5-shadow-a) !important;
-    }
-    .nav-icon-btn:hover {
-      border-color: rgba(10,116,255,.27) !important;
-      transform: translateY(-1px);
-    }
-    .nav-profile-btn {
-      min-height: 50px !important;
-      padding: 6px 15px 6px 6px !important;
-      border-radius: 18px !important;
-      border-color: var(--pd5-line) !important;
-      background: var(--pd5-surface) !important;
-      box-shadow: var(--pd5-shadow-a) !important;
-    }
-    .nav-profile-avatar {
-      width: 38px !important;
-      height: 38px !important;
-      border-radius: 13px !important;
-      border: 2px solid rgba(10,116,255,.16);
-    }
-    .nav-coin-pill {
-      min-height: 48px !important;
-      padding-inline: 15px !important;
       border-radius: 17px !important;
-      background: linear-gradient(135deg, rgba(246,177,46,.14), rgba(246,177,46,.055)) !important;
-      border-color: rgba(230,163,0,.21) !important;
+      background: linear-gradient(145deg, #2aa7ff 0%, #0878f9 42%, #4e45e8 100%) !important;
+      box-shadow: 0 12px 28px rgba(10,132,255,.28), inset 0 1px 0 rgba(255,255,255,.28);
+      transition: transform .45s var(--pd-ease), box-shadow .45s ease;
     }
-    .nav-link {
-      min-height: 46px !important;
-      padding-inline: 16px !important;
-      border-radius: 15px !important;
-      font-size: 14px !important;
-      font-weight: 850 !important;
-    }
-    .nav-link.is-active {
-      background: rgba(10,116,255,.10) !important;
-      color: var(--pd5-blue) !important;
-      box-shadow: inset 0 0 0 1px rgba(10,116,255,.13) !important;
-    }
-    .nav-link.is-active::after {
-      height: 3px !important;
-      bottom: 3px !important;
-      border-radius: 999px;
-      box-shadow: 0 0 18px rgba(10,116,255,.28);
-    }
-
-    /* --- security bar --- */
-    #security-strip { margin-top: 16px !important; }
-    .security-strip-inner {
-      min-height: 58px !important;
-      padding: 8px 12px 8px 15px !important;
-      border-radius: 21px !important;
-      background: var(--pd5-surface) !important;
-      border-color: var(--pd5-line) !important;
-      box-shadow: var(--pd5-shadow-a) !important;
-    }
-    .security-action {
-      min-height: 42px !important;
-      padding-inline: 15px !important;
-      border-radius: 14px !important;
-      font-weight: 900 !important;
-    }
-
-    /* --- large landing type / spacing --- */
-    #view-landing h1 {
-      font-size: clamp(54px, 7.1vw, 108px) !important;
-      line-height: .99 !important;
-      letter-spacing: -.055em !important;
-      max-width: 10.5ch;
-    }
-    #view-landing .lg\:col-span-7 > p {
-      max-width: 38ch !important;
-      font-size: clamp(20px, 1.8vw, 29px) !important;
-      line-height: 1.48 !important;
-    }
-    #view-landing .lg\:col-span-7 { padding-top: clamp(6px, 2vw, 34px); }
-    #view-landing .lg\:col-span-5 {
-      transform: translateZ(0);
-    }
-    #view-landing .lg\:col-span-5 .ui-panel {
-      border-radius: 36px !important;
-      padding: clamp(18px, 2.4vw, 34px) !important;
-    }
-    #view-landing .lg\:col-span-5 .relative.w-full {
-      height: clamp(420px, 39vw, 610px) !important;
-      border-radius: 28px !important;
-    }
-    #view-landing .lg\:col-span-5 img {
-      transform-origin: center center;
-      transition: transform 1.1s cubic-bezier(.16,1,.3,1), filter 1.1s ease;
-    }
-    #view-landing .lg\:col-span-5 .ui-panel:hover img {
-      transform: scale(1.045);
-      filter: saturate(1.04) contrast(1.02);
-    }
-    #view-landing .flex.flex-col.sm\:flex-row button {
-      min-height: 58px !important;
-      border-radius: 18px !important;
-      font-size: 16px !important;
-      box-shadow: var(--pd5-shadow-a);
-    }
-
-    /* --- new experience layer --- */
-    .pd-experience-section,
-    .pd-steps-section {
-      width: 100%;
-      scroll-margin-top: 90px;
-    }
-    .pd-section-intro {
-      width: min(900px, 100%);
-      margin: 0 auto 34px;
-      text-align: center;
-    }
-    .pd-section-intro--left { text-align: left; margin-left: 0; }
-    .pd-eyebrow,
-    .pd-mini-label {
-      display: block;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: .13em;
-      font-size: 11px;
-      color: var(--pd5-blue);
-    }
-    .pd-section-intro h2 {
-      margin-top: 10px;
-      font-size: clamp(40px, 5.2vw, 76px);
-      line-height: 1.02;
-      letter-spacing: -.05em;
-      font-weight: 900;
-      color: var(--pd5-text);
-    }
-    .pd-section-intro h2 span {
-      background: linear-gradient(120deg, #2685ff, #7662ff);
+    .nav-brand-icon:hover { transform: rotate(-3deg) scale(1.04); box-shadow: 0 16px 35px rgba(10,132,255,.38); }
+    .nav-brand-copy .blue-gradient-text {
+      font-size: 17px !important;
+      background: linear-gradient(100deg, #fff 0%, #b8d9ff 48%, #72b7ff 100%);
       -webkit-background-clip: text;
       background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
-    .pd-section-intro p {
-      margin: 16px auto 0;
-      max-width: 68ch;
-      color: var(--pd5-sub);
-      font-size: clamp(17px, 1.55vw, 22px);
-      line-height: 1.55;
+    html:not(.dark) .nav-brand-copy .blue-gradient-text {
+      background: linear-gradient(100deg, #111 0%, #2365a9 65%, #0878f9 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
     }
-    .pd-experience-grid {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0,1fr));
-      gap: 18px;
+    .nav-icon-btn {
+      width: 46px !important;
+      height: 46px !important;
+      min-height: 46px !important;
+      border: 1px solid var(--pd-stroke) !important;
+      background: var(--pd-surface-0) !important;
+      border-radius: 15px !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+      transition: transform .32s var(--pd-ease), border-color .25s ease, background .25s ease, box-shadow .25s ease;
     }
-    .pd-feature-card {
-      --mx: 50%;
-      --my: 50%;
-      --tilt-x: 0deg;
-      --tilt-y: 0deg;
-      --accent: #0a74ff;
+    .nav-icon-btn:hover { transform: translateY(-2px); border-color: rgba(10,132,255,.40) !important; background: rgba(10,132,255,.08) !important; }
+    .nav-icon-btn:active { transform: scale(.94); }
+
+    .nav-link {
+      min-height: 46px !important;
+      padding: 0 15px !important;
+      border-radius: 15px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      color: var(--pd-muted) !important;
+      letter-spacing: -.01em;
+    }
+    .nav-link:hover { color: var(--pd-white) !important; background: rgba(255,255,255,.06) !important; }
+    html:not(.dark) .nav-link:hover { background: rgba(0,0,0,.05) !important; }
+    .nav-link.is-active {
+      color: #fff !important;
+      background: rgba(10,132,255,.14) !important;
+      box-shadow: inset 0 0 0 1px rgba(10,132,255,.22), 0 7px 25px rgba(10,132,255,.08) !important;
+    }
+    html:not(.dark) .nav-link.is-active { color: #0878f9 !important; }
+
+    /* Security status becomes a quiet system status card */
+    #security-strip {
+      width: min(var(--pd-max), calc(100% - 28px)) !important;
+      margin: 14px auto 0 !important;
+    }
+    .security-strip-inner {
+      min-height: 50px !important;
+      padding: 8px 12px 8px 14px !important;
+      border-radius: 18px !important;
+      background: rgba(255,255,255,.035) !important;
+      border: 1px solid var(--pd-stroke) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(24px) !important;
+      -webkit-backdrop-filter: blur(24px) !important;
+    }
+    html:not(.dark) .security-strip-inner { background: rgba(255,255,255,.72) !important; }
+    .security-strip-inner p:first-child { font-size: 12px !important; }
+    .security-strip-inner p:last-child { font-size: 10px !important; }
+    .security-action {
+      min-height: 36px !important;
+      border-radius: 11px !important;
+      background: rgba(10,132,255,.09) !important;
+      color: #4da7ff !important;
+      border: 1px solid rgba(10,132,255,.14) !important;
+    }
+
+    /* Main proportions */
+    main { width: 100%; }
+    #view-landing {
+      width: min(var(--pd-max), 100%) !important;
+      padding-top: clamp(76px, 10vw, 150px) !important;
+      padding-left: clamp(22px, 5vw, 72px) !important;
+      padding-right: clamp(22px, 5vw, 72px) !important;
+      gap: clamp(120px, 15vw, 230px) !important;
+    }
+    #view-landing > .grid:first-child {
+      min-height: min(850px, 80vh) !important;
+      gap: clamp(55px, 8vw, 110px) !important;
+    }
+    #view-landing h1 {
+      max-width: 900px;
+      font-size: clamp(58px, 8.2vw, 118px) !important;
+      line-height: .94 !important;
+      letter-spacing: -.055em !important;
+    }
+    #view-landing > .grid:first-child p {
+      max-width: 760px;
+      font-size: clamp(19px, 2.05vw, 29px) !important;
+      line-height: 1.48 !important;
+      letter-spacing: -.025em;
+      color: var(--pd-muted) !important;
+    }
+    #view-landing .ui-panel {
+      border-radius: var(--pd-radius-xl) !important;
+      border-color: var(--pd-stroke) !important;
+      background: var(--pd-surface-0) !important;
+      box-shadow: var(--pd-shadow) !important;
+    }
+    #view-landing > .grid:first-child .ui-panel { padding: clamp(20px, 3vw, 32px) !important; }
+    #view-landing > .grid:first-child .ui-panel img { filter: saturate(.88) contrast(1.04); }
+    #view-landing > .grid:first-child .ui-panel .group:hover img { transform: scale(1.035); }
+    #view-landing > .grid:first-child button {
+      min-height: 58px !important;
+      border-radius: 18px !important;
+      font-size: 15px !important;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+    }
+
+    /* Hero label */
+    #view-landing > .grid:first-child .inline-flex {
+      min-height: 38px;
+      padding: 0 15px !important;
+      border-radius: 999px !important;
+      border-color: var(--pd-stroke) !important;
+      background: var(--pd-surface-0) !important;
+      color: var(--pd-muted) !important;
+      font-size: 11px !important;
+      letter-spacing: .01em;
+    }
+
+    /* Hero metrics */
+    #view-landing > .grid:first-child .border-t {
+      border-color: var(--pd-stroke) !important;
+      padding-top: 22px !important;
+    }
+    #view-landing > .grid:first-child .border-t > div {
+      color: var(--pd-muted) !important;
+      font-size: 11px !important;
+    }
+
+    /* Capability cards */
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel {
       position: relative;
-      isolation: isolate;
+      min-height: 360px;
+      padding: clamp(28px, 4vw, 52px) !important;
+      border-radius: 32px !important;
       overflow: hidden;
-      border: 1px solid var(--pd5-line);
-      border-radius: 30px;
-      background:
-        radial-gradient(430px 190px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 9%, transparent), transparent 67%),
-        var(--pd5-surface);
-      box-shadow: var(--pd5-shadow-a);
-      transform: perspective(1100px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x)) translateZ(0);
-      transition: transform .24s ease, box-shadow .35s ease, border-color .35s ease;
-      min-height: 250px;
+      isolation: isolate;
+      transition: transform .65s var(--pd-ease), border-color .4s ease, box-shadow .65s var(--pd-ease);
     }
-    html.dark .pd-feature-card {
-      background:
-        radial-gradient(430px 190px at var(--mx) var(--my), color-mix(in srgb, var(--accent) 13%, transparent), transparent 67%),
-        rgba(17,20,27,.92);
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel::before {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      right: -80px;
+      top: -90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10,132,255,.17), transparent 68%);
+      filter: blur(8px);
+      opacity: .65;
+      transition: transform .7s var(--pd-ease), opacity .5s ease;
+      pointer-events: none;
+      z-index: -1;
     }
-    .pd-feature-card:hover {
-      box-shadow: var(--pd5-shadow-b);
-      border-color: color-mix(in srgb, var(--accent) 25%, var(--pd5-line));
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 36px 90px rgba(0,0,0,.30) !important;
     }
-    .pd-feature-card::after {
-      content:"";
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel:hover::before { transform: scale(1.25); opacity: 1; }
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel h3 {
+      font-size: clamp(23px, 2.2vw, 32px) !important;
+      letter-spacing: -.035em;
+      line-height: 1.05;
+    }
+    #view-landing .grid.md\:grid-cols-3 > .ui-panel p {
+      font-size: 15px !important;
+      line-height: 1.75 !important;
+      color: var(--pd-muted) !important;
+    }
+
+    /* Estimator */
+    #view-landing .ui-panel.p-8.sm\:p-14 {
+      border-radius: 38px !important;
+      padding: clamp(26px, 5vw, 64px) !important;
+    }
+    #view-landing .ui-panel.p-8.sm\:p-14 h2 {
+      font-size: clamp(28px, 4vw, 52px) !important;
+      line-height: 1.05 !important;
+      letter-spacing: -.045em;
+    }
+    #demo-total-price {
+      font-size: clamp(48px, 7vw, 78px) !important;
+      letter-spacing: -.06em;
+    }
+    #demo-page-slider {
+      height: 7px !important;
+    }
+
+    /* Story rail */
+    .pd-story-section {
+      width: 100%;
+      display: grid;
+      gap: 44px;
+    }
+    .pd-section-heading {
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(260px,.6fr);
+      align-items: end;
+      gap: 50px;
+    }
+    .pd-section-heading h2 {
+      margin-top: 18px;
+      font-size: clamp(42px, 6vw, 84px);
+      line-height: .96;
+      letter-spacing: -.06em;
+      font-weight: 900;
+      color: var(--pd-white);
+    }
+    .pd-section-heading h2 em,
+    .pd-final-cta h2 em { color: #7ebdff; font-style: normal; }
+    .pd-section-heading p {
+      max-width: 540px;
+      justify-self: end;
+      color: var(--pd-muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+    .pd-story-grid {
+      display: grid;
+      grid-template-columns: repeat(12,minmax(0,1fr));
+      gap: 16px;
+    }
+    .pd-story-card {
+      position: relative;
+      min-height: 370px;
+      padding: clamp(24px, 3.2vw, 40px);
+      border: 1px solid var(--pd-stroke);
+      border-radius: 32px;
+      overflow: hidden;
+      isolation: isolate;
+      transform-style: preserve-3d;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18);
+      transition: transform .7s var(--pd-ease), border-color .35s ease, box-shadow .7s var(--pd-ease);
+    }
+    .pd-story-card:hover {
+      border-color: rgba(255,255,255,.17);
+      box-shadow: 0 40px 110px rgba(0,0,0,.32);
+    }
+    .pd-span-7 { grid-column: span 7; }
+    .pd-span-5 { grid-column: span 5; }
+    .pd-span-4 { grid-column: span 4; }
+    .pd-story-dark { background: linear-gradient(145deg,#11151c 0%,#080a0e 80%); color: #fff; }
+    .pd-story-blue { background: radial-gradient(400px 300px at 80% 10%,rgba(10,132,255,.32),transparent 68%), linear-gradient(145deg,#0c1b2f,#081018); color:#fff; }
+    .pd-story-gold { background: radial-gradient(450px 300px at 90% 0%,rgba(245,185,63,.26),transparent 66%), linear-gradient(145deg,#17140c,#0c0b08); color:#fff; }
+    .pd-story-violet { background: radial-gradient(450px 300px at 100% 0%,rgba(139,92,246,.28),transparent 66%), linear-gradient(145deg,#171329,#0b0a11); color:#fff; }
+    .pd-story-glass {
+      background: linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+      color: var(--pd-white);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+    }
+    html:not(.dark) .pd-story-glass {
+      background: linear-gradient(145deg,rgba(255,255,255,.94),rgba(245,247,250,.72));
+    }
+    .pd-story-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+    .pd-story-number {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.45);
+    }
+    html:not(.dark) .pd-story-number { color: rgba(0,0,0,.42); }
+    .pd-story-chip {
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.70);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .pd-story-chip svg { width: 11px; height: 11px; }
+    html:not(.dark) .pd-story-chip { border-color: rgba(0,0,0,.08); background: rgba(0,0,0,.035); color: rgba(0,0,0,.55); }
+    .pd-story-copy {
+      position: relative;
+      z-index: 2;
+      margin-top: 82px;
+      max-width: 640px;
+    }
+    .pd-story-copy h3 {
+      margin-top: 18px;
+      font-size: clamp(34px, 4.5vw, 66px);
+      line-height: .96;
+      letter-spacing: -.055em;
+      font-weight: 500;
+    }
+    .pd-story-copy h3 strong { font-weight: 900; }
+    .pd-story-copy p,
+    .pd-story-card > p {
+      margin-top: 20px;
+      max-width: 560px;
+      color: rgba(255,255,255,.60);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+    html:not(.dark) .pd-story-copy p,
+    html:not(.dark) .pd-story-card > p { color: rgba(0,0,0,.56); }
+    .pd-card-glow {
       position:absolute;
-      inset:0;
-      border-radius:inherit;
-      pointer-events:none;
-      background: linear-gradient(135deg, rgba(255,255,255,.10), transparent 26%, transparent 72%, rgba(255,255,255,.03));
-      opacity:.55;
-    }
-    .pd-feature-card--hero { grid-column: span 7; min-height: 420px; --accent:#0a74ff; padding: 28px; }
-    .pd-feature-card--compact { grid-column: span 5; padding: 28px; }
-    .pd-feature-card--wide { grid-column: 1 / -1; min-height: 290px; --accent:#22a86b; padding: 28px; display:flex; justify-content:space-between; gap:30px; align-items:center; }
-    .pd-feature-top { display:flex; align-items:center; justify-content:space-between; }
-    .pd-feature-index { font-size:11px; font-weight:900; letter-spacing:.13em; color:var(--pd5-sub); }
-    .pd-live-chip {
-      display:inline-flex; align-items:center; gap:6px; padding:6px 9px; border-radius:999px;
-      color:#1b8f61; background:rgba(34,168,107,.09); border:1px solid rgba(34,168,107,.16);
-      font-size:10px; font-weight:900; letter-spacing:.10em;
-    }
-    .pd-live-chip svg { width:12px; height:12px; }
-    .pd-feature-art--orbit {
-      position:relative;
-      height:220px;
-      display:grid;
-      place-items:center;
-    }
-    .pd-orbit-ring {
-      position:absolute;
-      border:1px solid rgba(10,116,255,.18);
+      width: 560px;
+      height: 560px;
+      right: -140px;
+      bottom: -260px;
       border-radius:50%;
-      animation: pdOrbitSpin 14s linear infinite;
+      background: radial-gradient(circle,rgba(10,132,255,.24),transparent 68%);
+      filter: blur(20px);
+      transition: transform .8s var(--pd-ease);
     }
-    .pd-orbit-ring-1 { width:170px; height:170px; }
-    .pd-orbit-ring-2 { width:230px; height:110px; transform:rotate(24deg); animation-direction:reverse; }
-    .pd-orbit-core {
-      width:84px; height:84px; border-radius:28px;
-      display:grid; place-items:center; color:#fff;
-      background:linear-gradient(145deg,#0a74ff,#665cff);
-      box-shadow:0 20px 50px rgba(10,116,255,.28);
-      animation:pdCoreFloat 4.8s ease-in-out infinite;
+    .pd-story-dark:hover .pd-card-glow { transform: scale(1.18) translate(-20px,-30px); }
+    .pd-flow-visual {
+      position:absolute;
+      right: 38px;
+      bottom: 34px;
+      left: 38px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+      backdrop-filter: blur(20px);
     }
-    .pd-orbit-core svg { width:34px; height:34px; }
-    .pd-orbit-pip { position:absolute; width:9px; height:9px; border-radius:50%; background:#fff; box-shadow:0 0 0 8px rgba(255,255,255,.04); }
-    .pip-a { left:28%; top:40%; background:#0a74ff; }
-    .pip-b { right:25%; top:30%; background:#7462ff; }
-    .pip-c { right:34%; bottom:22%; background:#22a86b; }
-    .pd-feature-copy h3,
-    .pd-wide-content h3 {
-      margin-top:8px; font-size:clamp(25px, 3vw, 38px); line-height:1.05; letter-spacing:-.04em; font-weight:900; color:var(--pd5-text);
+    .pd-flow-visual span {
+      display:flex;
+      align-items:center;
+      gap:7px;
+      min-width:0;
+      font-size:11px;
+      font-weight:800;
+      color:rgba(255,255,255,.78);
     }
-    .pd-feature-copy p,
-    .pd-wide-content p {
-      margin-top:10px; color:var(--pd5-sub); font-size:15px; line-height:1.55; max-width:52ch;
+    .pd-flow-visual svg { width:15px; height:15px; color:#7ebdff; }
+    .pd-flow-visual b {
+      height:1px;
+      flex:1;
+      background: linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.25),rgba(255,255,255,.05));
     }
-    .pd-feature-icon {
-      width:58px; height:58px; border-radius:19px; display:grid; place-items:center; margin-bottom:24px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+    .pd-story-icon {
+      width: 58px;
+      height: 58px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top: 82px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:20px;
+      background:rgba(255,255,255,.055);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
     }
-    .pd-blue { color:#0a74ff; background:rgba(10,116,255,.10); border:1px solid rgba(10,116,255,.15); }
-    .pd-gold { color:#d89000; background:rgba(230,163,0,.12); border:1px solid rgba(230,163,0,.18); }
-    .pd-card-line { display:flex; gap:7px; margin-top:28px; }
-    .pd-card-line span { height:8px; border-radius:999px; background:rgba(10,116,255,.10); flex:1; }
-    .pd-card-line span:first-child { flex:1.9; background:rgba(10,116,255,.28); }
-    .pd-balance-demo {
-      margin-top:24px; display:grid; grid-template-columns:1fr auto; gap:5px 12px; align-items:end;
-      padding:16px 18px; border-radius:18px; background:rgba(230,163,0,.055); border:1px solid rgba(230,163,0,.12);
-    }
-    .pd-balance-demo span { font-size:11px; color:var(--pd5-sub); font-weight:800; }
-    .pd-balance-demo b { grid-row:2; font-size:28px; line-height:1; color:#d79000; }
-    .pd-balance-demo em { grid-row:2; font-size:12px; font-style:normal; color:#d79000; font-weight:900; align-self:center; }
-    .pd-wide-content { flex:1; }
-    .pd-security-visual { width:330px; min-width:300px; height:220px; position:relative; display:grid; place-items:center; }
-    .pd-security-shield {
-      width:102px; height:102px; border-radius:32px; display:grid; place-items:center;
-      color:#20a56b; background:rgba(34,168,107,.10); border:1px solid rgba(34,168,107,.18);
-      box-shadow:0 18px 50px rgba(34,168,107,.10);
-      z-index:2;
-      animation:pdShieldBreath 4.5s ease-in-out infinite;
-    }
-    .pd-security-shield svg { width:44px; height:44px; }
-    .pd-security-pulse {
-      position:absolute; width:175px; height:175px; border:1px solid rgba(34,168,107,.17); border-radius:50%;
-      animation:pdSecurityPulse 3.2s ease-out infinite;
-    }
-    .pd-security-pulse::before,
-    .pd-security-pulse::after {
-      content:""; position:absolute; inset:20px; border:1px dashed rgba(34,168,107,.12); border-radius:50%;
-    }
-    .pd-security-pulse::after { inset:46px; border-style:solid; opacity:.5; }
-    .pd-security-status {
-      position:absolute; right:0; bottom:14px; display:flex; align-items:center; gap:8px;
-      padding:10px 13px; border-radius:14px; background:var(--pd5-surface); border:1px solid rgba(34,168,107,.16);
-      color:#1e9462; font-size:12px; font-weight:900; box-shadow:var(--pd5-shadow-a);
-    }
-    .pd-security-status span { width:8px; height:8px; background:#22a86b; border-radius:50%; box-shadow:0 0 0 6px rgba(34,168,107,.08); }
-
-    /* Steps */
-    .pd-steps-section { display:grid; grid-template-columns:minmax(260px,.72fr) 1.28fr; gap:52px; align-items:start; }
-    .pd-steps-track { display:grid; gap:10px; }
-    .pd-step {
-      display:grid; grid-template-columns:54px 32px 1fr; align-items:center; gap:13px;
-      min-height:82px; padding:12px 14px; border-radius:20px; border:1px solid var(--pd5-line);
-      background:var(--pd5-surface); box-shadow:var(--pd5-shadow-a);
-      transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;
-    }
-    .pd-step:hover { transform:translateX(5px); border-color:rgba(10,116,255,.18); box-shadow:var(--pd5-shadow-b); }
-    .pd-step-no { font-size:12px; font-weight:900; color:var(--pd5-sub); letter-spacing:.08em; }
-    .pd-step > svg { width:21px; height:21px; color:var(--pd5-blue); }
-    .pd-step strong { font-size:16px; font-weight:900; color:var(--pd5-text); }
-    .pd-step p { margin-top:2px; color:var(--pd5-sub); font-size:12px; }
-
-    /* --- auth / forms / dashboard / wallet / admin --- */
-    #view-auth .ui-panel { border-radius:30px !important; padding:34px !important; }
-    #view-auth input,
-    #view-auth select,
-    #view-auth textarea,
-    #view-dashboard input,
-    #view-dashboard select,
-    #view-dashboard textarea,
-    #view-wallet input,
-    #view-wallet select,
-    #view-wallet textarea {
-      min-height:54px !important;
-      font-size:15px !important;
-      border-radius:17px !important;
-    }
-    #view-auth button,
-    #view-dashboard button[type="submit"],
-    #view-wallet button[type="submit"] {
-      min-height:56px !important;
-      border-radius:17px !important;
-    }
-    #view-dashboard > .grid {
-      grid-template-columns: minmax(0,1.12fr) minmax(0,.88fr) !important;
-      gap:22px !important;
-    }
-    #view-wallet > .grid {
-      grid-template-columns: minmax(0,1.10fr) minmax(0,.90fr) !important;
-      gap:22px !important;
-    }
-    #view-dashboard .ui-panel,
-    #view-wallet .ui-panel,
-    #view-admin .ui-panel { border-radius:28px !important; }
-    #view-dashboard h2, #view-wallet h2 { font-size:clamp(23px,2.3vw,32px) !important; }
-    #view-dashboard label, #view-wallet label { font-size:13px !important; font-weight:850 !important; }
-    #queue-cards-container > div {
-      min-height:92px;
-      padding:18px !important;
-      border-radius:20px !important;
-    }
-    #view-admin {
-      font-size:14px;
-    }
-    #view-admin table { font-size:14px; }
-    #view-admin th { font-size:12px !important; letter-spacing:.02em; }
-    #view-admin td { padding-top:16px !important; padding-bottom:16px !important; }
-    #view-admin .ui-input { min-height:42px !important; }
-
-    /* Profile shell */
-    .profile-shell {
-      width:min(980px,100%) !important;
-      border-radius:34px !important;
-      padding:26px !important;
-      background:var(--pd5-surface-solid) !important;
-      box-shadow:var(--pd5-shadow-b) !important;
-    }
-    .profile-hero {
-      padding:24px !important;
-      border-radius:28px !important;
-      background:linear-gradient(135deg, rgba(10,116,255,.08), rgba(123,97,255,.035) 52%, rgba(255,255,255,.25)) !important;
-      border-color:rgba(10,116,255,.13) !important;
-    }
-    html.dark .profile-hero {
-      background:linear-gradient(135deg, rgba(10,116,255,.12), rgba(123,97,255,.045) 52%, rgba(255,255,255,.02)) !important;
-    }
-    .profile-avatar-xl {
-      width:128px !important;
-      height:128px !important;
-      border-radius:38px !important;
-      border:4px solid rgba(255,255,255,.92) !important;
-      box-shadow:0 22px 55px rgba(10,18,31,.15) !important;
-    }
-    .profile-meta-value { font-size:18px !important; }
-
-    /* --- dark mode always has crisp fields --- */
-    html.dark .ui-input {
-      background:#0e1218 !important;
-      color:#f7f9fc !important;
-      border-color:rgba(255,255,255,.16) !important;
-    }
-    html.dark .ui-input:focus {
-      border-color:#3b91ff !important;
-      box-shadow:0 0 0 4px rgba(59,145,255,.12) !important;
-    }
-
-    /* --- micro-interaction layer --- */
-    #pd-scroll-progress {
-      position:fixed; top:0; left:0; right:0; height:3px; z-index:140;
-      background:transparent; pointer-events:none;
-    }
-    #pd-scroll-progress span {
-      display:block; height:100%; width:0%;
-      background:linear-gradient(90deg,#0a74ff,#6d62ff,#22a86b);
-      box-shadow:0 0 18px rgba(10,116,255,.22);
-      transform-origin:left center;
-    }
-    #pd-page-transition {
-      position:fixed; inset:0; z-index:130; pointer-events:none; opacity:0;
-      display:grid; place-items:center; background:rgba(6,8,12,.96);
-      transform:translateY(100%);
-      transition:transform .58s cubic-bezier(.16,1,.3,1), opacity .30s ease;
-    }
-    #pd-page-transition.is-active { opacity:1; transform:translateY(0); }
-    #pd-page-transition.is-leaving { transform:translateY(-100%); }
-    .pd-transition-orb {
-      position:absolute; width:24vmin; aspect-ratio:1; border-radius:50%;
-      background:radial-gradient(circle at 40% 35%, rgba(81,153,255,.95), rgba(91,82,246,.38) 45%, transparent 70%);
-      filter:blur(2px); box-shadow:0 0 90px rgba(10,116,255,.22);
-      animation:pdTransitionPulse 1.4s ease-in-out infinite;
-    }
-    .pd-transition-label {
-      position:relative; display:flex; align-items:center; gap:12px; color:#fff; font-size:15px; font-weight:800;
-      letter-spacing:.02em;
-    }
-    .pd-transition-logo {
-      width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
-      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#6fb0ff;
-    }
-    .pd-transition-logo svg { width:19px;height:19px; }
-    #pd-toast {
-      position:fixed; left:50%; bottom:22px; z-index:150; transform:translate(-50%,26px) scale(.96);
-      display:flex; align-items:center; gap:10px; min-width:min(390px, calc(100% - 28px)); max-width:min(560px, calc(100% - 28px));
-      padding:12px 14px; border-radius:18px; opacity:0; pointer-events:none;
-      background:rgba(18,21,28,.94); color:#fff; border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 24px 70px rgba(0,0,0,.30); backdrop-filter:blur(25px);
-      transition:opacity .28s ease, transform .32s cubic-bezier(.16,1,.3,1);
-    }
-    #pd-toast.is-visible { opacity:1; transform:translate(-50%,0) scale(1); }
-    .pd-toast-icon { width:38px; height:38px; border-radius:13px; display:grid; place-items:center; color:#72b0ff; background:rgba(10,116,255,.12); }
-    .pd-toast-icon svg { width:18px;height:18px; }
-    .pd-toast-copy { min-width:0; display:grid; gap:2px; }
-    .pd-toast-copy strong { font-size:12px; font-weight:900; }
-    .pd-toast-copy span { color:rgba(255,255,255,.68); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-
-    /* --- mobile dock --- */
-    #pd-mobile-dock {
-      display:none;
-      position:fixed;
-      left:10px; right:10px; bottom:max(9px, env(safe-area-inset-bottom));
-      z-index:95; padding:7px;
-      border:1px solid var(--pd5-line);
-      border-radius:24px;
-      background:color-mix(in srgb, var(--pd5-surface-solid) 88%, transparent);
-      box-shadow:0 20px 60px rgba(8,12,19,.16);
-      backdrop-filter:blur(28px) saturate(125%);
-      -webkit-backdrop-filter:blur(28px) saturate(125%);
-      grid-template-columns:repeat(4,1fr);
-      gap:5px;
-    }
-    html.dark #pd-mobile-dock {
-      background:rgba(17,20,27,.91);
-      box-shadow:0 24px 75px rgba(0,0,0,.34);
-    }
-    #pd-mobile-dock button {
+    .pd-story-icon svg { width:25px; height:25px; }
+    .pd-story-card h3 {
       position:relative;
-      min-height:58px !important; border:0; background:transparent; border-radius:18px;
-      color:var(--pd5-sub); display:grid; place-items:center; gap:2px; padding:6px 3px;
-      transition:background .24s ease, color .24s ease, transform .22s ease;
+      z-index:2;
+      margin-top: 22px;
+      font-size: clamp(30px,3.2vw,50px);
+      line-height:.98;
+      letter-spacing:-.055em;
+      font-weight:500;
     }
-    #pd-mobile-dock button::before {
-      content:""; position:absolute; inset:4px; border-radius:16px;
-      background:linear-gradient(180deg, rgba(10,116,255,.12), rgba(10,116,255,.05));
-      opacity:0; transform:scale(.92);
-      transition:opacity .24s ease, transform .24s ease;
+    .pd-story-card h3 strong { font-weight:900; }
+    .pd-mini-progress {
+      position:absolute;
+      left:32px;
+      right:32px;
+      bottom:32px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
-    #pd-mobile-dock button.is-active { color:var(--pd5-blue); }
-    #pd-mobile-dock button.is-active::before { opacity:1; transform:scale(1); }
-    #pd-mobile-dock button:active { transform:scale(.94); }
-    .pd-dock-icon, .pd-dock-label { position:relative; z-index:1; }
-    .pd-dock-icon { width:26px; height:26px; display:grid; place-items:center; }
-    .pd-dock-icon svg { width:20px;height:20px; stroke-width:2.15; }
-    .pd-dock-label { font-size:10px; font-weight:900; letter-spacing:-.01em; }
-    .pd-dock-avatar { overflow:hidden; border-radius:10px; }
-    .pd-dock-avatar img { width:24px;height:24px; border-radius:9px; object-fit:cover; border:1px solid rgba(10,116,255,.16); }
+    .pd-mini-progress span {
+      height:5px;
+      flex:1;
+      border-radius:99px;
+      background:linear-gradient(90deg,#2aa7ff,#0878f9);
+      box-shadow:0 0 15px rgba(10,132,255,.55);
+    }
+    .pd-mini-progress i {
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:rgba(255,255,255,.20);
+    }
+    .pd-balance-preview {
+      position:absolute;
+      left:32px;
+      right:32px;
+      bottom:30px;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:end;
+      gap:10px;
+      padding:15px 16px;
+      border:1px solid rgba(245,185,63,.15);
+      border-radius:18px;
+      background:rgba(245,185,63,.06);
+    }
+    .pd-balance-preview small { grid-column:1/-1; font-size:9px; letter-spacing:.12em; font-weight:900; color:rgba(255,255,255,.45); }
+    .pd-balance-preview b { font-size:25px; letter-spacing:-.04em; }
+    .pd-balance-preview span { font-size:11px; color:#f5b93f; font-weight:900; }
+    .pd-security-preview {
+      position:absolute;
+      left:32px;
+      right:32px;
+      bottom:30px;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:8px 10px;
+      align-items:center;
+      padding:15px 16px;
+      border:1px solid rgba(53,208,127,.15);
+      border-radius:18px;
+      background:rgba(53,208,127,.055);
+    }
+    .pd-security-preview span {
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#35d07f;
+      box-shadow:0 0 0 6px rgba(53,208,127,.10),0 0 18px rgba(53,208,127,.5);
+    }
+    .pd-security-preview b { font-size:12px; }
+    .pd-security-preview small { grid-column:2; color:rgba(255,255,255,.45); font-size:10px; margin-top:-4px; }
+    html:not(.dark) .pd-security-preview small { color:rgba(0,0,0,.45); }
+    .pd-inline-action {
+      position:absolute;
+      left:32px;
+      right:32px;
+      bottom:30px;
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 15px;
+      border:1px solid rgba(139,92,246,.20);
+      border-radius:15px;
+      background:rgba(139,92,246,.09);
+      color:#c4a7ff;
+      font-size:11px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .35s var(--pd-ease),background .25s ease;
+    }
+    .pd-inline-action:hover { transform:translateY(-2px); background:rgba(139,92,246,.15); }
+    .pd-inline-action svg { width:15px; height:15px; }
 
-    /* --- richer reveal states --- */
-    .view-enter-once {
-      animation:pdViewEnter .58s cubic-bezier(.16,1,.3,1) both;
-    }
-    .pd-reveal-live {
-      opacity:1 !important; transform:none !important; filter:none !important;
-      transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
-    }
-    .pd-reveal-live:hover { transform:translateY(-2px) !important; }
-
-    /* --- responsive: full width and larger readable blocks --- */
-    @media (max-width: 1280px) {
-      #view-landing { width:min(1460px, calc(100% - 40px)) !important; }
-      #view-dashboard, #view-wallet, #view-admin { width:calc(100% - 32px); }
-      .pd-feature-card--hero { grid-column:span 12; }
-      .pd-feature-card--compact { grid-column:span 6; }
-      #view-landing h1 { font-size:clamp(50px,7vw,88px) !important; }
-    }
-    @media (max-width: 1023px) {
-      #view-dashboard > .grid,
-      #view-wallet > .grid { grid-template-columns:1fr !important; }
-      .pd-steps-section { grid-template-columns:1fr; gap:28px; }
-      .pd-section-intro--left { margin-left:auto; text-align:center; }
-      .pd-feature-card--hero,
-      .pd-feature-card--compact,
-      .pd-feature-card--wide { grid-column:1 / -1; }
-      .pd-feature-card--wide { align-items:flex-start; }
-      .pd-security-visual { width:250px; min-width:250px; }
-      #view-landing .lg\:col-span-5 .relative.w-full { height:520px !important; }
-    }
-    @media (max-width: 767px) {
-      body { padding-bottom:92px; }
-      nav.sticky > .navbar-inner { min-height:66px; }
-      .navbar-inner { padding-inline:12px !important; }
-      .nav-brand-copy { display:none !important; }
-      .nav-brand-icon { width:44px !important; height:44px !important; border-radius:14px !important; }
-      .nav-icon-btn { width:44px !important; min-width:44px; height:44px !important; }
-      .nav-profile-btn { min-height:44px !important; padding:4px 8px 4px 4px !important; border-radius:15px !important; }
-      .nav-profile-avatar { width:34px !important; height:34px !important; }
-      .nav-coin-pill { min-height:44px !important; padding-inline:11px !important; }
-      .nav-coin-pill span { font-size:11px !important; }
-      #security-strip { width:calc(100% - 14px) !important; margin-top:9px !important; }
-      .security-strip-inner { min-height:52px !important; border-radius:18px !important; }
-      .security-copy { max-width:0; }
-      #view-landing {
-        width:calc(100% - 24px) !important;
-        padding-top:32px !important;
-        gap:82px !important;
-      }
-      #view-landing h1 {
-        max-width:none;
-        font-size:clamp(44px,13vw,64px) !important;
-      }
-      #view-landing .lg\:col-span-7 > p {
-        font-size:18px !important;
-        max-width:34ch !important;
-        margin-inline:auto;
-      }
-      #view-landing .lg\:col-span-5 .relative.w-full { height:390px !important; }
-      #view-landing .flex.flex-col.sm\:flex-row { gap:10px !important; }
-      #view-landing .flex.flex-col.sm\:flex-row button { width:100%; min-height:54px !important; font-size:15px !important; }
-      .pd-section-intro { margin-bottom:24px; }
-      .pd-section-intro h2 { font-size:42px; }
-      .pd-section-intro p { font-size:16px; }
-      .pd-feature-card { border-radius:24px; padding:22px !important; }
-      .pd-feature-card--hero { min-height:380px; }
-      .pd-feature-art--orbit { height:190px; }
-      .pd-feature-copy h3 { font-size:27px; }
-      .pd-feature-copy p, .pd-wide-content p { font-size:14px; }
-      .pd-feature-card--wide { display:block; }
-      .pd-security-visual { width:100%; min-width:0; margin-top:20px; height:150px; }
-      .pd-security-status { right:0; bottom:0; }
-      .pd-step { min-height:74px; grid-template-columns:42px 28px 1fr; border-radius:18px; }
-      .pd-step strong { font-size:15px; }
-      .pd-step p { font-size:11px; }
-      #view-auth { width:calc(100% - 24px) !important; }
-      #view-auth .ui-panel { padding:22px !important; border-radius:26px !important; }
-      #view-dashboard, #view-wallet, #view-admin { width:calc(100% - 20px); }
-      #view-dashboard .ui-panel,
-      #view-wallet .ui-panel,
-      #view-admin .ui-panel { border-radius:24px !important; }
-      #view-dashboard input,
-      #view-dashboard select,
-      #view-dashboard textarea,
-      #view-wallet input,
-      #view-wallet select,
-      #view-wallet textarea { min-height:52px !important; }
-      .profile-shell { padding:16px !important; border-radius:28px !important; }
-      .profile-hero { padding:18px !important; border-radius:23px !important; }
-      .profile-avatar-xl { width:92px !important; height:92px !important; border-radius:27px !important; }
-      #pd-mobile-dock { display:grid; }
-      #pd-global-shortcuts { display:none !important; }
-      #pd-toast { bottom:86px; }
-    }
-    @media (max-width: 420px) {
-      .nav-coin-pill { display:none !important; }
-      #security-strip { display:none !important; }
-      #view-landing { width:calc(100% - 20px) !important; }
-      .pd-feature-card--hero { min-height:350px; }
-      .pd-feature-art--orbit { height:160px; }
-      .pd-orbit-ring-2 { width:190px; }
-      .pd-orbit-ring-1 { width:145px; height:145px; }
-    }
-
-    /* --- reduced motion: preserve hierarchy, remove movement --- */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
-      .pd-feature-card { transform:none !important; }
-      #pd-page-transition { display:none !important; }
-    }
-
-    @keyframes pdOrbitSpin { to { transform:rotate(360deg); } }
-    @keyframes pdCoreFloat { 0%,100%{ transform:translateY(0) rotate(-1deg);} 50%{transform:translateY(-8px) rotate(1deg);} }
-    @keyframes pdShieldBreath { 0%,100%{ transform:scale(1); box-shadow:0 18px 50px rgba(34,168,107,.10);} 50%{transform:scale(1.045); box-shadow:0 24px 62px rgba(34,168,107,.18);} }
-    @keyframes pdSecurityPulse { 0%{transform:scale(.68);opacity:.72;} 75%,100%{transform:scale(1.08);opacity:0;} }
-    @keyframes pdTransitionPulse { 0%,100%{transform:scale(.9);opacity:.72;} 50%{transform:scale(1.08);opacity:1;} }
-    @keyframes pdViewEnter { from{opacity:0; transform:translateY(18px) scale(.992);} to{opacity:1; transform:none;} }
-
-    .pd-pressed { transform:scale(.972) !important; filter:brightness(.985); }
-    html.dark .pd-pressed { filter:brightness(1.08); }
-    .pd-theme-will-change,
-    .pd-theme-will-change body,
-    .pd-theme-will-change .ui-card,
-    .pd-theme-will-change .ui-panel,
-    .pd-theme-will-change nav.sticky,
-    .pd-theme-will-change #pd-mobile-dock {
-      transition:background-color .46s ease, color .46s ease, border-color .46s ease, box-shadow .46s ease !important;
-    }
-
-    /* ==========================================================
-       DESIGNER ADVANCED v5.1 — deeper product polish
-       ========================================================== */
-    :root {
-      --pd51-blue:#0a74ff;
-      --pd51-blue-light:#6caeff;
-      --pd51-indigo:#6f5cf7;
-      --pd51-gold:#dfa000;
-      --pd51-green:#1ea76a;
-      --pd51-surface:var(--pd5-surface);
-      --pd51-line:var(--pd5-line);
-    }
-
-    /* Ambient visual field */
-    body::after {
-      content:"";
-      position:fixed; inset:0; pointer-events:none; z-index:-2;
+    /* Final CTA */
+    .pd-final-cta {
+      position:relative;
+      min-height:500px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:80px 24px;
+      overflow:hidden;
+      border:1px solid var(--pd-stroke);
+      border-radius:42px;
       background:
-        radial-gradient(540px 240px at 14% 28%, rgba(10,116,255,.035), transparent 72%),
-        radial-gradient(620px 270px at 88% 74%, rgba(111,92,247,.032), transparent 72%);
-      mix-blend-mode:normal;
+        radial-gradient(600px 330px at 50% 0%,rgba(10,132,255,.20),transparent 70%),
+        linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+      box-shadow:var(--pd-shadow);
     }
-    html.dark body::after {
+    html:not(.dark) .pd-final-cta {
       background:
-        radial-gradient(540px 240px at 14% 28%, rgba(10,116,255,.075), transparent 72%),
-        radial-gradient(620px 270px at 88% 74%, rgba(111,92,247,.065), transparent 72%);
+        radial-gradient(600px 330px at 50% 0%,rgba(10,132,255,.11),transparent 70%),
+        rgba(255,255,255,.72);
     }
+    .pd-final-cta h2 {
+      position:relative;
+      z-index:2;
+      margin-top:22px;
+      font-size:clamp(48px,7vw,96px);
+      line-height:.92;
+      letter-spacing:-.065em;
+      font-weight:900;
+    }
+    .pd-final-cta > p {
+      position:relative;
+      z-index:2;
+      margin-top:24px;
+      color:var(--pd-muted);
+      font-size:16px;
+    }
+    .pd-final-actions {
+      position:relative;
+      z-index:2;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:12px;
+      margin-top:34px;
+    }
+    .pd-primary-cta,
+    .pd-secondary-cta {
+      min-height:54px;
+      padding:0 21px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      border-radius:17px;
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .4s var(--pd-ease),box-shadow .4s var(--pd-ease),background .25s ease;
+    }
+    .pd-primary-cta {
+      border:0;
+      color:#fff;
+      background:#0a84ff;
+      box-shadow:0 14px 40px rgba(10,132,255,.26);
+    }
+    .pd-primary-cta:hover { transform:translateY(-3px); box-shadow:0 20px 50px rgba(10,132,255,.36); }
+    .pd-secondary-cta {
+      border:1px solid var(--pd-stroke);
+      color:var(--pd-white);
+      background:var(--pd-surface-0);
+      backdrop-filter:blur(20px);
+    }
+    .pd-secondary-cta:hover { transform:translateY(-3px); background:var(--pd-surface-1); }
+    .pd-secondary-cta kbd {
+      padding:3px 6px;
+      border-radius:6px;
+      border:1px solid var(--pd-stroke);
+      color:var(--pd-muted);
+      font-size:9px;
+    }
+    .pd-final-orb {
+      position:absolute;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      filter:blur(70px);
+      pointer-events:none;
+      opacity:.42;
+    }
+    .pd-orb-one { background:rgba(10,132,255,.20); left:-180px; bottom:-250px; }
+    .pd-orb-two { background:rgba(139,92,246,.16); right:-180px; top:-250px; }
+
+    /* Advanced view transitions */
+    main > section:not(.hidden) {
+      animation:pd-view-in .72s var(--pd-ease) both !important;
+    }
+    @keyframes pd-view-in {
+      from { opacity:0; transform:translateY(20px) scale(.992); filter:blur(4px); }
+      to { opacity:1; transform:none; filter:none; }
+    }
+    .view-enter-once { animation:pd-view-in .72s var(--pd-ease) both !important; }
+
+    .apple-reveal {
+      opacity:0;
+      transform:translateY(46px) scale(.985);
+      filter:blur(5px);
+      transition:
+        opacity 1s var(--pd-ease),
+        transform 1s var(--pd-ease),
+        filter 1s var(--pd-ease);
+    }
+    .apple-reveal.is-visible {
+      opacity:1;
+      transform:none;
+      filter:none;
+    }
+    .pd-reveal-card {
+      opacity:0;
+      transform:translateY(24px) scale(.985);
+      transition:opacity .8s var(--pd-ease),transform .8s var(--pd-ease);
+    }
+    .pd-reveal-card.is-in { opacity:1; transform:none; }
+    .pd-reveal-card:nth-child(2) { transition-delay:.05s; }
+    .pd-reveal-card:nth-child(3) { transition-delay:.10s; }
+    .pd-reveal-card:nth-child(4) { transition-delay:.15s; }
+    .pd-reveal-card:nth-child(5) { transition-delay:.20s; }
 
     /* Command center */
-    .pd-command-center {
-      display:flex; align-items:center; justify-content:space-between; gap:18px;
-      padding:14px 16px; margin:0 0 20px;
-      border-radius:22px; border:1px solid var(--pd51-line);
-      background:var(--pd51-surface); box-shadow:var(--pd5-shadow-a);
-      position:relative; overflow:hidden;
+    .pd-command-overlay,
+    .pd-theme-overlay {
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:clamp(80px,12vh,150px) 18px 24px;
+      background:rgba(0,0,0,.58);
+      backdrop-filter:blur(28px) saturate(125%);
+      -webkit-backdrop-filter:blur(28px) saturate(125%);
     }
-    .pd-command-center::before {
-      content:""; position:absolute; width:180px; height:180px; right:-44px; top:-80px; border-radius:50%;
-      background:radial-gradient(circle, rgba(10,116,255,.12), transparent 68%);
+    .pd-command-overlay.hidden,
+    .pd-theme-overlay.hidden { display:none; }
+    .pd-command-backdrop,
+    .pd-theme-backdrop { position:absolute; inset:0; }
+    .pd-command-sheet {
+      position:relative;
+      z-index:1;
+      width:min(760px,100%);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:30px;
+      background:rgba(18,20,26,.92);
+      box-shadow:0 50px 160px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+      overflow:hidden;
+      transform:translateY(14px) scale(.97);
+      animation:pd-command-in .55s var(--pd-ease) forwards;
+    }
+    html:not(.dark) .pd-command-sheet { background:rgba(255,255,255,.93); border-color:rgba(0,0,0,.10); }
+    @keyframes pd-command-in { to { transform:none; } }
+    .pd-command-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:24px 24px 18px;
+    }
+    .pd-command-brand { display:flex; align-items:center; gap:13px; }
+    .pd-command-icon {
+      width:46px;
+      height:46px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:15px;
+      color:#72b7ff;
+      background:rgba(10,132,255,.12);
+      border:1px solid rgba(10,132,255,.16);
+    }
+    .pd-command-icon svg { width:21px; height:21px; }
+    .pd-command-head h2,
+    .pd-theme-head h2 { margin-top:6px; font-size:22px; line-height:1.1; letter-spacing:-.03em; font-weight:900; }
+    .pd-round-close {
+      width:42px;
+      height:42px;
+      min-height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--pd-stroke);
+      border-radius:50%;
+      color:var(--pd-muted);
+      background:var(--pd-surface-0);
+      cursor:pointer;
+      transition:transform .3s var(--pd-ease),color .2s ease,background .2s ease;
+    }
+    .pd-round-close:hover { transform:rotate(5deg) scale(1.04); color:var(--pd-white); background:var(--pd-surface-1); }
+    .pd-command-search {
+      margin:0 18px;
+      min-height:58px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:0 15px;
+      border:1px solid var(--pd-stroke);
+      border-radius:17px;
+      background:var(--pd-surface-0);
+    }
+    .pd-command-search svg { width:19px; height:19px; color:var(--pd-muted); }
+    .pd-command-search input {
+      flex:1;
+      min-width:0;
+      height:54px;
+      border:0 !important;
+      outline:0 !important;
+      background:transparent !important;
+      color:var(--pd-white) !important;
+      box-shadow:none !important;
+      font-size:14px;
+    }
+    .pd-command-search kbd,
+    .pd-command-foot kbd {
+      padding:4px 7px;
+      border:1px solid var(--pd-stroke);
+      border-bottom-color:var(--pd-stroke-strong);
+      border-radius:6px;
+      color:var(--pd-muted);
+      background:rgba(255,255,255,.035);
+      font-size:9px;
+      font-weight:800;
+    }
+    .pd-command-results {
+      max-height:430px;
+      overflow:auto;
+      padding:12px;
+    }
+    .pd-command-item {
+      width:100%;
+      min-height:68px;
+      display:grid;
+      grid-template-columns:42px 1fr auto;
+      align-items:center;
+      gap:12px;
+      padding:9px 10px;
+      border:1px solid transparent;
+      border-radius:17px;
+      color:var(--pd-white);
+      background:transparent;
+      text-align:left;
+      cursor:pointer;
+      transition:background .2s ease,border-color .2s ease,transform .25s var(--pd-ease);
+    }
+    .pd-command-item:hover,
+    .pd-command-item.is-selected {
+      border-color:rgba(10,132,255,.18);
+      background:rgba(10,132,255,.08);
+      transform:translateX(2px);
+    }
+    .pd-command-item .pd-command-item-icon {
+      width:42px;
+      height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:14px;
+      background:rgba(255,255,255,.055);
+      color:#73baff;
+    }
+    .pd-command-item b { display:block; font-size:13px; font-weight:900; }
+    .pd-command-item small { display:block; margin-top:3px; color:var(--pd-muted); font-size:10px; }
+    .pd-command-item > span:last-child { color:var(--pd-dim); font-size:10px; }
+    .pd-command-empty { padding:34px 18px; text-align:center; color:var(--pd-muted); font-size:12px; }
+    .pd-command-foot {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:13px 18px;
+      border-top:1px solid var(--pd-stroke);
+      color:var(--pd-muted);
+      font-size:10px;
+    }
+    .pd-command-foot span { display:flex; align-items:center; gap:5px; }
+    .pd-command-foot span + span { margin-left:auto; }
+
+    /* Theme sheet */
+    .pd-theme-overlay { align-items:flex-end; padding:18px; }
+    .pd-theme-sheet {
+      position:relative;
+      z-index:1;
+      width:min(620px,100%);
+      padding:25px;
+      border:1px solid var(--pd-stroke);
+      border-radius:32px;
+      background:rgba(18,20,26,.92);
+      box-shadow:0 50px 150px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);
+      backdrop-filter:blur(30px);
+      -webkit-backdrop-filter:blur(30px);
+      animation:pd-sheet-up .55s var(--pd-ease) both;
+    }
+    html:not(.dark) .pd-theme-sheet { background:rgba(255,255,255,.94); }
+    @keyframes pd-sheet-up { from { opacity:0; transform:translateY(40px) scale(.98); } to { opacity:1; transform:none; } }
+    .pd-theme-head { display:flex; justify-content:space-between; gap:18px; }
+    .pd-theme-head p { margin-top:8px; color:var(--pd-muted); font-size:12px; line-height:1.65; max-width:460px; }
+    .pd-theme-options { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:22px; }
+    .pd-theme-option {
+      position:relative;
+      min-height:154px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px;
+      border:1px solid var(--pd-stroke);
+      border-radius:20px;
+      background:var(--pd-surface-0);
+      color:var(--pd-white);
+      cursor:pointer;
+      text-align:left;
+      transition:transform .35s var(--pd-ease),border-color .25s ease,background .25s ease;
+    }
+    .pd-theme-option:hover { transform:translateY(-3px); border-color:rgba(10,132,255,.32); }
+    .pd-theme-option.is-active { border-color:rgba(10,132,255,.48); background:rgba(10,132,255,.09); }
+    .pd-theme-preview {
+      width:100%;
+      height:82px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:14px;
+      border:1px solid var(--pd-stroke);
+    }
+    .pd-preview-dark { color:#fff; background:linear-gradient(145deg,#0b0d12,#1a1d25); }
+    .pd-preview-light { color:#222; background:linear-gradient(145deg,#f4f5f7,#fff); }
+    .pd-preview-system { color:#fff; background:linear-gradient(135deg,#111 0 50%,#f7f7f7 50%); }
+    .pd-theme-option b { display:block; font-size:12px; font-weight:900; }
+    .pd-theme-option small { display:block; margin-top:3px; color:var(--pd-muted); font-size:9px; }
+    .pd-theme-check { position:absolute; top:10px; right:10px; width:15px; height:15px; opacity:0; color:#4da7ff; }
+    .pd-theme-option.is-active .pd-theme-check { opacity:1; }
+
+    /* Wallet / profile / admin premium surfaces */
+    #view-wallet,
+    #view-dashboard,
+    #view-admin {
+      width:min(var(--pd-max),100%) !important;
+      padding-left:clamp(18px,4vw,60px) !important;
+      padding-right:clamp(18px,4vw,60px) !important;
+      padding-top:clamp(38px,6vw,78px) !important;
+    }
+    #view-wallet .ui-panel,
+    #view-dashboard .ui-panel,
+    #view-admin .ui-panel {
+      border-radius:30px !important;
+      border-color:var(--pd-stroke) !important;
+      background:var(--pd-surface-0) !important;
+      box-shadow:var(--pd-shadow) !important;
+    }
+    #view-wallet h1,
+    #view-wallet h2,
+    #view-dashboard h1,
+    #view-dashboard h2,
+    #view-admin h1,
+    #view-admin h2 {
+      font-size:clamp(32px,4.2vw,62px);
+      letter-spacing:-.055em;
+      line-height:.98;
+    }
+    #view-wallet .topup-pkg-btn {
+      min-height:100px !important;
+      border-radius:22px !important;
+      border-color:var(--pd-stroke) !important;
+      background:var(--pd-surface-0) !important;
+      transition:transform .35s var(--pd-ease),border-color .25s ease,background .25s ease,box-shadow .35s ease !important;
+    }
+    #view-wallet .topup-pkg-btn:hover { transform:translateY(-4px) !important; box-shadow:0 22px 60px rgba(0,0,0,.22) !important; }
+    #view-wallet .topup-pkg-btn:has(input:checked) {
+      border-color:rgba(10,132,255,.42) !important;
+      background:rgba(10,132,255,.10) !important;
+      box-shadow:inset 0 0 0 1px rgba(10,132,255,.12),0 22px 70px rgba(10,132,255,.10) !important;
+    }
+    .profile-shell {
+      width:min(980px,100%) !important;
+      padding:clamp(18px,3vw,32px) !important;
+      border-radius:34px !important;
+      border:1px solid var(--pd-stroke) !important;
+      background:rgba(14,16,21,.92) !important;
+      box-shadow:var(--pd-shadow-deep) !important;
+      backdrop-filter:blur(34px) saturate(135%);
+      -webkit-backdrop-filter:blur(34px) saturate(135%);
+    }
+    html:not(.dark) .profile-shell { background:rgba(255,255,255,.94) !important; }
+    .profile-hero {
+      min-height:190px;
+      padding:24px !important;
+      border-radius:28px !important;
+      border-color:var(--pd-stroke) !important;
+      background:
+        radial-gradient(420px 200px at 10% 0%,rgba(10,132,255,.14),transparent 70%),
+        rgba(255,255,255,.035) !important;
+    }
+    html:not(.dark) .profile-hero { background:radial-gradient(420px 200px at 10% 0%,rgba(10,132,255,.10),transparent 70%),rgba(0,0,0,.025) !important; }
+    .profile-avatar-xl {
+      width:126px !important;
+      height:126px !important;
+      border-radius:36px !important;
+      border:4px solid rgba(255,255,255,.12) !important;
+      box-shadow:0 25px 60px rgba(0,0,0,.24) !important;
+    }
+    .security-card {
+      border-color:rgba(10,132,255,.15) !important;
+      border-radius:24px !important;
+      background:linear-gradient(145deg,rgba(10,132,255,.075),rgba(139,92,246,.025)) !important;
+    }
+
+    /* Forms: larger, calmer, easier to scan */
+    #view-auth {
+      width:min(720px,100%) !important;
+      padding-top:clamp(60px,10vw,130px) !important;
+      padding-bottom:100px !important;
+    }
+    #view-auth > .ui-panel {
+      padding:clamp(24px,5vw,52px) !important;
+      border-radius:34px !important;
+      background:var(--pd-surface-0) !important;
+    }
+    #view-auth label {
+      font-size:12px !important;
+      font-weight:850 !important;
+      margin-bottom:8px !important;
+    }
+    #view-auth .ui-input {
+      min-height:56px !important;
+      border-radius:17px !important;
+      padding-left:16px !important;
+      padding-right:16px !important;
+      font-size:14px !important;
+    }
+    #view-auth form button[type="submit"] {
+      min-height:56px !important;
+      border-radius:17px !important;
+      font-size:14px !important;
+    }
+
+    /* Modal language */
+    #custom-modal > div,
+    #queue-detail-modal > div,
+    #slip-preview-modal > div {
+      border-radius:30px !important;
+      border:1px solid var(--pd-stroke) !important;
+      background:rgba(15,17,22,.94) !important;
+      box-shadow:0 45px 140px rgba(0,0,0,.52) !important;
+      backdrop-filter:blur(30px) saturate(135%);
+    }
+    html:not(.dark) #custom-modal > div,
+    html:not(.dark) #queue-detail-modal > div,
+    html:not(.dark) #slip-preview-modal > div { background:rgba(255,255,255,.95) !important; }
+
+    /* Tables / admin */
+    #view-admin .overflow-x-auto {
+      border-color:var(--pd-stroke) !important;
+      border-radius:22px !important;
+      background:var(--pd-surface-0);
+    }
+    #view-admin table { min-width:980px !important; }
+    #view-admin th {
+      padding:14px 16px !important;
+      color:var(--pd-muted) !important;
+      background:rgba(255,255,255,.025);
+      font-size:10px !important;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    #view-admin td { padding:15px 16px !important; font-size:12px !important; border-color:var(--pd-stroke) !important; }
+
+    /* Buttons globally */
+    button, a, input, select, textarea { -webkit-tap-highlight-color:transparent; }
+    button { transition-property:transform,background,border-color,color,box-shadow,opacity; }
+    button:active:not(:disabled) { transition-duration:.08s; }
+    .bg-blue-600 {
+      background-color:#0a84ff !important;
+      box-shadow:0 10px 30px rgba(10,132,255,.18);
+    }
+    .bg-blue-600:hover { background-color:#1b91ff !important; }
+    .rounded-xl { border-radius:15px !important; }
+    .rounded-2xl { border-radius:18px !important; }
+
+    /* Focus ring */
+    :where(button,a,input,select,textarea):focus-visible {
+      outline:0 !important;
+      box-shadow:0 0 0 4px rgba(10,132,255,.13),0 0 0 1px rgba(10,132,255,.50) !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .pd-section-heading { grid-template-columns:1fr; gap:18px; }
+      .pd-section-heading p { justify-self:start; }
+      .pd-span-7,.pd-span-5 { grid-column:span 12; }
+      .pd-story-copy { margin-top:60px; }
+    }
+
+    @media (max-width: 820px) {
+      nav.sticky > .navbar-inner { width:calc(100% - 18px); margin-top:8px; border-radius:20px; }
+      .pd-live-island { top:7px; }
+      .pd-quick-dock {
+        left:50%;
+        right:auto;
+        bottom:max(12px,env(safe-area-inset-bottom));
+        transform:translateX(-50%);
+        flex-direction:row;
+        border-radius:22px;
+      }
+      .pd-quick-dock.is-hidden { transform:translate(-50%,20px); }
+      .pd-dock-button { width:44px; justify-content:center; padding:0; }
+      .pd-dock-button:hover { width:44px; transform:none; }
+      .pd-dock-button span { display:none; }
+      #view-landing { padding-top:70px !important; gap:120px !important; }
+      #view-landing > .grid:first-child { min-height:auto !important; }
+      #view-landing h1 { font-size:clamp(52px,13vw,88px) !important; }
+      #view-landing > .grid:first-child p { font-size:19px !important; }
+      .pd-story-grid { gap:12px; }
+      .pd-span-4 { grid-column:span 6; }
+      .pd-story-card { min-height:340px; border-radius:27px; }
+      .pd-theme-options { grid-template-columns:1fr; }
+      .pd-theme-option { min-height:92px; display:grid; grid-template-columns:82px 1fr auto; align-items:center; }
+      .pd-theme-preview { width:82px; height:64px; }
+    }
+
+    @media (max-width: 640px) {
+      body { font-size:15px; }
+      #security-strip { width:calc(100% - 16px) !important; }
+      .security-strip-inner { min-height:48px !important; }
+      .security-action { display:none; }
+      .nav-brand-copy { display:none !important; }
+      nav.sticky > .navbar-inner { padding:6px !important; }
+      .nav-icon-btn { width:44px !important; height:44px !important; min-height:44px !important; }
+      .nav-profile-btn { min-height:44px !important; }
+      #view-landing {
+        padding-left:16px !important;
+        padding-right:16px !important;
+        padding-top:58px !important;
+      }
+      #view-landing h1 { font-size:clamp(48px,15vw,70px) !important; }
+      #view-landing > .grid:first-child p { font-size:17px !important; line-height:1.62 !important; }
+      #view-landing > .grid:first-child button { width:100%; }
+      #view-landing > .grid:first-child .border-t { grid-template-columns:1fr !important; }
+      .pd-section-heading h2 { font-size:44px; }
+      .pd-span-4,.pd-span-5,.pd-span-7 { grid-column:span 12; }
+      .pd-story-card { min-height:330px; padding:24px; border-radius:26px; }
+      .pd-story-copy { margin-top:52px; }
+      .pd-story-copy h3 { font-size:39px; }
+      .pd-story-icon { margin-top:55px; }
+      .pd-final-cta { min-height:460px; border-radius:30px; padding:65px 20px; }
+      .pd-final-cta h2 { font-size:54px; }
+      .pd-command-overlay { padding:66px 8px 8px; }
+      .pd-command-sheet { border-radius:25px; }
+      .pd-command-head { padding:18px 16px 14px; }
+      .pd-command-search { margin:0 10px; }
+      .pd-command-results { max-height:50vh; padding:8px; }
+      .pd-command-foot { flex-wrap:wrap; }
+      .pd-command-foot span + span { margin-left:0; }
+      .pd-theme-overlay { padding:8px; }
+      .pd-theme-sheet { border-radius:27px; padding:19px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pd-cursor-glow,
+      .pd-ambient-orb,
+      .pd-live-island,
+      .pd-quick-dock { transition:none !important; }
+      .pd-reveal-card,
+      .apple-reveal { opacity:1 !important; transform:none !important; filter:none !important; transition:none !important; }
+      .pd-story-card,
+      .pd-primary-cta,
+      .pd-secondary-cta,
+      .pd-dock-button { transition:none !important; }
+      main > section:not(.hidden) { animation:none !important; }
+    }
+
+  
+    /* Toast / micro feedback layer */
+    .pd-toast-stack {
+      position:fixed;
+      z-index:1100;
+      top:82px;
+      right:18px;
+      width:min(370px,calc(100% - 36px));
+      display:grid;
+      gap:9px;
       pointer-events:none;
     }
-    .pd-command-main { min-width:0; display:grid; gap:2px; position:relative; z-index:1; }
-    .pd-command-kicker { font-size:10px; font-weight:900; letter-spacing:.12em; color:var(--pd51-blue); text-transform:uppercase; }
-    .pd-command-main strong { font-size:20px; letter-spacing:-.03em; color:var(--pd5-text); }
-    .pd-command-main span:last-child { color:var(--pd5-sub); font-size:12px; line-height:1.4; }
-    .pd-command-actions { display:flex; gap:7px; position:relative; z-index:1; }
-    .pd-command-action {
-      min-height:44px !important; padding:0 12px; border-radius:14px !important;
-      border:1px solid var(--pd51-line); background:rgba(10,116,255,.055); color:var(--pd5-blue);
-      display:inline-flex; align-items:center; justify-content:center; gap:7px; font-size:11px; font-weight:900;
-      transition:transform .2s ease, background .2s ease, border-color .2s ease;
-    }
-    .pd-command-action:hover { transform:translateY(-1px); border-color:rgba(10,116,255,.22); background:rgba(10,116,255,.10); }
-    .pd-command-action--secure { background:rgba(30,167,106,.07); color:var(--pd51-green); }
-    .pd-command-action svg { width:15px;height:15px; }
-
-    /* Wallet glance */
-    .pd-wallet-glance {
-      display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:20px;
-      margin:0 0 20px; padding:20px 22px; border-radius:24px;
-      border:1px solid rgba(223,160,0,.15);
-      background:
-        radial-gradient(500px 180px at 100% 0%, rgba(230,163,0,.12), transparent 70%),
-        var(--pd51-surface);
-      box-shadow:var(--pd5-shadow-a);
-    }
-    .pd-wallet-glance strong { display:block; font-size:22px; font-weight:900; color:var(--pd5-text); letter-spacing:-.03em; }
-    .pd-wallet-glance p { margin-top:3px; font-size:12px; color:var(--pd5-sub); }
-    .pd-wallet-value { text-align:right; white-space:nowrap; }
-    .pd-wallet-value span { font-size:42px; line-height:.9; font-weight:950; letter-spacing:-.05em; color:var(--pd51-gold); }
-    .pd-wallet-value small { margin-left:7px; color:var(--pd51-gold); font-size:12px; font-weight:900; }
-    .pd-wallet-glance > button {
-      min-height:46px; padding:0 14px; border-radius:15px; display:inline-flex; align-items:center; gap:8px;
-      border:1px solid rgba(10,116,255,.14); background:rgba(10,116,255,.065); color:var(--pd5-blue); font-size:11px; font-weight:900;
-    }
-    .pd-wallet-glance > button svg { width:15px;height:15px; }
-
-    /* Trust section */
-    .pd-trust-section { display:grid; grid-template-columns:minmax(270px,.72fr) 1.28fr; gap:50px; align-items:start; }
-    .pd-trust-heading h2 {
-      margin-top:10px; font-size:clamp(38px,5vw,74px); line-height:1.02; letter-spacing:-.055em; font-weight:950; color:var(--pd5-text);
-    }
-    .pd-trust-heading h2 span {
-      background:linear-gradient(120deg,#2a87ff,#7865ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    }
-    .pd-trust-heading p { margin-top:15px; color:var(--pd5-sub); font-size:16px; line-height:1.55; max-width:40ch; }
-    .pd-trust-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-    .pd-trust-card {
-      min-height:208px; padding:22px; border-radius:24px; border:1px solid var(--pd51-line);
-      background:var(--pd51-surface); box-shadow:var(--pd5-shadow-a);
-      display:flex; flex-direction:column; transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;
-    }
-    .pd-trust-card:hover { transform:translateY(-3px); box-shadow:var(--pd5-shadow-b); border-color:rgba(10,116,255,.20); }
-    .pd-trust-symbol { width:48px;height:48px;border-radius:16px;display:grid;place-items:center;margin-bottom:18px; }
-    .pd-trust-symbol svg { width:22px;height:22px; }
-    .pd-symbol-blue { color:#0a74ff;background:rgba(10,116,255,.10);border:1px solid rgba(10,116,255,.15); }
-    .pd-symbol-green { color:#20a86c;background:rgba(32,168,108,.10);border:1px solid rgba(32,168,108,.15); }
-    .pd-symbol-gold { color:#d99600;background:rgba(217,150,0,.10);border:1px solid rgba(217,150,0,.15); }
-    .pd-trust-card strong { font-size:20px;font-weight:900;letter-spacing:-.03em;color:var(--pd5-text); }
-    .pd-trust-card p { margin-top:7px;font-size:13px;line-height:1.52;color:var(--pd5-sub); }
-    .pd-trust-meta { margin-top:auto;padding-top:18px;font-size:9px;letter-spacing:.13em;font-weight:900;color:var(--pd5-sub); }
-    .pd-trust-card--dark {
-      color:#fff; border-color:rgba(255,255,255,.09);
-      background:
-        radial-gradient(180px 130px at 90% 10%, rgba(10,116,255,.17), transparent 72%),
-        linear-gradient(145deg,#10141c,#0b0e14);
-    }
-    .pd-trust-card--dark strong, .pd-trust-card--dark p { color:#fff; }
-    .pd-trust-stat { display:flex;align-items:center;justify-content:space-between; }
-    .pd-trust-stat span { font-size:12px;font-weight:900;color:#7aaeff; }
-    .pd-trust-stat b { font-size:11px;letter-spacing:.13em;color:rgba(255,255,255,.52); }
-    .pd-trust-lines { display:grid;gap:9px;margin:22px 0 16px; }
-    .pd-trust-lines i { height:8px;border-radius:999px;background:rgba(255,255,255,.08); }
-    .pd-trust-lines i:first-child { width:86%;background:rgba(98,164,255,.32); }
-    .pd-trust-lines i:nth-child(2) { width:70%; }
-    .pd-trust-lines i:nth-child(3) { width:92%;background:rgba(255,255,255,.12); }
-    .pd-trust-lines i:nth-child(4) { width:46%; }
-
-    /* More responsive hierarchy */
-    @media (max-width:1023px) {
-      .pd-command-center { align-items:flex-start; flex-direction:column; }
-      .pd-command-actions { width:100%; display:grid; grid-template-columns:repeat(3,1fr); }
-      .pd-command-action { width:100%; }
-      .pd-wallet-glance { grid-template-columns:1fr auto; }
-      .pd-wallet-glance > button { grid-column:1/-1; width:100%; }
-      .pd-trust-section { grid-template-columns:1fr; gap:28px; }
-      .pd-trust-heading p { max-width:60ch; margin-inline:auto; text-align:center; }
-      .pd-trust-heading { text-align:center; }
-    }
-    @media (max-width:767px) {
-      .pd-command-center { padding:14px; border-radius:19px; }
-      .pd-command-main strong { font-size:18px; }
-      .pd-command-actions { grid-template-columns:1fr; gap:6px; }
-      .pd-command-action { justify-content:flex-start; padding-inline:13px; }
-      .pd-wallet-glance { padding:18px; border-radius:20px; gap:13px; }
-      .pd-wallet-glance strong { font-size:18px; }
-      .pd-wallet-value span { font-size:34px; }
-      .pd-trust-grid { grid-template-columns:1fr; }
-      .pd-trust-card { min-height:185px; border-radius:21px; }
-      .pd-trust-heading h2 { font-size:43px; }
-    }
-
-    /* Navigation shrink effect */
-    body.pd-scrolled nav.sticky .navbar-inner { min-height:62px; padding-block:7px !important; }
-    body.pd-scrolled .nav-brand-icon { transform:scale(.92); }
-    body.pd-scrolled .nav-icon-btn { transform:scale(.94); }
-
-    /* Better button feedback without changing semantic colors */
-    button {
+    .pd-toast {
       position:relative;
+      display:grid;
+      grid-template-columns:38px 1fr 28px;
+      gap:10px;
+      align-items:center;
+      min-height:68px;
+      padding:10px;
       overflow:hidden;
+      border:1px solid var(--pd-stroke);
+      border-radius:18px;
+      background:rgba(18,20,26,.86);
+      box-shadow:0 25px 70px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter:blur(28px) saturate(145%);
+      -webkit-backdrop-filter:blur(28px) saturate(145%);
+      opacity:0;
+      transform:translateX(24px) scale(.96);
+      transition:opacity .4s var(--pd-ease),transform .55s var(--pd-ease);
+      pointer-events:auto;
     }
-    button::after {
-      content:""; position:absolute; width:10px;height:10px;border-radius:50%; left:var(--pd-ripple-x,50%);top:var(--pd-ripple-y,50%);
-      background:rgba(255,255,255,.28); transform:translate(-50%,-50%) scale(0); opacity:.55; pointer-events:none;
+    html:not(.dark) .pd-toast { background:rgba(255,255,255,.92); }
+    .pd-toast.is-in { opacity:1; transform:none; }
+    .pd-toast-icon {
+      width:38px;
+      height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:13px;
+      background:rgba(10,132,255,.10);
+      color:#69b5ff;
     }
-    button.pd-ripple::after { animation:pdRipple .55s ease-out; }
-    button.pd-pressed { transform:scale(.975) !important; }
-    @keyframes pdRipple { 0%{transform:translate(-50%,-50%) scale(0);opacity:.45} 100%{transform:translate(-50%,-50%) scale(16);opacity:0} }
+    .pd-toast-success .pd-toast-icon { background:rgba(53,208,127,.10); color:#35d07f; }
+    .pd-toast-warn .pd-toast-icon { background:rgba(245,185,63,.10); color:#f5b93f; }
+    .pd-toast-danger .pd-toast-icon { background:rgba(255,95,115,.10); color:#ff5f73; }
+    .pd-toast-copy b { display:block; font-size:12px; font-weight:900; color:var(--pd-white); }
+    .pd-toast-copy small { display:block; margin-top:3px; color:var(--pd-muted); font-size:10px; line-height:1.45; }
+    .pd-toast-close {
+      width:28px;
+      height:28px;
+      min-height:28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      border-radius:50%;
+      color:var(--pd-muted);
+      background:transparent;
+      cursor:pointer;
+    }
+    .pd-toast-close:hover { background:var(--pd-surface-1); color:var(--pd-white); }
+    .pd-toast-close svg { width:14px; height:14px; }
+    .pd-toast-progress {
+      position:absolute;
+      left:0;
+      bottom:0;
+      height:2px;
+      width:100%;
+      background:linear-gradient(90deg,#0a84ff,#35b7ff);
+      transform-origin:left;
+      animation:pd-toast-time 4.3s linear forwards;
+    }
+    @keyframes pd-toast-time { to { transform:scaleX(0); } }
+    .pd-click-flash { animation:pd-click-flash .26s var(--pd-ease); }
+    @keyframes pd-click-flash {
+      0% { filter:brightness(1); }
+      45% { filter:brightness(1.18); }
+      100% { filter:brightness(1); }
+    }
+    body.pd-command-open { overflow:hidden; }
+    .pd-profile-hover { box-shadow:0 0 0 1px rgba(10,132,255,.35),0 14px 45px rgba(10,132,255,.10) !important; }
+    @media (max-width:640px) {
+      .pd-toast-stack { top:68px; right:10px; width:calc(100% - 20px); }
+    }
 
-    /* Primary CTA animated edge, very subtle */
-    #view-landing .bg-gradient-to-r.from-blue-600,
-    #view-dashboard button[type="submit"],
-    #view-wallet button[type="submit"] {
-      position:relative;
-      box-shadow:0 18px 40px rgba(10,116,255,.16) !important;
-    }
-    #view-landing .bg-gradient-to-r.from-blue-600::before,
-    #view-dashboard button[type="submit"]::before,
-    #view-wallet button[type="submit"]::before {
-      content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px;
-      background:linear-gradient(110deg,rgba(255,255,255,.45),transparent 20%,transparent 80%,rgba(255,255,255,.28));
-      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-      -webkit-mask-composite:xor; mask-composite:exclude; opacity:.32;
-      pointer-events:none; animation:pdEdgeGlow 4.2s ease-in-out infinite;
-    }
-    @keyframes pdEdgeGlow { 0%,100%{opacity:.22} 50%{opacity:.55} }
+  
+    /* DESIGNER ADVANCED — reusable motion utilities */
+    .pd-surface { background:var(--pd-surface-0); border:1px solid var(--pd-stroke); box-shadow:var(--pd-shadow); }
+    .pd-surface-strong { background:var(--pd-surface-1); border:1px solid var(--pd-stroke-strong); box-shadow:var(--pd-shadow); }
+    .pd-glass { backdrop-filter:blur(28px) saturate(145%); -webkit-backdrop-filter:blur(28px) saturate(145%); }
+    .pd-divider { height:1px; width:100%; background:var(--pd-stroke); }
+    .pd-muted { color:var(--pd-muted) !important; }
+    .pd-dim { color:var(--pd-dim) !important; }
+    .pd-number { font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }
 
-    /* Modal polish */
-    #custom-modal > div, #queue-detail-modal > div, #slip-preview-modal > div, #file-preview-drawer > div {
-      border:1px solid var(--pd51-line);
-      box-shadow:0 36px 110px rgba(0,0,0,.30) !important;
-    }
-    html.dark #custom-modal > div,
-    html.dark #queue-detail-modal > div,
-    html.dark #slip-preview-modal > div,
-    html.dark #file-preview-drawer > div {
-      box-shadow:0 42px 130px rgba(0,0,0,.48) !important;
-    }
+    .pd-delay-0 { transition-delay:0ms; animation-delay:0ms; }
+    .pd-delay-1 { transition-delay:40ms; animation-delay:40ms; }
+    .pd-delay-2 { transition-delay:80ms; animation-delay:80ms; }
+    .pd-delay-3 { transition-delay:120ms; animation-delay:120ms; }
+    .pd-delay-4 { transition-delay:160ms; animation-delay:160ms; }
+    .pd-delay-5 { transition-delay:200ms; animation-delay:200ms; }
+    .pd-delay-6 { transition-delay:240ms; animation-delay:240ms; }
+    .pd-delay-7 { transition-delay:280ms; animation-delay:280ms; }
+    .pd-delay-8 { transition-delay:320ms; animation-delay:320ms; }
+    .pd-delay-9 { transition-delay:360ms; animation-delay:360ms; }
+    .pd-delay-10 { transition-delay:400ms; animation-delay:400ms; }
+    .pd-delay-11 { transition-delay:440ms; animation-delay:440ms; }
+    .pd-delay-12 { transition-delay:480ms; animation-delay:480ms; }
+    .pd-delay-13 { transition-delay:520ms; animation-delay:520ms; }
+    .pd-delay-14 { transition-delay:560ms; animation-delay:560ms; }
+    .pd-delay-15 { transition-delay:600ms; animation-delay:600ms; }
+    .pd-delay-16 { transition-delay:640ms; animation-delay:640ms; }
+    .pd-delay-17 { transition-delay:680ms; animation-delay:680ms; }
+    .pd-delay-18 { transition-delay:720ms; animation-delay:720ms; }
+    .pd-delay-19 { transition-delay:760ms; animation-delay:760ms; }
+    .pd-delay-20 { transition-delay:800ms; animation-delay:800ms; }
+    .pd-delay-21 { transition-delay:840ms; animation-delay:840ms; }
+    .pd-delay-22 { transition-delay:880ms; animation-delay:880ms; }
+    .pd-delay-23 { transition-delay:920ms; animation-delay:920ms; }
+    .pd-delay-24 { transition-delay:960ms; animation-delay:960ms; }
+    .pd-scale-1 { --pd-scale:0.965; transform:scale(var(--pd-scale)); }
+    .pd-scale-2 { --pd-scale:0.970; transform:scale(var(--pd-scale)); }
+    .pd-scale-3 { --pd-scale:0.975; transform:scale(var(--pd-scale)); }
+    .pd-scale-4 { --pd-scale:0.980; transform:scale(var(--pd-scale)); }
+    .pd-scale-5 { --pd-scale:0.985; transform:scale(var(--pd-scale)); }
+    .pd-scale-6 { --pd-scale:0.990; transform:scale(var(--pd-scale)); }
+    .pd-scale-7 { --pd-scale:0.995; transform:scale(var(--pd-scale)); }
+    .pd-scale-8 { --pd-scale:1.000; transform:scale(var(--pd-scale)); }
+    .pd-scale-9 { --pd-scale:1.005; transform:scale(var(--pd-scale)); }
+    .pd-scale-10 { --pd-scale:1.010; transform:scale(var(--pd-scale)); }
+    .pd-radius-1 { border-radius:10px; }
+    .pd-radius-2 { border-radius:12px; }
+    .pd-radius-3 { border-radius:14px; }
+    .pd-radius-4 { border-radius:16px; }
+    .pd-radius-5 { border-radius:18px; }
+    .pd-radius-6 { border-radius:20px; }
+    .pd-radius-7 { border-radius:22px; }
+    .pd-radius-8 { border-radius:24px; }
+    .pd-radius-9 { border-radius:26px; }
+    .pd-radius-10 { border-radius:28px; }
+    .pd-radius-11 { border-radius:30px; }
+    .pd-radius-12 { border-radius:32px; }
+    .pd-radius-13 { border-radius:34px; }
+    .pd-radius-14 { border-radius:36px; }
+    .pd-radius-15 { border-radius:38px; }
+    .pd-radius-16 { border-radius:40px; }
+    .pd-radius-17 { border-radius:42px; }
+    .pd-radius-18 { border-radius:44px; }
+    .pd-radius-19 { border-radius:46px; }
+    .pd-radius-20 { border-radius:48px; }
+    .pd-blur-1 { backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px); }
+    .pd-blur-2 { backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
+    .pd-blur-3 { backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+    .pd-blur-4 { backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+    .pd-blur-5 { backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+    .pd-blur-6 { backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+    .pd-blur-7 { backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+    .pd-blur-8 { backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+    .pd-blur-9 { backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+    .pd-blur-10 { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+    .pd-blur-11 { backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); }
+    .pd-blur-12 { backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); }
+    .pd-blur-13 { backdrop-filter:blur(26px); -webkit-backdrop-filter:blur(26px); }
+    .pd-blur-14 { backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); }
+    .pd-blur-15 { backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); }
+    .pd-blur-16 { backdrop-filter:blur(32px); -webkit-backdrop-filter:blur(32px); }
+    .pd-blur-17 { backdrop-filter:blur(34px); -webkit-backdrop-filter:blur(34px); }
+    .pd-blur-18 { backdrop-filter:blur(36px); -webkit-backdrop-filter:blur(36px); }
+    .pd-blur-19 { backdrop-filter:blur(38px); -webkit-backdrop-filter:blur(38px); }
+    .pd-blur-20 { backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px); }
 
-    /* Focus helpers */
-    .pd-focus-ring { box-shadow:0 0 0 5px rgba(10,116,255,.11) !important; border-color:rgba(10,116,255,.30) !important; }
+    .pd-fade-up { animation:pd-fade-up .7s var(--pd-ease) both; }
+    .pd-fade-down { animation:pd-fade-down .7s var(--pd-ease) both; }
+    .pd-fade-scale { animation:pd-fade-scale .7s var(--pd-ease) both; }
+    .pd-slide-right { animation:pd-slide-right .7s var(--pd-ease) both; }
+    .pd-slide-left { animation:pd-slide-left .7s var(--pd-ease) both; }
+    .pd-pop { animation:pd-pop .6s var(--pd-ease) both; }
+    .pd-shimmer { position:relative; overflow:hidden; }
+    .pd-shimmer::after { content:""; position:absolute; inset:0; transform:translateX(-120%); background:linear-gradient(100deg,transparent,rgba(255,255,255,.12),transparent); animation:pd-shimmer 2.6s infinite; pointer-events:none; }
+    .pd-float { animation:pd-float 5s ease-in-out infinite; }
+    .pd-breathe { animation:pd-breathe 3.2s ease-in-out infinite; }
+    .pd-spin-slow { animation:pd-spin-slow 14s linear infinite; }
+    .pd-gradient-flow { background-size:220% 220%; animation:pd-gradient-flow 7s ease infinite; }
+    @keyframes pd-fade-up { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none} }
+    @keyframes pd-fade-down { from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none} }
+    @keyframes pd-fade-scale { from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none} }
+    @keyframes pd-slide-right { from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none} }
+    @keyframes pd-slide-left { from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none} }
+    @keyframes pd-pop { 0%{opacity:0;transform:scale(.82)} 70%{opacity:1;transform:scale(1.035)} 100%{transform:scale(1)} }
+    @keyframes pd-shimmer { 55%,100%{transform:translateX(120%)} }
+    @keyframes pd-float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+    @keyframes pd-breathe { 0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.03);opacity:1} }
+    @keyframes pd-spin-slow { to{transform:rotate(360deg)} }
+    @keyframes pd-gradient-flow { 0%,100%{background-position:0% 50%}50%{background-position:100% 50%} }
 
-    /* Prevent decorative motion from competing with controls */
-    @media (prefers-reduced-motion: reduce) {
-      button::after, .pd-feature-art--orbit *, .pd-security-pulse, .pd-security-shield,
-      #pd-page-transition, .pd-transition-orb { animation:none !important; }
-    }
+      /* DESIGNER TOKEN GROUP 01 — typography */
+    .pd-token-01 { --pd-token-index:1; }
+    /* DESIGNER TOKEN GROUP 02 — spacing */
+    .pd-token-02 { --pd-token-index:2; }
+    /* DESIGNER TOKEN GROUP 03 — motion */
+    .pd-token-03 { --pd-token-index:3; }
+    /* DESIGNER TOKEN GROUP 04 — navigation */
+    .pd-token-04 { --pd-token-index:4; }
+    /* DESIGNER TOKEN GROUP 05 — cards */
+    .pd-token-05 { --pd-token-index:5; }
+    /* DESIGNER TOKEN GROUP 06 — forms */
+    .pd-token-06 { --pd-token-index:6; }
+    /* DESIGNER TOKEN GROUP 07 — wallet */
+    .pd-token-07 { --pd-token-index:7; }
+    /* DESIGNER TOKEN GROUP 08 — profile */
+    .pd-token-08 { --pd-token-index:8; }
+    /* DESIGNER TOKEN GROUP 09 — admin */
+    .pd-token-09 { --pd-token-index:9; }
+    /* DESIGNER TOKEN GROUP 10 — surfaces */
+    .pd-token-10 { --pd-token-index:10; }
+    /* DESIGNER TOKEN GROUP 11 — typography */
+    .pd-token-11 { --pd-token-index:11; }
+    /* DESIGNER TOKEN GROUP 12 — spacing */
+    .pd-token-12 { --pd-token-index:12; }
+    /* DESIGNER TOKEN GROUP 13 — motion */
+    .pd-token-13 { --pd-token-index:13; }
+    /* DESIGNER TOKEN GROUP 14 — navigation */
+    .pd-token-14 { --pd-token-index:14; }
+    /* DESIGNER TOKEN GROUP 15 — cards */
+    .pd-token-15 { --pd-token-index:15; }
+    /* DESIGNER TOKEN GROUP 16 — forms */
+    .pd-token-16 { --pd-token-index:16; }
+    /* DESIGNER TOKEN GROUP 17 — wallet */
+    .pd-token-17 { --pd-token-index:17; }
+    /* DESIGNER TOKEN GROUP 18 — profile */
+    .pd-token-18 { --pd-token-index:18; }
+    /* DESIGNER TOKEN GROUP 19 — admin */
+    .pd-token-19 { --pd-token-index:19; }
+    /* DESIGNER TOKEN GROUP 20 — surfaces */
+    .pd-token-20 { --pd-token-index:20; }
+    /* DESIGNER TOKEN GROUP 21 — typography */
+    .pd-token-21 { --pd-token-index:21; }
+    /* DESIGNER TOKEN GROUP 22 — spacing */
+    .pd-token-22 { --pd-token-index:22; }
+    /* DESIGNER TOKEN GROUP 23 — motion */
+    .pd-token-23 { --pd-token-index:23; }
+    /* DESIGNER TOKEN GROUP 24 — navigation */
+    .pd-token-24 { --pd-token-index:24; }
+    /* DESIGNER TOKEN GROUP 25 — cards */
+    .pd-token-25 { --pd-token-index:25; }
+    /* DESIGNER TOKEN GROUP 26 — forms */
+    .pd-token-26 { --pd-token-index:26; }
+    /* DESIGNER TOKEN GROUP 27 — wallet */
+    .pd-token-27 { --pd-token-index:27; }
+    /* DESIGNER TOKEN GROUP 28 — profile */
+    .pd-token-28 { --pd-token-index:28; }
+    /* DESIGNER TOKEN GROUP 29 — admin */
+    .pd-token-29 { --pd-token-index:29; }
+    /* DESIGNER TOKEN GROUP 30 — surfaces */
+    .pd-token-30 { --pd-token-index:30; }
   </style>
+
+  <!-- PRINTDEKD PRO — DESIGNER ADVANCED BOOT -->
+  <script>
+    /* Paint the requested dark experience before the first frame.
+       Light mode is opt-in and remembered only after the user changes it. */
+    (() => {
+      try {
+        const saved = localStorage.getItem('sp_theme');
+        if (saved !== 'light') document.documentElement.classList.add('dark');
+      } catch (_) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
-  <!-- ==========================================================
-       PRODUCT MICRO-INTERACTION LAYER
-       ========================================================== -->
-  <div id="pd-scroll-progress" aria-hidden="true"><span></span></div>
-
-  <div id="pd-page-transition" aria-hidden="true">
-    <div class="pd-transition-orb"></div>
-    <div class="pd-transition-label">
-      <span class="pd-transition-logo"><i data-lucide="printer"></i></span>
-      <span>PrintDekD Pro</span>
-    </div>
-  </div>
-
-  <div id="pd-toast" role="status" aria-live="polite" aria-atomic="true">
-    <div class="pd-toast-icon"><i data-lucide="sparkles"></i></div>
-    <div class="pd-toast-copy">
-      <strong id="pd-toast-title">PrintDekD Pro</strong>
-      <span id="pd-toast-message">พร้อมใช้งาน</span>
-    </div>
-  </div>
-
-  <div id="pd-global-shortcuts" class="hidden" aria-hidden="true">
-    <span>⌘ / Ctrl</span><span>K</span><b>เมนูด่วน</b>
-  </div>
-
 
   <!-- BACKGROUND AMBIENT GLOW -->
   <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -2041,6 +2703,9 @@
         <button type="button" onclick="toggleTheme()" class="nav-icon-btn ui-card text-amber-500 hover:border-amber-400" title="สลับธีม" aria-label="สลับธีม">
           <i id="theme-icon" data-lucide="sun" class="w-5 h-5"></i>
         </button>
+        <button type="button" onclick="openPDCommandPalette()" class="nav-icon-btn ui-card hidden sm:inline-flex" title="Command Center (⌘K)" aria-label="เปิด Command Center">
+          <i data-lucide="command" class="w-5 h-5"></i>
+        </button>
 
         <button type="button" id="user-coins-badge" class="hidden nav-coin-pill items-center gap-2 bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition" onclick="switchView('wallet')" title="เปิด Coins Wallet">
           <i data-lucide="coins" class="w-4 h-4 text-amber-500"></i>
@@ -2077,6 +2742,104 @@
         <p id="security-copy" class="text-[10px] sub-text truncate">ตรวจสอบการเชื่อมต่อ, การส่งข้อมูล และเซสชันก่อนใช้งาน</p>
       </div>
       <button type="button" onclick="runSecurityAudit(true)" class="security-action">ตรวจสอบข้อมูล</button>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================
+       DESIGNER ADVANCED EXPERIENCE CHROME
+       Inspired by premium product storytelling:
+       calm hierarchy, liquid surfaces, cinematic transitions.
+       ========================================================== -->
+  <div id="pd-scroll-progress" class="pd-scroll-progress" aria-hidden="true">
+    <span id="pd-scroll-progress-bar"></span>
+  </div>
+
+  <div id="pd-ambient-orb" class="pd-ambient-orb" aria-hidden="true"></div>
+  <div id="pd-cursor-glow" class="pd-cursor-glow" aria-hidden="true"></div>
+
+  <div id="pd-live-island" class="pd-live-island" aria-live="polite">
+    <span class="pd-island-dot"></span>
+    <span id="pd-island-label">ระบบพร้อมให้บริการ</span>
+    <span id="pd-island-time">--:--</span>
+  </div>
+
+  <aside id="pd-quick-dock" class="pd-quick-dock" aria-label="ทางลัด">
+    <button type="button" class="pd-dock-button" data-pd-action="home" aria-label="หน้าหลัก" title="หน้าหลัก">
+      <i data-lucide="house"></i><span>หน้าแรก</span>
+    </button>
+    <button type="button" class="pd-dock-button" data-pd-action="print" aria-label="สั่งพิมพ์" title="สั่งพิมพ์">
+      <i data-lucide="file-up"></i><span>สั่งพิมพ์</span>
+    </button>
+    <button type="button" class="pd-dock-button" data-pd-action="wallet" aria-label="กระเป๋าเงิน" title="กระเป๋าเงิน">
+      <i data-lucide="wallet-cards"></i><span>Coins</span>
+    </button>
+    <button type="button" class="pd-dock-button" data-pd-action="theme" aria-label="เปลี่ยนธีม" title="เปลี่ยนธีม">
+      <i data-lucide="sun-moon"></i><span>ธีม</span>
+    </button>
+  </aside>
+
+  <div id="pd-toast-stack" class="pd-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="pd-command-palette" class="pd-command-overlay hidden" role="dialog" aria-modal="true" aria-label="Command Center">
+    <div class="pd-command-backdrop" data-pd-close-command></div>
+    <div class="pd-command-sheet" role="document">
+      <div class="pd-command-head">
+        <div class="pd-command-brand">
+          <span class="pd-command-icon"><i data-lucide="command"></i></span>
+          <div>
+            <span class="pd-eyebrow">COMMAND CENTER</span>
+            <h2>คุณต้องการทำอะไร?</h2>
+          </div>
+        </div>
+        <button type="button" class="pd-round-close" data-pd-close-command aria-label="ปิด">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <label class="pd-command-search">
+        <i data-lucide="search"></i>
+        <input id="pd-command-input" type="search" autocomplete="off" placeholder="ค้นหาเมนู เช่น สั่งพิมพ์, Coins, โปรไฟล์...">
+        <kbd>ESC</kbd>
+      </label>
+      <div id="pd-command-results" class="pd-command-results"></div>
+      <div class="pd-command-foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> เลือก</span>
+        <span><kbd>Enter</kbd> เปิด</span>
+        <span><kbd>⌘ K</kbd> / <kbd>Ctrl K</kbd> Command Center</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="pd-theme-sheet" class="pd-theme-overlay hidden" role="dialog" aria-modal="true" aria-label="เลือกธีม">
+    <div class="pd-theme-backdrop" data-pd-close-theme></div>
+    <div class="pd-theme-sheet">
+      <div class="pd-theme-head">
+        <div>
+          <span class="pd-eyebrow">APPEARANCE</span>
+          <h2>เลือกบรรยากาศของระบบ</h2>
+          <p>โหมดมืดเป็นค่าเริ่มต้น เพื่อให้หน้าจอสบายตาและเนื้อหาดูเด่น</p>
+        </div>
+        <button type="button" class="pd-round-close" data-pd-close-theme aria-label="ปิด">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="pd-theme-options">
+        <button type="button" class="pd-theme-option" data-pd-theme="dark">
+          <span class="pd-theme-preview pd-preview-dark"><i data-lucide="moon"></i></span>
+          <span><b>Dark</b><small>Deep Titanium</small></span>
+          <i data-lucide="check" class="pd-theme-check"></i>
+        </button>
+        <button type="button" class="pd-theme-option" data-pd-theme="light">
+          <span class="pd-theme-preview pd-preview-light"><i data-lucide="sun"></i></span>
+          <span><b>Light</b><small>Soft Silver</small></span>
+          <i data-lucide="check" class="pd-theme-check"></i>
+        </button>
+        <button type="button" class="pd-theme-option" data-pd-theme="system">
+          <span class="pd-theme-preview pd-preview-system"><i data-lucide="monitor-smartphone"></i></span>
+          <span><b>System</b><small>ตามอุปกรณ์</small></span>
+          <i data-lucide="check" class="pd-theme-check"></i>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2202,133 +2965,6 @@
         </div>
       </div>
 
-
-      <!-- ========================================================
-           APPLE-INSPIRED EXPERIENCE LAYER
-           ======================================================== -->
-      <section class="pd-experience-section" aria-labelledby="pd-experience-title">
-        <div class="pd-section-intro apple-reveal">
-          <span class="pd-eyebrow">A better way to print</span>
-          <h2 id="pd-experience-title">ทุกอย่างที่ต้องใช้<br><span>อยู่ตรงหน้า</span></h2>
-          <p>ออกแบบขั้นตอนสำคัญใหม่ให้สั้นลง อ่านง่ายขึ้น และรู้ผลลัพธ์ได้ทันที ตั้งแต่อัปโหลดไฟล์จนถึงติดตามคิวงาน</p>
-        </div>
-
-        <div class="pd-experience-grid">
-          <article class="pd-feature-card pd-feature-card--hero apple-reveal" data-tilt="0.45" data-spotlight>
-            <div class="pd-feature-top">
-              <span class="pd-feature-index">01</span>
-              <span class="pd-live-chip"><i data-lucide="radio"></i> LIVE</span>
-            </div>
-            <div class="pd-feature-art pd-feature-art--orbit">
-              <div class="pd-orbit-ring pd-orbit-ring-1"></div>
-              <div class="pd-orbit-ring pd-orbit-ring-2"></div>
-              <div class="pd-orbit-core"><i data-lucide="printer"></i></div>
-              <span class="pd-orbit-pip pip-a"></span>
-              <span class="pd-orbit-pip pip-b"></span>
-              <span class="pd-orbit-pip pip-c"></span>
-            </div>
-            <div class="pd-feature-copy">
-              <span class="pd-mini-label">SMART QUEUE</span>
-              <h3>คิวงานที่มองเห็นได้</h3>
-              <p>เห็นสถานะงานและการจัดส่งในลำดับเดียว ไม่ต้องไล่หาเองหลายหน้า</p>
-            </div>
-          </article>
-
-          <article class="pd-feature-card pd-feature-card--compact apple-reveal delay-1" data-tilt="0.35" data-spotlight>
-            <div class="pd-feature-icon pd-blue"><i data-lucide="scan-search"></i></div>
-            <span class="pd-mini-label">DOCUMENT PREVIEW</span>
-            <h3>เห็นก่อนสั่ง</h3>
-            <p>ดูเอกสารและเลือกหน้าที่ต้องการก่อนชำระเงิน ลดโอกาสสั่งผิด</p>
-            <div class="pd-card-line"><span></span><span></span><span></span></div>
-          </article>
-
-          <article class="pd-feature-card pd-feature-card--compact apple-reveal delay-2" data-tilt="0.35" data-spotlight>
-            <div class="pd-feature-icon pd-gold"><i data-lucide="coins"></i></div>
-            <span class="pd-mini-label">COINS WALLET</span>
-            <h3>ยอดเงินชัดทุกครั้ง</h3>
-            <p>แสดงยอด Coins เด่น พร้อมยืนยันยอดก่อนรายการสำคัญ</p>
-            <div class="pd-balance-demo"><span>Balance</span><b>0.00</b><em>Coins</em></div>
-          </article>
-
-          <article class="pd-feature-card pd-feature-card--wide apple-reveal delay-3" data-tilt="0.25" data-spotlight>
-            <div class="pd-wide-content">
-              <span class="pd-feature-index">02</span>
-              <span class="pd-mini-label">SECURITY BY DESIGN</span>
-              <h3>การออกแบบที่บอกคุณทันที<br>เมื่อข้อมูลต้องตรวจสอบ</h3>
-              <p>สถานะการเชื่อมต่อ, เซสชัน, และขั้นตอนสำคัญถูกวางไว้ในจุดที่มองเห็นได้โดยไม่รบกวนงาน</p>
-            </div>
-            <div class="pd-security-visual">
-              <div class="pd-security-shield"><i data-lucide="shield-check"></i></div>
-              <div class="pd-security-pulse"></div>
-              <div class="pd-security-status"><span></span> ตรวจสอบแล้ว</div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="pd-steps-section apple-reveal" aria-labelledby="pd-steps-title">
-        <div class="pd-section-intro pd-section-intro--left">
-          <span class="pd-eyebrow">Simple from start to finish</span>
-          <h2 id="pd-steps-title">สั่งพิมพ์แบบ<br><span>ไม่ต้องคิดเยอะ</span></h2>
-        </div>
-        <div class="pd-steps-track">
-          <div class="pd-step">
-            <span class="pd-step-no">01</span>
-            <i data-lucide="upload-cloud"></i>
-            <div><strong>อัปโหลด</strong><p>เลือกเอกสารที่ต้องการ</p></div>
-          </div>
-          <div class="pd-step">
-            <span class="pd-step-no">02</span>
-            <i data-lucide="sliders-horizontal"></i>
-            <div><strong>ปรับรูปแบบ</strong><p>หน้า, สี, ชุด, การรับสินค้า</p></div>
-          </div>
-          <div class="pd-step">
-            <span class="pd-step-no">03</span>
-            <i data-lucide="badge-check"></i>
-            <div><strong>ยืนยัน</strong><p>ตรวจยอดก่อนส่งงาน</p></div>
-          </div>
-          <div class="pd-step">
-            <span class="pd-step-no">04</span>
-            <i data-lucide="package-check"></i>
-            <div><strong>รับงาน</strong><p>ติดตามคิวและ Tracking</p></div>
-          </div>
-        </div>
-      </section>
-
-
-      <section id="pd-trust-section" class="pd-trust-section apple-reveal" aria-labelledby="pd-trust-title">
-        <div class="pd-trust-heading">
-          <span class="pd-eyebrow">CALM BY DESIGN</span>
-          <h2 id="pd-trust-title">เทคโนโลยีที่ซับซ้อน<br><span>ถูกซ่อนให้คุณใช้ง่าย</span></h2>
-          <p>ระบบจะพยายามบอกสิ่งสำคัญตรงจุด — ยอด, สถานะ, ความเสี่ยง, และสิ่งที่ต้องทำต่อไป</p>
-        </div>
-        <div class="pd-trust-grid">
-          <article class="pd-trust-card">
-            <div class="pd-trust-symbol pd-symbol-blue"><i data-lucide="eye"></i></div>
-            <strong>เห็นก่อนยืนยัน</strong>
-            <p>พรีวิวเอกสาร, ช่วงหน้า, ราคา และรูปแบบการรับสินค้าอยู่ในลำดับเดียวกัน</p>
-            <span class="pd-trust-meta">CLEAR BEFORE COMMIT</span>
-          </article>
-          <article class="pd-trust-card">
-            <div class="pd-trust-symbol pd-symbol-green"><i data-lucide="shield"></i></div>
-            <strong>เตือนเมื่อมีความเสี่ยง</strong>
-            <p>สถานะระบบและการเชื่อมต่อจะแสดงเป็นสัญญาณที่เข้าใจได้ ไม่ปล่อยให้ปัญหาเงียบหาย</p>
-            <span class="pd-trust-meta">SECURITY FEEDBACK</span>
-          </article>
-          <article class="pd-trust-card">
-            <div class="pd-trust-symbol pd-symbol-gold"><i data-lucide="mouse-pointer-2"></i></div>
-            <strong>แตะแล้วรู้สึกตอบสนอง</strong>
-            <p>ทุกปุ่มมี press state, focus state และ animation ที่สั้นเพื่อให้รู้ว่าระบบรับคำสั่งแล้ว</p>
-            <span class="pd-trust-meta">TOUCH CONFIDENCE</span>
-          </article>
-          <article class="pd-trust-card pd-trust-card--dark">
-            <div class="pd-trust-stat"><span>01</span><b>ONE SCREEN</b></div>
-            <div class="pd-trust-lines"><i></i><i></i><i></i><i></i></div>
-            <p>ข้อมูลสำคัญถูกจัดกลุ่มให้สแกนได้เร็วทั้งมือถือ, iPad และหน้าจอใหญ่</p>
-          </article>
-        </div>
-      </section>
-
       <div class="ui-panel p-8 sm:p-14 rounded-[40px] relative overflow-hidden space-y-10 apple-reveal">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 dark:border-white/10 pb-8">
           <div>
@@ -2376,6 +3012,87 @@
           </div>
         </div>
       </div>
+
+
+      <!-- DESIGNER STORY RAIL -->
+      <section class="pd-story-section apple-reveal" aria-label="ประสบการณ์ PrintDekD Pro">
+        <div class="pd-section-heading">
+          <div>
+            <span class="pd-eyebrow">THE PRINT EXPERIENCE</span>
+            <h2>ทุกขั้นตอนถูกออกแบบ<br><em>ให้รู้สึกง่าย</em></h2>
+          </div>
+          <p>ตั้งแต่เลือกไฟล์จนถึงรับงาน ทุกอย่างถูกจัดลำดับให้ตัดสินใจได้เร็วขึ้น โดยไม่ทำให้หน้าจอรู้สึกแน่น</p>
+        </div>
+
+        <div class="pd-story-grid">
+          <article class="pd-story-card pd-story-dark pd-span-7 pd-reveal-card" data-tilt>
+            <div class="pd-card-glow"></div>
+            <div class="pd-story-top">
+              <span class="pd-story-number">01</span>
+              <span class="pd-story-chip"><i data-lucide="sparkles"></i> SMART FLOW</span>
+            </div>
+            <div class="pd-story-copy">
+              <span class="pd-eyebrow">UPLOAD → PREVIEW → PRINT</span>
+              <h3>ไฟล์ของคุณ<br><strong>กลายเป็นงานพิมพ์</strong></h3>
+              <p>เลือกไฟล์ ดูพรีวิว และเห็นราคาทันทีใน flow เดียว ลดการย้อนกลับไปมาและทำให้ขั้นตอนสำคัญอยู่ตรงหน้าเสมอ</p>
+            </div>
+            <div class="pd-flow-visual">
+              <span><i data-lucide="upload"></i> Upload</span>
+              <b></b><span><i data-lucide="scan-eye"></i> Preview</span>
+              <b></b><span><i data-lucide="printer"></i> Print</span>
+            </div>
+          </article>
+
+          <article class="pd-story-card pd-story-blue pd-span-5 pd-reveal-card" data-tilt>
+            <div class="pd-story-top">
+              <span class="pd-story-number">02</span>
+              <span class="pd-story-chip">LIVE</span>
+            </div>
+            <span class="pd-story-icon"><i data-lucide="activity"></i></span>
+            <h3>ติดตามคิว<br><strong>แบบเรียลไทม์</strong></h3>
+            <p>สถานะงานถูกแบ่งเป็นจังหวะชัดเจน ตั้งแต่รับคำสั่งจนถึงพร้อมรับ เพื่อให้ลูกค้ารู้ว่าต้องทำอะไรต่อ</p>
+            <div class="pd-mini-progress">
+              <span></span><i></i><i></i><i></i>
+            </div>
+          </article>
+
+          <article class="pd-story-card pd-story-gold pd-span-4 pd-reveal-card" data-tilt>
+            <div class="pd-story-top"><span class="pd-story-number">03</span><span class="pd-story-chip">WALLET</span></div>
+            <span class="pd-story-icon"><i data-lucide="coins"></i></span>
+            <h3>Coins<br><strong>ชัดเจนทุกบาท</strong></h3>
+            <p>ยอดเงินอยู่ในจุดที่หาเจอง่าย เติมเงินได้เป็นแพ็กเกจ และเห็นประวัติรายการแบบโปร่งใส</p>
+            <div class="pd-balance-preview"><small>AVAILABLE</small><b>248.50</b><span>Coins</span></div>
+          </article>
+
+          <article class="pd-story-card pd-story-glass pd-span-4 pd-reveal-card" data-tilt>
+            <div class="pd-story-top"><span class="pd-story-number">04</span><span class="pd-story-chip">SECURITY</span></div>
+            <span class="pd-story-icon"><i data-lucide="shield-check"></i></span>
+            <h3>ปลอดภัย<br><strong>โดยไม่รบกวน</strong></h3>
+            <p>สถานะความปลอดภัยถูกย่อให้เข้าใจง่าย และเปิดรายละเอียดเมื่อจำเป็นเท่านั้น</p>
+            <div class="pd-security-preview"><span></span><b>Protected</b><small>Secure session</small></div>
+          </article>
+
+          <article class="pd-story-card pd-story-violet pd-span-4 pd-reveal-card" data-tilt>
+            <div class="pd-story-top"><span class="pd-story-number">05</span><span class="pd-story-chip">ADMIN</span></div>
+            <span class="pd-story-icon"><i data-lucide="layout-dashboard"></i></span>
+            <h3>หลังบ้าน<br><strong>อ่านง่ายขึ้น</strong></h3>
+            <p>ข้อมูลสำคัญถูกยกขึ้นมาเป็น cards, filters และ action ที่มีลำดับ ลดภาระการสแกนตาราง</p>
+            <button type="button" class="pd-inline-action" onclick="switchView('admin')">ดูแนวคิด Admin <i data-lucide="arrow-up-right"></i></button>
+          </article>
+        </div>
+      </section>
+
+      <section class="pd-final-cta apple-reveal">
+        <div class="pd-final-orb pd-orb-one"></div>
+        <div class="pd-final-orb pd-orb-two"></div>
+        <span class="pd-eyebrow">PRINTDEKD PRO</span>
+        <h2>พร้อมสำหรับงานพิมพ์<br><em>ครั้งต่อไปของคุณ</em></h2>
+        <p>ประสบการณ์ใหม่ที่เร็วขึ้น ชัดขึ้น และดูดีขึ้นตั้งแต่คลิกแรก</p>
+        <div class="pd-final-actions">
+          <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()">เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right"></i></button>
+          <button type="button" class="pd-secondary-cta" onclick="openPDCommandPalette()">เปิด Command Center <kbd>⌘K</kbd></button>
+        </div>
+      </section>
 
     </section>
 
@@ -2452,25 +3169,6 @@
 
     <!-- VIEW 3: DASHBOARD & ORDER FORM -->
     <section id="view-dashboard" class="hidden py-10 px-4 max-w-6xl mx-auto">
-      <div id="pd-command-center" class="pd-command-center apple-reveal" aria-label="ศูนย์ควบคุมงานพิมพ์">
-        <div class="pd-command-main">
-          <span class="pd-command-kicker">PRINT COMMAND CENTER</span>
-          <strong>พร้อมเริ่มงานพิมพ์</strong>
-          <span id="pd-command-status">ตรวจสอบข้อมูลไฟล์ ราคา และการชำระเงินก่อนส่งคำขอ</span>
-        </div>
-        <div class="pd-command-actions">
-          <button type="button" class="pd-command-action" onclick="document.getElementById('file-input')?.click()">
-            <i data-lucide="upload"></i><span>อัปโหลดไฟล์</span>
-          </button>
-          <button type="button" class="pd-command-action" onclick="switchView('wallet')">
-            <i data-lucide="coins"></i><span>ดู Coins</span>
-          </button>
-          <button type="button" class="pd-command-action pd-command-action--secure" onclick="runSecurityAudit(true)">
-            <i data-lucide="shield-check"></i><span>ตรวจสอบระบบ</span>
-          </button>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <div class="lg:col-span-6 ui-panel p-6 sm:p-8 rounded-[32px] space-y-6">
@@ -2701,20 +3399,6 @@
 
     <!-- VIEW 4: REDESIGNED WALLET (Apple & Banana IT Style Layout) -->
     <section id="view-wallet" class="hidden py-10 px-4 max-w-5xl mx-auto">
-      <div id="pd-wallet-glance" class="pd-wallet-glance apple-reveal" aria-label="ภาพรวม Coins">
-        <div>
-          <span class="pd-command-kicker">WALLET OVERVIEW</span>
-          <strong>ยอด Coins ของคุณ</strong>
-          <p>ยอดจริงอ่านจาก Wallet ก่อนทำรายการสำคัญ</p>
-        </div>
-        <div class="pd-wallet-value">
-          <span id="pd-wallet-glance-balance">0.00</span><small>Coins</small>
-        </div>
-        <button type="button" onclick="fetchUserWallet(); runSecurityAudit(true);" aria-label="ตรวจสอบยอด Coins ล่าสุด">
-          <i data-lucide="refresh-cw"></i><span>ตรวจสอบยอด</span>
-        </button>
-      </div>
-
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
         
         <!-- TOPUP FORM CARD -->
@@ -3125,16 +3809,11 @@
       }
 
       try {
-        // Dark is the product's first-run appearance. Only an explicit saved
-        // light preference switches the interface out of dark mode.
         const savedTheme = localStorage.getItem('sp_theme');
-        const shouldBeDark = savedTheme !== 'light';
-        document.documentElement.classList.toggle('dark', shouldBeDark);
-        const themeIcon = document.getElementById('theme-icon');
-        if (themeIcon) themeIcon.setAttribute('data-lucide', shouldBeDark ? 'sun' : 'moon');
+        if (savedTheme === 'light') document.documentElement.classList.remove('dark');
+        else document.documentElement.classList.add('dark');
       } catch (err) {
         console.warn('Theme restore skipped:', err);
-        document.documentElement.classList.add('dark');
       }
 
       try { initAppleContinuousScrollObserver(); } catch (err) { console.warn('Scroll observer skipped:', err); }
@@ -4410,459 +5089,418 @@
         loadAdminData();
       } catch (err) { showCustomModal({ title:'เปลี่ยนสิทธิ์ไม่สำเร็จ', message:err.message || 'เกิดข้อผิดพลาด', icon:'shield-alert' }); }
     }
-
     /* ==========================================================
-       DESIGNER ADVANCED INTERACTION CONTROLLER
-       Non-invasive: wraps navigation/theme behavior after the
-       original business logic is defined.
+       DESIGNER ADVANCED v5 — INTERACTION ENGINE
        ========================================================== */
-    (function initPrintDekDAdvancedInteractions() {
-      const state = {
-        toastTimer: null,
-        transitionTimer: null,
-        transitionBusy: false,
-        lastView: document.body.dataset.currentView || 'landing',
-        pointerFine: window.matchMedia ? window.matchMedia('(pointer:fine)') : { matches:false }
+    (() => {
+      'use strict';
+
+      const PD = {
+        activeView: 'landing',
+        commandIndex: 0,
+        commandItems: [],
+        pointerFine: window.matchMedia?.('(pointer:fine)').matches ?? false,
+        raf: 0,
+        lastScroll: 0,
+        themeMode: localStorage.getItem('sp_theme_mode') || (localStorage.getItem('sp_theme') || 'dark')
       };
 
-      function pdEl(id) { return document.getElementById(id); }
+      const $ = (s, root = document) => root.querySelector(s);
+      const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 
-      function pdToast(title, message, tone = 'blue', timeout = 1900) {
-        const toast = pdEl('pd-toast');
-        const titleEl = pdEl('pd-toast-title');
-        const messageEl = pdEl('pd-toast-message');
-        const iconBox = toast?.querySelector('.pd-toast-icon');
-        if (!toast || !titleEl || !messageEl) return;
-        titleEl.textContent = title || 'PrintDekD Pro';
-        messageEl.textContent = message || '';
-        const icon = tone === 'green' ? 'check-circle-2' : tone === 'gold' ? 'coins' : tone === 'red' ? 'shield-alert' : 'sparkles';
-        const iconNode = iconBox?.querySelector('svg, i');
-        if (iconNode) iconNode.setAttribute('data-lucide', icon);
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-        toast.classList.remove('is-visible');
-        requestAnimationFrame(() => toast.classList.add('is-visible'));
-        clearTimeout(state.toastTimer);
-        state.toastTimer = setTimeout(() => toast.classList.remove('is-visible'), timeout);
+      function pdIconRefresh() {
+        try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch (_) {}
       }
 
-      function pdSetDock(viewName) {
-        document.querySelectorAll('#pd-mobile-dock [data-pd-dock-view]').forEach(btn => {
-          const active = btn.getAttribute('data-pd-dock-view') === viewName;
-          btn.classList.toggle('is-active', active);
-          btn.setAttribute('aria-current', active ? 'page' : 'false');
-        });
-        const avatar = pdEl('pd-dock-avatar-img');
-        const source = pdEl('nav-avatar-img');
-        if (avatar && source?.src) avatar.src = source.src;
-      }
-
-      function pdSetProgress() {
-        const doc = document.documentElement;
-        const max = Math.max(1, doc.scrollHeight - window.innerHeight);
-        const pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
-        const bar = document.querySelector('#pd-scroll-progress span');
-        if (bar) bar.style.width = `${pct}%`;
-      }
-
-      function pdTransitionIn(label) {
-        const curtain = pdEl('pd-page-transition');
-        if (!curtain || state.transitionBusy) return;
-        state.transitionBusy = true;
-        const labelNode = curtain.querySelector('.pd-transition-label span:last-child');
-        if (labelNode) labelNode.textContent = label || 'PrintDekD Pro';
-        curtain.classList.remove('is-leaving');
-        curtain.classList.add('is-active');
-        clearTimeout(state.transitionTimer);
-        state.transitionTimer = setTimeout(() => {
-          curtain.classList.add('is-leaving');
-          state.transitionTimer = setTimeout(() => {
-            curtain.classList.remove('is-active','is-leaving');
-            state.transitionBusy = false;
-          }, 440);
-        }, 210);
-      }
-
-      function pdPrepareReveals(root = document) {
-        const nodes = root.querySelectorAll('.pd-feature-card, .pd-step, #view-landing .ui-panel, #view-dashboard .ui-panel, #view-wallet .ui-panel, #view-admin .ui-panel');
-        nodes.forEach((node, index) => {
-          if (node.dataset.pdRevealBound) return;
-          node.dataset.pdRevealBound = '1';
-          node.style.setProperty('--pd-index', String(index % 10));
-        });
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-      }
-
-      function pdBindSpotlight() {
-        if (!state.pointerFine.matches) return;
-        document.querySelectorAll('[data-spotlight]').forEach(card => {
-          if (card.dataset.pdSpotlightBound) return;
-          card.dataset.pdSpotlightBound = '1';
-          card.addEventListener('pointermove', (e) => {
-            const r = card.getBoundingClientRect();
-            card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
-            card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
-          }, { passive:true });
-          card.addEventListener('pointerleave', () => {
-            card.style.setProperty('--mx','50%');
-            card.style.setProperty('--my','50%');
-          }, { passive:true });
-        });
-      }
-
-      function pdBindTilt() {
-        if (!state.pointerFine.matches) return;
-        document.querySelectorAll('[data-tilt]').forEach(card => {
-          if (card.dataset.pdTiltBound) return;
-          card.dataset.pdTiltBound = '1';
-          const factor = Number(card.dataset.tilt || .35);
-          card.addEventListener('pointermove', (e) => {
-            const r = card.getBoundingClientRect();
-            const x = ((e.clientX - r.left) / r.width - .5) * 2;
-            const y = ((e.clientY - r.top) / r.height - .5) * 2;
-            card.style.setProperty('--tilt-x', `${x * factor}deg`);
-            card.style.setProperty('--tilt-y', `${-y * factor}deg`);
-          }, { passive:true });
-          card.addEventListener('pointerleave', () => {
-            card.style.setProperty('--tilt-x','0deg');
-            card.style.setProperty('--tilt-y','0deg');
-          }, { passive:true });
-        });
-      }
-
-      function pdBindPressFeedback() {
-        document.querySelectorAll('button').forEach(btn => {
-          if (btn.dataset.pdPressBound) return;
-          btn.dataset.pdPressBound = '1';
-          btn.addEventListener('pointerdown', () => btn.classList.add('pd-pressed'), { passive:true });
-          btn.addEventListener('pointerup', () => btn.classList.remove('pd-pressed'), { passive:true });
-          btn.addEventListener('pointercancel', () => btn.classList.remove('pd-pressed'), { passive:true });
-          btn.addEventListener('pointerleave', () => btn.classList.remove('pd-pressed'), { passive:true });
-        });
-      }
-
-      function pdUpdateSecurityCopy() {
-        const title = pdEl('security-title');
-        if (!title) return;
-        const current = document.body.dataset.currentView || 'landing';
-        const map = {
-          landing: 'ระบบพร้อมสำหรับการสั่งพิมพ์',
-          auth: 'กำลังตรวจสอบความปลอดภัยของบัญชี',
-          dashboard: 'ตรวจสอบข้อมูลก่อนส่งงาน',
-          wallet: 'ตรวจสอบข้อมูลก่อนทำรายการ Coins',
-          admin: 'โหมดผู้ดูแล — ตรวจสอบข้อมูลก่อนเปลี่ยนแปลง'
+      function pdToast(title, message = '', tone = 'info') {
+        const stack = $('#pd-toast-stack');
+        if (!stack) return;
+        const icons = { info:'sparkles', success:'check-circle-2', warn:'triangle-alert', danger:'shield-alert' };
+        const toast = document.createElement('div');
+        toast.className = `pd-toast pd-toast-${tone}`;
+        toast.innerHTML = `
+          <span class="pd-toast-icon"><i data-lucide="${icons[tone] || icons.info}"></i></span>
+          <span class="pd-toast-copy"><b>${escapeHtml(title)}</b><small>${escapeHtml(message)}</small></span>
+          <button type="button" class="pd-toast-close" aria-label="ปิด"><i data-lucide="x"></i></button>
+          <span class="pd-toast-progress"></span>
+        `;
+        stack.appendChild(toast);
+        pdIconRefresh();
+        requestAnimationFrame(() => toast.classList.add('is-in'));
+        const remove = () => {
+          toast.classList.remove('is-in');
+          setTimeout(() => toast.remove(), 380);
         };
-        const copy = pdEl('security-copy');
-        if (copy) {
-          const copyMap = {
-            landing: 'การเชื่อมต่อและสถานะระบบจะแสดงให้เห็นอย่างโปร่งใส',
-            auth: 'การเข้าสู่ระบบถูกตรวจสอบก่อนส่งข้อมูลสำคัญ',
-            dashboard: 'ตรวจสอบไฟล์, คิวงาน และยอดก่อนยืนยัน',
-            wallet: 'ตรวจสอบยอดจาก Wallet ก่อนทำรายการทางการเงิน',
-            admin: 'การเปลี่ยนแปลงข้อมูลสำคัญควรตรวจสอบสิทธิ์ทุกครั้ง'
-          };
-          copy.textContent = copyMap[current] || copyMap.landing;
-        }
-        title.textContent = map[current] || map.landing;
+        $('.pd-toast-close', toast)?.addEventListener('click', remove);
+        setTimeout(remove, 4300);
       }
-
-      function pdWrapOriginals() {
-        if (window.__pdAdvancedWrapped) return;
-        window.__pdAdvancedWrapped = true;
-
-        const originalSwitchView = window.switchView;
-        if (typeof originalSwitchView === 'function') {
-          window.switchView = function(viewName) {
-            const labelMap = {
-              landing:'หน้าแรก', auth:'บัญชี', dashboard:'สั่งพิมพ์และคิวงาน',
-              wallet:'Coins Wallet', admin:'Admin'
-            };
-            pdTransitionIn(labelMap[viewName] || 'PrintDekD Pro');
-            const result = originalSwitchView(viewName);
-            state.lastView = document.body.dataset.currentView || viewName;
-            pdSetDock(state.lastView);
-            pdUpdateSecurityCopy();
-            setTimeout(() => {
-              pdPrepareReveals();
-              pdBindSpotlight();
-              pdBindTilt();
-              pdBindPressFeedback();
-            }, 70);
-            return result;
-          };
-        }
-
-        const originalToggleTheme = window.toggleTheme;
-        if (typeof originalToggleTheme === 'function') {
-          window.toggleTheme = function() {
-            document.documentElement.classList.add('pd-theme-will-change');
-            const beforeDark = document.documentElement.classList.contains('dark');
-            const result = originalToggleTheme();
-            const afterDark = document.documentElement.classList.contains('dark');
-            const icon = pdEl('theme-icon');
-            if (icon) icon.setAttribute('data-lucide', afterDark ? 'sun' : 'moon');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            pdToast('ธีมอัปเดตแล้ว', afterDark ? 'ใช้ Dark appearance' : 'ใช้ Light appearance', afterDark ? 'blue' : 'green');
-            window.setTimeout(() => document.documentElement.classList.remove('pd-theme-will-change'), 520);
-            return result;
-          };
-        }
-
-        const originalToggleMenu = window.toggleAppleTabMenu;
-        if (typeof originalToggleMenu === 'function') {
-          window.toggleAppleTabMenu = function(show = true) {
-            const result = originalToggleMenu(show);
-            const menu = pdEl('apple-tab-menu');
-            if (menu) {
-              menu.classList.toggle('pd-menu-open', !!show);
-              menu.setAttribute('aria-label', 'เมนูหลัก — เลือกพื้นที่ที่ต้องการใช้งาน');
-            }
-            if (show) pdToast('เมนูหลัก', 'เลือกพื้นที่การทำงานได้จากรายการด้านล่าง');
-            return result;
-          };
-        }
-      }
-
-      function pdBindKeyboardShortcuts() {
-        if (document.body.dataset.pdKeyboardBound) return;
-        document.body.dataset.pdKeyboardBound = '1';
-        document.addEventListener('keydown', (event) => {
-          const meta = event.metaKey || event.ctrlKey;
-          if (meta && event.key.toLowerCase() === 'k') {
-            event.preventDefault();
-            const menu = pdEl('apple-tab-menu');
-            if (menu && !menu.classList.contains('hidden')) {
-              window.toggleAppleTabMenu?.(false);
-            } else {
-              window.toggleAppleTabMenu?.(true);
-            }
-          }
-          if (event.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) {
-            event.preventDefault();
-            window.toggleAppleTabMenu?.(true);
-          }
-        });
-      }
-
-      function pdBoot() {
-        pdWrapOriginals();
-        pdPrepareReveals();
-        pdBindSpotlight();
-        pdBindTilt();
-        pdBindPressFeedback();
-        pdBindKeyboardShortcuts();
-        pdSetProgress();
-        pdSetDock(document.body.dataset.currentView || 'landing');
-        pdUpdateSecurityCopy();
-
-        window.addEventListener('scroll', pdSetProgress, { passive:true });
-        window.addEventListener('resize', () => {
-          pdPrepareReveals();
-          pdBindSpotlight();
-          pdBindTilt();
-        }, { passive:true });
-
-        // Keep the product layer resilient when existing code re-renders icons.
-        window.setTimeout(() => {
-          if (typeof lucide !== 'undefined') lucide.createIcons();
-          pdSetDock(document.body.dataset.currentView || 'landing');
-        }, 250);
-      }
-
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pdBoot, { once:true });
-      else pdBoot();
 
       window.pdToast = pdToast;
-      window.pdSetDock = pdSetDock;
-    })();
 
-
-    /* ==========================================================
-       DESIGNER ADVANCED v5.1 — interaction add-on
-       ========================================================== */
-    (function pdAdvancedInteractionAddon() {
-      const state = { rippleBound:false, scrollBound:false, countRaf:0, lastScroll:0 };
-
-      const qs = (s, r=document) => r.querySelector(s);
-      const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
-
-      function bindRipples() {
-        qsa('button').forEach(btn => {
-          if (btn.dataset.pdRippleBound) return;
-          btn.dataset.pdRippleBound = '1';
-          btn.addEventListener('pointerdown', (e) => {
-            const rect = btn.getBoundingClientRect();
-            btn.style.setProperty('--pd-ripple-x', `${e.clientX - rect.left}px`);
-            btn.style.setProperty('--pd-ripple-y', `${e.clientY - rect.top}px`);
-            btn.classList.remove('pd-ripple');
-            requestAnimationFrame(() => btn.classList.add('pd-ripple'));
-          }, { passive:true });
-          btn.addEventListener('animationend', () => btn.classList.remove('pd-ripple'), { passive:true });
-        });
-      }
-
-      function bindFocusTracking() {
-        qsa('input, select, textarea').forEach(input => {
-          if (input.dataset.pdFocusBound) return;
-          input.dataset.pdFocusBound = '1';
-          input.addEventListener('focus', () => input.closest('.ui-card,.ui-panel,.pd-trust-card')?.classList.add('pd-focus-ring'));
-          input.addEventListener('blur', () => input.closest('.ui-card,.ui-panel,.pd-trust-card')?.classList.remove('pd-focus-ring'));
-        });
-      }
-
-      function updateScrollState() {
-        const y = window.scrollY || 0;
-        document.body.classList.toggle('pd-scrolled', y > 28);
-        state.lastScroll = y;
-        const dock = qs('#pd-mobile-dock');
-        if (dock) dock.classList.toggle('pd-dock-hidden', y > 160 && (y - state.lastScroll) > 0);
-      }
-
-      function animateNumber(el, target, duration=620) {
-        if (!el || !Number.isFinite(target)) return;
-        const from = Number(el.dataset.pdCurrent || 0);
-        const start = performance.now();
-        el.dataset.pdCurrent = String(target);
-        cancelAnimationFrame(state.countRaf);
-        const tick = (now) => {
-          const progress = Math.min(1, (now - start) / duration);
-          const eased = 1 - Math.pow(1-progress, 3);
-          const value = from + (target-from)*eased;
-          el.textContent = value.toFixed(2);
-          if (progress < 1) state.countRaf = requestAnimationFrame(tick);
-        };
-        state.countRaf = requestAnimationFrame(tick);
-      }
-
-      function mirrorWalletBalance() {
-        const source = qs('#user-coins-amount');
-        const target = qs('#pd-wallet-glance-balance');
-        if (!source || !target) return;
-        const numeric = parseFloat(source.textContent.replace(/[^\d.-]/g,'')); 
-        if (Number.isFinite(numeric)) animateNumber(target, numeric, 520);
-      }
-
-      function addQueueStatusPulse() {
-        qsa('#queue-cards-container > div').forEach(card => {
-          if (card.dataset.pdQueueEnhanced) return;
-          card.dataset.pdQueueEnhanced = '1';
-          const status = card.querySelector('[class*="rounded-full"]');
-          if (status) status.classList.add('pd-status-soft-pulse');
-        });
-      }
-
-      function announceView(viewName) {
-        const label = {
-          landing:'หน้าแรก',
-          dashboard:'สั่งพิมพ์และคิวงาน',
-          wallet:'Coins Wallet',
-          admin:'Admin Backoffice',
-          auth:'บัญชีผู้ใช้งาน'
-        }[viewName] || 'PrintDekD Pro';
-        const status = qs('#pd-command-status');
-        if (status) {
-          status.textContent = {
-            landing:'เลือกบริการที่ต้องการ แล้วเริ่มงานได้ทันที',
-            dashboard:'ตรวจสอบไฟล์ ราคา และการชำระเงินก่อนส่งคำขอ',
-            wallet:'ดูยอด เติม Coins และตรวจสอบประวัติรายการ',
-            admin:'ดูแลคิว เติม Coins และบัญชีผู้ใช้งานตามสิทธิ์',
-            auth:'เข้าสู่ระบบหรือสร้างบัญชีด้วยขั้นตอนที่ชัดเจน'
-          }[viewName] || '';
+      function setThemeMode(mode) {
+        const htmlEl = document.documentElement;
+        let resolved = mode;
+        if (mode === 'system') {
+          resolved = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          localStorage.setItem('sp_theme_mode', 'system');
+        } else {
+          localStorage.setItem('sp_theme_mode', mode);
         }
-        if (window.pdToast) window.pdToast('พื้นที่ทำงาน', label);
+        htmlEl.classList.toggle('dark', resolved === 'dark');
+        localStorage.setItem('sp_theme', resolved);
+        PD.themeMode = mode;
+        updateThemeUI();
+        pdIconRefresh();
       }
 
-      function wrapViewAgain() {
-        if (window.__pdViewV51) return;
-        window.__pdViewV51 = true;
-        const original = window.switchView;
-        if (typeof original !== 'function') return;
-        window.switchView = function(viewName) {
-          const result = original(viewName);
-          const resolved = document.body.dataset.currentView || viewName;
-          announceView(resolved);
-          setTimeout(() => {
-            bindRipples();
-            bindFocusTracking();
-            addQueueStatusPulse();
-            mirrorWalletBalance();
-          }, 120);
-          return result;
+      function updateThemeUI() {
+        const resolvedDark = document.documentElement.classList.contains('dark');
+        const icon = $('#theme-icon');
+        if (icon) icon.setAttribute('data-lucide', resolvedDark ? 'sun' : 'moon');
+        $$('.pd-theme-option').forEach(btn => btn.classList.toggle('is-active', btn.dataset.pdTheme === PD.themeMode));
+      }
+
+      window.pdSetTheme = setThemeMode;
+
+      /* Replace the original toggle with a premium theme selector entry point. */
+      window.toggleTheme = function() {
+        const sheet = $('#pd-theme-sheet');
+        if (!sheet) return;
+        sheet.classList.remove('hidden');
+        updateThemeUI();
+        pdIconRefresh();
+      };
+
+      function closeThemeSheet() {
+        $('#pd-theme-sheet')?.classList.add('hidden');
+      }
+
+      function openPDCommandPalette() {
+        const overlay = $('#pd-command-palette');
+        const input = $('#pd-command-input');
+        if (!overlay) return;
+        overlay.classList.remove('hidden');
+        buildCommandItems('');
+        setTimeout(() => input?.focus(), 50);
+        document.body.classList.add('pd-command-open');
+      }
+
+      function closePDCommandPalette() {
+        $('#pd-command-palette')?.classList.add('hidden');
+        document.body.classList.remove('pd-command-open');
+      }
+
+      window.openPDCommandPalette = openPDCommandPalette;
+      window.closePDCommandPalette = closePDCommandPalette;
+
+      function getCommandItems() {
+        const items = [
+          { id:'home', icon:'house', title:'หน้าแรก', desc:'กลับสู่หน้าแรกของ PrintDekD Pro', key:'Home', action:()=>switchView('landing') },
+          { id:'print', icon:'file-up', title:'สั่งพิมพ์เอกสาร', desc:'อัปโหลดไฟล์และสร้างรายการพิมพ์', key:'Print', action:()=>handleStartPrinting() },
+          { id:'queue', icon:'clock-3', title:'คิวงานพิมพ์', desc:'ดูสถานะงานและรายการล่าสุด', key:'Queue', action:()=>switchView('dashboard') },
+          { id:'wallet', icon:'wallet-cards', title:'Coins Wallet', desc:'เติม Coins และตรวจสอบยอดคงเหลือ', key:'Wallet', action:()=>switchView('wallet') },
+          { id:'profile', icon:'user-round', title:'โปรไฟล์ของฉัน', desc:'ข้อมูลบัญชี ความปลอดภัย และการตั้งค่า', key:'Profile', action:()=>currentUser ? openUserProfileModal() : (switchView('auth'), switchAuthTab('login')) },
+          { id:'theme', icon:'sun-moon', title:'เปลี่ยนธีม', desc:'Dark / Light / System', key:'Theme', action:()=>{ closePDCommandPalette(); toggleTheme(); } },
+          { id:'security', icon:'shield-check', title:'ตรวจสอบความปลอดภัย', desc:'ตรวจสอบสถานะการเชื่อมต่อและเซสชัน', key:'Security', action:()=>runSecurityAudit(true) }
+        ];
+        if (currentUser?.role === 'admin') {
+          items.splice(5, 0, { id:'admin', icon:'layout-dashboard', title:'Admin Backoffice', desc:'จัดการคิว ผู้ใช้ และ Top-up', key:'Admin', action:()=>switchView('admin') });
+        }
+        return items;
+      }
+
+      function buildCommandItems(query = '') {
+        const results = $('#pd-command-results');
+        if (!results) return;
+        const q = query.trim().toLowerCase();
+        PD.commandItems = getCommandItems().filter(item => {
+          const hay = `${item.title} ${item.desc} ${item.key}`.toLowerCase();
+          return !q || hay.includes(q);
+        });
+        PD.commandIndex = Math.max(0, Math.min(PD.commandIndex, PD.commandItems.length - 1));
+        results.innerHTML = PD.commandItems.length
+          ? PD.commandItems.map((item, index) => `
+              <button type="button" class="pd-command-item ${index === PD.commandIndex ? 'is-selected' : ''}" data-pd-command-index="${index}">
+                <span class="pd-command-item-icon"><i data-lucide="${item.icon}"></i></span>
+                <span><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.desc)}</small></span>
+                <span>${escapeHtml(item.key)}</span>
+              </button>
+            `).join('')
+          : '<div class="pd-command-empty">ไม่พบเมนูที่ตรงกับคำค้น ลองใช้คำว่า “พิมพ์”, “Coins” หรือ “โปรไฟล์”</div>';
+        pdIconRefresh();
+        $$('.pd-command-item', results).forEach(btn => {
+          btn.addEventListener('mouseenter', () => {
+            PD.commandIndex = Number(btn.dataset.pdCommandIndex);
+            $$('.pd-command-item', results).forEach((x,i)=>x.classList.toggle('is-selected',i===PD.commandIndex));
+          });
+          btn.addEventListener('click', () => {
+            const item = PD.commandItems[Number(btn.dataset.pdCommandIndex)];
+            closePDCommandPalette();
+            item?.action?.();
+          });
+        });
+      }
+
+      function runCommand() {
+        const item = PD.commandItems[PD.commandIndex];
+        if (!item) return;
+        closePDCommandPalette();
+        item.action?.();
+      }
+
+      function setupCommandCenter() {
+        $('#pd-command-input')?.addEventListener('input', e => {
+          PD.commandIndex = 0;
+          buildCommandItems(e.target.value);
+        });
+        $$('[data-pd-close-command]').forEach(el => el.addEventListener('click', closePDCommandPalette));
+      }
+
+      function setupThemeSheet() {
+        $$('[data-pd-close-theme]').forEach(el => el.addEventListener('click', closeThemeSheet));
+        $$('.pd-theme-option').forEach(btn => btn.addEventListener('click', () => {
+          setThemeMode(btn.dataset.pdTheme);
+          closeThemeSheet();
+          pdToast('เปลี่ยนธีมแล้ว', btn.dataset.pdTheme === 'dark' ? 'Deep Titanium' : btn.dataset.pdTheme === 'light' ? 'Soft Silver' : 'ตามการตั้งค่าอุปกรณ์', 'success');
+        }));
+        const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+        media?.addEventListener?.('change', () => {
+          if (PD.themeMode === 'system') setThemeMode('system');
+        });
+      }
+
+      function setupKeyboard() {
+        window.addEventListener('keydown', e => {
+          const modifier = e.metaKey || e.ctrlKey;
+          if (modifier && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if ($('#pd-command-palette')?.classList.contains('hidden')) openPDCommandPalette();
+            else closePDCommandPalette();
+            return;
+          }
+          const commandOpen = !$('#pd-command-palette')?.classList.contains('hidden');
+          if (commandOpen) {
+            if (e.key === 'Escape') return closePDCommandPalette();
+            if (e.key === 'ArrowDown') { e.preventDefault(); PD.commandIndex = Math.min(PD.commandItems.length - 1, PD.commandIndex + 1); buildCommandItems($('#pd-command-input')?.value || ''); }
+            if (e.key === 'ArrowUp') { e.preventDefault(); PD.commandIndex = Math.max(0, PD.commandIndex - 1); buildCommandItems($('#pd-command-input')?.value || ''); }
+            if (e.key === 'Enter') { e.preventDefault(); runCommand(); }
+          }
+        });
+      }
+
+      function setupScrollEffects() {
+        const progress = $('#pd-scroll-progress-bar');
+        const nav = $('nav.sticky');
+        const dock = $('#pd-quick-dock');
+        const island = $('#pd-live-island');
+        const update = () => {
+          const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+          const pct = Math.min(100, Math.max(0, (scrollY / max) * 100));
+          if (progress) progress.style.width = pct + '%';
+          nav?.classList.toggle('is-compact', scrollY > 28);
+          dock?.classList.toggle('is-hidden', scrollY < 220);
+          island?.classList.toggle('is-visible', scrollY > 360);
+          PD.lastScroll = scrollY;
         };
-      }
-
-      function wrapWalletFetch() {
-        if (window.__pdWalletV51) return;
-        window.__pdWalletV51 = true;
-        const original = window.fetchUserWallet;
-        if (typeof original !== 'function') return;
-        window.fetchUserWallet = async function(...args) {
-          const result = await original(...args);
-          mirrorWalletBalance();
-          return result;
-        };
-      }
-
-      function boot() {
-        wrapViewAgain();
-        wrapWalletFetch();
-        bindRipples();
-        bindFocusTracking();
-        addQueueStatusPulse();
-        mirrorWalletBalance();
-
         let ticking = false;
         window.addEventListener('scroll', () => {
           if (ticking) return;
           ticking = true;
-          requestAnimationFrame(() => {
-            updateScrollState();
-            ticking = false;
-          });
+          requestAnimationFrame(() => { update(); ticking = false; });
         }, { passive:true });
-
-        document.addEventListener('click', (e) => {
-          if (e.target.closest('button')) {
-            setTimeout(() => { bindRipples(); bindFocusTracking(); }, 50);
-          }
-        }, { passive:true });
+        update();
       }
 
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true});
-      else boot();
+      function setupLiveIsland() {
+        const clock = $('#pd-island-time');
+        const tick = () => {
+          if (!clock) return;
+          clock.textContent = new Intl.DateTimeFormat('th-TH', { hour:'2-digit', minute:'2-digit' }).format(new Date());
+        };
+        tick();
+        setInterval(tick, 30000);
+      }
+
+      function setupPointerEffects() {
+        if (!PD.pointerFine) return;
+        const orb = $('#pd-ambient-orb');
+        const glow = $('#pd-cursor-glow');
+        let x = innerWidth / 2;
+        let y = innerHeight / 2;
+        let tx = x;
+        let ty = y;
+        window.addEventListener('pointermove', e => {
+          tx = e.clientX;
+          ty = e.clientY;
+          if (glow) { glow.style.left = `${tx}px`; glow.style.top = `${ty}px`; glow.style.opacity = '.85'; }
+        }, { passive:true });
+        const loop = () => {
+          x += (tx-x)*.08;
+          y += (ty-y)*.08;
+          if (orb) { orb.style.left = `${x}px`; orb.style.top = `${y}px`; }
+          requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+        window.addEventListener('pointerleave', () => { if (glow) glow.style.opacity = '0'; });
+      }
+
+      function setupTilt() {
+        if (!PD.pointerFine || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+        $$('[data-tilt]').forEach(card => {
+          card.addEventListener('pointermove', e => {
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;
+            const py = (e.clientY - r.top) / r.height;
+            const rx = (0.5 - py) * 4.5;
+            const ry = (px - 0.5) * 5;
+            card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+          });
+          card.addEventListener('pointerleave', () => {
+            card.style.transform = '';
+          });
+        });
+      }
+
+      function setupMagneticButtons() {
+        if (!PD.pointerFine || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+        $$('.pd-primary-cta,.pd-secondary-cta,.bg-blue-600').forEach(btn => {
+          btn.addEventListener('pointermove', e => {
+            const r = btn.getBoundingClientRect();
+            const x = (e.clientX - r.left - r.width/2) * .08;
+            const y = (e.clientY - r.top - r.height/2) * .08;
+            btn.style.transform = `translate(${x}px,${y}px)`;
+          });
+          btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+        });
+      }
+
+      function setupRevealObserver() {
+        const targets = $$('.pd-reveal-card, .pd-story-section, .pd-final-cta');
+        if (!('IntersectionObserver' in window)) {
+          targets.forEach(x => x.classList.add('is-in'));
+          return;
+        }
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('is-in');
+          });
+        }, { threshold:.16, rootMargin:'0px 0px -7% 0px' });
+        targets.forEach(x => observer.observe(x));
+      }
+
+      function setupDock() {
+        $$('[data-pd-action]').forEach(btn => btn.addEventListener('click', () => {
+          const action = btn.dataset.pdAction;
+          if (action === 'home') switchView('landing');
+          if (action === 'print') handleStartPrinting();
+          if (action === 'wallet') switchView('wallet');
+          if (action === 'theme') toggleTheme();
+        }));
+      }
+
+      function setupNavigationObserver() {
+        const map = {
+          landing:['view-landing','nav-home-btn'],
+          auth:['view-auth',null],
+          dashboard:['view-dashboard','nav-dashboard-btn'],
+          wallet:['view-wallet','nav-wallet-btn'],
+          admin:['view-admin',null]
+        };
+        const originalSwitch = window.switchView;
+        if (typeof originalSwitch !== 'function') return;
+        window.switchView = function(viewName) {
+          PD.activeView = viewName;
+          const result = originalSwitch(viewName);
+          requestAnimationFrame(() => {
+            document.body.dataset.pdView = viewName;
+            updateThemeUI();
+            pdIconRefresh();
+          });
+          return result;
+        };
+        Object.entries(map).forEach(([view, [, navId]]) => {
+          if (!navId) return;
+          const nav = document.getElementById(navId);
+          nav?.addEventListener('click', () => { PD.activeView = view; });
+        });
+      }
+
+      function setupProfileEnhancement() {
+        const profileButton = $('#user-profile-menu button[aria-label="เปิดโปรไฟล์ผู้ใช้งาน"]');
+        profileButton?.addEventListener('mouseenter', () => {
+          profileButton.classList.add('pd-profile-hover');
+        });
+        profileButton?.addEventListener('mouseleave', () => {
+          profileButton.classList.remove('pd-profile-hover');
+        });
+      }
+
+      function setupMicroFeedback() {
+        document.addEventListener('click', e => {
+          const button = e.target.closest('button');
+          if (!button || button.disabled || button.closest('#pd-command-palette')) return;
+          button.classList.remove('pd-click-flash');
+          requestAnimationFrame(() => {
+            button.classList.add('pd-click-flash');
+            setTimeout(() => button.classList.remove('pd-click-flash'), 260);
+          });
+        });
+      }
+
+      function setupIntersectionStatus() {
+        const label = $('#pd-island-label');
+        const sections = [
+          ['view-landing','กำลังดูหน้าแรก'],
+          ['view-auth','กำลังจัดการบัญชี'],
+          ['view-dashboard','กำลังจัดการงานพิมพ์'],
+          ['view-wallet','กำลังจัดการ Coins'],
+          ['view-admin','กำลังดูแลระบบ']
+        ];
+        const update = () => {
+          const visible = sections.find(([id]) => {
+            const el = document.getElementById(id);
+            return el && !el.classList.contains('hidden');
+          });
+          if (label && visible) label.textContent = visible[1];
+        };
+        update();
+        setInterval(update, 1000);
+      }
+
+      function setupThemeFirstPaint() {
+        const savedMode = localStorage.getItem('sp_theme_mode');
+        if (savedMode) PD.themeMode = savedMode;
+        else PD.themeMode = localStorage.getItem('sp_theme') || 'dark';
+        if (PD.themeMode === 'system') setThemeMode('system');
+        else setThemeMode(PD.themeMode === 'light' ? 'light' : 'dark');
+      }
+
+      function initDesignerAdvanced() {
+        setupThemeFirstPaint();
+        setupCommandCenter();
+        setupThemeSheet();
+        setupKeyboard();
+        setupScrollEffects();
+        setupLiveIsland();
+        setupPointerEffects();
+        setupTilt();
+        setupMagneticButtons();
+        setupRevealObserver();
+        setupDock();
+        setupNavigationObserver();
+        setupProfileEnhancement();
+        setupMicroFeedback();
+        setupIntersectionStatus();
+        pdIconRefresh();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDesignerAdvanced, { once:true });
+      } else {
+        initDesignerAdvanced();
+      }
     })();
 
-    /* Soft pulse for queue status — intentionally short and unobtrusive. */
-    document.head.insertAdjacentHTML('beforeend', `<style>
-      .pd-status-soft-pulse { animation:pdStatusPulse 2.8s ease-in-out infinite; }
-      @keyframes pdStatusPulse { 0%,100%{filter:none;opacity:1} 50%{filter:brightness(1.08);opacity:.86} }
-      #pd-mobile-dock.pd-dock-hidden { transform:translateY(calc(100% + 18px)); }
-      #pd-mobile-dock { transition:transform .38s cubic-bezier(.16,1,.3,1); }
-      @media (prefers-reduced-motion:reduce){ .pd-status-soft-pulse{animation:none!important} #pd-mobile-dock{transition:none!important} }
-    </style>`);
-
   </script>
-
-  <!-- ==========================================================
-       MOBILE APP DOCK — large touch targets, one clear active tab
-       ========================================================== -->
-  <nav id="pd-mobile-dock" aria-label="เมนูหลักสำหรับมือถือ">
-    <button type="button" data-pd-dock-view="landing" onclick="switchView('landing')" aria-label="หน้าแรก">
-      <span class="pd-dock-icon"><i data-lucide="house"></i></span>
-      <span class="pd-dock-label">หน้าแรก</span>
-    </button>
-    <button type="button" data-pd-dock-view="dashboard" onclick="switchView('dashboard')" aria-label="สั่งพิมพ์และคิวงาน">
-      <span class="pd-dock-icon"><i data-lucide="printer"></i></span>
-      <span class="pd-dock-label">สั่งพิมพ์</span>
-    </button>
-    <button type="button" data-pd-dock-view="wallet" onclick="switchView('wallet')" aria-label="Coins Wallet">
-      <span class="pd-dock-icon"><i data-lucide="wallet-cards"></i></span>
-      <span class="pd-dock-label">Coins</span>
-    </button>
-    <button type="button" id="pd-dock-profile" onclick="openUserProfileModal()" aria-label="โปรไฟล์">
-      <span class="pd-dock-icon pd-dock-avatar"><img id="pd-dock-avatar-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" alt=""></span>
-      <span class="pd-dock-label">โปรไฟล์</span>
-    </button>
-  </nav>
-
 </body>
 </html>
