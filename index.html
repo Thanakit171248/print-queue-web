@@ -6,13 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SECURITY META HEADERS (Cybersecurity Standards) -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="referrer" content="strict-origin-when-cross-origin">
   <!-- Best-effort document policy. Critical clickjacking / HSTS / server headers still belong on Vercel response headers. -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://openadmindata.org; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none';">
-  <meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="dark light">
   <script id="pd-v17-theme-first-paint">
     (function () {
       try {
@@ -32,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v20 — Postcode-first Smart Address Flow</title>
+  <title>PrintDekD Pro v21 — CSP + Exclusive Views + Friendly Typography</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -65,7 +61,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Mitr:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
 
   <style>
@@ -5651,7 +5647,7 @@
       <i data-lucide="wallet-cards"></i><span>Coins</span>
     </button>
     <button type="button" class="pd-dock-button" data-pd-action="help" aria-label="ศูนย์ช่วยเหลือ"
-      title="ศูนย์ช่วยเหลือ" onclick="switchView('help')">
+      title="ศูนย์ช่วยเหลือ">
       <i data-lucide="life-buoy"></i><span>ช่วยเหลือ</span>
     </button>
     <button type="button" class="pd-dock-button" data-pd-action="theme" aria-label="เปลี่ยนธีม" title="เปลี่ยนธีม">
@@ -8801,9 +8797,10 @@
         $$('[data-pd-action]').forEach(btn => btn.addEventListener('click', () => {
           const action = btn.dataset.pdAction;
           if (action === 'home') switchView('landing');
-          if (action === 'print') handleStartPrinting();
-          if (action === 'wallet') switchView('wallet');
-          if (action === 'theme') toggleTheme();
+          else if (action === 'print') handleStartPrinting();
+          else if (action === 'wallet') switchView('wallet');
+          else if (action === 'help') switchView('help');
+          else if (action === 'theme') toggleTheme();
         }));
       }
 
@@ -8813,7 +8810,8 @@
           auth: ['view-auth', null],
           dashboard: ['view-dashboard', 'nav-dashboard-btn'],
           wallet: ['view-wallet', 'nav-wallet-btn'],
-          admin: ['view-admin', null]
+          admin: ['view-admin', null],
+          help: ['view-help', 'nav-help-btn']
         };
         const originalSwitch = window.switchView;
         if (typeof originalSwitch !== 'function') return;
@@ -22727,8 +22725,27 @@
         };
         wrapped.__pd20 = true; window.toggleDeliveryFields = wrapped;
       }
-      ui.postal?.addEventListener('input', () => lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error')));
-      ui.postal?.addEventListener('change', () => lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error')));
+      let postalInputTimer = null;
+      ui.postal?.addEventListener('input', () => {
+        if (postalInputTimer) clearTimeout(postalInputTimer);
+        const digits = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
+        if (ui.postal.value !== digits) ui.postal.value = digits;
+        if (digits.length < 5) {
+          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+          return;
+        }
+        postalInputTimer = setTimeout(() => {
+          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+        }, 180);
+      });
+      ui.postal?.addEventListener('change', () => {
+        if (postalInputTimer) clearTimeout(postalInputTimer);
+        // Do not re-run a failed request twice on the same keystroke/blur cycle.
+        const zip = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
+        if (zip === state.activePostal && state.postalSubdistricts.length) return;
+        if (zip.length === 5 && state.pendingPostal === zip && postalLookupPromise) return;
+        lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+      });
       ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
       ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
       ui.district?.addEventListener('focus', () => { if (ui.district.readOnly) addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้', 'error'); });
@@ -22999,6 +23016,86 @@
       }
     }
   </style>
+
+<style id="pd-v21-view-csp-type-fix">
+/* PrintDekD v21: the active view is exclusive. This must override the earlier #view-landing display:flex!important. */
+main > section[id^="view-"].hidden,
+main > section[id^="view-"][hidden],
+#view-landing.hidden, #view-auth.hidden, #view-dashboard.hidden,
+#view-wallet.hidden, #view-admin.hidden, #view-help.hidden,
+#view-landing[hidden], #view-auth[hidden], #view-dashboard[hidden],
+#view-wallet[hidden], #view-admin[hidden], #view-help[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+main > section[id^="view-"]:not(.hidden):not([hidden]) {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto;
+  animation: pd-v21-view-enter .24s cubic-bezier(.2,.8,.2,1) both;
+}
+#view-landing:not(.hidden):not([hidden]) {
+  display: flex !important;
+  flex-direction: column !important;
+}
+@keyframes pd-v21-view-enter {
+  from { opacity: .0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Friendly Thai typography: Mitr adds rounded character to headings; Kanit stays for compact, readable UI copy. */
+html, body, button, input, select, textarea {
+  font-family: "Kanit", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4,
+.pd17-hero-copy h1, .pd17-hero-copy h2,
+#pd19-home-order-title,
+.profile-shell h1, .profile-shell h2,
+.pd-help-hero h1, .pd-help-section h2 {
+  font-family: "Mitr", "Kanit", "Noto Sans Thai", sans-serif !important;
+  letter-spacing: -.018em;
+  line-height: 1.28;
+  font-synthesis: none;
+  text-wrap: balance;
+}
+#view-dashboard h1, #view-wallet h1, #view-admin h1 { line-height: 1.28 !important; }
+#view-dashboard label, #view-wallet label, #view-admin label { line-height: 1.55; }
+#view-dashboard small, #view-wallet small, #view-admin small { line-height: 1.5; }
+
+/* Single destination navigation and scroll position. */
+main > section[id^="view-"] { width: 100%; min-width: 0; }
+main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
+.pd-dock-button, .nav-link, .apple-menu-item { -webkit-tap-highlight-color: transparent; }
+.pd-dock-button:active, .nav-link:active { transform: scale(.98); }
+
+/* Readable touch targets and predictable layout across mobile, iPad, notebook and desktop. */
+@media (max-width: 767px) {
+  main > section[id^="view-"]:not(.hidden):not([hidden]) { animation-duration: .18s; }
+  #view-dashboard, #view-wallet, #view-help { padding-top: 20px !important; }
+  #view-dashboard h1, #view-wallet h1, #view-help h1 { font-size: clamp(26px, 7vw, 36px) !important; }
+  #view-dashboard h2, #view-wallet h2, #view-help h2 { font-size: clamp(21px, 5.8vw, 29px) !important; }
+  #view-dashboard label, #view-wallet label { font-size: 14px !important; }
+  #view-dashboard .ui-input, #view-wallet .ui-input,
+  #view-dashboard input, #view-dashboard select, #view-dashboard textarea,
+  #view-wallet input, #view-wallet select, #view-wallet textarea { font-size: 16px !important; }
+  #pd19-address-card .pd19-address-grid-two { grid-template-columns: minmax(0,1fr) !important; }
+  #apple-tab-menu .apple-menu-item { grid-template-columns: 42px minmax(0,1fr) !important; }
+  #apple-tab-menu .apple-menu-item .menu-title { line-height: 1.35 !important; }
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  #view-dashboard, #view-wallet { padding-left: 22px !important; padding-right: 22px !important; }
+}
+@media (min-width: 1101px) {
+  #view-dashboard, #view-wallet, #view-admin { margin-inline: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main > section[id^="view-"]:not(.hidden):not([hidden]) { animation: none !important; }
+}
+</style>
 
 </body>
 
