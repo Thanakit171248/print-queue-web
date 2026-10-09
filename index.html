@@ -10634,5 +10634,423 @@ button { touch-action:manipulation; }
 })();
 </script>
 
+
+<style id="pd-v18-premium-refinement">
+/* ============================================================
+   PrintDekD Pro v18 — focused quality pass
+   - keeps application logic and schema intact
+   - profile image data is handled as data, never displayed as URL text
+   - larger appearance chooser
+   - cleaner print flow and wallet visual hierarchy
+   - motion remains purposeful, short and low-paint
+   ============================================================ */
+:root {
+  --pd18-surface: #ffffff;
+  --pd18-surface-soft: #f4f7fb;
+  --pd18-border: #dce4ee;
+  --pd18-ink: #121a28;
+  --pd18-muted: #58677b;
+  --pd18-blue: #087cff;
+  --pd18-shadow: 0 18px 52px rgba(15,23,42,.08);
+}
+html.dark {
+  --pd18-surface: #111821;
+  --pd18-surface-soft: #151e29;
+  --pd18-border: #2a3747;
+  --pd18-ink: #f5f7fb;
+  --pd18-muted: #b0bdcc;
+  --pd18-shadow: 0 22px 60px rgba(0,0,0,.25);
+}
+
+/* Appearance picker: more spacious, clearer copy, still easy to use on phones. */
+#pd-theme-sheet.pd-theme-overlay {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(12px,3vw,36px) !important;
+}
+#pd-theme-sheet .pd-theme-sheet {
+  width: min(900px, calc(100vw - 28px)) !important;
+  max-height: min(820px, calc(100dvh - 28px)) !important;
+  overflow: auto !important;
+  padding: clamp(24px,4vw,42px) !important;
+  border-radius: clamp(24px,3vw,36px) !important;
+  border-color: var(--pd18-border) !important;
+  background: var(--pd18-surface) !important;
+  color: var(--pd18-ink) !important;
+  box-shadow: 0 34px 100px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.65) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  animation: pd18-sheet-in .26s cubic-bezier(.2,.8,.2,1) both !important;
+}
+html.dark #pd-theme-sheet .pd-theme-sheet { background: #10151d !important; border-color: #2a3442 !important; }
+#pd-theme-sheet .pd-theme-head { align-items: flex-start; gap: 24px; }
+#pd-theme-sheet .pd-theme-head h2 { font-size: clamp(27px,3vw,38px) !important; line-height: 1.18 !important; letter-spacing: -.035em !important; color: var(--pd18-ink) !important; }
+#pd-theme-sheet .pd-theme-head p { max-width: 620px !important; font-size: clamp(14px,1.35vw,16px) !important; line-height: 1.7 !important; color: var(--pd18-muted) !important; }
+#pd-theme-sheet .pd-theme-options { grid-template-columns: repeat(3,minmax(0,1fr)) !important; gap: 14px !important; margin-top: 28px !important; }
+#pd-theme-sheet .pd-theme-option {
+  min-width: 0; min-height: 220px !important; gap: 14px !important; padding: 14px !important;
+  border-radius: 24px !important; border: 1px solid var(--pd18-border) !important;
+  background: var(--pd18-surface-soft) !important; color: var(--pd18-ink) !important;
+  transition: transform .2s ease,border-color .2s ease,box-shadow .2s ease,background-color .2s ease !important;
+}
+#pd-theme-sheet .pd-theme-option:hover { transform: translateY(-2px) !important; border-color: rgba(8,124,255,.55) !important; }
+#pd-theme-sheet .pd-theme-option.is-active { border: 2px solid var(--pd18-blue) !important; padding: 13px !important; background: rgba(8,124,255,.075) !important; box-shadow: 0 12px 30px rgba(8,124,255,.10) !important; }
+#pd-theme-sheet .pd-theme-preview { height: 116px !important; border-radius: 17px !important; border: 1px solid var(--pd18-border) !important; justify-content: center; align-items: center; }
+#pd-theme-sheet .pd-theme-preview svg { width: 32px !important; height: 32px !important; }
+#pd-theme-sheet .pd-theme-option b { font-size: 16px !important; line-height: 1.35 !important; }
+#pd-theme-sheet .pd-theme-option small { font-size: 12px !important; line-height: 1.5 !important; margin-top: 4px !important; }
+#pd-theme-sheet .pd-theme-check { width: 20px !important; height: 20px !important; top: 14px !important; right: 14px !important; }
+@keyframes pd18-sheet-in { from { opacity:0; transform:translateY(10px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* Profile editor: same printer brand mark as Login/Register, without a visible base64 URL. */
+.pd18-profile-brand {
+  display:flex; align-items:center; gap:14px; min-width:0;
+  padding:0 0 18px; margin:0 0 2px; border-bottom:1px solid var(--pd18-border);
+}
+.pd18-profile-brandmark {
+  width:54px; height:54px; flex:0 0 auto; display:grid; place-items:center;
+  border-radius:18px; color:#fff; background:linear-gradient(145deg,#1593ff,#0064de);
+  box-shadow:0 12px 28px rgba(8,124,255,.22),inset 0 1px 0 rgba(255,255,255,.28);
+}
+.pd18-profile-brandmark svg { width:27px; height:27px; }
+.pd18-profile-brandcopy { min-width:0; }
+.pd18-profile-brandcopy strong { display:block; font-size:18px; line-height:1.25; font-weight:900; color:var(--pd18-ink); letter-spacing:-.025em; }
+.pd18-profile-brandcopy small { display:block; margin-top:4px; font-size:11px; line-height:1.5; letter-spacing:.09em; font-weight:850; color:#2781e4; }
+#profile-edit-section .pd-profile-editor { gap:22px !important; align-items:stretch !important; }
+#profile-edit-section .pd-avatar-stage { min-height:320px !important; border-radius:26px !important; background:linear-gradient(155deg,rgba(8,124,255,.09),var(--pd18-surface-soft)) !important; border-color:var(--pd18-border) !important; }
+#profile-edit-section .pd-avatar-stage::before { animation-duration:18s !important; opacity:.55; }
+#profile-edit-section .pd-avatar-preview { width:164px !important; height:164px !important; aspect-ratio:1 / 1; border-radius:26px !important; object-fit:cover !important; }
+#profile-edit-section .pd-form-stack { gap:13px !important; }
+#profile-edit-section .pd-field-card { padding:18px !important; border-radius:20px !important; background:var(--pd18-surface) !important; border-color:var(--pd18-border) !important; }
+#profile-edit-section .pd-field-card label { font-size:14px !important; line-height:1.5 !important; color:var(--pd18-ink) !important; }
+#profile-edit-section #edit-avatar-url { font-size:15px !important; min-height:54px !important; }
+#profile-edit-section #edit-avatar-url::placeholder { color:var(--pd18-muted) !important; opacity:1; }
+#profile-edit-section .pd18-avatar-help { margin-top:9px !important; color:var(--pd18-muted) !important; font-size:12px !important; line-height:1.65 !important; }
+#profile-edit-section .pd18-avatar-state { display:flex; align-items:center; gap:8px; margin-top:10px; color:#11865c; font-size:12px; font-weight:800; line-height:1.45; }
+#profile-edit-section .pd18-avatar-state[hidden] { display:none !important; }
+#profile-edit-section .pd18-avatar-state svg { width:17px; height:17px; flex:0 0 auto; }
+
+/* Print page: a clear editorial header, non-overlapping tools, solid surfaces. */
+#view-dashboard { max-width:1480px !important; }
+#view-dashboard .pd-order-hero {
+  display:grid !important; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"main main" "steps shortcuts";
+  align-items:end; gap:20px clamp(18px,3vw,38px) !important;
+  padding:clamp(24px,3.6vw,44px) !important; margin-bottom:14px !important;
+  border-radius:30px !important; border-color:var(--pd18-border) !important;
+  background:radial-gradient(640px 240px at 0% 0%,rgba(8,124,255,.13),transparent 68%),var(--pd18-surface) !important;
+  box-shadow:var(--pd18-shadow) !important;
+}
+#view-dashboard .pd-order-hero-main { grid-area:main; min-width:0; }
+#view-dashboard .pd-order-hero-main .pd-eyebrow { font-size:12px !important; letter-spacing:.09em !important; }
+#view-dashboard .pd-order-hero-main h1 { max-width:1000px !important; font-size:clamp(32px,4.3vw,60px) !important; line-height:1.08 !important; letter-spacing:-.045em !important; text-wrap:balance; color:var(--pd18-ink) !important; }
+#view-dashboard .pd-order-hero-main p { max-width:72ch !important; font-size:clamp(14px,1.2vw,17px) !important; line-height:1.72 !important; color:var(--pd18-muted) !important; }
+#view-dashboard .pd-order-stepper { grid-area:steps; margin-top:0 !important; flex-wrap:wrap; gap:9px !important; }
+#view-dashboard .pd-order-stepper span { font-size:12px !important; }
+#view-dashboard .pd-order-stepper b { width:36px !important; height:36px !important; border-radius:12px !important; font-size:11px !important; }
+#view-dashboard .pd-order-stepper i { width:clamp(12px,2vw,36px) !important; }
+#view-dashboard .pd-order-stepper small { font-size:12px !important; }
+#view-dashboard .pd-order-shortcuts { grid-area:shortcuts; position:static !important; align-self:end; display:flex !important; justify-content:flex-end; flex-wrap:wrap; gap:8px !important; margin:0 !important; }
+#view-dashboard .pd-order-shortcuts button { min-height:44px !important; padding:0 13px !important; border-radius:14px !important; font-size:12px !important; color:var(--pd18-ink) !important; background:var(--pd18-surface-soft) !important; border-color:var(--pd18-border) !important; transition:transform .18s ease,border-color .18s ease,background-color .18s ease !important; }
+#view-dashboard .pd-order-shortcuts button:hover { transform:translateY(-2px) !important; border-color:rgba(8,124,255,.5) !important; }
+#view-dashboard .pd-live-order-strip { top:86px; z-index:20; border-color:var(--pd18-border) !important; border-radius:18px !important; background:var(--pd18-surface) !important; box-shadow:0 8px 26px rgba(15,23,42,.07) !important; padding:13px 17px !important; margin-bottom:22px !important; }
+#view-dashboard .pd-live-order-strip b { font-size:14px !important; line-height:1.4 !important; color:var(--pd18-ink) !important; }
+#view-dashboard .pd-live-order-strip small { font-size:12px !important; line-height:1.5 !important; color:var(--pd18-muted) !important; }
+#view-dashboard .pd-live-price strong { font-size:22px !important; line-height:1.2 !important; color:#b87800 !important; }
+html.dark #view-dashboard .pd-live-price strong { color:#ffd36a !important; }
+#view-dashboard > .grid > .ui-panel { border-radius:26px !important; border-color:var(--pd18-border) !important; background:var(--pd18-surface) !important; box-shadow:var(--pd18-shadow) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+#view-dashboard .ui-panel h2 { font-size:clamp(21px,2vw,28px) !important; line-height:1.25 !important; letter-spacing:-.025em !important; color:var(--pd18-ink) !important; }
+#view-dashboard form > div > label { display:block; font-size:14px !important; line-height:1.5 !important; margin-bottom:10px !important; }
+#view-dashboard #upload-placeholder { padding:clamp(18px,3vw,28px) !important; }
+#view-dashboard #upload-placeholder p:first-of-type { font-size:15px !important; line-height:1.5 !important; }
+#view-dashboard #upload-placeholder p:nth-of-type(2) { font-size:12px !important; line-height:1.6 !important; }
+#view-dashboard .ui-input { border-radius:17px !important; }
+#view-dashboard #pages-grid-container { gap:10px !important; padding:12px !important; border-radius:20px !important; }
+#view-dashboard #file-details { gap:12px; flex-wrap:wrap; border-radius:17px !important; }
+#view-dashboard #file-info-name { font-size:14px !important; }
+#view-dashboard #preview-file-drawer-btn { min-height:48px !important; font-size:13px !important; }
+
+/* Wallet: make the flow read as a guided payment sequence. */
+#view-wallet { max-width:1480px !important; }
+.pd18-wallet-hero {
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:22px;
+  padding:clamp(24px,4vw,44px); margin:0 0 20px;
+  border:1px solid var(--pd18-border); border-radius:30px;
+  background:radial-gradient(600px 230px at 0% 0%,rgba(245,158,11,.15),transparent 70%),var(--pd18-surface);
+  box-shadow:var(--pd18-shadow); color:var(--pd18-ink);
+}
+.pd18-wallet-headline { display:flex; align-items:flex-start; gap:17px; min-width:0; }
+.pd18-wallet-brandmark { width:58px; height:58px; display:grid; place-items:center; flex:0 0 auto; border-radius:19px; color:#7b4a00; background:#fff1cc; border:1px solid #f5d58a; }
+.pd18-wallet-brandmark svg { width:27px; height:27px; }
+.pd18-wallet-copy { min-width:0; }
+.pd18-wallet-copy .pd-eyebrow { font-size:12px !important; color:#a96a00 !important; }
+.pd18-wallet-copy h1 { margin:9px 0 8px; font-size:clamp(30px,4vw,52px) !important; line-height:1.08 !important; letter-spacing:-.045em !important; color:var(--pd18-ink) !important; text-wrap:balance; }
+.pd18-wallet-copy p { margin:0; max-width:65ch; color:var(--pd18-muted); font-size:15px; line-height:1.7; }
+.pd18-wallet-current { min-width:190px; padding:16px 19px; border:1px solid #f1d69a; border-radius:20px; background:rgba(245,158,11,.075); }
+.pd18-wallet-current small { display:block; color:#946200; font-size:12px; line-height:1.4; font-weight:800; }
+.pd18-wallet-current strong { display:block; margin-top:6px; font-size:clamp(24px,2.5vw,32px); line-height:1.12; color:#a46600; font-weight:950; letter-spacing:-.03em; }
+html.dark .pd18-wallet-current { background:rgba(245,158,11,.09); border-color:#5b4620; }
+html.dark .pd18-wallet-current small { color:#f6cf7a; }
+html.dark .pd18-wallet-current strong { color:#ffd36a; }
+#view-wallet > .grid { align-items:start; gap:clamp(14px,2.4vw,28px) !important; }
+#view-wallet .ui-panel { border-radius:27px !important; border:1px solid var(--pd18-border) !important; background:var(--pd18-surface) !important; box-shadow:var(--pd18-shadow) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+#view-wallet .ui-panel > div:first-child h2 { font-size:clamp(21px,2.3vw,30px) !important; line-height:1.25 !important; color:var(--pd18-ink) !important; }
+#view-wallet .ui-panel > div:first-child p { font-size:13px !important; line-height:1.6 !important; color:var(--pd18-muted) !important; }
+#view-wallet form > div > label { font-size:14px !important; line-height:1.55 !important; color:var(--pd18-ink) !important; }
+#view-wallet form > div:first-child .grid { grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:11px !important; }
+#view-wallet .topup-pkg-btn { min-width:0; min-height:104px !important; padding:16px 10px !important; border-width:1px !important; border-radius:20px !important; display:flex !important; flex-direction:column; align-items:center; justify-content:center; gap:3px; transform:none !important; box-shadow:none !important; transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease !important; }
+#view-wallet .topup-pkg-btn span:first-child { font-size:clamp(17px,1.5vw,22px) !important; line-height:1.3 !important; font-weight:900 !important; }
+#view-wallet .topup-pkg-btn span:nth-child(2) { font-size:12px !important; line-height:1.45 !important; }
+#view-wallet .topup-pkg-btn.border-2.border-amber-500 { border:2px solid #d99a13 !important; background:rgba(245,158,11,.12) !important; box-shadow:inset 0 0 0 1px rgba(245,158,11,.1),0 8px 20px rgba(245,158,11,.06) !important; }
+html.dark #view-wallet .topup-pkg-btn.border-2.border-amber-500 { border-color:#e8b949 !important; background:rgba(245,158,11,.13) !important; }
+#view-wallet .topup-pkg-btn:not(.border-2) { background:var(--pd18-surface-soft) !important; border-color:var(--pd18-border) !important; }
+#view-wallet .topup-pkg-btn:not(.border-2):hover { border-color:rgba(217,154,19,.55) !important; }
+#view-wallet img[alt*="PromptPay"] { width:clamp(150px,16vw,192px) !important; height:auto !important; aspect-ratio:1/1; object-fit:contain; image-rendering:auto; }
+#view-wallet .topup-pkg-btn:focus-visible,#pd-theme-sheet .pd-theme-option:focus-visible { outline:3px solid rgba(8,124,255,.48) !important; outline-offset:3px; }
+#view-wallet #topup-history-list { scrollbar-gutter:stable; }
+#view-wallet #topup-history-list > * { padding:14px !important; border-radius:17px !important; }
+
+/* All major app surfaces should stay solid on low-power/touch devices; keep purposeful motion. */
+.ui-card,.ui-panel { transition-property:background-color,border-color,box-shadow !important; }
+#view-dashboard .ui-panel,#view-wallet .ui-panel,#profile-edit-section .pd-field-card { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+/* Use scoped surfaces instead of paint containment so focus outlines and menu shadows are not clipped. */
+html.pd-motion-lite .ui-card,html.pd-motion-lite .ui-panel,html.pd-motion-lite .pd-account-popover,html.pd-motion-lite #apple-tab-menu { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+html.pd-motion-lite .pd-avatar-stage::before,html.pd-motion-lite .pd-live-dot,html.pd-motion-lite .pulse-dot,html.pd-motion-lite .pd-island-dot,html.pd-motion-lite .pd17-hero-stage > img { animation:none !important; }
+html.pd-motion-lite .topup-pkg-btn,html.pd-motion-lite .pd-theme-option,html.pd-motion-lite .pd-order-shortcuts button { transition-duration:.16s !important; }
+@media (max-width: 900px) {
+  #view-dashboard .pd-order-hero { grid-template-columns:minmax(0,1fr); grid-template-areas:"main" "steps" "shortcuts"; }
+  #view-dashboard .pd-order-stepper,#view-dashboard .pd-order-shortcuts { grid-column:1/-1; }
+  #view-dashboard .pd-order-shortcuts { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); justify-content:stretch; }
+  #view-dashboard .pd-order-shortcuts button { justify-content:center; padding-inline:7px !important; font-size:11px !important; }
+  .pd18-wallet-hero { grid-template-columns:minmax(0,1fr); align-items:start; }
+  .pd18-wallet-current { min-width:0; width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .pd18-wallet-current strong { margin-top:0; }
+}
+@media (max-width: 640px) {
+  #pd-theme-sheet.pd-theme-overlay { align-items:center !important; padding:10px !important; }
+  #pd-theme-sheet .pd-theme-sheet { width:calc(100vw - 20px) !important; max-height:calc(100dvh - 20px) !important; padding:21px 17px !important; border-radius:25px !important; }
+  #pd-theme-sheet .pd-theme-head { gap:10px; }
+  #pd-theme-sheet .pd-theme-head h2 { font-size:26px !important; }
+  #pd-theme-sheet .pd-theme-head p { font-size:14px !important; line-height:1.65 !important; }
+  #pd-theme-sheet .pd-theme-options { grid-template-columns:minmax(0,1fr) !important; gap:9px !important; margin-top:18px !important; }
+  #pd-theme-sheet .pd-theme-option { min-height:94px !important; display:grid !important; grid-template-columns:100px minmax(0,1fr) 20px; align-items:center; gap:12px !important; padding:9px !important; flex-direction:initial !important; border-radius:18px !important; }
+  #pd-theme-sheet .pd-theme-option.is-active { padding:8px !important; }
+  #pd-theme-sheet .pd-theme-preview { width:100px !important; height:72px !important; border-radius:13px !important; }
+  #pd-theme-sheet .pd-theme-preview svg { width:24px !important; height:24px !important; }
+  #pd-theme-sheet .pd-theme-option b { font-size:15px !important; }
+  #pd-theme-sheet .pd-theme-option small { font-size:12px !important; }
+  #view-dashboard .pd-order-hero { padding:21px 17px !important; border-radius:23px !important; }
+  #view-dashboard .pd-order-stepper { flex-wrap:nowrap; justify-content:space-between; gap:5px !important; }
+  #view-dashboard .pd-order-stepper i { width:auto !important; flex:1 1 10px; }
+  #view-dashboard .pd-order-stepper span { gap:5px; }
+  #view-dashboard .pd-order-stepper b { width:32px !important; height:32px !important; }
+  #view-dashboard .pd-order-stepper small { display:none; }
+  #view-dashboard .pd-order-shortcuts { grid-template-columns:1fr !important; }
+  #view-dashboard .pd-live-order-strip { position:static !important; }
+  #view-dashboard > .grid > .ui-panel { padding:19px !important; }
+  #view-wallet { padding-top:22px !important; }
+  .pd18-wallet-hero { padding:22px 18px; border-radius:24px; gap:17px; }
+  .pd18-wallet-headline { gap:12px; }
+  .pd18-wallet-brandmark { width:48px; height:48px; border-radius:15px; }
+  .pd18-wallet-copy h1 { font-size:30px !important; }
+  .pd18-wallet-copy p { font-size:14px; }
+  #view-wallet > .grid { gap:14px !important; }
+  #view-wallet .ui-panel { padding:20px !important; border-radius:23px !important; }
+  #view-wallet form > div:first-child .grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:9px !important; }
+  #view-wallet .topup-pkg-btn { min-height:92px !important; padding:13px 8px !important; border-radius:17px !important; }
+  #view-wallet .topup-pkg-btn span:first-child { font-size:20px !important; }
+  #view-wallet .topup-pkg-btn span:nth-child(2) { font-size:12px !important; }
+  #view-wallet .ui-panel > div:first-child { align-items:flex-start; }
+  #profile-edit-section .pd-profile-editor { grid-template-columns:minmax(0,1fr) !important; gap:14px !important; }
+  #profile-edit-section .pd-avatar-stage { min-height:0 !important; padding:22px 16px !important; }
+  #profile-edit-section .pd-avatar-preview { width:142px !important; height:142px !important; }
+  #profile-edit-section .pd18-profile-brand { padding-bottom:14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pd-theme-sheet .pd-theme-sheet { animation:none !important; }
+  #pd-theme-sheet .pd-theme-option,#view-dashboard .pd-order-shortcuts button,#view-wallet .topup-pkg-btn { transition:none !important; transform:none !important; }
+}
+</style>
+
+
+<script id="pd-v18-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const safeDataImage = value => typeof value === 'string' && /^data:image\/(png|jpeg|webp);base64,/i.test(value);
+  const setAvatarDraft = (value, preview = true) => {
+    if (!safeDataImage(value)) return;
+    // The legacy app stores cropped avatars as data URLs. Keep them out of the visible URL field.
+    try { tempAvatarUrl = value; } catch (_) {}
+    window.tempAvatarUrl = value;
+    const input = $('edit-avatar-url');
+    if (input) input.value = '';
+    const image = $('pd-edit-avatar-preview');
+    if (image && preview) image.src = value;
+    const state = $('pd18-avatar-state');
+    if (state) state.hidden = false;
+  };
+
+  function installProfileBranding() {
+    const form = $('profile-edit-section');
+    const stack = form?.querySelector('.pd-form-stack');
+    if (!form || !stack) return;
+    if (!stack.querySelector('.pd18-profile-brand')) {
+      const brand = document.createElement('div');
+      brand.className = 'pd18-profile-brand';
+      const mark = document.createElement('span'); mark.className = 'pd18-profile-brandmark';
+      const icon = document.createElement('i'); icon.setAttribute('data-lucide','printer'); mark.appendChild(icon);
+      const copy = document.createElement('span'); copy.className = 'pd18-profile-brandcopy';
+      const title = document.createElement('strong'); title.textContent = 'PrintDekD Pro';
+      const label = document.createElement('small'); label.textContent = 'PROFILE STUDIO · ACCOUNT CENTER';
+      copy.append(title,label); brand.append(mark,copy); stack.prepend(brand);
+    }
+    const url = $('edit-avatar-url');
+    if (url) {
+      const card = url.closest('.pd-field-card');
+      const label = card?.querySelector('label');
+      if (label) label.textContent = 'ลิงก์รูปโปรไฟล์ (ไม่บังคับ)';
+      url.placeholder = 'https://example.com/avatar.webp';
+      url.setAttribute('aria-label','ลิงก์ HTTPS ของรูปโปรไฟล์ (ไม่บังคับ)');
+      let help = card?.querySelector('.pd18-avatar-help');
+      if (card && !help) {
+        help = document.createElement('p'); help.className = 'pd18-avatar-help';
+        help.textContent = 'หรือเลือกรูปจากเครื่องเพื่อครอปเป็นสี่เหลี่ยม 1:1 ก่อนบันทึก ระบบจะไม่แสดงข้อมูล Base64 ในช่องนี้';
+        card.appendChild(help);
+      }
+      if (card && !$('pd18-avatar-state')) {
+        const state = document.createElement('div'); state.id='pd18-avatar-state'; state.className='pd18-avatar-state'; state.hidden=true;
+        const i=document.createElement('i'); i.setAttribute('data-lucide','check-circle-2'); const t=document.createElement('span'); t.textContent='รูปที่ครอปแล้วพร้อมบันทึก'; state.append(i,t); card.appendChild(state);
+      }
+    }
+    if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
+  }
+
+  // Wrap the existing profile editor instead of changing how the app saves profile records.
+  const oldToggleProfileEdit = window.toggleProfileEdit;
+  if (typeof oldToggleProfileEdit === 'function' && !oldToggleProfileEdit.__pd18) {
+    const wrappedToggle = function(show) {
+      const result = oldToggleProfileEdit.apply(this, arguments);
+      if (show) requestAnimationFrame(() => {
+        installProfileBranding();
+        const url=$('edit-avatar-url');
+        const current=window.currentUser?.avatar_url || '';
+        const value=url?.value || '';
+        if (safeDataImage(value)) setAvatarDraft(value, false);
+        else if (safeDataImage(current)) setAvatarDraft(current, false);
+        else {
+          try { tempAvatarUrl=''; } catch (_) {}
+          window.tempAvatarUrl='';
+        }
+        if (url && url.value.startsWith('data:')) url.value='';
+        const preview=$('pd-edit-avatar-preview');
+        if (preview && current) preview.src=current;
+        if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
+      });
+      return result;
+    };
+    wrappedToggle.__pd18 = true;
+    window.toggleProfileEdit = wrappedToggle;
+  }
+
+  // Both the older and current cropper write data URLs into #edit-avatar-url. Move the result to draft state after the click handler runs.
+  document.addEventListener('click', event => {
+    const apply = event.target.closest('#pd-v10-crop-apply,#pd-crop-apply,#pd-crop-apply-v8');
+    if (!apply) return;
+    setTimeout(() => {
+      const input=$('edit-avatar-url');
+      if (input && safeDataImage(input.value)) {
+        const data=input.value;
+        setAvatarDraft(data, true);
+        // Re-encode once to keep profile payloads small. This runs only on an explicit crop action.
+        const image=new Image();
+        image.onload=() => {
+          try {
+            const size=384, canvas=document.createElement('canvas'); canvas.width=size; canvas.height=size;
+            const ctx=canvas.getContext('2d',{alpha:true}); if(!ctx)return;
+            ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
+            ctx.drawImage(image,0,0,size,size);
+            const compact=canvas.toDataURL('image/webp',.82);
+            if(safeDataImage(compact) && compact.length < data.length) setAvatarDraft(compact,true);
+          } catch (_) {}
+        };
+        image.src=data;
+      }
+    }, 0);
+  }, true);
+
+  // If an existing data URI was pasted/restored into the URL input, never leave it visible or require a user to edit it manually.
+  document.addEventListener('focusout', event => {
+    if (event.target?.id !== 'edit-avatar-url') return;
+    const input=event.target;
+    if (safeDataImage(input.value)) setAvatarDraft(input.value,true);
+  }, true);
+  document.addEventListener('input', event => {
+    if (event.target?.id !== 'edit-avatar-url') return;
+    const input=event.target;
+    if (input.value.trim() && !safeDataImage(input.value)) {
+      try { tempAvatarUrl=''; } catch (_) {}
+      window.tempAvatarUrl='';
+      const preview=$('pd-edit-avatar-preview');
+      if (preview && /^https:\/\//i.test(input.value.trim())) preview.src=input.value.trim();
+    }
+  }, true);
+
+  // Make sure saveProfileChanges sees the cropped data, while the visible URL field stays clean.
+  const oldSaveProfile = window.saveProfileChanges;
+  if (typeof oldSaveProfile === 'function' && !oldSaveProfile.__pd18) {
+    const wrappedSaveProfile = function(event) {
+      const input=$('edit-avatar-url');
+      if (input && safeDataImage(input.value)) setAvatarDraft(input.value,false);
+      if (input && safeDataImage(input.value)) input.value='';
+      if ((!input?.value.trim()) && safeDataImage(window.tempAvatarUrl)) {
+        try { tempAvatarUrl=window.tempAvatarUrl; } catch (_) {}
+      }
+      return oldSaveProfile.apply(this,arguments);
+    };
+    wrappedSaveProfile.__pd18 = true;
+    window.saveProfileChanges = wrappedSaveProfile;
+  }
+
+  // A clearer wallet heading and live balance, inserted without altering payment / database logic.
+  function installWalletHero() {
+    const section=$('view-wallet');
+    const grid=section?.querySelector(':scope > .grid');
+    if(!section || !grid || $('pd18-wallet-hero')) return;
+    const header=document.createElement('header'); header.id='pd18-wallet-hero'; header.className='pd18-wallet-hero';
+    header.innerHTML = '<div class="pd18-wallet-headline"><span class="pd18-wallet-brandmark"><i data-lucide="wallet-cards"></i></span><div class="pd18-wallet-copy"><span class="pd-eyebrow">COINS WALLET · PAYMENT CENTER</span><h1>เติม Coins ได้อย่างมั่นใจ</h1><p>เลือกจำนวนเงิน ตรวจยอดโอน แนบสลิป และติดตามสถานะการเติมได้จากหน้าจอเดียว</p></div></div><div class="pd18-wallet-current"><small>ยอด Coins ปัจจุบัน</small><strong id="pd18-wallet-balance">0.00 Coins</strong></div>';
+    section.insertBefore(header,grid);
+    const pkg=$('selected-topup-amount')?.closest('.space-y-3'); if(pkg) pkg.id='pd18-topup-packages';
+    const history=$('topup-history-list')?.closest('.ui-panel'); if(history) history.id='pd18-topup-history-card';
+    header.querySelector('.pd18-wallet-current').setAttribute('aria-live','polite');
+    header.querySelector('.pd18-wallet-current').title='ยอดคงเหลือตามข้อมูลที่แสดงใน Account Center';
+    if(window.lucide){try{window.lucide.createIcons()}catch(_){}}
+    updateWalletBalance();
+  }
+  function updateWalletBalance() {
+    const out=$('pd18-wallet-balance'); if(!out) return;
+    const source=$('user-coins-amount')?.textContent || $('prof-coins-amount')?.textContent || '0.00 Coins';
+    out.textContent=source.replace(/\s+/g,' ').trim();
+  }
+  const coins=$('user-coins-amount');
+  if(coins && 'MutationObserver' in window) new MutationObserver(updateWalletBalance).observe(coins,{childList:true,characterData:true,subtree:true});
+  window.addEventListener('pd:viewchange', updateWalletBalance, {passive:true});
+  document.addEventListener('click', event => {
+    if(event.target.closest('#view-wallet .topup-pkg-btn')) requestAnimationFrame(updateWalletBalance);
+  }, {passive:true});
+
+  // Context-specific small usability helpers and accessible live feedback.
+  const total=$('pd-live-total'); if(total){total.setAttribute('aria-live','polite');total.setAttribute('aria-atomic','true')}
+  const status=$('pd-live-order-copy'); if(status){status.setAttribute('aria-live','polite');status.setAttribute('aria-atomic','true')}
+  $('pd-live-order-strip')?.setAttribute('role','status');
+  $('pd-help-search')?.setAttribute('autocomplete','off');
+
+  installProfileBranding();
+  installWalletHero();
+  if (window.lucide && !document.documentElement.classList.contains('pd-motion-lite')) {
+    try { window.lucide.createIcons(); } catch (_) {}
+  }
+})();
+</script>
+
 </body>
 </html>
