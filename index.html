@@ -18,6 +18,12 @@
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
 
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <!-- Tailwind CSS & Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -42,9 +48,9 @@
       }
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -2580,7 +2586,7 @@
         <div id="qd-modal-slip-box" class="hidden space-y-2">
           <span class="text-xs font-bold titanium-text block">หลักฐานสลิปการโอนเงิน:</span>
           <div class="p-2 ui-card rounded-xl text-center">
-            <img id="qd-modal-slip-img" src="" alt="สลิปโอนเงิน" class="max-h-60 mx-auto rounded-lg object-contain cursor-pointer hover:scale-105 transition" onclick="openSlipModal(this.src)">
+            <img id="qd-modal-slip-img" src="" alt="สลิปโอนเงิน" class="max-h-60 mx-auto rounded-lg object-contain cursor-pointer hover:scale-105 transition" onclick="openSlipModal(this.src)" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -2675,7 +2681,7 @@
         </button>
       </div>
       <div class="text-center ui-input rounded-xl p-2 mb-4 max-h-96 flex items-center justify-center overflow-hidden">
-        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-80 object-contain rounded-lg shadow-lg">
+        <img id="slip-modal-img" src="" alt="สลิปการโอนเงิน" class="max-h-80 object-contain rounded-lg shadow-lg" loading="lazy" decoding="async">
       </div>
       <button onclick="closeSlipModal()" class="w-full py-2.5 bg-slate-200 dark:bg-white/10 text-xs font-bold rounded-xl transition titanium-text">ปิดหน้าต่าง</button>
     </div>
@@ -2909,77 +2915,86 @@
     <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-16 sm:py-24 px-6 sm:px-12 max-w-[1400px] mx-auto space-y-36 sm:space-y-48">
       
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center min-h-[75vh] apple-reveal">
-        <div class="lg:col-span-7 space-y-10 text-center lg:text-left">
-          <div class="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-extrabold shadow-sm backdrop-blur-xl">
-            <i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i> PrintDekD Pro — KMUTNB ITI Smart Printing Platform
+      <!-- PRINTDEKD PRO v17 — editorial home feature + interactive product carousel -->
+      <section class="pd-v17-home-feature" aria-labelledby="pd-v17-home-title">
+        <div class="pd-v17-home-heading">
+          <span class="pd-v17-kicker"><span class="pd-v17-kicker-dot" aria-hidden="true"></span> PRINTDEKD PRO <span class="pd-v17-kicker-sep" aria-hidden="true">/</span> KMUTNB ITI</span>
+          <h1 id="pd-v17-home-title">งานพิมพ์ที่ง่ายขึ้น<br><em>ครบในที่เดียว</em></h1>
+          <p>อัปโหลด ตรวจพรีวิว คำนวณราคา และติดตามคิวงานได้ในที่เดียว — ออกแบบให้ใช้งานง่ายบนมือถือ iPad และคอมพิวเตอร์</p>
+          <div class="pd-v17-home-actions">
+            <button type="button" class="pd-v17-primary" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i><span>เริ่มสั่งพิมพ์</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" class="pd-v17-secondary" onclick="switchView('help')"><i data-lucide="life-buoy" aria-hidden="true"></i><span>ศูนย์ช่วยเหลือ</span></button>
           </div>
-          
-          <h1 class="text-5xl sm:text-7xl lg:text-[90px] font-black leading-[1.05] tracking-tight titanium-text">
-            นวัตกรรมงานพิมพ์ <br>
-            <span class="blue-gradient-text">KMUTNB ITI</span>
-          </h1>
-          
-          <p class="sub-text text-lg sm:text-2xl lg:text-3xl leading-relaxed font-normal w-full">
-            สั่งงานพิมพ์เอกสารออนไลน์ได้สะดวกรวดเร็ว อัปโหลดไฟล์ คำนวณราคาเรียลไทม์ ชำระเงินผ่าน Coins พร้อมตัวเลือกรับหน้าร้าน หรือจัดส่งพัสดุถึงบ้านในระบบเดียว
-          </p>
-
-          <div class="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-4">
-            <button onclick="handleStartPrinting()" class="px-10 py-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black text-lg sm:text-xl shadow-2xl shadow-blue-500/30 flex items-center justify-center gap-3 transition hover:scale-105 active:scale-95">
-              <i data-lucide="file-up" class="w-6 h-6"></i> เริ่มต้นสั่งพิมพ์งานทันที
-            </button>
-            <button onclick="switchView('dashboard')" class="px-9 py-5 rounded-2xl ui-card hover:border-blue-500 font-extrabold text-lg sm:text-xl flex items-center justify-center gap-3 transition shadow-lg titanium-text">
-              <i data-lucide="clock" class="w-6 h-6 text-blue-500"></i> เช็กสถานะคิวงานพิมพ์
-            </button>
-          </div>
-
-          <div class="pt-6 border-t border-slate-200/60 dark:border-white/10 grid grid-cols-3 gap-4 text-xs sm:text-sm sub-text font-bold">
-            <div class="flex items-center gap-2 justify-center lg:justify-start">
-              <i data-lucide="shield-check" class="w-5 h-5 text-emerald-500"></i> พิมพ์เร็ว คมชัด 100%
-            </div>
-            <div class="flex items-center gap-2 justify-center lg:justify-start">
-              <i data-lucide="coins" class="w-5 h-5 text-amber-500"></i> ชำระเงิน Coins ได้ทันที
-            </div>
-            <div class="flex items-center gap-2 justify-center lg:justify-start">
-              <i data-lucide="truck" class="w-5 h-5 text-blue-500"></i> จัดส่งพัสดุ / รับหน้าร้าน
-            </div>
+          <div class="pd-v17-proof-row" aria-label="จุดเด่นของ PrintDekD">
+            <span><i data-lucide="shield-check" aria-hidden="true"></i> ขั้นตอนชัดเจน</span>
+            <span><i data-lucide="wallet-cards" aria-hidden="true"></i> จ่ายด้วย Coins</span>
+            <span><i data-lucide="package-check" aria-hidden="true"></i> รับหน้าร้านหรือจัดส่ง</span>
           </div>
         </div>
 
-        <div class="lg:col-span-5 delay-1 apple-reveal">
-          <div class="ui-panel rounded-[40px] p-8 sm:p-10 space-y-6 text-center relative overflow-hidden group shadow-2xl">
-            <div class="relative w-full h-80 sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
-              <img src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1000&q=80" alt="Laser Printing" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-              <div class="pd-hero-scrim absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-black/62 via-black/22 to-transparent pointer-events-none"></div>
-              
-              <div class="pd-hero-status absolute z-20 top-4 right-4 bg-black/58 backdrop-blur-md border border-white/22 px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-300 flex items-center gap-2 shadow-lg shadow-black/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span> Online Ready
+        <section id="pd-v17-carousel" class="pd-v17-carousel" role="region" aria-roledescription="carousel" aria-label="คุณสมบัติเด่นของ PrintDekD Pro">
+          <div class="pd-v17-slide-stage">
+            <article class="pd-v17-slide is-active" data-pd-v17-slide="0" role="group" aria-roledescription="slide" aria-label="1 จาก 3" aria-hidden="false">
+              <div class="pd-v17-slide-media">
+                <img id="pd-v17-image-0" src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1500&q=78" srcset="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1500&q=78 1500w" sizes="(max-width: 767px) calc(100vw - 26px), (max-width: 1023px) 52vw, 750px" alt="เครื่องพิมพ์เลเซอร์สำหรับงานพิมพ์เอกสาร" width="1500" height="900" loading="eager" fetchpriority="high" decoding="async">
+                <span class="pd-v17-media-label"><span></span> SMART PRINT FLOW</span>
               </div>
+              <div class="pd-v17-slide-copy">
+                <span class="pd-v17-slide-overline">01 <span>UPLOAD · PREVIEW · PRINT</span></span>
+                <h2>จากไฟล์<br>สู่หน้ากระดาษ</h2>
+                <p>เลือกไฟล์ PDF แล้วตรวจดูหน้าเอกสาร ตั้งค่ากระดาษ จำนวนชุด และตัวเลือกพิมพ์ได้ก่อนยืนยันรายการ</p>
+                <div class="pd-v17-slide-meta"><span><i data-lucide="file-check-2" aria-hidden="true"></i> พรีวิวก่อนสั่ง</span><span><i data-lucide="sliders-horizontal" aria-hidden="true"></i> ปรับงานได้</span></div>
+              </div>
+            </article>
 
-              <div class="pd-hero-copy absolute z-20 bottom-5 left-5 right-5 text-left space-y-2">
-                <span class="text-xs font-black text-blue-400 uppercase tracking-widest bg-blue-500/20 border border-blue-500/30 px-3 py-1 rounded-md inline-block">Self Pickup & Delivery</span>
-                <p class="text-2xl sm:text-3xl font-black text-white">เครื่องพิมพ์เลเซอร์คุณภาพสูง</p>
-                <p class="text-xs sm:text-sm text-slate-300">บริการสั่งพิมพ์เอกสารสำหรับนักศึกษาและบุคลากร ITI</p>
+            <article class="pd-v17-slide" data-pd-v17-slide="1" role="group" aria-roledescription="slide" aria-label="2 จาก 3" aria-hidden="true">
+              <div class="pd-v17-slide-media">
+                <img id="pd-v17-image-1" data-pd-v17-src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1500&q=78" data-pd-v17-srcset="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1500&q=78 1500w" alt="คอมพิวเตอร์สำหรับจัดการไฟล์และงานเอกสาร" width="1500" height="900" loading="lazy" decoding="async">
+                <span class="pd-v17-media-label"><span></span> COINS WALLET</span>
               </div>
+              <div class="pd-v17-slide-copy">
+                <span class="pd-v17-slide-overline">02 <span>CHECK · PAY · CONTINUE</span></span>
+                <h2>เห็นราคา<br>ก่อนตัดสินใจ</h2>
+                <p>ดูยอดคำนวณจากการตั้งค่างาน และใช้ Coins ผ่านกระเป๋าระบบในขั้นตอนชำระเงินที่รองรับ</p>
+                <div class="pd-v17-slide-meta"><span><i data-lucide="calculator" aria-hidden="true"></i> คำนวณราคา</span><span><i data-lucide="coins" aria-hidden="true"></i> กระเป๋า Coins</span></div>
+              </div>
+            </article>
+
+            <article class="pd-v17-slide" data-pd-v17-slide="2" role="group" aria-roledescription="slide" aria-label="3 จาก 3" aria-hidden="true">
+              <div class="pd-v17-slide-media">
+                <img id="pd-v17-image-2" data-pd-v17-src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1500&q=78" data-pd-v17-srcset="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1500&q=78 1500w" alt="พัสดุที่เตรียมสำหรับการจัดส่ง" width="1500" height="900" loading="lazy" decoding="async">
+                <span class="pd-v17-media-label"><span></span> TRACK YOUR ORDER</span>
+              </div>
+              <div class="pd-v17-slide-copy">
+                <span class="pd-v17-slide-overline">03 <span>QUEUE · PICKUP · DELIVERY</span></span>
+                <h2>รู้สถานะงาน<br>ได้ทุกขั้นตอน</h2>
+                <p>กลับมาตรวจคิวและรายละเอียดรายการได้จากบัญชี พร้อมเลือกช่องทางรับงานที่ระบบเปิดให้บริการ</p>
+                <div class="pd-v17-slide-meta"><span><i data-lucide="list-checks" aria-hidden="true"></i> ติดตามคิว</span><span><i data-lucide="truck" aria-hidden="true"></i> วิธีรับงาน</span></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="pd-v17-carousel-controls">
+            <button type="button" class="pd-v17-rotation" id="pd-v17-rotation" aria-label="หยุดเปลี่ยนภาพอัตโนมัติ" title="หยุดเปลี่ยนภาพอัตโนมัติ"><span class="pd-v17-rotation-icon" aria-hidden="true">Ⅱ</span><span class="pd-v17-rotation-label">พักสไลด์</span></button>
+            <div class="pd-v17-slide-pickers" role="group" aria-label="เลือกเรื่องที่ต้องการดู">
+              <button type="button" class="pd-v17-slide-picker is-active" data-pd-v17-go="0" aria-pressed="true" aria-label="ดูสไลด์ 1: สั่งพิมพ์ง่ายขึ้น"><span>01</span><b>สั่งพิมพ์</b><i></i></button>
+              <button type="button" class="pd-v17-slide-picker" data-pd-v17-go="1" aria-pressed="false" aria-label="ดูสไลด์ 2: Coins Wallet"><span>02</span><b>Coins Wallet</b><i></i></button>
+              <button type="button" class="pd-v17-slide-picker" data-pd-v17-go="2" aria-pressed="false" aria-label="ดูสไลด์ 3: ติดตามคิว"><span>03</span><b>ติดตามคิว</b><i></i></button>
             </div>
-
-            <div class="grid grid-cols-3 gap-3 text-center text-xs">
-              <div class="p-4 rounded-2xl ui-card">
-                <p class="blue-gradient-text font-black text-2xl">100%</p>
-                <p class="text-xs font-bold sub-text mt-1">คมชัดสูง</p>
-              </div>
-              <div class="p-4 rounded-2xl ui-card">
-                <p class="text-amber-500 font-black text-2xl">Coins</p>
-                <p class="text-xs font-bold sub-text mt-1">จ่ายสะดวก</p>
-              </div>
-              <div class="p-4 rounded-2xl ui-card">
-                <p class="text-emerald-500 font-black text-2xl">Express</p>
-                <p class="text-xs font-bold sub-text mt-1">จัดส่งเร็ว</p>
-              </div>
+            <div class="pd-v17-prev-next">
+              <button type="button" id="pd-v17-prev" aria-label="สไลด์ก่อนหน้า" title="สไลด์ก่อนหน้า"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+              <button type="button" id="pd-v17-next" aria-label="สไลด์ถัดไป" title="สไลด์ถัดไป"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
             </div>
           </div>
+          <p class="pd-v17-sr-status" id="pd-v17-slide-status" aria-live="polite" aria-atomic="true">สไลด์ 1 จาก 3: สั่งพิมพ์</p>
+        </section>
+
+        <div class="pd-v17-value-strip" aria-label="จุดเด่นบริการ">
+          <div><span class="pd-v17-value-icon pd-v17-blue"><i data-lucide="scan-text" aria-hidden="true"></i></span><span><b>คมชัดทุกหน้า</b><small>ตรวจเอกสารก่อนส่งงาน</small></span></div>
+          <div><span class="pd-v17-value-icon pd-v17-gold"><i data-lucide="coins" aria-hidden="true"></i></span><span><b>Coins สะดวกขึ้น</b><small>จัดการยอดในที่เดียว</small></span></div>
+          <div><span class="pd-v17-value-icon pd-v17-green"><i data-lucide="package-check" aria-hidden="true"></i></span><span><b>รับงานได้ตามสะดวก</b><small>เลือกวิธีรับที่เหมาะกับคุณ</small></span></div>
         </div>
-      </div>
+      </section>
 
       <div class="space-y-16">
         <div class="text-center space-y-4 max-w-4xl mx-auto apple-reveal">
@@ -3252,7 +3267,7 @@
             <div class="pd-auth-field">
               <label for="reg-avatar-file">รูปโปรไฟล์ <small>(ไม่บังคับ)</small></label>
               <div class="pd-auth-avatar-upload">
-                <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" alt="ตัวอย่างรูปโปรไฟล์">
+                <img id="reg-avatar-preview" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async">
                 <div class="pd-auth-avatar-copy"><strong>เพิ่มรูปของคุณ</strong><span>PNG, JPG, WEBP • ใช้รูปสี่เหลี่ยมจะดูดีที่สุด</span></div>
                 <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)" aria-label="เลือกรูปโปรไฟล์">
               </div>
@@ -3496,7 +3511,7 @@
 
               <div id="promptpay-box" class="hidden space-y-3 bg-blue-500/10 p-4 rounded-xl border border-blue-500/20 text-center">
                 <p class="text-xs font-bold text-blue-500">สแกน QR Code โอนเงิน PromptPay</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-28 h-28 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay QR" class="w-28 h-28 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm" loading="lazy" decoding="async">
                 <p class="text-[10px] sub-text">ร้าน PrintDekD Pro (พร้อมเพย์: 089-999-9999)</p>
                 <div>
                   <label class="block text-xs font-bold mb-1 text-left titanium-text">แนบสลิปโอนเงิน (Image):</label>
@@ -3608,7 +3623,7 @@
                 </div>
 
                 <div class="p-3 bg-white rounded-2xl inline-block shadow-xl border-4 border-amber-500/30">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-36 h-36 mx-auto rounded-lg">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021129370016A000000677010111011300668999999995802TH5303764" alt="PromptPay Topup QR" class="w-36 h-36 mx-auto rounded-lg" loading="lazy" decoding="async">
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
@@ -3753,6 +3768,11 @@
           <span class="pd-help-eyebrow">PRINTDEKD PRO · SUPPORT</span>
           <h1 id="pd-help-title">บริการช่วยเหลือของ <span>PrintDekD</span></h1>
           <p>ต้องการความช่วยเหลือใช่ไหม? ค้นหาคู่มือการใช้งาน การสั่งพิมพ์ Coins และการติดตามคิวได้จากที่เดียว</p>
+          <form id="pd-help-search-form" class="pd-help-search" role="search">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <input id="pd-help-search" type="search" autocomplete="off" placeholder="ค้นหาความช่วยเหลือ เช่น พรีวิว PDF, Coins, คิวพิมพ์…" aria-label="ค้นหาหัวข้อช่วยเหลือ">
+            <button type="submit">ค้นหา</button>
+          </form>
           <p class="pd-help-search-hint">ลองค้นหา: <button type="button" data-help-query="PDF">พรีวิว PDF</button><button type="button" data-help-query="Coins">Coins</button><button type="button" data-help-query="คิว">คิวพิมพ์</button></p>
         </header>
 
@@ -4611,6 +4631,7 @@
       const walletNavBtn = document.getElementById('nav-wallet-btn');
       const adminNavBtn = document.getElementById('admin-menu-btn');
       const appleAdminBtn = document.getElementById('apple-admin-menu-btn');
+      const appleAdminBtnV11 = document.getElementById('apple-admin-menu-btn-v11');
       const dbConfigBtn = document.getElementById('admin-db-config-btn');
 
       if (currentUser) {
@@ -4626,11 +4647,13 @@
 
         if (currentUser.role === 'admin') {
           adminNavBtn.classList.remove('hidden');
-          appleAdminBtn.classList.remove('hidden');
+          appleAdminBtn?.classList.remove('hidden');
+          appleAdminBtnV11?.classList.remove('hidden');
           dbConfigBtn.classList.remove('hidden');
         } else {
           adminNavBtn.classList.add('hidden');
-          appleAdminBtn.classList.add('hidden');
+          appleAdminBtn?.classList.add('hidden');
+          appleAdminBtnV11?.classList.add('hidden');
           dbConfigBtn.classList.add('hidden');
         }
       } else {
@@ -4639,7 +4662,8 @@
         coinsBadge.classList.add('hidden');
         walletNavBtn.classList.add('hidden');
         adminNavBtn.classList.add('hidden');
-        appleAdminBtn.classList.add('hidden');
+        appleAdminBtn?.classList.add('hidden');
+          appleAdminBtnV11?.classList.add('hidden');
         dbConfigBtn.classList.add('hidden');
       }
     }
@@ -5743,7 +5767,7 @@
           if (label && visible) label.textContent = visible[1];
         };
         update();
-        setInterval(update, 1000);
+        window.updateLiveIslandStatus = update; // event-driven in v17; no one-second polling loop.
       }
 
       function setupThemeFirstPaint() {
@@ -6062,7 +6086,7 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
   function ensureCropModal(){
     if($('pd-crop-modal')) return;
     const el=document.createElement('div');el.id='pd-crop-modal';el.setAttribute('aria-hidden','true');
-    el.innerHTML=`<div class="pd-crop-shell"><div class="flex items-center justify-between gap-3 mb-3"><div><span class="pd-eyebrow">PROFILE STUDIO</span><h3 class="text-xl font-black titanium-text mt-1">จัดวางรูปโปรไฟล์</h3><p class="text-xs sub-text mt-1">ลากรูป • ซูม • ครอปเป็นวงกลม</p></div><button type="button" class="pd-crop-close nav-icon-btn ui-card" aria-label="ปิด"><i data-lucide="x"></i></button></div><div class="pd-crop-stage" id="pd-crop-stage"><img id="pd-crop-image" alt="ตัวอย่างรูปโปรไฟล์"><span class="pd-crop-frame"></span></div><div class="pd-crop-controls"><input id="pd-crop-zoom" type="range" min="1" max="3.2" step="0.01" value="1"><button type="button" class="ui-card" id="pd-crop-reset">รีเซ็ต</button><button type="button" class="bg-blue-600 text-white" id="pd-crop-apply">ใช้รูปนี้</button></div></div>`;
+    el.innerHTML=`<div class="pd-crop-shell"><div class="flex items-center justify-between gap-3 mb-3"><div><span class="pd-eyebrow">PROFILE STUDIO</span><h3 class="text-xl font-black titanium-text mt-1">จัดวางรูปโปรไฟล์</h3><p class="text-xs sub-text mt-1">ลากรูป • ซูม • ครอปเป็นวงกลม</p></div><button type="button" class="pd-crop-close nav-icon-btn ui-card" aria-label="ปิด"><i data-lucide="x"></i></button></div><div class="pd-crop-stage" id="pd-crop-stage"><img id="pd-crop-image" alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async"><span class="pd-crop-frame"></span></div><div class="pd-crop-controls"><input id="pd-crop-zoom" type="range" min="1" max="3.2" step="0.01" value="1"><button type="button" class="ui-card" id="pd-crop-reset">รีเซ็ต</button><button type="button" class="bg-blue-600 text-white" id="pd-crop-apply">ใช้รูปนี้</button></div></div>`;
     document.body.appendChild(el); if(window.lucide) lucide.createIcons();
     $('pd-crop-modal').addEventListener('click',e=>{if(e.target.id==='pd-crop-modal') closeCropper()});
     $('pd-crop-modal').querySelector('.pd-crop-close').onclick=closeCropper;
@@ -6100,7 +6124,7 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
     const old=form.querySelector('.p-5.ui-card');if(!old)return;
     const title=old.querySelector('h4');
     old.className='pd-profile-editor';
-    old.innerHTML=`<div class="pd-avatar-stage"><img id="pd-edit-avatar-preview" class="pd-avatar-preview" src="${safe(currentUser?.avatar_url||'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80')}" alt="ตัวอย่างรูปโปรไฟล์"><label class="pd-avatar-upload-btn"><i data-lucide="image-plus" class="w-4 h-4"></i> เลือกรูปใหม่<input type="file" id="edit-avatar-file" accept="image/png,image/jpeg,image/webp" class="hidden"></label><div class="pd-avatar-hint">PNG / JPG / WEBP<br>ไม่เกิน 2 MB • ครอปก่อนบันทึก</div></div><div class="pd-form-stack"><div class="pd-field-card"><label>รูปโปรไฟล์</label><input type="url" id="edit-avatar-url" placeholder="หรือวาง URL HTTPS ของรูปภาพ" autocomplete="url" class="w-full ui-input rounded-2xl text-sm"><p class="text-[10px] sub-text mt-2">ถ้าอัปโหลดรูปจากเครื่อง ระบบจะเปิด Profile Studio ให้ตัดขอบก่อน</p></div><div class="pd-field-card"><label>ชื่อ-นามสกุล</label><input type="text" id="edit-fullname" required maxlength="80" autocomplete="name" class="w-full ui-input rounded-2xl text-sm font-bold"></div><div class="pd-field-card"><div class="flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i><span class="text-xs font-black titanium-text">Live Preview</span></div><p class="text-xs sub-text mt-1">รูปและชื่อจะถูกอัปเดตใน Account Center หลังบันทึก</p></div></div>`;
+    old.innerHTML=`<div class="pd-avatar-stage"><img id="pd-edit-avatar-preview" class="pd-avatar-preview" src="${safe(currentUser?.avatar_url||'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80')}" alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async"><label class="pd-avatar-upload-btn"><i data-lucide="image-plus" class="w-4 h-4"></i> เลือกรูปใหม่<input type="file" id="edit-avatar-file" accept="image/png,image/jpeg,image/webp" class="hidden"></label><div class="pd-avatar-hint">PNG / JPG / WEBP<br>ไม่เกิน 2 MB • ครอปก่อนบันทึก</div></div><div class="pd-form-stack"><div class="pd-field-card"><label>รูปโปรไฟล์</label><input type="url" id="edit-avatar-url" placeholder="หรือวาง URL HTTPS ของรูปภาพ" autocomplete="url" class="w-full ui-input rounded-2xl text-sm"><p class="text-[10px] sub-text mt-2">ถ้าอัปโหลดรูปจากเครื่อง ระบบจะเปิด Profile Studio ให้ตัดขอบก่อน</p></div><div class="pd-field-card"><label>ชื่อ-นามสกุล</label><input type="text" id="edit-fullname" required maxlength="80" autocomplete="name" class="w-full ui-input rounded-2xl text-sm font-bold"></div><div class="pd-field-card"><div class="flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i><span class="text-xs font-black titanium-text">Live Preview</span></div><p class="text-xs sub-text mt-1">รูปและชื่อจะถูกอัปเดตใน Account Center หลังบันทึก</p></div></div>`;
     $('edit-avatar-file').addEventListener('change',window.previewEditAvatarFile);if(window.lucide)lucide.createIcons();
   }
   const profileObserver=new MutationObserver(()=>{if($('profile-edit-section'))upgradeProfileEditor()});profileObserver.observe(document.body,{childList:true,subtree:true});setTimeout(upgradeProfileEditor,300);
@@ -6170,9 +6194,25 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
 
   /* ---------- scroll / cinematic motion ---------- */
   function installMotion(){
-    if(!$('pd-page-wash')){const w=document.createElement('div');w.id='pd-page-wash';w.className='pd-page-wash';document.body.appendChild(w)}
-    const imgs=[...document.querySelectorAll('#view-landing img, #view-dashboard img, #view-wallet img, #view-admin img')];const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('pd-slide-image')}),{threshold:.15});imgs.forEach(i=>io.observe(i));
-    let last=scrollY;addEventListener('scroll',()=>{const down=scrollY>last;last=scrollY;document.querySelector('nav.sticky')?.classList.toggle('is-compact',scrollY>70);const wash=$('pd-page-wash');if(wash){wash.classList.toggle('is-active',down&&scrollY>120)}setTimeout(()=>wash?.classList.remove('is-active'),140)} ,{passive:true});
+    // v17: one lazy-image observer; scroll handling stays in the single RAF-throttled handler.
+    if (!('IntersectionObserver' in window)) return;
+    if (!window.__pdV17ImageObserver) {
+      window.__pdV17ImageObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('pd-slide-image');
+            window.__pdV17ImageObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .12, rootMargin: '100px 0px' });
+    }
+    document.querySelectorAll('#view-landing img, #view-dashboard img, #view-wallet img, #view-admin img').forEach(img => {
+      if (img.dataset.pdV17Observed) return;
+      img.dataset.pdV17Observed = '1';
+      if (!img.loading) img.loading = 'lazy';
+      if (!img.decoding) img.decoding = 'async';
+      window.__pdV17ImageObserver.observe(img);
+    });
   }
   installAI();installMotion();
 })();
@@ -6358,7 +6398,7 @@ function rebuildV11Menu(){
        <button type="button" class="apple-menu-item" data-view="wallet" data-menu-link="wallet" style="--accent:#f5a400">
          <span class="menu-icon"><i data-lucide="wallet-cards" class="w-5 h-5"></i></span><span><span class="menu-kicker">03 · WALLET</span><span class="menu-title block">Coins Wallet</span></span><span class="menu-state">เปิดอยู่</span>
        </button>
-       <button type="button" id="apple-admin-menu-btn" class="hidden apple-menu-item" data-view="admin" data-menu-link="admin" style="--accent:#a855f7">
+       <button type="button" id="apple-admin-menu-btn-v11" class="hidden apple-menu-item" data-view="admin" data-menu-link="admin" style="--accent:#a855f7">
          <span class="menu-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></span><span><span class="menu-kicker">04 · ADMIN</span><span class="menu-title block">Admin Backoffice</span></span><span class="menu-state">ผู้ดูแล</span>
        </button>
      </nav>
@@ -9114,7 +9154,7 @@ html:not(.dark) .pd-v10-page-card .pd-page-number{color:#111827!important}
           <button type="button" class="pd-v10-crop-close nav-icon-btn ui-card" aria-label="ปิด"><i data-lucide="x"></i></button>
         </div>
         <div id="pd-v10-crop-stage" class="pd-v10-crop-stage">
-          <img id="pd-v10-crop-image" class="pd-v10-crop-image" alt="ตัวอย่างรูปโปรไฟล์">
+          <img id="pd-v10-crop-image" class="pd-v10-crop-image" alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async">
           <span id="pd-v10-crop-frame" class="pd-v10-crop-frame"></span>
         </div>
         <div class="pd-v10-crop-hint">ใช้เมาส์/นิ้วลากรูป • ปรับซูมด้านล่าง • พื้นที่ในกรอบคือส่วนที่จะบันทึก</div>
@@ -10254,7 +10294,6 @@ html.dark .pd-help-contact-card { background:linear-gradient(155deg,#142a42,#101
       const selected = btn.dataset.helpCategory === activeCategory;
       btn.setAttribute('aria-pressed', String(selected));
     });
-    if (window.lucide) window.lucide.createIcons();
   }
   $('pd-help-search-form')?.addEventListener('submit', e => { e.preventDefault(); activeCategory = ''; updateHelpFilter(); });
   helpSearch?.addEventListener('input', () => { activeCategory = ''; updateHelpFilter(); });
@@ -10320,5 +10359,407 @@ html.dark .pd-help-contact-card { background:linear-gradient(155deg,#142a42,#101
   document.addEventListener('pd:viewchange', updateHelpFilter);
 })();
 </script>
+
+<style id="pd-v17-smooth-editorial">
+/* ==============================================================
+   PRINTDEKD PRO v17 — smooth editorial responsive design system
+   Visual inspiration: Apple-style product storytelling, original
+   PrintDekD interface and content. Motion uses opacity/transform.
+   ============================================================== */
+:root {
+  --pd17-blue:#087cff;
+  --pd17-blue-deep:#075ed1;
+  --pd17-green:#16a36a;
+  --pd17-gold:#c78307;
+  --pd17-copy:#f5f7fb;
+  --pd17-muted:#aeb7c6;
+  --pd17-panel:#101721;
+  --pd17-panel-soft:#151e2a;
+  --pd17-line:rgba(148,163,184,.20);
+  --pd17-ease:cubic-bezier(.22,1,.36,1);
+  --pd17-shadow:0 24px 70px rgba(0,0,0,.20);
+}
+html:not(.dark) {
+  --pd17-copy:#141821;
+  --pd17-muted:#596578;
+  --pd17-panel:#ffffff;
+  --pd17-panel-soft:#f4f7fb;
+  --pd17-line:rgba(20,30,45,.13);
+  --pd17-shadow:0 24px 70px rgba(20,35,58,.11);
+}
+/* Reduce layout/paint work from legacy glass and scroll-out blur. */
+#pd-ambient-orb,#pd-cursor-glow,#pd-page-wash { display:none!important; }
+.apple-reveal,.apple-reveal.is-visible,.apple-reveal.is-scrolled-out {
+  opacity:1!important; transform:none!important; filter:none!important;
+  will-change:auto!important; transition:none!important;
+}
+.pd-v11-shimmer:after,.v11-shimmer:after { animation:none!important; }
+.pd-island-dot { animation:none!important; }
+.ui-card,.ui-panel {
+  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
+}
+nav.sticky > .navbar-inner {
+  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
+  transition:background-color .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+#apple-tab-menu,#pd-ai-panel,.pd-account-popover,#pd-command-palette .pd-command-sheet,
+#pd-crop-modal,#pd-v10-crop-modal {
+  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
+}
+/* No horizontal overflow; reserve a safe region for bottom navigation on touch. */
+html,body { max-width:100%; overflow-x:clip; }
+img,video,canvas,svg { max-width:100%; }
+body { padding-bottom:env(safe-area-inset-bottom); }
+#view-landing {
+  width:100%!important; max-width:none!important; margin-inline:0!important;
+  padding:0!important; overflow:clip;
+}
+#view-landing > * + * { margin-top:clamp(48px,6vw,104px)!important; }
+.pd-v17-home-feature {
+  width:100%; margin:0 auto; padding:clamp(30px,5vw,76px) clamp(16px,4.3vw,68px) clamp(28px,4.2vw,56px);
+  position:relative; isolation:isolate; overflow:hidden;
+  color:var(--pd17-copy);
+  background:
+    radial-gradient(ellipse at 50% -20%,rgba(8,124,255,.15),transparent 58%),
+    linear-gradient(180deg,#080c13 0%,#0c121b 100%);
+  border-bottom:1px solid rgba(148,163,184,.12);
+}
+html:not(.dark) .pd-v17-home-feature {
+  background:
+    radial-gradient(ellipse at 50% -20%,rgba(8,124,255,.09),transparent 58%),
+    linear-gradient(180deg,#fbfcff 0%,#f2f5f9 100%);
+}
+.pd-v17-home-heading { max-width:1000px; text-align:center; margin:0 auto clamp(26px,3.6vw,48px); }
+.pd-v17-kicker {
+  display:inline-flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:9px;
+  padding:8px 12px; border:1px solid var(--pd17-line); border-radius:999px;
+  color:var(--pd17-muted); background:rgba(128,148,172,.075);
+  font-size:11px; font-weight:850; letter-spacing:.095em; line-height:1.45;
+}
+.pd-v17-kicker-dot { width:7px;height:7px;border-radius:50%;background:#28c783; box-shadow:0 0 0 4px rgba(40,199,131,.12); }
+.pd-v17-kicker-sep { opacity:.45; }
+#view-landing .pd-v17-home-heading h1 {
+  margin:21px auto 0!important; max-width:15ch!important; font-size:clamp(38px,6.1vw,82px)!important;
+  font-weight:850!important; line-height:1.12!important; letter-spacing:-.045em!important;
+  color:var(--pd17-copy)!important; text-wrap:balance; overflow-wrap:normal;
+}
+#view-landing .pd-v17-home-heading h1 em { color:#58a6ff!important; font-style:normal; }
+html:not(.dark) #view-landing .pd-v17-home-heading h1 em { color:#076fe5!important; }
+#view-landing .pd-v17-home-heading > p {
+  max-width:760px!important; margin:19px auto 0!important; font-size:clamp(15px,1.4vw,19px)!important;
+  line-height:1.8!important; color:var(--pd17-muted)!important; text-wrap:pretty;
+}
+.pd-v17-home-actions { display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:25px; }
+.pd-v17-primary,.pd-v17-secondary {
+  min-height:50px!important;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:0 20px!important;border-radius:999px!important;font-size:14px!important;font-weight:800!important;
+  border:1px solid transparent; transition:transform .22s var(--pd17-ease),background-color .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.pd-v17-primary { background:#087cff!important;color:#fff!important;box-shadow:0 8px 25px rgba(8,124,255,.18); }
+.pd-v17-primary:hover { background:#218aff!important; transform:translateY(-2px);box-shadow:0 12px 30px rgba(8,124,255,.24); }
+.pd-v17-secondary { background:rgba(128,148,172,.08)!important;color:var(--pd17-copy)!important;border-color:var(--pd17-line)!important; }
+.pd-v17-secondary:hover { background:rgba(128,148,172,.14)!important;transform:translateY(-2px); }
+.pd-v17-primary svg,.pd-v17-secondary svg { width:17px;height:17px;flex:0 0 auto; }
+.pd-v17-proof-row { display:flex;justify-content:center;align-items:center;gap:12px 25px;flex-wrap:wrap;margin-top:23px;color:var(--pd17-muted);font-size:12px;font-weight:650; }
+.pd-v17-proof-row span { display:inline-flex;align-items:center;gap:7px; }
+.pd-v17-proof-row svg { width:16px;height:16px;color:#45b0ff; }
+.pd-v17-carousel {
+  width:min(1320px,100%); margin:0 auto; position:relative;
+  border:1px solid var(--pd17-line); border-radius:clamp(20px,2.2vw,34px); overflow:hidden;
+  background:var(--pd17-panel); box-shadow:var(--pd17-shadow); contain:layout paint style;
+}
+.pd-v17-slide-stage { position:relative; min-height:360px; background:var(--pd17-panel); }
+.pd-v17-slide {
+  position:absolute; inset:0; display:grid; grid-template-columns:minmax(0,1.14fr) minmax(300px,.86fr);
+  align-items:stretch; min-width:0; opacity:0; visibility:hidden; pointer-events:none;
+  transform:translateY(7px); transition:opacity .38s ease,transform .38s var(--pd17-ease),visibility 0s linear .38s;
+}
+.pd-v17-slide.is-active { position:relative; opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); transition:opacity .38s ease,transform .38s var(--pd17-ease),visibility 0s; }
+.pd-v17-slide-media { min-width:0;position:relative;overflow:hidden;min-height:360px;background:linear-gradient(135deg,#1a2635,#0a111a); }
+.pd-v17-slide-media img { display:block;width:100%;height:100%;min-height:360px;max-height:590px;object-fit:cover;object-position:center;transition:opacity .24s ease; }
+.pd-v17-slide-media img:not([src]) { opacity:0; }
+.pd-v17-slide-media:after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(4,9,16,.05),rgba(4,9,16,0) 65%,rgba(4,9,16,.08)); }
+.pd-v17-media-label { position:absolute;left:20px;top:20px;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:rgba(8,13,20,.88);color:#f7fbff;border:1px solid rgba(255,255,255,.18);font-size:10px;line-height:1.3;font-weight:850;letter-spacing:.085em; }
+.pd-v17-media-label span { width:6px;height:6px;border-radius:50%;background:#35d390; }
+.pd-v17-slide-copy { display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0;padding:clamp(25px,4vw,58px);background:var(--pd17-panel);color:var(--pd17-copy); }
+.pd-v17-slide-overline { display:flex;align-items:center;gap:12px;color:#5daeff;font-size:12px;font-weight:900;letter-spacing:.07em; }
+.pd-v17-slide-overline span { color:var(--pd17-muted);font-size:10px;letter-spacing:.09em; }
+.pd-v17-slide-copy h2 { margin:18px 0 0!important;font-size:clamp(27px,3.2vw,46px)!important;font-weight:850!important;line-height:1.15!important;letter-spacing:-.04em!important;color:var(--pd17-copy)!important;text-wrap:balance; }
+.pd-v17-slide-copy p { margin:15px 0 0!important;max-width:42ch;font-size:clamp(14px,1.15vw,16px)!important;line-height:1.85!important;color:var(--pd17-muted)!important; }
+.pd-v17-slide-meta { display:flex;align-items:center;gap:9px 16px;flex-wrap:wrap;margin-top:24px;color:var(--pd17-muted);font-size:12px;font-weight:700; }
+.pd-v17-slide-meta span { display:inline-flex;align-items:center;gap:6px; }
+.pd-v17-slide-meta svg { width:15px;height:15px;color:#54a7ff; }
+.pd-v17-carousel-controls { display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;background:var(--pd17-panel-soft);border-top:1px solid var(--pd17-line); }
+.pd-v17-rotation,.pd-v17-prev-next button {
+  min-width:42px;min-height:42px!important;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid var(--pd17-line);border-radius:999px;background:transparent;color:var(--pd17-copy);
+  transition:background-color .18s ease,border-color .18s ease,transform .18s var(--pd17-ease);
+}
+.pd-v17-rotation { padding:0 13px!important;font-size:11px!important;font-weight:800!important;white-space:nowrap; }
+.pd-v17-rotation-icon { display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;font-size:15px;line-height:1;font-weight:900; }
+.pd-v17-prev-next { display:flex;gap:7px;flex:0 0 auto; }
+.pd-v17-prev-next button { width:42px;padding:0!important; }
+.pd-v17-rotation:hover,.pd-v17-prev-next button:hover { background:rgba(128,148,172,.12);border-color:rgba(8,124,255,.45);transform:translateY(-1px); }
+.pd-v17-slide-pickers { display:flex;align-items:stretch;justify-content:center;gap:6px;min-width:0;flex:1; }
+.pd-v17-slide-picker { position:relative;min-width:0;min-height:42px!important;display:flex;align-items:center;gap:8px;padding:0 11px!important;border-radius:12px!important;color:var(--pd17-muted)!important;background:transparent!important;white-space:nowrap;transition:background-color .18s ease,color .18s ease; }
+.pd-v17-slide-picker span { font-size:10px;font-weight:850;opacity:.66; }
+.pd-v17-slide-picker b { font-size:12px;font-weight:750; }
+.pd-v17-slide-picker i { display:none;position:absolute;left:11px;right:11px;bottom:2px;height:2px;border-radius:99px;background:#1684ff; }
+.pd-v17-slide-picker.is-active { color:var(--pd17-copy)!important;background:rgba(8,124,255,.09)!important; }
+.pd-v17-slide-picker.is-active i { display:block; }
+.pd-v17-sr-status { position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important; }
+.pd-v17-value-strip { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:min(1320px,100%);margin:16px auto 0; }
+.pd-v17-value-strip>div { display:flex;align-items:center;gap:13px;min-width:0;padding:17px 18px;border:1px solid var(--pd17-line);border-radius:19px;background:var(--pd17-panel); }
+.pd-v17-value-icon { width:42px;height:42px;flex:0 0 auto;display:grid;place-items:center;border-radius:14px;background:rgba(8,124,255,.12);color:#228cff; }
+.pd-v17-value-icon svg { width:20px;height:20px; }
+.pd-v17-gold { color:#f2bb4a;background:rgba(222,157,32,.12); }
+.pd-v17-green { color:#28bb80;background:rgba(40,187,128,.12); }
+.pd-v17-value-strip b { display:block;color:var(--pd17-copy);font-size:14px;line-height:1.4;font-weight:850; }
+.pd-v17-value-strip small { display:block;margin-top:4px;color:var(--pd17-muted);font-size:11px;line-height:1.5; }
+.pd-v17-home-feature button:focus-visible { outline:3px solid rgba(42,148,255,.72)!important;outline-offset:3px!important; }
+/* Light theme is solid and legible rather than glass over text. */
+html:not(.dark) .pd-v17-carousel,html:not(.dark) .pd-v17-slide-copy,html:not(.dark) .pd-v17-value-strip>div { background:#fff; }
+html:not(.dark) .pd-v17-carousel-controls { background:#f5f7fb; }
+html:not(.dark) .pd-v17-rotation,html:not(.dark) .pd-v17-prev-next button { background:#fff;color:#151821; }
+/* Preserve useful motion but do not animate blur, height, shadow spread, or layout dimensions. */
+button,a,.ui-card,.pd-story-card,.pd-account-action { transition-property:color,background-color,border-color,opacity,transform,box-shadow!important;transition-duration:.18s!important; }
+button:active { transform:scale(.985); }
+@media (min-width:1280px) {
+  .pd-v17-slide-stage,.pd-v17-slide-media,.pd-v17-slide-media img { min-height:440px; }
+}
+@media (max-width:1023px) {
+  .pd-v17-home-feature { padding:42px 20px 30px; }
+  .pd-v17-slide { grid-template-columns:minmax(0,1.04fr) minmax(270px,.96fr); }
+  .pd-v17-slide-copy { padding:27px; }
+  .pd-v17-slide-stage,.pd-v17-slide-media,.pd-v17-slide-media img { min-height:320px; }
+  .pd-v17-slide-picker { padding-inline:8px!important; }
+}
+@media (max-width:767px) {
+  #view-landing > * + * { margin-top:48px!important; }
+  .pd-v17-home-feature { padding:34px 13px 24px; }
+  .pd-v17-home-heading { margin-bottom:24px; }
+  #view-landing .pd-v17-home-heading h1 { font-size:clamp(36px,10.2vw,52px)!important;line-height:1.17!important;letter-spacing:-.04em!important;margin-top:17px!important; }
+  #view-landing .pd-v17-home-heading > p { font-size:15px!important;line-height:1.75!important;margin-top:13px!important; }
+  .pd-v17-kicker { font-size:9px;letter-spacing:.065em;padding:7px 10px; }
+  .pd-v17-home-actions { display:grid;grid-template-columns:minmax(0,1fr);gap:9px;margin-top:20px; }
+  .pd-v17-primary,.pd-v17-secondary { width:100%;min-height:50px!important; }
+  .pd-v17-proof-row { display:grid;grid-template-columns:minmax(0,1fr);justify-content:start;gap:10px;margin-top:21px;font-size:12px; }
+  .pd-v17-carousel { border-radius:22px; }
+  .pd-v17-slide-stage { min-height:0; }
+  .pd-v17-slide { grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto; }
+  .pd-v17-slide-media,.pd-v17-slide-media img { min-height:0;height:auto;aspect-ratio:16/9;max-height:none; }
+  .pd-v17-slide-media img { position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto; }
+  .pd-v17-slide-copy { padding:22px 19px 23px; }
+  .pd-v17-slide-copy h2 { font-size:clamp(26px,7.5vw,35px)!important;margin-top:12px!important; }
+  .pd-v17-slide-copy p { font-size:14px!important;line-height:1.75!important;margin-top:11px!important; }
+  .pd-v17-slide-meta { margin-top:17px;font-size:11px;gap:8px 14px; }
+  .pd-v17-media-label { left:11px;top:11px;font-size:9px;padding:6px 8px; }
+  .pd-v17-carousel-controls { display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:10px;background:var(--pd17-panel-soft); }
+  .pd-v17-rotation { grid-row:1;grid-column:1;min-width:40px;min-height:40px!important;padding:0 10px!important; }
+  .pd-v17-rotation-label { display:none; }
+  .pd-v17-slide-pickers { grid-row:1;grid-column:2;gap:3px; }
+  .pd-v17-slide-picker { justify-content:center;padding:0!important;min-height:40px!important;flex:1; }
+  .pd-v17-slide-picker b { display:none; }
+  .pd-v17-slide-picker span { font-size:11px; }
+  .pd-v17-slide-picker i { left:7px;right:7px; }
+  .pd-v17-prev-next { grid-row:1;grid-column:3;gap:4px; }
+  .pd-v17-prev-next button { min-width:40px;width:40px;min-height:40px!important; }
+  .pd-v17-value-strip { grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px; }
+  .pd-v17-value-strip>div { padding:12px 13px;border-radius:16px; }
+  .pd-v17-value-icon { width:39px;height:39px; }
+  .pd-v17-value-strip b { font-size:13px; }
+  .pd-v17-value-strip small { font-size:11px; }
+  /* Keep persistent navigation visible but reserve its touch-safe area in the document. */
+  body { padding-bottom:calc(90px + env(safe-area-inset-bottom))!important; }
+  #pd-quick-dock,#pd-quick-dock.is-hidden {
+    left:50%!important;right:auto!important;bottom:calc(7px + env(safe-area-inset-bottom))!important;
+    transform:translateX(-50%)!important;opacity:1!important;pointer-events:auto!important;
+  }
+  #pd-ai-launcher { bottom:calc(83px + env(safe-area-inset-bottom))!important; }
+}
+@media (max-width:380px) {
+  .pd-v17-home-feature { padding-inline:10px; }
+  .pd-v17-slide-copy { padding:19px 15px 20px; }
+  .pd-v17-slide-picker span { font-size:10px; }
+  .pd-v17-prev-next button { width:36px;min-width:36px; }
+  .pd-v17-prev-next { gap:3px; }
+  .pd-v17-carousel-controls { padding:8px;gap:5px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; }
+  .pd-v17-slide { transform:none!important; }
+}
+</style>
+
+
+<script id="pd-v17-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const carousel = $('pd-v17-carousel');
+  if (!carousel || carousel.dataset.pdV17Bound === '1') return;
+  carousel.dataset.pdV17Bound = '1';
+  const slides = [...carousel.querySelectorAll('[data-pd-v17-slide]')];
+  const pickers = [...carousel.querySelectorAll('[data-pd-v17-go]')];
+  const status = $('pd-v17-slide-status');
+  const rotation = $('pd-v17-rotation');
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+  const coarse = window.matchMedia?.('(hover: none), (max-width: 767px)').matches || false;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const dataSaver = !!connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '');
+  let index = 0;
+  let autoEnabled = !reduceMotion && !coarse && !dataSaver;
+  let userPaused = false;
+  let focusPaused = false;
+  let hoverPaused = false;
+  let timer = 0;
+  let visibilityObserver = null;
+  let onScreen = true;
+
+  function describeSlide(i) {
+    const title = slides[i]?.querySelector('h2')?.innerText?.replace(/\s+/g, ' ').trim() || `สไลด์ ${i+1}`;
+    return title;
+  }
+  function loadSlideImage(slide, eager = false) {
+    const img = slide?.querySelector('img[data-pd-v17-src]');
+    if (!img) return;
+    const src = img.dataset.pdV17Src;
+    if (!src) return;
+    img.loading = eager ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    img.sizes = '(max-width: 767px) calc(100vw - 26px), (max-width: 1023px) 52vw, 750px';
+    if (img.dataset.pdV17Srcset) { img.srcset = img.dataset.pdV17Srcset; delete img.dataset.pdV17Srcset; }
+    img.src = src;
+    img.removeAttribute('data-pd-v17-src');
+  }
+  function clearTimer() {
+    if (timer) window.clearTimeout(timer);
+    timer = 0;
+  }
+  function canAutoRun() {
+    return autoEnabled && !userPaused && !focusPaused && !hoverPaused && onScreen &&
+      document.visibilityState === 'visible' && !$('view-landing')?.classList.contains('hidden');
+  }
+  function renderRotationControl() {
+    if (!rotation) return;
+    const playing = canAutoRun();
+    rotation.setAttribute('aria-label', playing ? 'หยุดเปลี่ยนภาพอัตโนมัติ' : 'เล่นเปลี่ยนภาพอัตโนมัติ');
+    rotation.title = playing ? 'หยุดเปลี่ยนภาพอัตโนมัติ' : 'เล่นเปลี่ยนภาพอัตโนมัติ';
+    const label = rotation.querySelector('span');
+    if (label) label.textContent = playing ? 'พักสไลด์' : 'เล่นอัตโนมัติ';
+    const icon = rotation.querySelector('.pd-v17-rotation-icon');
+    if (icon) icon.textContent = playing ? 'Ⅱ' : '▶';
+  }
+  function scheduleRotation() {
+    clearTimer();
+    renderRotationControl();
+    if (status) status.setAttribute('aria-live', canAutoRun() ? 'off' : 'polite');
+    if (!canAutoRun() || slides.length < 2) return;
+    timer = window.setTimeout(() => {
+      showSlide(index + 1, false);
+      scheduleRotation();
+    }, 7200);
+  }
+  function showSlide(nextIndex, manual = true) {
+    if (!slides.length) return;
+    index = (nextIndex + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+      if (!active) slide.setAttribute('inert', '');
+      else slide.removeAttribute('inert');
+    });
+    pickers.forEach((button, i) => {
+      const active = i === index;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    loadSlideImage(slides[index], true);
+    if (status) status.textContent = `สไลด์ ${index + 1} จาก ${slides.length}: ${describeSlide(index)}`;
+    if (manual) scheduleRotation();
+  }
+  function toggleRotation() {
+    const wasPlaying = autoEnabled && !userPaused && !focusPaused;
+    if (wasPlaying) {
+      userPaused = true;
+    } else {
+      autoEnabled = true;
+      userPaused = false;
+      focusPaused = false;
+    }
+    scheduleRotation();
+  }
+  rotation?.addEventListener('click', toggleRotation);
+  $('pd-v17-prev')?.addEventListener('click', () => showSlide(index - 1, true));
+  $('pd-v17-next')?.addEventListener('click', () => showSlide(index + 1, true));
+  pickers.forEach(button => button.addEventListener('click', () => showSlide(Number(button.dataset.pdV17Go) || 0, true)));
+
+  // Stop automatic movement when the pointer hovers or keyboard focus enters; focus-resume is explicit.
+  carousel.addEventListener('mouseenter', () => { hoverPaused = true; scheduleRotation(); });
+  carousel.addEventListener('mouseleave', () => { hoverPaused = false; scheduleRotation(); });
+  carousel.addEventListener('focusin', () => { focusPaused = true; clearTimer(); if (status) status.setAttribute('aria-live','polite'); renderRotationControl(); });
+  carousel.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); showSlide(index + 1, true); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); showSlide(index - 1, true); }
+  });
+  document.addEventListener('visibilitychange', scheduleRotation);
+  window.addEventListener('resize', () => {
+    // On resizing between mobile and desktop, keep the current slide and avoid sudden auto-start.
+    if (window.matchMedia?.('(hover: none), (max-width: 767px)').matches) {
+      autoEnabled = false; clearTimer();
+    }
+    renderRotationControl();
+  }, {passive:true});
+  if ('IntersectionObserver' in window) {
+    visibilityObserver = new IntersectionObserver(entries => {
+      onScreen = !!entries[0]?.isIntersecting;
+      scheduleRotation();
+    }, {threshold:.08});
+    visibilityObserver.observe(carousel);
+  }
+
+  showSlide(0, false);
+  scheduleRotation();
+
+  // Wrap view routing once so status copy updates only when a view changes (not once per second).
+  if (typeof window.switchView === 'function' && !window.switchView.__pdV17Wrapped) {
+    const originalSwitchView = window.switchView;
+    const wrappedSwitchView = function(viewName, ...args) {
+      const result = originalSwitchView.call(this, viewName, ...args);
+      window.requestAnimationFrame(() => {
+        window.updateLiveIslandStatus?.(viewName);
+        document.dispatchEvent(new CustomEvent('pd:viewchange', {detail:{viewName}}));
+        scheduleRotation();
+      });
+      return result;
+    };
+    wrappedSwitchView.__pdV17Wrapped = true;
+    window.switchView = wrappedSwitchView;
+  }
+  window.addEventListener('pageshow', scheduleRotation);
+  window.pdV17Diagnostics = function() {
+    const root = document.documentElement;
+    const result = {
+      version: 'v17',
+      viewport: {width:innerWidth,height:innerHeight,dpr:Math.min(3,devicePixelRatio||1)},
+      documentWidth: root.scrollWidth,
+      horizontalOverflow: root.scrollWidth > root.clientWidth + 2,
+      reducedMotion: !!reduceMotion,
+      dataSaver: !!dataSaver,
+      activeSlide: index + 1,
+      carouselReady: !!carousel,
+      supportCenterReady: !!$('view-help'),
+      secureContext: !!window.isSecureContext,
+      supabaseConfigured: !!window.supabaseClient,
+      pdfjsLoaded: !!window.pdfjsLib
+    };
+    console.info('[PrintDekD v17 diagnostics]', result);
+    return result;
+  };
+})();
+</script>
+
 </body>
 </html>
