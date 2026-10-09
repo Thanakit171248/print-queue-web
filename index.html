@@ -11,7 +11,9 @@
   <!-- Best-effort document policy. Critical clickjacking / HSTS / server headers still belong on Vercel response headers. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none';">
 
-  <title>PrintDekD Pro v11 — PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
+  <meta name="description" content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
+  <meta name="theme-color" content="#0b1119">
+  <title>PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
   
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
@@ -2373,6 +2375,11 @@
           <span><span class="menu-kicker">03 · WALLET</span><span class="menu-title block">กระเป๋าเงิน Coins Wallet</span></span>
           <span class="menu-state">กำลังใช้งาน</span>
         </button>
+        <button type="button" id="menu-link-help" data-view="help" data-menu-link="help" onclick="switchView('help'); toggleAppleTabMenu(false);" class="apple-menu-item" style="--accent:#21b78a">
+          <span class="menu-icon"><i data-lucide="life-buoy" class="w-5 h-5"></i></span>
+          <span><span class="menu-kicker">04 · HELP CENTER</span><span class="menu-title block">บริการช่วยเหลือของ PrintDekD</span></span>
+          <span class="menu-state">คู่มือและคำถาม</span>
+        </button>
         <button type="button" id="apple-admin-menu-btn" data-view="admin" data-menu-link="admin" onclick="switchView('admin'); toggleAppleTabMenu(false);" class="hidden apple-menu-item" style="--accent:#a855f7">
           <span class="menu-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></span>
           <span><span class="menu-kicker">04 · ADMIN</span><span class="menu-title block">Admin Backoffice</span></span>
@@ -2711,6 +2718,7 @@
         <button type="button" id="nav-home-btn" data-view="landing" class="nav-link" onclick="switchView('landing')"><i data-lucide="house" class="w-4 h-4"></i><span>หน้าแรก</span></button>
         <button type="button" id="nav-dashboard-btn" data-view="dashboard" class="nav-link" onclick="switchView('dashboard')"><i data-lucide="file-up" class="w-4 h-4"></i><span>สั่งพิมพ์ / คิวงาน</span></button>
         <button type="button" id="nav-wallet-btn" data-view="wallet" class="nav-link hidden" onclick="switchView('wallet')"><i data-lucide="wallet-cards" class="w-4 h-4"></i><span>Coins Wallet</span></button>
+        <button type="button" id="nav-help-btn" data-view="help" class="nav-link" onclick="switchView('help')"><i data-lucide="life-buoy" class="w-4 h-4"></i><span>ศูนย์ช่วยเหลือ</span></button>
         <button type="button" id="admin-db-config-btn" onclick="toggleConfigPanel()" class="hidden px-3 py-2 text-[11px] font-extrabold text-amber-600 dark:text-amber-300">⚙️ DB</button>
       </div>
 
@@ -2822,6 +2830,9 @@
     </button>
     <button type="button" class="pd-dock-button" data-pd-action="wallet" aria-label="กระเป๋าเงิน" title="กระเป๋าเงิน">
       <i data-lucide="wallet-cards"></i><span>Coins</span>
+    </button>
+    <button type="button" class="pd-dock-button" data-pd-action="help" aria-label="ศูนย์ช่วยเหลือ" title="ศูนย์ช่วยเหลือ" onclick="switchView('help')">
+      <i data-lucide="life-buoy"></i><span>ช่วยเหลือ</span>
     </button>
     <button type="button" class="pd-dock-button" data-pd-action="theme" aria-label="เปลี่ยนธีม" title="เปลี่ยนธีม">
       <i data-lucide="sun-moon"></i><span>ธีม</span>
@@ -3734,7 +3745,100 @@
       </div>
     </section>
 
-  </main>
+  
+      <!-- VIEW 6: PRINTDEKD SUPPORT CENTER -->
+      <section id="view-help" class="hidden pd-help-view" aria-labelledby="pd-help-title">
+        <header class="pd-help-hero">
+          <div class="pd-help-brandmark" aria-hidden="true"><i data-lucide="printer"></i></div>
+          <span class="pd-help-eyebrow">PRINTDEKD PRO · SUPPORT</span>
+          <h1 id="pd-help-title">บริการช่วยเหลือของ <span>PrintDekD</span></h1>
+          <p>ต้องการความช่วยเหลือใช่ไหม? ค้นหาคู่มือการใช้งาน การสั่งพิมพ์ Coins และการติดตามคิวได้จากที่เดียว</p>
+          <form id="pd-help-search-form" class="pd-help-search" role="search">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <input id="pd-help-search" type="search" autocomplete="off" placeholder="ค้นหาความช่วยเหลือ เช่น พรีวิว PDF, Coins, คิวพิมพ์…" aria-label="ค้นหาหัวข้อช่วยเหลือ">
+            <button type="submit">ค้นหา</button>
+          </form>
+          <p class="pd-help-search-hint">ลองค้นหา: <button type="button" data-help-query="PDF">พรีวิว PDF</button><button type="button" data-help-query="Coins">Coins</button><button type="button" data-help-query="คิว">คิวพิมพ์</button></p>
+        </header>
+
+        <section class="pd-help-section" aria-labelledby="pd-help-categories-title">
+          <div class="pd-help-section-head">
+            <div><span class="pd-help-kicker">เริ่มจากหัวข้อ</span><h2 id="pd-help-categories-title">คุณต้องการความช่วยเหลือเรื่องไหน?</h2></div>
+            <button type="button" class="pd-help-clear" id="pd-help-clear">ล้างการค้นหา</button>
+          </div>
+          <div class="pd-help-categories">
+            <button type="button" class="pd-help-category" data-help-category="print" aria-pressed="false">
+              <span class="pd-help-category-icon blue"><i data-lucide="file-up"></i></span><span><strong>การสั่งพิมพ์</strong><small>อัปโหลดไฟล์ ตั้งค่ากระดาษ และเลือกหน้า</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+            <button type="button" class="pd-help-category" data-help-category="preview" aria-pressed="false">
+              <span class="pd-help-category-icon violet"><i data-lucide="files"></i></span><span><strong>พรีวิวเอกสาร</strong><small>ดูตัวอย่าง PDF และตรวจสอบไฟล์ก่อนส่ง</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+            <button type="button" class="pd-help-category" data-help-category="coins" aria-pressed="false">
+              <span class="pd-help-category-icon gold"><i data-lucide="wallet-cards"></i></span><span><strong>Coins และการชำระเงิน</strong><small>ดูยอด เติม Coins และตรวจสอบสลิป</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+            <button type="button" class="pd-help-category" data-help-category="queue" aria-pressed="false">
+              <span class="pd-help-category-icon green"><i data-lucide="clipboard-list"></i></span><span><strong>คิวงานและการจัดส่ง</strong><small>ติดตามสถานะ รับหน้าร้าน หรือจัดส่ง</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+            <button type="button" class="pd-help-category" data-help-category="account" aria-pressed="false">
+              <span class="pd-help-category-icon cyan"><i data-lucide="user-round"></i></span><span><strong>บัญชีและโปรไฟล์</strong><small>ลงทะเบียน เข้าสู่ระบบ และจัดการโปรไฟล์</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+            <button type="button" class="pd-help-category" data-help-category="security" aria-pressed="false">
+              <span class="pd-help-category-icon red"><i data-lucide="shield-check"></i></span><span><strong>ความปลอดภัย</strong><small>ตรวจสอบการเชื่อมต่อและวิธีปกป้องบัญชี</small></span><i data-lucide="arrow-up-right" class="pd-help-arrow"></i>
+            </button>
+          </div>
+        </section>
+
+        <div class="pd-help-content-grid">
+          <section class="pd-help-section pd-help-articles" aria-labelledby="pd-help-popular-title">
+            <div class="pd-help-section-head"><div><span class="pd-help-kicker">คำแนะนำทีละขั้นตอน</span><h2 id="pd-help-popular-title">หัวข้อยอดนิยม</h2></div><span class="pd-help-result-count" id="pd-help-result-count" aria-live="polite">6 หัวข้อ</span></div>
+            <div class="pd-help-article-list" id="pd-help-article-list">
+              <article class="pd-help-article" data-help-filter-item data-help-group="print" data-help-search="อัปโหลด สั่งพิมพ์ ไฟล์ PDF DOC DOCX JPG PNG ตั้งค่าจำนวนชุด">
+                <span class="pd-help-article-icon blue"><i data-lucide="file-plus-2"></i></span><div><span class="pd-help-article-kicker">PRINTING</span><h3>เริ่มสั่งพิมพ์เอกสาร</h3><p>เลือกไฟล์ ตรวจสอบจำนวนหน้า ตั้งค่ากระดาษ สี จำนวนชุด และวิธีรับเอกสารก่อนส่งรายการ</p><button type="button" class="pd-help-action-link" onclick="handleStartPrinting()">ไปที่หน้าสั่งพิมพ์ <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+              <article class="pd-help-article" data-help-filter-item data-help-group="preview print" data-help-search="พรีวิว preview PDF เลือกหน้าพิมพ์ canvas อ่านไม่ขึ้น PDF worker DOC Word รูปภาพ">
+                <span class="pd-help-article-icon violet"><i data-lucide="file-search"></i></span><div><span class="pd-help-article-kicker">DOCUMENT PREVIEW</span><h3>ดูตัวอย่างและเลือกหน้าที่ต้องการ</h3><p>เปิดพรีวิวเพื่อตรวจหน้าเอกสาร หาก PDF ไม่ขึ้น ให้ลองอัปโหลดใหม่หรือบันทึกไฟล์ PDF ใหม่จากต้นฉบับ</p><button type="button" class="pd-help-action-link" onclick="handleStartPrinting()">ตรวจสอบไฟล์ของฉัน <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+              <article class="pd-help-article" data-help-filter-item data-help-group="coins" data-help-search="Coins Wallet เติมเงิน Top up PromptPay Direct สลิป โอนเงิน ยอดเงิน">
+                <span class="pd-help-article-icon gold"><i data-lucide="coins"></i></span><div><span class="pd-help-article-kicker">COINS WALLET</span><h3>เติม Coins และตรวจสอบยอด</h3><p>เข้าสู่ระบบ เปิด Wallet เลือกแพ็กเกจ และแนบหลักฐานตามขั้นตอนที่ระบบแสดง ตรวจสอบสถานะก่อนส่งซ้ำ</p><button type="button" class="pd-help-action-link" onclick="currentUser ? switchView('wallet') : (switchView('auth'), switchAuthTab('login'))">เปิด Coins Wallet <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+              <article class="pd-help-article" data-help-filter-item data-help-group="queue" data-help-search="คิวงาน สถานะ queued printing completed รับหน้าร้าน delivery tracking จัดส่ง">
+                <span class="pd-help-article-icon green"><i data-lucide="package-check"></i></span><div><span class="pd-help-article-kicker">ORDER STATUS</span><h3>ติดตามคิวและการรับเอกสาร</h3><p>ไปที่คิวงานเพื่อตรวจสอบสถานะและรายละเอียด เลือกรับหน้าร้านหรือดูข้อมูลจัดส่งตามที่บันทึกไว้ในคำสั่งซื้อ</p><button type="button" class="pd-help-action-link" onclick="currentUser ? switchView('dashboard') : (switchView('auth'), switchAuthTab('login'))">ดูคิวงานพิมพ์ <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+              <article class="pd-help-article" data-help-filter-item data-help-group="account" data-help-search="บัญชี เข้าสู่ระบบ ลงทะเบียน อีเมล รหัสผ่าน รูปโปรไฟล์ account">
+                <span class="pd-help-article-icon cyan"><i data-lucide="user-round-cog"></i></span><div><span class="pd-help-article-kicker">ACCOUNT</span><h3>เข้าสู่ระบบและจัดการโปรไฟล์</h3><p>ตรวจสอบอีเมลที่ใช้ลงทะเบียน หากเข้าไม่ได้ให้ตรวจตัวสะกดและการเชื่อมต่อก่อนลองอีกครั้ง อย่าส่งรหัสผ่านให้ผู้อื่น</p><button type="button" class="pd-help-action-link" onclick="switchView('auth'); switchAuthTab('login')">ไปที่หน้าเข้าสู่ระบบ <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+              <article class="pd-help-article" data-help-filter-item data-help-group="security account" data-help-search="ความปลอดภัย HTTPS Security Audit session RLS policy Supabase privacy ข้อมูลส่วนตัว">
+                <span class="pd-help-article-icon red"><i data-lucide="shield-check"></i></span><div><span class="pd-help-article-kicker">SECURITY</span><h3>ตรวจสอบความปลอดภัยก่อนทำรายการ</h3><p>ตรวจสถานะ HTTPS และการเชื่อมต่อจากแถบความปลอดภัย หลีกเลี่ยงเครื่องสาธารณะ และออกจากระบบเมื่อใช้งานเสร็จ</p><button type="button" class="pd-help-action-link" onclick="runSecurityAudit(true)">ตรวจสอบสถานะตอนนี้ <i data-lucide="arrow-up-right"></i></button></div>
+              </article>
+            </div>
+            <div class="pd-help-no-results hidden" id="pd-help-no-results"><i data-lucide="search-x"></i><strong>ไม่พบหัวข้อที่ตรงกัน</strong><p>ลองใช้คำค้นอื่น หรือล้างตัวกรองเพื่อดูหัวข้อทั้งหมด</p><button type="button" class="pd-help-primary" id="pd-help-no-results-clear">แสดงทุกหัวข้อ</button></div>
+          </section>
+
+          <aside class="pd-help-side-column">
+            <section class="pd-help-contact-card">
+              <span class="pd-help-contact-icon"><i data-lucide="message-circle"></i></span><span class="pd-help-kicker">QUICK ASSIST</span><h2>ให้ผู้ช่วยพาไปยังเมนูที่ถูกต้อง</h2><p>ถามวิธีใช้งาน Coins การอัปโหลด และคิวงาน ผู้ช่วยในหน้านี้จะตอบจากความสามารถที่มีอยู่ในเว็บไซต์</p><button type="button" class="pd-help-primary" id="pd-help-open-assistant">เปิด PrintDekD AI <i data-lucide="arrow-up-right"></i></button><button type="button" class="pd-help-secondary" onclick="openPDCommandPalette()">ค้นหาคำสั่งในเว็บ <kbd>Ctrl K</kbd></button>
+            </section>
+            <section class="pd-help-security-card">
+              <div class="pd-help-security-title"><i data-lucide="shield-check"></i><h3>ดูแลบัญชีให้ปลอดภัย</h3></div>
+              <ul><li>ใช้เว็บไซต์ผ่าน HTTPS และอย่าส่งรหัสผ่านหรือรหัสยืนยันให้ผู้อื่น</li><li>ตรวจสอบยอด Coins และรายละเอียดก่อนยืนยันรายการ</li><li>สิทธิ์ฐานข้อมูลต้องบังคับใช้ด้วย Supabase RLS/Policies ฝั่งเซิร์ฟเวอร์ ไม่ใช่แค่การซ่อนปุ่มในหน้าเว็บ</li></ul>
+              <button type="button" class="pd-help-action-link" onclick="runSecurityAudit(true)">ตรวจสถานะการเชื่อมต่อ <i data-lucide="arrow-up-right"></i></button>
+            </section>
+          </aside>
+        </div>
+
+        <section class="pd-help-section pd-help-faq" aria-labelledby="pd-help-faq-title">
+          <div class="pd-help-section-head"><div><span class="pd-help-kicker">คำตอบสั้น ๆ</span><h2 id="pd-help-faq-title">คำถามที่พบบ่อย</h2></div></div>
+          <div class="pd-help-faq-list">
+            <details class="pd-help-faq-item" data-help-filter-item data-help-group="print preview" data-help-search="รองรับไฟล์อะไร PDF DOC DOCX JPG JPEG PNG ขนาด 20 MB"><summary>รองรับไฟล์ประเภทใดบ้าง?</summary><p>หน้าสั่งพิมพ์ระบุชนิดไฟล์ PDF, DOC, DOCX, JPG, JPEG และ PNG โดยไฟล์พิมพ์มีขนาดสูงสุดตามค่าที่กำหนดไว้ในแอป ให้ตรวจสอบข้อความใกล้ช่องอัปโหลดก่อนเลือกไฟล์</p></details>
+            <details class="pd-help-faq-item" data-help-filter-item data-help-group="preview" data-help-search="PDF พรีวิวว่างเปล่า ไม่ขึ้น canvas worker error"><summary>ทำไมพรีวิว PDF ถึงไม่แสดง?</summary><p>รอสักครู่ให้ระบบอ่านหน้า PDF ก่อน หากยังว่าง ให้เปิด Console เพื่อตรวจข้อผิดพลาดเกี่ยวกับ PDF worker/เครือข่าย หรือทดลองบันทึก PDF จากไฟล์ต้นฉบับอีกครั้ง เบราว์เซอร์ไม่สามารถเรนเดอร์ DOC/DOCX เป็นพรีวิว PDF โดยตรงได้ในทุกกรณี</p></details>
+            <details class="pd-help-faq-item" data-help-filter-item data-help-group="coins" data-help-search="เติม Coins สลิป pending รออนุมัติ โอน PromptPay"><summary>แนบสลิปแล้วทำไม Coins ยังไม่เข้า?</summary><p>การเติมเงินผ่านสลิปอาจอยู่ระหว่างตรวจสอบ เปิด Wallet เพื่อตรวจสถานะก่อนส่งรายการซ้ำ หากยังไม่เปลี่ยนแปลง ให้ติดต่อผู้ดูแลระบบพร้อมรายละเอียดรายการโดยไม่เปิดเผยข้อมูลลับ</p></details>
+            <details class="pd-help-faq-item" data-help-filter-item data-help-group="queue" data-help-search="คิว queued printing completed รับหน้าร้าน จัดส่ง tracking"><summary>สถานะคิวแต่ละแบบหมายถึงอะไร?</summary><p>สถานะในแอปอาจแสดงเป็น queued (รอคิว), printing (กำลังพิมพ์) หรือ completed (พิมพ์เสร็จ) โดยสถานะการจัดส่งอาจอยู่ในส่วนข้อมูลจัดส่งแยกจากสถานะงานพิมพ์</p></details>
+            <details class="pd-help-faq-item" data-help-filter-item data-help-group="security account" data-help-search="ข้อมูลปลอดภัยไหม รหัสผ่าน Supabase RLS policy Auth"><summary>หน้าเว็บเพียงอย่างเดียวทำให้ข้อมูลปลอดภัยทั้งหมดหรือไม่?</summary><p>ไม่ใช่ครับ ส่วนหน้าเว็บช่วยตรวจรูปแบบข้อมูลและแสดงสถานะได้ แต่การคุ้มครองข้อมูลจริงต้องตั้งค่า Auth, RLS/Policies และ Storage policies บนเซิร์ฟเวอร์อย่างถูกต้อง และต้องทดสอบทั้งสิทธิ์อนุญาตและปฏิเสธ</p></details>
+          </div>
+        </section>
+        <footer class="pd-help-footer"><span>PRINTDEKD PRO · KMUTNB ITI</span><span>คู่มือการใช้งาน • ความปลอดภัย • การสั่งพิมพ์</span><button type="button" onclick="switchView('landing')">กลับหน้าหลัก <i data-lucide="arrow-up-right"></i></button></footer>
+      </section>
+    </main>
 
   <!-- JAVASCRIPT ENGINE & ADVANCED SCROLL FADE OBSERVER -->
   <script>
@@ -4393,7 +4497,7 @@
     });
 
     function switchView(viewName) {
-      const allowed = ['landing','auth','dashboard','wallet','admin'];
+      const allowed = ['landing','auth','dashboard','wallet','admin','help'];
       if (!allowed.includes(viewName)) viewName = 'landing';
       if (viewName === 'admin' && (!currentUser || currentUser.role !== 'admin' || !supabaseClient)) {
         showCustomModal({ title:'จำกัดสิทธิ์', message:'เฉพาะ Admin ที่มีเซสชันและฐานข้อมูลพร้อมเท่านั้นที่เข้าใช้งานได้', icon:'shield-alert' });
@@ -5426,7 +5530,8 @@
           { id:'wallet', icon:'wallet-cards', title:'Coins Wallet', desc:'เติม Coins และตรวจสอบยอดคงเหลือ', key:'Wallet', action:()=>switchView('wallet') },
           { id:'profile', icon:'user-round', title:'โปรไฟล์ของฉัน', desc:'ข้อมูลบัญชี ความปลอดภัย และการตั้งค่า', key:'Profile', action:()=>currentUser ? openUserProfileModal() : (switchView('auth'), switchAuthTab('login')) },
           { id:'theme', icon:'sun-moon', title:'เปลี่ยนธีม', desc:'Dark / Light / System', key:'Theme', action:()=>{ closePDCommandPalette(); toggleTheme(); } },
-          { id:'security', icon:'shield-check', title:'ตรวจสอบความปลอดภัย', desc:'ตรวจสอบสถานะการเชื่อมต่อและเซสชัน', key:'Security', action:()=>runSecurityAudit(true) }
+          { id:'security', icon:'shield-check', title:'ตรวจสอบความปลอดภัย', desc:'ตรวจสอบสถานะการเชื่อมต่อและเซสชัน', key:'Security', action:()=>runSecurityAudit(true) },
+          { id:'help', icon:'life-buoy', title:'ศูนย์ช่วยเหลือ PrintDekD', desc:'ค้นหาคู่มือ วิธีใช้งาน และคำถามที่พบบ่อย', key:'Help', action:()=>switchView('help') }
         ];
         if (currentUser?.role === 'admin') {
           items.splice(5, 0, { id:'admin', icon:'layout-dashboard', title:'Admin Backoffice', desc:'จัดการคิว ผู้ใช้ และ Top-up', key:'Admin', action:()=>switchView('admin') });
@@ -5632,7 +5737,8 @@
           ['view-auth','กำลังจัดการบัญชี'],
           ['view-dashboard','กำลังจัดการงานพิมพ์'],
           ['view-wallet','กำลังจัดการ Coins'],
-          ['view-admin','กำลังดูแลระบบ']
+          ['view-admin','กำลังดูแลระบบ'],
+          ['view-help','กำลังดูศูนย์ช่วยเหลือ']
         ];
         const update = () => {
           const visible = sections.find(([id]) => {
@@ -8200,8 +8306,10 @@ html.dark #view-landing .grid.grid-cols-3 > div.ui-card p:last-child {
 }
 </style>
 
-</body>
-</html>
+
+
+
+
 <style id="pd-v8-readability-fix">
 /* ==========================================================
    PRINTDEKD PRO — v8 Visual QA / Readability Pass
@@ -9659,3 +9767,563 @@ html.dark .pd-v15-thumb-card { background:#141c27 !important; color:#f1f5f9 !imp
   }, {passive:true});
 })();
 </script>
+
+<style id="pd-v16-responsive-support">
+/* =============================================================
+   PrintDekD Pro v16 — Adaptive Layout + Help Center + Smooth UX
+   Responsive for phones, tablets, notebooks and wide desktops.
+   Motion is short, optional, and avoids continuous heavy paints.
+   ============================================================= */
+:root {
+  --pd16-content: 1440px;
+  --pd16-gutter: clamp(16px, 3.8vw, 52px);
+  --pd16-radius: clamp(20px, 2.7vw, 34px);
+  --pd16-line: #dbe3ed;
+  --pd16-surface: #ffffff;
+  --pd16-soft: #f4f7fb;
+  --pd16-text: #172033;
+  --pd16-muted: #536276;
+  --pd16-blue: #087cff;
+  --pd16-shadow: 0 14px 38px rgba(15,23,42,.07);
+}
+html.dark {
+  --pd16-line: #293748;
+  --pd16-surface: #101721;
+  --pd16-soft: #151f2b;
+  --pd16-text: #f4f7fb;
+  --pd16-muted: #b0bdcc;
+  --pd16-shadow: 0 18px 44px rgba(0,0,0,.22);
+}
+html, body { width:100%; max-width:100%; }
+html { overflow-x:clip; scroll-padding-top:92px; }
+body { min-width:320px; width:100%; overflow-x:clip; }
+*,*::before,*::after { box-sizing:border-box; }
+img,video,canvas,svg { max-width:100%; }
+main { width:100%; min-width:0; }
+main > section[id^="view-"] { box-sizing:border-box; min-width:0; }
+.grid > *, .flex > * { min-width:0; }
+button,a,input,select,textarea { overflow-wrap:anywhere; }
+button { touch-action:manipulation; }
+
+/* Navigation never forces a narrow screen to scroll sideways. */
+nav.sticky { width:100%; max-width:100%; }
+nav.sticky > .navbar-inner {
+  width:min(var(--pd16-content),calc(100% - 28px)) !important;
+  max-width:var(--pd16-content); min-width:0; box-sizing:border-box;
+}
+nav.sticky .nav-link { white-space:nowrap; }
+#apple-tab-menu .apple-menu-nav { min-width:0; }
+#apple-tab-menu .apple-menu-item { min-width:0; }
+#apple-tab-menu .apple-menu-item .menu-title { overflow-wrap:anywhere; }
+
+/* Landing page — responsive headline scale and balanced hero image. */
+#view-landing {
+  width:100% !important; max-width:var(--pd16-content) !important;
+  padding-left:var(--pd16-gutter) !important; padding-right:var(--pd16-gutter) !important;
+  padding-top:clamp(28px,5vw,72px) !important;
+  padding-bottom:clamp(40px,6vw,84px) !important;
+  min-width:0;
+}
+#view-landing > * { min-width:0; max-width:100%; }
+#view-landing > .grid:first-child { min-height:0; align-items:center; }
+#view-landing h1 {
+  max-width:100% !important;
+  font-size:clamp(36px,5.5vw,82px) !important;
+  line-height:1.12 !important; letter-spacing:-.035em !important;
+  overflow-wrap:normal; word-break:normal; text-wrap:balance;
+}
+#view-landing > .grid:first-child p {
+  max-width:66ch; font-size:clamp(16px,1.45vw,21px) !important;
+  line-height:1.7 !important; overflow-wrap:anywhere;
+}
+#view-landing .ui-panel, #view-landing .group, #view-landing .pd-hero-media { min-width:0; max-width:100%; }
+#view-landing .group img { display:block; max-width:100%; }
+#view-landing .grid.grid-cols-3 > .ui-card { min-width:0; }
+#view-landing .pd-story-section, #view-landing .pd-final-cta { min-width:0; max-width:100%; }
+
+/* Order / Wallet / Admin surfaces expand to the real usable viewport. */
+#view-dashboard, #view-wallet, #view-admin {
+  width:100% !important; max-width:var(--pd16-content) !important;
+  padding-left:var(--pd16-gutter) !important; padding-right:var(--pd16-gutter) !important;
+  min-width:0;
+}
+#view-dashboard > *, #view-wallet > *, #view-admin > * { min-width:0; }
+#view-dashboard .grid, #view-wallet .grid, #view-admin .grid { min-width:0; }
+#view-dashboard input, #view-dashboard select, #view-dashboard textarea,
+#view-wallet input, #view-wallet select, #view-wallet textarea { max-width:100%; }
+#view-dashboard .overflow-x-auto, #view-admin .overflow-x-auto { max-width:100%; }
+#view-admin table { min-width:780px; }
+
+/* Auth view uses two panels on large screens, one clear flow on tablets/phones. */
+#view-auth {
+  width:100% !important; max-width:var(--pd16-content) !important;
+  padding-left:var(--pd16-gutter) !important; padding-right:var(--pd16-gutter) !important;
+  padding-top:clamp(18px,4vw,54px) !important;
+  padding-bottom:clamp(28px,5vw,70px) !important;
+}
+#view-auth .pd-auth-shell {
+  width:100%; max-width:100%; min-width:0; min-height:0;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  border-radius:var(--pd16-radius); overflow:hidden;
+}
+#view-auth .pd-auth-intro, #view-auth .pd-auth-form-card { min-width:0; }
+#view-auth .pd-auth-intro h1 { font-size:clamp(34px,3.9vw,56px); line-height:1.12; overflow-wrap:anywhere; }
+#view-auth .pd-auth-form-card { padding:clamp(22px,3.6vw,48px); }
+#view-auth .pd-auth-form-head h2 { font-size:clamp(26px,3vw,38px); line-height:1.16; }
+#view-auth .pd-auth-form { min-width:0; width:100%; }
+#view-auth .pd-auth-field label, #view-auth .pd-auth-label-row label { font-size:14px !important; line-height:1.5 !important; }
+#view-auth .pd-auth-field-hint { line-height:1.55; overflow-wrap:anywhere; }
+#view-auth .pd-auth-input-wrap .ui-input { width:100%; max-width:100%; font-size:16px !important; }
+#view-auth .pd-auth-tabs button { min-height:48px; font-size:14px; }
+#view-auth .pd-auth-form button[type="submit"] { min-height:54px; font-size:15px; }
+
+/* Support Center — inspired by product-support IA, with original PrintDekD design. */
+#view-help {
+  width:100% !important; max-width:var(--pd16-content) !important;
+  margin-inline:auto; padding:clamp(18px,3.5vw,48px) var(--pd16-gutter) clamp(42px,6vw,78px) !important;
+  min-width:0; color:var(--pd16-text);
+}
+.pd-help-hero {
+  position:relative; isolation:isolate; overflow:hidden; text-align:center;
+  padding:clamp(28px,5.8vw,76px) clamp(16px,4vw,60px) clamp(28px,4.8vw,62px);
+  border:1px solid var(--pd16-line); border-radius:clamp(24px,4vw,40px);
+  background:linear-gradient(155deg,#fff 0%,#f0f6ff 100%); color:#182337;
+  box-shadow:var(--pd16-shadow);
+}
+html.dark .pd-help-hero { background:linear-gradient(155deg,#121e2d 0%,#0d131c 100%); color:#f4f7fb; }
+.pd-help-hero::before {
+  content:""; position:absolute; z-index:-1; width:min(600px,90vw); aspect-ratio:1;
+  border-radius:50%; left:50%; top:-75%; transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(8,124,255,.12),transparent 68%); pointer-events:none;
+}
+.pd-help-brandmark {
+  width:68px; height:68px; display:grid; place-items:center; margin:0 auto 22px;
+  border-radius:22px; color:#fff; background:linear-gradient(145deg,#2294ff,#0069e9);
+  box-shadow:0 12px 32px rgba(8,124,255,.24);
+}
+.pd-help-brandmark svg { width:31px; height:31px; }
+.pd-help-eyebrow,.pd-help-kicker,.pd-help-article-kicker {
+  display:block; color:#1671ce; font-size:12px; line-height:1.35; letter-spacing:.11em; font-weight:900;
+}
+html.dark .pd-help-eyebrow,html.dark .pd-help-kicker,html.dark .pd-help-article-kicker { color:#84bdff; }
+.pd-help-hero h1 {
+  margin:14px auto 12px; max-width:950px; font-size:clamp(32px,5.2vw,68px);
+  line-height:1.12; letter-spacing:-.04em; font-weight:900; text-wrap:balance; overflow-wrap:anywhere;
+}
+.pd-help-hero h1 span { color:#087cff; }
+.pd-help-hero > p:not(.pd-help-search-hint) {
+  max-width:720px; margin:0 auto; font-size:clamp(15px,1.45vw,19px); line-height:1.75; color:#536276;
+}
+html.dark .pd-help-hero > p:not(.pd-help-search-hint) { color:#b2bfce; }
+.pd-help-search {
+  width:min(790px,100%); min-height:64px; display:flex; align-items:center; gap:13px;
+  margin:28px auto 0; padding:7px 8px 7px 20px; border:1px solid #cbd6e5;
+  border-radius:19px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.07); text-align:left;
+}
+.pd-help-search > svg { width:22px; height:22px; flex:0 0 auto; color:#68788d; }
+.pd-help-search input { flex:1 1 auto; min-width:0; width:100%; border:0 !important; outline:none !important; box-shadow:none !important; color:#172033 !important; background:transparent !important; font-size:16px !important; }
+.pd-help-search input::placeholder { color:#7a8797 !important; opacity:1; }
+.pd-help-search input:focus-visible { outline:none !important; }
+.pd-help-search button,.pd-help-primary {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px;
+  border:0; border-radius:14px; padding:0 20px; background:#087cff; color:#fff;
+  font-size:14px; line-height:1.25; font-weight:850; white-space:nowrap;
+  transition:background .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+.pd-help-search button:hover,.pd-help-primary:hover { background:#006be6; box-shadow:0 9px 22px rgba(8,124,255,.2); }
+.pd-help-search-hint { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; margin:14px 0 0 !important; color:#657387 !important; font-size:13px !important; }
+html.dark .pd-help-search-hint { color:#a8b7c8 !important; }
+.pd-help-search-hint button { padding:4px 9px; border-radius:999px; border:1px solid #c9d8eb; background:rgba(8,124,255,.06); color:#0871e6; font-size:12px; font-weight:800; min-height:30px; }
+html.dark .pd-help-search-hint button { color:#aed2ff; border-color:#2d4c70; background:#13263b; }
+.pd-help-section { margin-top:clamp(34px,5.2vw,68px); min-width:0; }
+.pd-help-section-head { display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:20px; }
+.pd-help-section-head h2 { margin:5px 0 0; font-size:clamp(24px,3.2vw,38px); line-height:1.2; letter-spacing:-.03em; font-weight:900; color:var(--pd16-text); overflow-wrap:anywhere; }
+.pd-help-clear,.pd-help-secondary { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; padding:0 13px; border:1px solid var(--pd16-line); border-radius:13px; color:var(--pd16-text); background:var(--pd16-surface); font-size:13px; line-height:1.3; font-weight:800; white-space:nowrap; }
+.pd-help-categories { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.pd-help-category {
+  min-width:0; min-height:118px; display:grid; grid-template-columns:48px minmax(0,1fr) 18px; align-items:center; gap:13px;
+  padding:18px; text-align:left; border:1px solid var(--pd16-line); border-radius:21px; background:var(--pd16-surface);
+  color:var(--pd16-text); box-shadow:0 5px 18px rgba(15,23,42,.025); cursor:pointer;
+  transition:border-color .18s ease,background .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+.pd-help-category:hover,.pd-help-category[aria-pressed="true"] { border-color:rgba(8,124,255,.55); background:color-mix(in srgb,var(--pd16-surface) 94%,#087cff 6%); box-shadow:0 12px 28px rgba(8,124,255,.08); transform:translateY(-2px); }
+.pd-help-category-icon,.pd-help-article-icon { width:48px; height:48px; display:grid; place-items:center; border-radius:16px; flex:0 0 auto; }
+.pd-help-category-icon svg { width:23px; height:23px; }
+.pd-help-category-icon.blue,.pd-help-article-icon.blue { color:#087cff; background:#e9f3ff; }
+.pd-help-category-icon.violet,.pd-help-article-icon.violet { color:#7254e8; background:#f0ecff; }
+.pd-help-category-icon.gold,.pd-help-article-icon.gold { color:#a96a00; background:#fff3d7; }
+.pd-help-category-icon.green,.pd-help-article-icon.green { color:#13875d; background:#e2f8ed; }
+.pd-help-category-icon.cyan,.pd-help-article-icon.cyan { color:#087e99; background:#e0f8fd; }
+.pd-help-category-icon.red,.pd-help-article-icon.red { color:#ce3656; background:#ffe8ed; }
+html.dark .pd-help-category-icon.blue,html.dark .pd-help-article-icon.blue { background:#172f4a; color:#8ec5ff; }
+html.dark .pd-help-category-icon.violet,html.dark .pd-help-article-icon.violet { background:#292344; color:#c3b5ff; }
+html.dark .pd-help-category-icon.gold,html.dark .pd-help-article-icon.gold { background:#3b2b17; color:#ffd47b; }
+html.dark .pd-help-category-icon.green,html.dark .pd-help-article-icon.green { background:#153628; color:#8ce4b7; }
+html.dark .pd-help-category-icon.cyan,html.dark .pd-help-article-icon.cyan { background:#12333d; color:#8deaff; }
+html.dark .pd-help-category-icon.red,html.dark .pd-help-article-icon.red { background:#3b2029; color:#ffadbd; }
+.pd-help-category strong { display:block; font-size:16px; line-height:1.4; font-weight:900; }
+.pd-help-category small { display:block; margin-top:5px; color:var(--pd16-muted); font-size:13px; line-height:1.55; font-weight:500; overflow-wrap:anywhere; }
+.pd-help-arrow { width:17px; height:17px; color:var(--pd16-muted); }
+.pd-help-content-grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(280px,.8fr); gap:clamp(18px,2.8vw,34px); align-items:start; }
+.pd-help-articles { min-width:0; }
+.pd-help-result-count { color:var(--pd16-muted); font-size:13px; line-height:1.4; font-weight:800; white-space:nowrap; }
+.pd-help-article-list { display:grid; gap:12px; }
+.pd-help-article {
+  display:grid; grid-template-columns:50px minmax(0,1fr); align-items:start; gap:15px; padding:22px;
+  border:1px solid var(--pd16-line); border-radius:21px; background:var(--pd16-surface); box-shadow:0 5px 18px rgba(15,23,42,.025);
+}
+.pd-help-article h3 { margin:5px 0 7px; color:var(--pd16-text); font-size:clamp(18px,1.7vw,22px); line-height:1.35; font-weight:900; overflow-wrap:anywhere; }
+.pd-help-article p { margin:0; color:var(--pd16-muted); font-size:14px; line-height:1.75; overflow-wrap:anywhere; }
+.pd-help-article-kicker { font-size:10px; letter-spacing:.13em; }
+.pd-help-action-link { display:inline-flex; align-items:center; justify-content:flex-start; gap:6px; min-height:40px; padding:4px 0 0; border:0; color:#087cff; background:transparent; font-size:13px; line-height:1.45; font-weight:900; text-align:left; }
+html.dark .pd-help-action-link { color:#8fc4ff; }
+.pd-help-action-link svg { width:15px; height:15px; }
+.pd-help-side-column { display:grid; gap:14px; min-width:0; padding-top:clamp(34px,5.2vw,68px); }
+.pd-help-contact-card,.pd-help-security-card { min-width:0; padding:24px; border:1px solid var(--pd16-line); border-radius:24px; background:var(--pd16-surface); box-shadow:var(--pd16-shadow); }
+.pd-help-contact-card { background:linear-gradient(155deg,#eaf4ff,#ffffff 82%); border-color:#d1e4fa; }
+html.dark .pd-help-contact-card { background:linear-gradient(155deg,#142a42,#101721 82%); border-color:#294666; }
+.pd-help-contact-icon { width:52px; height:52px; display:grid; place-items:center; margin-bottom:16px; border-radius:17px; color:#fff; background:#087cff; }
+.pd-help-contact-icon svg { width:25px; height:25px; }
+.pd-help-contact-card h2 { margin:8px 0 9px; font-size:clamp(22px,2.2vw,28px); line-height:1.25; color:var(--pd16-text); font-weight:900; letter-spacing:-.025em; }
+.pd-help-contact-card p,.pd-help-security-card li { color:var(--pd16-muted); font-size:14px; line-height:1.72; }
+.pd-help-contact-card p { margin:0 0 18px; }
+.pd-help-contact-card .pd-help-primary,.pd-help-contact-card .pd-help-secondary { width:100%; margin-top:9px; }
+.pd-help-secondary { white-space:normal; }
+.pd-help-secondary kbd { padding:3px 6px; border:1px solid var(--pd16-line); border-radius:6px; font-size:10px; }
+.pd-help-security-title { display:flex; align-items:center; gap:10px; }
+.pd-help-security-title > svg { width:22px; height:22px; color:#13875d; flex:0 0 auto; }
+.pd-help-security-title h3 { margin:0; font-size:18px; line-height:1.3; font-weight:900; color:var(--pd16-text); }
+.pd-help-security-card ul { margin:16px 0 6px; padding-left:20px; }
+.pd-help-security-card li { padding:0 0 8px; }
+.pd-help-faq-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.pd-help-faq-item { min-width:0; border:1px solid var(--pd16-line); border-radius:18px; background:var(--pd16-surface); overflow:hidden; }
+.pd-help-faq-item summary { position:relative; padding:18px 44px 18px 18px; list-style:none; cursor:pointer; color:var(--pd16-text); font-size:15px; line-height:1.55; font-weight:850; }
+.pd-help-faq-item summary::-webkit-details-marker { display:none; }
+.pd-help-faq-item summary::after { content:"+"; position:absolute; right:17px; top:50%; transform:translateY(-50%); width:24px; height:24px; display:grid; place-items:center; border-radius:8px; background:var(--pd16-soft); color:var(--pd16-muted); font-size:20px; font-weight:500; }
+.pd-help-faq-item[open] summary::after { content:"−"; color:#087cff; }
+.pd-help-faq-item p { margin:0; padding:0 18px 18px; color:var(--pd16-muted); font-size:14px; line-height:1.75; overflow-wrap:anywhere; }
+.pd-help-no-results { text-align:center; padding:34px 18px; border:1px dashed var(--pd16-line); border-radius:20px; background:var(--pd16-surface); }
+.pd-help-no-results > svg { width:34px; height:34px; color:#087cff; margin:0 auto 10px; }
+.pd-help-no-results strong { display:block; margin-bottom:6px; font-size:18px; color:var(--pd16-text); }
+.pd-help-no-results p { color:var(--pd16-muted); font-size:14px; line-height:1.6; margin:0 0 14px; }
+.pd-help-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-top:34px; padding-top:18px; border-top:1px solid var(--pd16-line); color:var(--pd16-muted); font-size:12px; line-height:1.6; }
+.pd-help-footer > span:first-child { color:var(--pd16-text); font-weight:900; letter-spacing:.08em; }
+.pd-help-footer button { display:inline-flex; align-items:center; gap:6px; min-height:40px; background:transparent; color:#087cff; font-size:13px; font-weight:850; }
+.pd-help-footer button svg { width:15px; height:15px; }
+#view-help [data-help-filter-item].pd-help-filtered-out { display:none !important; }
+#view-help :focus-visible { outline:3px solid rgba(8,124,255,.42); outline-offset:3px; }
+
+/* Tablets: use stacked editorial flow in portrait / narrow landscape. */
+@media (min-width:768px) and (max-width:1023px) {
+  :root { --pd16-gutter:24px; }
+  #view-landing > .grid:first-child { grid-template-columns:minmax(0,1fr) !important; gap:36px !important; }
+  #view-landing > .grid:first-child > div { grid-column:1/-1 !important; }
+  #view-landing > .grid:first-child > div:first-child { max-width:850px; margin-inline:auto; }
+  #view-landing > .grid:first-child h1 { font-size:clamp(44px,6.6vw,66px) !important; }
+  #view-auth .pd-auth-shell { grid-template-columns:minmax(0,1fr) !important; }
+  #view-auth .pd-auth-intro { border-right:0; border-bottom:1px solid var(--pd16-line); }
+  #view-auth .pd-auth-points { grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  #view-auth .pd-auth-point { grid-template-columns:1fr; align-content:start; padding:13px; border:1px solid var(--pd16-line); border-radius:16px; }
+  #view-auth .pd-auth-security { margin-top:22px; }
+  .pd-help-categories { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .pd-help-content-grid { grid-template-columns:minmax(0,1fr); }
+  .pd-help-side-column { grid-template-columns:repeat(2,minmax(0,1fr)); padding-top:0; }
+  .pd-help-faq-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+/* Phones: no horizontal scrolling, no floating elements covering content. */
+@media (max-width:767px) {
+  html,body { max-width:100%; overflow-x:clip !important; }
+  body { padding-bottom:calc(82px + env(safe-area-inset-bottom)) !important; }
+  nav.sticky { padding-top:env(safe-area-inset-top); }
+  nav.sticky > .navbar-inner {
+    width:calc(100% - 12px) !important; max-width:none !important; min-height:56px !important;
+    margin:5px 6px 0 !important; padding:6px 7px !important; gap:7px !important;
+    border-radius:18px !important; overflow:visible;
+  }
+  nav.sticky > .navbar-inner > div { min-width:0; gap:6px !important; }
+  nav.sticky .nav-brand-copy { display:none !important; }
+  nav.sticky .nav-brand-icon { width:40px !important; height:40px !important; border-radius:13px !important; }
+  nav.sticky .nav-icon-btn { width:40px !important; height:40px !important; min-height:40px !important; border-radius:13px !important; }
+  nav.sticky .nav-icon-btn svg { width:18px; height:18px; }
+  nav.sticky .nav-coin-pill { min-height:39px !important; padding:0 8px !important; border-radius:12px !important; gap:5px !important; }
+  nav.sticky .nav-coin-pill span { font-size:11px !important; white-space:nowrap; }
+  nav.sticky .nav-profile-btn, nav.sticky .pd-account-trigger { min-height:40px !important; padding:3px !important; border-radius:12px !important; }
+  nav.sticky .nav-profile-avatar { width:32px !important; height:32px !important; }
+  #guest-buttons { gap:4px !important; }
+  #guest-buttons button { min-height:38px !important; padding:0 9px !important; border-radius:12px !important; font-size:11px !important; white-space:nowrap; }
+  #nav-menu-toggle { flex:0 0 auto; }
+  #security-strip { width:calc(100% - 18px) !important; max-width:none; margin:10px 9px 0 !important; }
+  .security-strip-inner { display:grid !important; grid-template-columns:10px minmax(0,1fr); gap:7px 10px !important; align-items:start !important; padding:10px !important; min-height:0 !important; }
+  .security-strip-inner > div { min-width:0; }
+  #security-copy { white-space:normal !important; overflow-wrap:anywhere; line-height:1.45; }
+  .security-action { grid-column:2; justify-self:start; margin:0 !important; min-height:34px !important; font-size:12px !important; }
+  #pd-live-island { display:none !important; }
+  #pd-scroll-progress { height:2px; }
+  #view-landing {
+    width:100% !important; max-width:100% !important;
+    padding:28px 16px 42px !important; gap:0 !important; overflow:visible;
+  }
+  #view-landing > :not([hidden]) ~ :not([hidden]) { margin-top:48px !important; }
+  #view-landing > .grid:first-child {
+    min-height:0 !important; grid-template-columns:minmax(0,1fr) !important;
+    gap:28px !important; align-items:start !important;
+  }
+  #view-landing > .grid:first-child > div { grid-column:1/-1 !important; width:100%; max-width:100%; }
+  #view-landing > .grid:first-child > div:first-child { padding:0 1px; }
+  #view-landing > .grid:first-child h1 {
+    width:100%; max-width:100% !important; font-size:clamp(32px,8.7vw,48px) !important;
+    line-height:1.13 !important; letter-spacing:-.028em !important; overflow-wrap:normal;
+  }
+  #view-landing > .grid:first-child p { font-size:16px !important; line-height:1.72 !important; max-width:100%; }
+  #view-landing .ui-panel { border-radius:24px !important; }
+  #view-landing .group.ui-panel { padding:14px !important; border-radius:26px !important; }
+  #view-landing .group > div.relative.w-full { height:clamp(280px,88vw,400px) !important; border-radius:20px !important; }
+  #view-landing .group > div.absolute.bottom-6 { left:10px !important; right:10px !important; bottom:10px !important; padding:13px !important; border-radius:16px !important; }
+  #view-landing .group > div.absolute.bottom-6 p.text-2xl { font-size:clamp(21px,6vw,27px) !important; line-height:1.25 !important; max-width:100% !important; }
+  #view-landing .group > div.absolute.bottom-6 p.text-xs { font-size:14px !important; line-height:1.6 !important; }
+  #view-landing .grid.grid-cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:8px !important; }
+  #view-landing .grid.grid-cols-3 > .ui-card { padding:12px 6px !important; min-height:96px !important; border-radius:17px !important; }
+  #view-landing .grid.grid-cols-3 > .ui-card p:first-child { font-size:clamp(16px,4.3vw,22px) !important; overflow-wrap:anywhere; }
+  #view-landing .grid.grid-cols-3 > .ui-card p:last-child { font-size:12px !important; line-height:1.45 !important; }
+  #view-landing .pd-section-heading { grid-template-columns:minmax(0,1fr) !important; gap:15px !important; }
+  #view-landing .pd-section-heading h2,#view-landing .pd-final-cta h2 { font-size:clamp(30px,8vw,42px) !important; line-height:1.12 !important; max-width:100% !important; }
+  #view-landing .pd-section-heading p { justify-self:start !important; }
+  #view-landing .pd-story-grid { grid-template-columns:minmax(0,1fr) !important; }
+  #view-dashboard,#view-wallet,#view-admin { width:100% !important; max-width:100% !important; padding:22px 14px 36px !important; }
+  #view-dashboard h1,#view-wallet h1,#view-admin h1 { font-size:clamp(25px,7vw,36px) !important; line-height:1.2 !important; overflow-wrap:anywhere; }
+  #view-dashboard .pd-order-hero { padding:20px 16px !important; border-radius:22px !important; }
+  #view-dashboard .pd-order-stepper { gap:5px !important; overflow:hidden; }
+  #view-dashboard .pd-order-stepper span { min-width:0; }
+  #view-dashboard .ui-panel,#view-wallet .ui-panel,#view-admin .ui-panel { border-radius:22px !important; }
+  #view-dashboard .grid.grid-cols-2,#view-wallet .grid.grid-cols-3 { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  #view-dashboard .grid.grid-cols-2 > *,#view-wallet .grid.grid-cols-3 > * { min-width:0; }
+  #view-dashboard form label,#view-wallet form label { font-size:13px !important; line-height:1.5; }
+  #view-dashboard input,#view-dashboard select,#view-dashboard textarea,#view-wallet input,#view-wallet select,#view-wallet textarea { font-size:16px !important; min-width:0; }
+  #view-dashboard .pd-v15-page-picker,#pages-grid-container.pd-v15-page-picker { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  #pdf-preview-wrapper { max-width:100% !important; }
+  .pd-v15-preview-page { width:100% !important; }
+  #view-auth { width:100% !important; max-width:100% !important; padding:18px 12px 34px !important; }
+  #view-auth .pd-auth-shell { grid-template-columns:minmax(0,1fr) !important; min-height:0 !important; border-radius:24px !important; }
+  #view-auth .pd-auth-intro { padding:22px !important; border-right:0 !important; border-bottom:1px solid var(--pd16-line) !important; }
+  #view-auth .pd-auth-brand-icon { width:52px; height:52px; margin-bottom:18px; border-radius:16px; }
+  #view-auth .pd-auth-intro h1 { font-size:clamp(32px,9vw,44px) !important; line-height:1.12 !important; }
+  #view-auth .pd-auth-intro > p { font-size:15px !important; line-height:1.65 !important; }
+  #view-auth .pd-auth-points { grid-template-columns:minmax(0,1fr) !important; gap:7px !important; margin-top:18px !important; }
+  #view-auth .pd-auth-point { grid-template-columns:38px minmax(0,1fr) !important; gap:10px !important; padding:11px 0 !important; border-left:0 !important; border-right:0 !important; border-radius:0 !important; }
+  #view-auth .pd-auth-point > span { width:38px !important; height:38px !important; }
+  #view-auth .pd-auth-point strong { font-size:14px !important; }
+  #view-auth .pd-auth-point small { font-size:12px !important; }
+  #view-auth .pd-auth-security { padding:13px !important; margin-top:18px !important; grid-template-columns:36px minmax(0,1fr) !important; }
+  #view-auth .pd-auth-security-icon { width:36px !important; height:36px !important; }
+  #view-auth .pd-auth-form-card { padding:22px 18px !important; }
+  #view-auth .pd-auth-form-head { align-items:flex-start; gap:8px; }
+  #view-auth .pd-auth-status { font-size:10px !important; }
+  #view-auth .pd-auth-tabs { gap:5px !important; padding:4px !important; }
+  #view-auth .pd-auth-tabs button { min-width:0; padding:0 8px !important; font-size:13px !important; }
+  #view-auth .pd-auth-input-wrap .ui-input { padding-left:46px !important; padding-right:50px !important; }
+  #view-auth .pd-auth-input-wrap > svg { left:13px !important; }
+  #view-auth .pd-auth-eye { right:3px !important; }
+  #view-help { padding:18px 12px 34px !important; }
+  .pd-help-hero { padding:28px 16px 24px; border-radius:25px; }
+  .pd-help-brandmark { width:56px; height:56px; border-radius:17px; margin-bottom:17px; }
+  .pd-help-hero h1 { font-size:clamp(29px,8vw,42px); line-height:1.15; letter-spacing:-.03em; }
+  .pd-help-hero > p:not(.pd-help-search-hint) { font-size:15px; line-height:1.7; }
+  .pd-help-search { display:grid; grid-template-columns:22px minmax(0,1fr); gap:7px 10px; padding:12px; margin-top:21px; border-radius:17px; }
+  .pd-help-search input { min-height:42px; font-size:16px !important; }
+  .pd-help-search button { grid-column:1/-1; width:100%; min-height:46px; }
+  .pd-help-search-hint { gap:6px; font-size:12px !important; }
+  .pd-help-section { margin-top:34px; }
+  .pd-help-section-head { align-items:flex-start; gap:9px; flex-wrap:wrap; margin-bottom:14px; }
+  .pd-help-section-head h2 { font-size:clamp(23px,6.5vw,30px); }
+  .pd-help-clear { min-height:36px; font-size:12px; }
+  .pd-help-categories { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  .pd-help-category { grid-template-columns:38px minmax(0,1fr); gap:9px; padding:12px; min-height:116px; border-radius:17px; align-content:start; }
+  .pd-help-category-icon { width:38px; height:38px; border-radius:12px; }
+  .pd-help-category-icon svg { width:20px; height:20px; }
+  .pd-help-category strong { font-size:13px; line-height:1.45; }
+  .pd-help-category small { font-size:11px; line-height:1.55; margin-top:4px; }
+  .pd-help-category .pd-help-arrow { display:none; }
+  .pd-help-content-grid { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .pd-help-side-column { grid-template-columns:minmax(0,1fr); padding-top:0; }
+  .pd-help-article { grid-template-columns:40px minmax(0,1fr); gap:11px; padding:16px; border-radius:18px; }
+  .pd-help-article-icon { width:40px; height:40px; border-radius:13px; }
+  .pd-help-article h3 { font-size:18px; }
+  .pd-help-article p { font-size:13px; line-height:1.7; }
+  .pd-help-action-link { min-height:40px; }
+  .pd-help-contact-card,.pd-help-security-card { padding:19px; border-radius:20px; }
+  .pd-help-faq-list { grid-template-columns:minmax(0,1fr); gap:9px; }
+  .pd-help-faq-item summary { font-size:14px; padding:16px 42px 16px 15px; }
+  .pd-help-faq-item p { padding:0 15px 16px; font-size:13px; }
+  .pd-help-footer { align-items:flex-start; flex-direction:column; gap:8px; margin-top:25px; }
+  #pd-quick-dock {
+    left:50% !important; right:auto !important; bottom:calc(7px + env(safe-area-inset-bottom)) !important;
+    width:calc(100% - 18px) !important; max-width:520px; min-height:62px;
+    padding:6px !important; flex-direction:row !important; justify-content:space-around !important;
+    gap:4px !important; border-radius:21px !important;
+    background:rgba(16,22,31,.96) !important; border-color:rgba(148,163,184,.23) !important;
+    box-shadow:0 12px 35px rgba(0,0,0,.25) !important;
+    transform:translateX(-50%) !important; opacity:1 !important; pointer-events:auto !important;
+    -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  }
+  html:not(.dark) #pd-quick-dock { background:rgba(255,255,255,.97) !important; box-shadow:0 12px 35px rgba(15,23,42,.16) !important; }
+  #pd-quick-dock.is-hidden { transform:translate(-50%,calc(100% + 14px)) !important; opacity:0 !important; pointer-events:none !important; }
+  .pd-dock-button,.pd-dock-button:hover {
+    width:auto !important; min-width:0; min-height:49px !important; height:49px; flex:1 1 20%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    padding:4px 2px !important; border-radius:14px !important; transform:none !important; overflow:hidden;
+  }
+  .pd-dock-button svg { width:19px !important; height:19px !important; }
+  .pd-dock-button span,.pd-dock-button:hover span { opacity:1 !important; transform:none !important; display:block; font-size:9px !important; line-height:1.1; white-space:nowrap; }
+  #pd-ai-launcher { width:50px !important; height:50px !important; right:14px !important; bottom:calc(82px + env(safe-area-inset-bottom)) !important; border-radius:17px !important; }
+  #pd-ai-launcher .pd-ai-pulse { display:none !important; }
+  #pd-ai-panel { right:9px !important; bottom:calc(140px + env(safe-area-inset-bottom)) !important; width:calc(100% - 18px) !important; max-height:calc(100dvh - 180px) !important; border-radius:22px !important; }
+  #pd-command-palette .pd-command-sheet { width:100%; max-width:100%; }
+  .pd-account-popover { max-height:calc(100dvh - 100px); overflow:auto; }
+}
+@media (max-width:380px) {
+  nav.sticky > .navbar-inner { gap:4px !important; padding-inline:5px !important; }
+  nav.sticky > .navbar-inner > div { gap:4px !important; }
+  nav.sticky .nav-icon-btn { width:36px !important; height:36px !important; min-height:36px !important; }
+  nav.sticky .nav-brand-icon { width:36px !important; height:36px !important; }
+  nav.sticky .nav-coin-pill span { font-size:10px !important; }
+  #guest-buttons button { padding-inline:7px !important; font-size:10px !important; }
+  .pd-help-categories { grid-template-columns:minmax(0,1fr); }
+  .pd-help-category { grid-template-columns:42px minmax(0,1fr); min-height:0; align-items:center; }
+  #view-landing .grid.grid-cols-3 { gap:6px !important; }
+  #view-landing .grid.grid-cols-3 > .ui-card p:first-child { font-size:15px !important; }
+  .pd-dock-button span,.pd-dock-button:hover span { font-size:8px !important; }
+}
+
+/* Wide screens get controlled reading width rather than stretched text lines. */
+@media (min-width:1280px) {
+  #view-help { padding-top:52px !important; }
+  .pd-help-hero { padding-top:70px; padding-bottom:56px; }
+  .pd-help-article-list { gap:14px; }
+}
+
+/* Reduce expensive blur and animated transforms on touch or low-motion devices. */
+@media (hover:none), (max-width:900px) {
+  #pd-ambient-orb,#pd-cursor-glow { display:none !important; }
+  .v11-tilt,[data-tilt] { transform:none !important; }
+  #apple-tab-menu,#pd-ai-panel,.pd-account-popover,#pd-command-palette .pd-command-sheet,
+  #pd-crop-modal,#pd-v10-crop-modal { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+  .pd-help-category:hover { transform:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto !important; }
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  .pd-help-category,.pd-help-primary,.pd-help-search button { transform:none !important; }
+}
+</style>
+
+<script id="pd-v16-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+
+  // Respect the user's motion preference early and avoid animated reveal states
+  // from old layers that would leave content hidden if the observer missed it.
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || window.matchMedia?.('(max-width: 767px)').matches) {
+    document.querySelectorAll('.apple-reveal').forEach(el => {
+      el.classList.add('is-visible'); el.classList.remove('is-scrolled-out');
+      el.style.opacity = '1'; el.style.filter = 'none';
+    });
+  }
+
+  // Help Center filtering: no network calls, no HTML injection, and native details remain keyboard accessible.
+  const help = $('view-help');
+  const helpSearch = $('pd-help-search');
+  const helpItems = [...document.querySelectorAll('#view-help [data-help-filter-item]')];
+  const categoryButtons = [...document.querySelectorAll('#view-help [data-help-category]')];
+  let activeCategory = '';
+  function updateHelpFilter() {
+    if (!help) return;
+    const term = String(helpSearch?.value || '').trim().toLocaleLowerCase('th-TH');
+    let shown = 0;
+    helpItems.forEach(item => {
+      const hay = `${item.textContent || ''} ${item.dataset.helpSearch || ''}`.toLocaleLowerCase('th-TH');
+      const groups = String(item.dataset.helpGroup || '').split(/\s+/).filter(Boolean);
+      const textMatch = !term || hay.includes(term);
+      const categoryMatch = !activeCategory || groups.includes(activeCategory);
+      const visible = textMatch && categoryMatch;
+      item.classList.toggle('pd-help-filtered-out', !visible);
+      if (visible && item.classList.contains('pd-help-article')) shown++;
+    });
+    const noResults = $('pd-help-no-results');
+    noResults?.classList.toggle('hidden', shown > 0);
+    const count = $('pd-help-result-count');
+    if (count) count.textContent = `${shown} หัวข้อ`;
+    categoryButtons.forEach(btn => {
+      const selected = btn.dataset.helpCategory === activeCategory;
+      btn.setAttribute('aria-pressed', String(selected));
+    });
+    if (window.lucide) window.lucide.createIcons();
+  }
+  $('pd-help-search-form')?.addEventListener('submit', e => { e.preventDefault(); activeCategory = ''; updateHelpFilter(); });
+  helpSearch?.addEventListener('input', () => { activeCategory = ''; updateHelpFilter(); });
+  $('pd-help-clear')?.addEventListener('click', () => { if (helpSearch) helpSearch.value = ''; activeCategory = ''; updateHelpFilter(); helpSearch?.focus(); });
+  $('pd-help-no-results-clear')?.addEventListener('click', () => { if (helpSearch) helpSearch.value = ''; activeCategory = ''; updateHelpFilter(); });
+  document.querySelectorAll('[data-help-query]').forEach(btn => btn.addEventListener('click', () => {
+    if (helpSearch) helpSearch.value = btn.dataset.helpQuery || '';
+    activeCategory = ''; updateHelpFilter(); helpSearch?.focus();
+  }));
+  categoryButtons.forEach(btn => btn.addEventListener('click', () => {
+    activeCategory = activeCategory === btn.dataset.helpCategory ? '' : (btn.dataset.helpCategory || '');
+    if (helpSearch) helpSearch.value = '';
+    updateHelpFilter();
+    $('pd-help-article-list')?.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});
+  }));
+  $('pd-help-open-assistant')?.addEventListener('click', () => {
+    if (typeof window.togglePDAssistant === 'function') window.togglePDAssistant();
+    else if (typeof window.openPDCommandPalette === 'function') window.openPDCommandPalette();
+    else window.switchView?.('auth');
+  });
+
+  // Router metadata / titles and scroll restoration for the new first-class view.
+  const originalSync = window.syncNavigationState;
+  if (typeof originalSync === 'function' && !originalSync.__pd16wrapped) {
+    const wrappedSync = function(viewName) {
+      const result = originalSync.call(this, viewName);
+      document.body.dataset.pdView = viewName;
+      if (viewName === 'help') document.title = 'บริการช่วยเหลือของ PrintDekD — PrintDekD Pro';
+      else document.title = 'PrintDekD Pro — KMUTNB ITI Smart Printing Platform';
+      return result;
+    };
+    wrappedSync.__pd16wrapped = true;
+    window.syncNavigationState = wrappedSync;
+  }
+
+  // Mobile navigation: keep the active destination visually clear without running pointer-motion effects.
+  document.querySelectorAll('#pd-quick-dock [data-pd-action="help"]').forEach(btn => {
+    btn.setAttribute('aria-label','เปิดศูนย์ช่วยเหลือ PrintDekD');
+    btn.title = 'ศูนย์ช่วยเหลือ';
+  });
+
+  // Add non-blocking file/viewport diagnostics for support without collecting user data.
+  window.pdV16Diagnostics = function() {
+    const viewport = { width: window.innerWidth, height: window.innerHeight, dpr: Math.min(3, window.devicePixelRatio || 1) };
+    const root = document.documentElement;
+    const result = {
+      viewport,
+      documentWidth: root.scrollWidth,
+      horizontalOverflow: root.scrollWidth > root.clientWidth + 2,
+      reducedMotion: !!reduceMotion,
+      secureContext: !!window.isSecureContext,
+      supabaseConfigured: !!window.supabaseClient,
+      pdfjsLoaded: !!window.pdfjsLib,
+      helpViewRegistered: !!$('view-help')
+    };
+    console.info('[PrintDekD v16 diagnostics]', result);
+    return result;
+  };
+
+  // Defer icon redraw once the help view is ready; this avoids repeated full-page icon scans on every keystroke.
+  if (window.lucide) window.lucide.createIcons();
+  updateHelpFilter();
+  document.addEventListener('pd:viewchange', updateHelpFilter);
+})();
+</script>
+</body>
+</html>
