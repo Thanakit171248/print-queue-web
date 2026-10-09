@@ -29,7 +29,7 @@
 
   <meta name="description" content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v19 — Smart Print & Thailand Address Flow</title>
+  <title>PrintDekD Pro v20 — Postcode-first Smart Address Flow</title>
   
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
@@ -2924,43 +2924,26 @@
 
     <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-16 sm:py-24 px-6 sm:px-12 max-w-[1400px] mx-auto space-y-36 sm:space-y-48">
-      
-      <section class="pd17-hero apple-reveal" aria-labelledby="pd17-hero-title">
-        <div class="pd17-hero-copy">
-          <span class="pd17-eyebrow"><i data-lucide="sparkles" aria-hidden="true"></i> PRINTDEKD PRO · KMUTNB ITI</span>
-          <h1 id="pd17-hero-title">งานพิมพ์ที่ง่ายขึ้น<br><span>ตั้งแต่ไฟล์แรกจนรับงาน</span></h1>
-          <p>อัปโหลดเอกสาร ดูตัวอย่าง เลือกหน้าที่ต้องการ และคำนวณราคาได้ในที่เดียว พร้อมชำระผ่าน Coins และเลือกรับหน้าร้านหรือจัดส่ง</p>
-          <div class="pd17-hero-actions">
-            <button type="button" class="pd17-primary-cta" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i> เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
-            <button type="button" class="pd17-secondary-cta" onclick="switchView('dashboard')"><i data-lucide="clipboard-list" aria-hidden="true"></i> ติดตามคิวงาน</button>
-            <button type="button" class="pd17-text-cta" onclick="switchView('help')">ศูนย์ช่วยเหลือ <i data-lucide="chevron-right" aria-hidden="true"></i></button>
-          </div>
-        </div>
 
-        <div class="pd17-hero-stage" aria-label="บริการสั่งพิมพ์เอกสารออนไลน์">
-          <img
-            src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1200&amp;q=82"
-            srcset="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=640&amp;q=78 640w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1000&amp;q=82 1000w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1400&amp;q=82 1400w"
-            sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 64px), 1280px"
-            alt="เครื่องพิมพ์เลเซอร์สำหรับงานเอกสาร"
-            loading="eager" fetchpriority="high" decoding="async">
-          <div class="pd17-hero-scrim" aria-hidden="true"></div>
-          <div class="pd17-stage-top"><span class="pd17-stage-dot"></span><span>SMART PRINT FLOW</span><span class="pd17-stage-index">01 / 03</span></div>
-          <div class="pd17-stage-caption">
-            <span class="pd17-stage-label">UPLOAD · PREVIEW · PRINT</span>
-            <h2>จากเอกสารของคุณ<br>สู่งานพิมพ์ที่พร้อมรับ</h2>
-            <p>ทุกขั้นตอนอยู่ในลำดับที่เข้าใจง่าย ตรวจสอบข้อมูลก่อนยืนยันได้เสมอ</p>
-          </div>
-          <div class="pd17-stage-chip"><i data-lucide="file-check-2" aria-hidden="true"></i><span><strong>พร้อมตรวจสอบ</strong><small>ดูไฟล์และจำนวนหน้าก่อนส่งรายการ</small></span></div>
+      <section class="pd-final-cta pd19-home-order apple-reveal" aria-labelledby="pd19-home-order-title">
+        <div class="pd-final-orb pd-orb-one" aria-hidden="true"></div>
+        <div class="pd-final-orb pd-orb-two" aria-hidden="true"></div>
+        <span class="pd-eyebrow">PRINTDEKD PRO · ONE SIMPLE FLOW</span>
+        <h1 id="pd19-home-order-title">สั่งพิมพ์เอกสารง่ายขึ้น<br><em>ทุกขั้นตอนอยู่ในที่เดียว</em></h1>
+        <p>ตั้งแต่เลือกไฟล์ ดูตัวอย่าง ปรับค่าพิมพ์ คำนวณราคา เลือก Coins หรือแนบสลิป ไปจนถึงกรอกที่อยู่จัดส่งและติดตามคิว</p>
+        <div class="pd19-home-order-steps" aria-label="ขั้นตอนสั่งพิมพ์">
+          <div><span>01</span><i data-lucide="file-up" aria-hidden="true"></i><strong>อัปโหลดไฟล์</strong><small>PDF / DOCX / รูปภาพ</small></div>
+          <div><span>02</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i><strong>ปรับงานพิมพ์</strong><small>หน้า สี กระดาษ จำนวนชุด</small></div>
+          <div><span>03</span><i data-lucide="wallet-cards" aria-hidden="true"></i><strong>ตรวจราคาและจ่าย</strong><small>Coins หรือ PromptPay</small></div>
+          <div><span>04</span><i data-lucide="package-check" aria-hidden="true"></i><strong>เลือกรับและติดตาม</strong><small>หน้าร้านหรือจัดส่งถึงบ้าน</small></div>
         </div>
-
-        <div class="pd17-benefits" aria-label="จุดเด่นของบริการ">
-          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-blue"><i data-lucide="scan-eye" aria-hidden="true"></i></span><div><strong>เห็นก่อนสั่ง</strong><small>พรีวิวและเลือกหน้าเอกสาร</small></div><b>01</b></article>
-          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-gold"><i data-lucide="wallet-cards" aria-hidden="true"></i></span><div><strong>ราคาโปร่งใส</strong><small>คำนวณยอดก่อนยืนยัน</small></div><b>02</b></article>
-          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-green"><i data-lucide="package-check" aria-hidden="true"></i></span><div><strong>เลือกรับได้</strong><small>รับหน้าร้านหรือจัดส่ง</small></div><b>03</b></article>
+        <div class="pd-final-actions">
+          <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()"><i data-lucide="printer" aria-hidden="true"></i> เริ่มสั่งพิมพ์ในหน้าเดียว <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          <button type="button" class="pd-secondary-cta" onclick="switchView('help')">อ่านวิธีใช้งาน <i data-lucide="life-buoy" aria-hidden="true"></i></button>
         </div>
       </section>
 
+      
       <div class="space-y-16">
         <div class="text-center space-y-4 max-w-4xl mx-auto apple-reveal">
           <span class="text-xs font-black uppercase text-blue-500 tracking-widest bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20">Powerful Capabilities</span>
@@ -3122,21 +3105,41 @@
         </div>
       </section>
 
-      <section class="pd-final-cta pd19-home-order apple-reveal" aria-labelledby="pd19-home-order-title">
-        <div class="pd-final-orb pd-orb-one" aria-hidden="true"></div>
-        <div class="pd-final-orb pd-orb-two" aria-hidden="true"></div>
-        <span class="pd-eyebrow">PRINTDEKD PRO · ONE SIMPLE FLOW</span>
-        <h2 id="pd19-home-order-title">สั่งพิมพ์เอกสารง่ายขึ้น<br><em>ทุกขั้นตอนอยู่ในที่เดียว</em></h2>
-        <p>ตั้งแต่เลือกไฟล์ ดูตัวอย่าง ปรับค่าพิมพ์ คำนวณราคา เลือก Coins หรือแนบสลิป ไปจนถึงกรอกที่อยู่จัดส่งและติดตามคิว</p>
-        <div class="pd19-home-order-steps" aria-label="ขั้นตอนสั่งพิมพ์">
-          <div><span>01</span><i data-lucide="file-up" aria-hidden="true"></i><strong>อัปโหลดไฟล์</strong><small>PDF / DOCX / รูปภาพ</small></div>
-          <div><span>02</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i><strong>ปรับงานพิมพ์</strong><small>หน้า สี กระดาษ จำนวนชุด</small></div>
-          <div><span>03</span><i data-lucide="wallet-cards" aria-hidden="true"></i><strong>ตรวจราคาและจ่าย</strong><small>Coins หรือ PromptPay</small></div>
-          <div><span>04</span><i data-lucide="package-check" aria-hidden="true"></i><strong>เลือกรับและติดตาม</strong><small>หน้าร้านหรือจัดส่งถึงบ้าน</small></div>
+
+
+      <section class="pd17-hero apple-reveal" aria-labelledby="pd17-hero-title">
+        <div class="pd17-hero-copy">
+          <span class="pd17-eyebrow"><i data-lucide="sparkles" aria-hidden="true"></i> PRINTDEKD PRO · KMUTNB ITI</span>
+          <h2 id="pd17-hero-title">งานพิมพ์ที่ง่ายขึ้น<br><span>ตั้งแต่ไฟล์แรกจนรับงาน</span></h2>
+          <p>อัปโหลดเอกสาร ดูตัวอย่าง เลือกหน้าที่ต้องการ และคำนวณราคาได้ในที่เดียว พร้อมชำระผ่าน Coins และเลือกรับหน้าร้านหรือจัดส่ง</p>
+          <div class="pd17-hero-actions">
+            <button type="button" class="pd17-primary-cta" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i> เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" class="pd17-secondary-cta" onclick="switchView('dashboard')"><i data-lucide="clipboard-list" aria-hidden="true"></i> ติดตามคิวงาน</button>
+            <button type="button" class="pd17-text-cta" onclick="switchView('help')">ศูนย์ช่วยเหลือ <i data-lucide="chevron-right" aria-hidden="true"></i></button>
+          </div>
         </div>
-        <div class="pd-final-actions">
-          <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()"><i data-lucide="printer" aria-hidden="true"></i> เริ่มสั่งพิมพ์ในหน้าเดียว <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
-          <button type="button" class="pd-secondary-cta" onclick="switchView('help')">อ่านวิธีใช้งาน <i data-lucide="life-buoy" aria-hidden="true"></i></button>
+
+        <div class="pd17-hero-stage" aria-label="บริการสั่งพิมพ์เอกสารออนไลน์">
+          <img
+            src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1200&amp;q=82"
+            srcset="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=640&amp;q=78 640w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1000&amp;q=82 1000w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1400&amp;q=82 1400w"
+            sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 64px), 1280px"
+            alt="เครื่องพิมพ์เลเซอร์สำหรับงานเอกสาร"
+            loading="eager" fetchpriority="high" decoding="async">
+          <div class="pd17-hero-scrim" aria-hidden="true"></div>
+          <div class="pd17-stage-top"><span class="pd17-stage-dot"></span><span>SMART PRINT FLOW</span><span class="pd17-stage-index">01 / 03</span></div>
+          <div class="pd17-stage-caption">
+            <span class="pd17-stage-label">UPLOAD · PREVIEW · PRINT</span>
+            <h2>จากเอกสารของคุณ<br>สู่งานพิมพ์ที่พร้อมรับ</h2>
+            <p>ทุกขั้นตอนอยู่ในลำดับที่เข้าใจง่าย ตรวจสอบข้อมูลก่อนยืนยันได้เสมอ</p>
+          </div>
+          <div class="pd17-stage-chip"><i data-lucide="file-check-2" aria-hidden="true"></i><span><strong>พร้อมตรวจสอบ</strong><small>ดูไฟล์และจำนวนหน้าก่อนส่งรายการ</small></span></div>
+        </div>
+
+        <div class="pd17-benefits" aria-label="จุดเด่นของบริการ">
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-blue"><i data-lucide="scan-eye" aria-hidden="true"></i></span><div><strong>เห็นก่อนสั่ง</strong><small>พรีวิวและเลือกหน้าเอกสาร</small></div><b>01</b></article>
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-gold"><i data-lucide="wallet-cards" aria-hidden="true"></i></span><div><strong>ราคาโปร่งใส</strong><small>คำนวณยอดก่อนยืนยัน</small></div><b>02</b></article>
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-green"><i data-lucide="package-check" aria-hidden="true"></i></span><div><strong>เลือกรับได้</strong><small>รับหน้าร้านหรือจัดส่ง</small></div><b>03</b></article>
         </div>
       </section>
 
@@ -3456,7 +3459,7 @@
                   <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" class="w-full px-3 py-2 ui-input rounded-lg text-xs">
                 </div>
                 <div class="pd19-address-card" id="pd19-address-card">
-                  <div class="pd19-address-title"><span class="pd19-address-title-icon"><i data-lucide="map-pinned" aria-hidden="true"></i></span><div><strong>ที่อยู่จัดส่ง</strong><small>กรอกที่อยู่จริง แล้วค้นหาและเลือกพื้นที่ตามลำดับ</small></div></div>
+                  <div class="pd19-address-title"><span class="pd19-address-title-icon"><i data-lucide="map-pinned" aria-hidden="true"></i></span><div><strong>ที่อยู่จัดส่ง</strong><small>กรอกรหัสไปรษณีย์ก่อน แล้วเลือกจังหวัด อำเภอ และตำบลตามลำดับ</small></div></div>
                   <div class="pd19-address-grid pd19-address-grid-two">
                     <label class="pd19-address-field"><span>บ้านเลขที่ <b>*</b></span><input id="recipient-house-no" type="text" maxlength="40" autocomplete="address-line1" placeholder="เช่น 99/12" class="ui-input" aria-required="true"></label>
                     <label class="pd19-address-field"><span>หมู่ที่</span><input id="recipient-moo" type="text" maxlength="30" placeholder="เช่น หมู่ 4" class="ui-input"></label>
@@ -3464,17 +3467,17 @@
                     <label class="pd19-address-field"><span>ซอย</span><input id="recipient-soi" type="text" maxlength="100" placeholder="ชื่อซอย (ถ้ามี)" class="ui-input"></label>
                     <label class="pd19-address-field pd19-field-full"><span>ถนน</span><input id="recipient-road" type="text" maxlength="100" placeholder="ชื่อถนน (ถ้ามี)" class="ui-input"></label>
                   </div>
-                  <div class="pd19-address-divider"><span>ค้นหาพื้นที่จัดส่ง</span><small>เลือกจังหวัดก่อน → อำเภอ/เขต → ตำบล/แขวง</small></div>
+                  <div class="pd19-address-divider"><span>ค้นหาพื้นที่จัดส่ง</span><small>1 รหัสไปรษณีย์ → 2 จังหวัด → 3 อำเภอ/เขต → 4 ตำบล/แขวง</small></div>
                   <div class="pd19-address-grid pd19-address-grid-two">
-                    <label class="pd19-address-field"><span>จังหวัด <b>*</b></span><input id="recipient-province" type="text" list="recipient-province-options" autocomplete="off" placeholder="พิมพ์ค้นหาจังหวัด…" class="ui-input" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-province-options"></datalist></label>
-                    <label class="pd19-address-field"><span>อำเภอ / เขต <b>*</b></span><input id="recipient-district" type="text" list="recipient-district-options" autocomplete="off" placeholder="เลือกจังหวัดก่อน" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-district-options"></datalist></label>
-                    <label class="pd19-address-field"><span>ตำบล / แขวง <b>*</b></span><input id="recipient-subdistrict" type="text" list="recipient-subdistrict-options" autocomplete="off" placeholder="เลือกอำเภอ/เขตก่อน" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-subdistrict-options"></datalist></label>
-                    <label class="pd19-address-field"><span>รหัสไปรษณีย์ <b>*</b></span><input id="recipient-postal-code" type="text" list="recipient-postal-options" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="เติมอัตโนมัติหลังเลือกตำบล" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message"><datalist id="recipient-postal-options"></datalist></label>
+                    <label class="pd19-address-field" id="pd19-field-postal"><span>รหัสไปรษณีย์ <b>*</b></span><input id="recipient-postal-code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="กรอกรหัสไปรษณีย์ 5 หลักก่อน" class="ui-input" aria-describedby="pd19-address-message" aria-required="true" aria-invalid="false"><datalist id="recipient-postal-options"></datalist></label>
+                    <label class="pd19-address-field is-disabled" id="pd19-field-province"><span>จังหวัด <b>*</b></span><input id="recipient-province" type="text" list="recipient-province-options" autocomplete="off" placeholder="กรอกรหัสไปรษณีย์ก่อน" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-province-options"></datalist></label>
+                    <label class="pd19-address-field is-disabled" id="pd19-field-district"><span>อำเภอ / เขต <b>*</b></span><input id="recipient-district" type="text" list="recipient-district-options" autocomplete="off" placeholder="เลือกจังหวัดก่อน" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-district-options"></datalist></label>
+                    <label class="pd19-address-field is-disabled" id="pd19-field-subdistrict"><span>ตำบล / แขวง <b>*</b></span><input id="recipient-subdistrict" type="text" list="recipient-subdistrict-options" autocomplete="off" placeholder="เลือกอำเภอ/เขตก่อน" class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist id="recipient-subdistrict-options"></datalist></label>
                   </div>
                   <label class="pd19-address-field pd19-address-extra"><span>จุดสังเกต / รายละเอียดเพิ่มเติม</span><input id="recipient-address-extra" type="text" maxlength="180" placeholder="เช่น อาคาร B ชั้น 3 หรือจุดรับพัสดุ (ถ้ามี)" class="ui-input"></label>
-                  <div id="pd19-address-message" class="pd19-address-message" role="status" aria-live="polite"><i data-lucide="info" aria-hidden="true"></i><span>เริ่มจากเลือกจังหวัด ระบบจะแสดงเฉพาะอำเภอและตำบลที่อยู่ในพื้นที่นั้น</span></div>
+                  <div id="pd19-address-message" class="pd19-address-message" role="status" aria-live="polite"><i data-lucide="info" aria-hidden="true"></i><span>กรอกรหัสไปรษณีย์ 5 หลักก่อน ระบบจะแสดงจังหวัดที่พบจากรหัสนั้น</span></div>
                   <div id="pd19-address-summary" class="pd19-address-summary" hidden><i data-lucide="check-circle-2" aria-hidden="true"></i><span></span></div>
-                  <p class="pd19-address-source">ข้อมูลพื้นที่อ้างอิงจาก <a href="https://openadmindata.org/api/th/" target="_blank" rel="noopener noreferrer">Open Admin Data Thailand</a> (CC BY 4.0) • หากเป็นพื้นที่พิเศษ โปรดตรวจสอบรหัสไปรษณีย์ก่อนยืนยันจัดส่ง</p>
+                  <p class="pd19-address-source">ข้อมูลอ้างอิงจาก <a href="https://openadmindata.org/api/th/" target="_blank" rel="noopener noreferrer">Open Admin Data Thailand</a> (CC BY 4.0) • รหัสไปรษณีย์หนึ่งรหัสอาจตรงกับหลายพื้นที่ จึงต้องยืนยันจังหวัด อำเภอ และตำบลทุกครั้ง</p>
                 </div>
                 <input type="hidden" id="recipient-address" value="">
               </div>
@@ -10398,8 +10401,8 @@ button { touch-action:manipulation; }
 .pd17-hero-copy { width:min(100%,1020px); margin:0 auto clamp(24px,4vw,46px); text-align:center; }
 .pd17-eyebrow { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:34px; padding:7px 12px; border:1px solid rgba(96,165,250,.26); border-radius:999px; background:rgba(10,132,255,.11); color:#9dcaff; font-size:11px; line-height:1.35; letter-spacing:.11em; font-weight:900; }
 .pd17-eyebrow svg { width:15px; height:15px; color:#69b0ff; }
-.pd17-hero-copy h1 { margin:22px auto 16px; color:#f8fafc!important; font-size:clamp(36px,6.4vw,84px)!important; line-height:1.035!important; letter-spacing:-.048em!important; font-weight:900!important; max-width:1000px; text-wrap:balance; }
-.pd17-hero-copy h1 span { color:#b8c6da; background:linear-gradient(180deg,#f8fafc 0%,#9dacc2 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.pd17-hero-copy h1, .pd17-hero-copy h2 { margin:22px auto 16px; color:#f8fafc!important; font-size:clamp(36px,6.4vw,84px)!important; line-height:1.035!important; letter-spacing:-.048em!important; font-weight:900!important; max-width:1000px; text-wrap:balance; }
+.pd17-hero-copy h1 span, .pd17-hero-copy h2 span { color:#b8c6da; background:linear-gradient(180deg,#f8fafc 0%,#9dacc2 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .pd17-hero-copy > p { width:min(100%,760px); margin:0 auto; color:#b1bdcd!important; font-size:clamp(15px,1.55vw,20px)!important; line-height:1.75!important; font-weight:450; text-wrap:pretty; }
 .pd17-hero-actions { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:10px; margin-top:clamp(22px,3.2vw,34px); }
 .pd17-primary-cta,.pd17-secondary-cta,.pd17-text-cta { display:inline-flex; justify-content:center; align-items:center; gap:9px; min-height:52px; padding:0 19px; border-radius:999px; border:1px solid transparent; font-size:14px; line-height:1.2; font-weight:850; transition:transform .2s var(--pd17-ease),background-color .2s ease,border-color .2s ease,box-shadow .2s ease; }
@@ -10467,7 +10470,7 @@ button { touch-action:manipulation; }
 @media (min-width:768px) and (max-width:1023px) {
   #view-landing { padding:32px 24px 60px !important; }
   .pd17-hero { padding:34px 22px 22px !important; }
-  .pd17-hero-copy h1 { font-size:clamp(42px,6.5vw,66px) !important; }
+  .pd17-hero-copy h1, .pd17-hero-copy h2 { font-size:clamp(42px,6.5vw,66px) !important; }
   .pd17-hero-stage { aspect-ratio:16/9; min-height:300px; }
   .pd17-stage-chip { max-width:225px; }
   .pd17-benefit { padding:14px; grid-template-columns:40px minmax(0,1fr); gap:9px; }
@@ -10482,7 +10485,7 @@ button { touch-action:manipulation; }
   #view-landing > .pd17-hero { border-radius:24px; padding:26px 12px 12px; }
   .pd17-hero-copy { margin-bottom:24px; padding:0 3px; }
   .pd17-eyebrow { max-width:100%; font-size:9px; letter-spacing:.08em; padding:7px 10px; }
-  .pd17-hero-copy h1 { margin:19px auto 13px; font-size:clamp(32px,9.4vw,47px) !important; line-height:1.07 !important; letter-spacing:-.04em !important; }
+  .pd17-hero-copy h1, .pd17-hero-copy h2 { margin:19px auto 13px; font-size:clamp(32px,9.4vw,47px) !important; line-height:1.07 !important; letter-spacing:-.04em !important; }
   .pd17-hero-copy > p { font-size:14px !important; line-height:1.72 !important; }
   .pd17-hero-actions { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; margin-top:22px; }
   .pd17-primary-cta,.pd17-secondary-cta { width:100%; min-height:49px; font-size:14px; }
@@ -10521,7 +10524,7 @@ button { touch-action:manipulation; }
 @media (max-width:380px) {
   #view-landing { padding-inline:9px !important; }
   #view-landing > .pd17-hero { padding-inline:9px; }
-  .pd17-hero-copy h1 { font-size:31px !important; }
+  .pd17-hero-copy h1, .pd17-hero-copy h2 { font-size:31px !important; }
   .pd17-benefit { padding:10px; }
   .pd-help-categories { grid-template-columns:minmax(0,1fr) !important; }
 }
@@ -11136,7 +11139,7 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
 
 /* The lower landing CTA becomes a scan-friendly order flow summary. */
 .pd19-home-order{padding:clamp(28px,5vw,64px)!important;}
-.pd19-home-order h2{line-height:1.18!important;max-width:100%!important;text-wrap:balance;}
+.pd19-home-order h1,.pd19-home-order h2{line-height:1.18!important;max-width:100%!important;text-wrap:balance;}
 .pd19-home-order>p{max-width:66ch!important;}
 .pd19-home-order-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:min(100%,1060px);margin:clamp(22px,3vw,34px) auto 0;text-align:left;}
 .pd19-home-order-steps>div{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);align-content:start;align-items:center;gap:5px 9px;min-width:0;min-height:94px;padding:14px;border:1px solid rgba(148,163,184,.22);border-radius:17px;background:rgba(255,255,255,.035);}
@@ -11173,21 +11176,21 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
 </style>
 
 
-<script id="pd-v19-address-and-wallet-runtime">
+<script id="pd-v20-postcode-first-and-wallet-runtime">
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const API = 'https://openadmindata.org/api/v1/th/';
   const state = {
-    provinceRows: null, districtRows: null, subdistrictRows: null,
-    provincePromise: null, districtPromise: null, subdistrictPromise: null,
-    selectedProvince: null, selectedDistrict: null, selectedSubdistrict: null,
-    postalOptions: [], addressLoaded: false, submitBusy: false
+    provinceRows:null, districtRows:null, subdistrictRows:null, dataPromise:null,
+    selectedProvince:null, selectedDistrict:null, selectedSubdistrict:null,
+    postalSubdistricts:[], postalDistricts:[], postalProvinces:[],
+    filteredDistricts:[], filteredSubdistricts:[], postalOptions:[],
+    activePostal:'', pendingPostal:'', postalGeneration:0, submitBusy:false
   };
   const normalize = value => String(value ?? '').trim().normalize('NFC').replace(/\s+/g,' ');
   const sameName = (a,b) => normalize(a).toLocaleLowerCase('th-TH') === normalize(b).toLocaleLowerCase('th-TH');
   const toId = value => String(value ?? '');
-  const esc = value => String(value ?? '');
   const ui = {
     province:$('recipient-province'), district:$('recipient-district'), subdistrict:$('recipient-subdistrict'), postal:$('recipient-postal-code'),
     provinceList:$('recipient-province-options'), districtList:$('recipient-district-options'), subdistrictList:$('recipient-subdistrict-options'), postalList:$('recipient-postal-options'),
@@ -11212,8 +11215,7 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
       const name = options.postal ? String(row) : normalize(row.name_local || row.name || row.name_th);
       if (!name) continue;
       const option = document.createElement('option'); option.value = name;
-      if (row.name_en) option.label = String(row.name_en);
-      if (options.postal) option.value = String(row);
+      if (!options.postal && row.name_en) option.label = String(row.name_en);
       frag.appendChild(option);
     }
     list.replaceChildren(frag);
@@ -11221,135 +11223,231 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
   function unwrapRecords(payload, level) {
     const candidates = [payload?.data?.[level], payload?.data?.[level+'s'], payload?.[level], payload?.data, payload?.records, payload?.items, payload?.results, payload];
     let rows = candidates.find(Array.isArray);
-    if (!rows && payload?.data && typeof payload.data === 'object') {
-      rows = Object.values(payload.data).find(Array.isArray);
-    }
-    if (!Array.isArray(rows)) throw new Error('รูปแบบข้อมูลที่อยู่ไม่ตรงตามที่คาดไว้');
-    return rows.map(row => ({
-      id: toId(row.id ?? row.code ?? row[`${level}_code`] ?? row[`${level}Code`]),
-      name_local: normalize(row.name_local ?? row.name?.local ?? row.name_th ?? row[`${level}_name_th`] ?? row[`${level}NameTh`] ?? row.th),
-      name_en: normalize(row.name_en ?? row.name?.en ?? row[`${level}_name_en`] ?? row[`${level}NameEn`] ?? row.en),
-      parent_id: toId(row.parent_id ?? row.parent?.id ?? row.province_id ?? row.provinceCode ?? row.district_id ?? row.districtCode ?? ''),
-      parent_name_local: normalize(row.parent_name_local ?? row.parent?.name_local ?? row.parent_name_th ?? ''),
-      postal_code: row.postal_code ?? row.postalCode ?? row.zip_code ?? row.zipCode ?? null,
-      zip_codes: Array.isArray(row.zip_codes) ? row.zip_codes.map(String) : null,
-      slug: row.slug || ''
-    })).filter(row => row.id && row.name_local);
+    if (!rows && payload?.data && typeof payload.data === 'object') rows = Object.values(payload.data).find(Array.isArray);
+    if (!Array.isArray(rows)) throw new Error(`รูปแบบข้อมูล${level}ไม่ถูกต้อง`);
+    return rows.map(row => {
+      let parentId = row.parent_id || row.parent?.id || null;
+      if (!parentId) {
+        if (level === 'district') parentId = row.province_id ?? row.provinceCode ?? row.province_code ?? '';
+        else if (level === 'subdistrict') parentId = row.district_id ?? row.districtCode ?? row.district_code ?? '';
+        else parentId = '';
+      }
+      const rawZip = row.postal_code ?? row.postalCode ?? row.zip_code ?? row.zipCode ?? null;
+      const zips = [...(Array.isArray(row.zip_codes) ? row.zip_codes : []), ...(rawZip == null ? [] : [rawZip])];
+      return {
+        id:toId(row.id ?? row.code ?? row[`${level}_code`] ?? row[`${level}Code`]),
+        name_local:normalize(row.name_local ?? row.name?.local ?? row.name_th ?? row[`${level}_name_th`] ?? row[`${level}NameTh`] ?? row.th),
+        name_en:normalize(row.name_en ?? row.name?.en ?? row[`${level}_name_en`] ?? row[`${level}NameEn`] ?? row.en),
+        parent_id:toId(parentId),
+        parent_name_local:normalize(row.parent_name_local ?? row.parent?.name_local ?? row.parent?.name?.local ?? row.parent_name_th ?? ''),
+        postal_code:rawZip == null ? null : String(rawZip),
+        zip_codes:[...new Set(zips.map(v=>String(v).replace(/\D/g,'')).filter(v=>/^\d{5}$/.test(v)))],
+        slug:row.slug || ''
+      };
+    }).filter(row => row.id && row.name_local);
   }
-  async function fetchLevel(level, minimum, force=false) {
-    const cacheKey = level + 'Rows', promiseKey = level + 'Promise';
-    if (!force && state[cacheKey]) return state[cacheKey];
-    if (!force && state[promiseKey]) return state[promiseKey];
-    state[promiseKey] = (async () => {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 16000);
-      try {
-        const response = await fetch(`${API}${level}.json`, {method:'GET', mode:'cors', credentials:'omit', cache:'force-cache', signal:controller.signal, headers:{'Accept':'application/json'}});
-        if (!response.ok) throw new Error(`โหลดรายชื่อ${level}ไม่สำเร็จ (HTTP ${response.status})`);
-        const payload = await response.json();
-        const rows = unwrapRecords(payload, level);
-        if (rows.length < minimum) throw new Error(`ข้อมูล${level}ไม่ครบตามเกณฑ์ตรวจสอบ (${rows.length} รายการ)`);
-        state[cacheKey] = rows;
-        return rows;
-      } catch (err) {
-        if (err?.name === 'AbortError') throw new Error('โหลดข้อมูลที่อยู่นานเกินไป กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
-        throw err;
-      } finally { clearTimeout(timer); state[promiseKey] = null; }
+  async function fetchLevel(level, minimum) {
+    const cacheKey = level + 'Rows';
+    if (state[cacheKey]) return state[cacheKey];
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 16000);
+    try {
+      const response = await fetch(`${API}${level}.json`, {
+        method:'GET', mode:'cors', credentials:'omit', cache:'force-cache', signal:controller.signal,
+        headers:{'Accept':'application/json'}
+      });
+      if (!response.ok) throw new Error(`โหลดข้อมูล${level}ไม่สำเร็จ (HTTP ${response.status})`);
+      const payload = await response.json();
+      const rows = unwrapRecords(payload, level);
+      if (rows.length < minimum) throw new Error(`ข้อมูล${level}ไม่ครบตามเกณฑ์ตรวจสอบ (${rows.length} รายการ)`);
+      if (new Set(rows.map(x=>x.id)).size !== rows.length) throw new Error(`ข้อมูล${level}มีรหัสซ้ำ จึงหยุดเพื่อป้องกันการเลือกพื้นที่ผิด`);
+      state[cacheKey] = rows;
+      return rows;
+    } catch (err) {
+      if (err?.name === 'AbortError') throw new Error('โหลดข้อมูลที่อยู่นานเกินไป กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
+      throw err;
+    } finally { clearTimeout(timer); }
+  }
+  async function ensureAddressData() {
+    if (state.provinceRows && state.districtRows && state.subdistrictRows) return;
+    if (state.dataPromise) return state.dataPromise;
+    state.dataPromise = (async () => {
+      const [provinces,districts,subdistricts] = await Promise.all([
+        fetchLevel('province',70), fetchLevel('district',900), fetchLevel('subdistrict',7000)
+      ]);
+      const provinceIds = new Set(provinces.map(x=>x.id));
+      const districtIds = new Set(districts.map(x=>x.id));
+      const linkedDistricts = districts.filter(x=>provinceIds.has(x.parent_id)).length;
+      const linkedSubdistricts = subdistricts.filter(x=>districtIds.has(x.parent_id)).length;
+      if (linkedDistricts < 850 || linkedSubdistricts < 6500) throw new Error('โครงสร้างจังหวัด/อำเภอ/ตำบลจากแหล่งข้อมูลไม่สัมพันธ์กัน ระบบจึงไม่เปิดให้เลือกที่อยู่ กรุณาลองใหม่ภายหลัง');
+      state.provinceRows = provinces; state.districtRows = districts; state.subdistrictRows = subdistricts;
     })();
-    return state[promiseKey];
+    try { await state.dataPromise; }
+    finally { state.dataPromise = null; }
   }
-  function clearInput(input, list, placeholder, readonly=true) {
-    if (input) { input.value=''; input.readOnly=readonly; input.setAttribute('aria-disabled',String(readonly)); input.setAttribute('aria-expanded','false'); input.placeholder=placeholder; input.removeAttribute('aria-invalid'); }
-    clearDatalist(list);
+  function getPostalOptions(record) {
+    const raw = Array.isArray(record?.zip_codes) ? record.zip_codes : (record?.postal_code != null ? [record.postal_code] : []);
+    return [...new Set(raw.map(v=>String(v).replace(/\D/g,'')).filter(v=>/^\d{5}$/.test(v)))];
   }
+  function postalMatches(record, zip) { return getPostalOptions(record).includes(zip); }
+  function exactRow(rows, value) { return (rows || []).find(row => sameName(row.name_local,value)); }
   function setEnabled(input, enabled, placeholder) {
     if (!input) return;
     input.readOnly = !enabled;
     input.setAttribute('aria-disabled',String(!enabled));
     input.placeholder = placeholder;
+    const label = input.closest('.pd19-address-field');
+    label?.classList.toggle('is-disabled',!enabled);
+    if (!enabled) input.setAttribute('aria-expanded','false');
+    else input.removeAttribute('aria-invalid');
+  }
+  function clearInput(input, list, placeholder, disabled=true) {
+    if (input) {
+      input.value=''; input.removeAttribute('aria-invalid'); input.setAttribute('aria-expanded','false');
+      setEnabled(input,!disabled,placeholder);
+    }
+    clearDatalist(list);
   }
   function clearFromProvince() {
-    state.selectedDistrict=null; state.selectedSubdistrict=null; state.postalOptions=[];
+    state.selectedDistrict=null; state.selectedSubdistrict=null; state.filteredDistricts=[]; state.filteredSubdistricts=[];
     clearInput(ui.district,ui.districtList,'เลือกจังหวัดก่อน',true);
     clearInput(ui.subdistrict,ui.subdistrictList,'เลือกอำเภอ/เขตก่อน',true);
-    clearInput(ui.postal,ui.postalList,'รหัสไปรษณีย์จะเติมหลังเลือกตำบล',true);
     updateAddressSummary();
   }
   function clearFromDistrict() {
-    state.selectedSubdistrict=null; state.postalOptions=[];
+    state.selectedSubdistrict=null; state.filteredSubdistricts=[];
     clearInput(ui.subdistrict,ui.subdistrictList,'เลือกอำเภอ/เขตก่อน',true);
-    clearInput(ui.postal,ui.postalList,'รหัสไปรษณีย์จะเติมหลังเลือกตำบล',true);
     updateAddressSummary();
   }
-  function exactRow(rows, value) { return (rows||[]).find(row => sameName(row.name_local,value)); }
+  function resetAreaSelections(keepPostal=true) {
+    state.selectedProvince=null; state.selectedDistrict=null; state.selectedSubdistrict=null;
+    state.postalSubdistricts=[]; state.postalDistricts=[]; state.postalProvinces=[]; state.filteredDistricts=[]; state.filteredSubdistricts=[]; state.postalOptions=[];
+    state.activePostal='';
+    if (ui.province) clearInput(ui.province,ui.provinceList,'กรอกรหัสไปรษณีย์ก่อน',true);
+    clearInput(ui.district,ui.districtList,'เลือกจังหวัดก่อน',true);
+    clearInput(ui.subdistrict,ui.subdistrictList,'เลือกอำเภอ/เขตก่อน',true);
+    if (!keepPostal && ui.postal) ui.postal.value='';
+    updateAddressSummary();
+  }
+  function uniqueById(rows) { return [...new Map((rows || []).map(r=>[r.id,r])).values()]; }
+  function derivePostalMatches(zip) {
+    const matchingSubdistricts = state.subdistrictRows.filter(row=>postalMatches(row,zip));
+    if (!matchingSubdistricts.length) throw new Error(`ไม่พบรหัสไปรษณีย์ ${zip} ในฐานข้อมูลอ้างอิง กรุณาตรวจสอบตัวเลข 5 หลัก หรือค้นหากับไปรษณีย์ไทย`);
+    const possibleDistrictIds = new Set(matchingSubdistricts.map(row=>row.parent_id).filter(Boolean));
+    const districts = state.districtRows.filter(row=>possibleDistrictIds.has(row.id));
+    if (!districts.length) throw new Error('พบรหัสไปรษณีย์ แต่ข้อมูลเชื่อมโยงกับอำเภอไม่ครบ ระบบหยุดไว้เพื่อป้องกันการเลือกที่อยู่ผิด');
+    const possibleProvinceIds = new Set(districts.map(row=>row.parent_id).filter(Boolean));
+    const provinces = state.provinceRows.filter(row=>possibleProvinceIds.has(row.id));
+    if (!provinces.length) throw new Error('พบรหัสไปรษณีย์ แต่ข้อมูลเชื่อมโยงกับจังหวัดไม่ครบ กรุณาลองใหม่ภายหลัง');
+    const districtIdSet = new Set(districts.map(row=>row.id));
+    const linkedSubs = matchingSubdistricts.filter(row=>districtIdSet.has(row.parent_id));
+    if (!linkedSubs.length) throw new Error('ไม่สามารถยืนยันความสัมพันธ์ของรหัสไปรษณีย์กับตำบลได้ จึงยังเลือกต่อไม่ได้');
+    return {subdistricts:linkedSubs,districts,provinces};
+  }
+  let postalLookupPromise = null;
+  async function lookupPostal(force=false) {
+    const zip = normalize(ui.postal?.value).replace(/\D/g,'').slice(0,5);
+    if (ui.postal && ui.postal.value !== zip) ui.postal.value=zip;
+    if (!/^\d{5}$/.test(zip)) {
+      state.postalGeneration++;
+      state.pendingPostal=''; resetAreaSelections(true);
+      if (ui.postal) { ui.postal.setAttribute('aria-invalid','false'); }
+      addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อน แล้วเลือกจังหวัด → อำเภอ/เขต → ตำบล/แขวง','info');
+      return false;
+    }
+    if (!force && state.activePostal === zip && state.postalSubdistricts.length) return true;
+    if (!force && state.pendingPostal === zip && postalLookupPromise) return postalLookupPromise;
+    const generation = ++state.postalGeneration;
+    state.pendingPostal=zip;
+    resetAreaSelections(true);
+    state.pendingPostal=zip;
+    addressMessage(`กำลังค้นหาพื้นที่จากรหัสไปรษณีย์ ${zip}…`,'loading');
+    const operation = (async () => {
+      try {
+        await ensureAddressData();
+        if (generation !== state.postalGeneration || normalize(ui.postal?.value) !== zip) return false;
+        const matches = derivePostalMatches(zip);
+        state.activePostal=zip;
+        state.postalSubdistricts=matches.subdistricts;
+        state.postalDistricts=matches.districts;
+        state.postalProvinces=matches.provinces;
+        state.postalOptions=[zip];
+        populateDatalist(ui.provinceList,state.postalProvinces);
+        setEnabled(ui.province,true,'พิมพ์ค้นหาหรือเลือกจังหวัดที่ตรงกับรหัส…');
+        if (ui.postal) ui.postal.setAttribute('aria-invalid','false');
+        addressMessage(`รหัส ${zip} พบ ${matches.provinces.length} จังหวัดที่เป็นไปได้ • กรุณาเลือกจังหวัดที่ถูกต้อง`,'success');
+        return true;
+      } catch (err) {
+        if (generation !== state.postalGeneration) return false;
+        state.pendingPostal=''; state.activePostal=''; resetAreaSelections(true);
+        if (ui.postal) ui.postal.setAttribute('aria-invalid','true');
+        addressMessage(`${err.message || 'ค้นหาที่อยู่ไม่สำเร็จ'} • ตรวจสอบรหัสไปรษณีย์หรือเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่`,'error');
+        return false;
+      } finally {
+        if (generation === state.postalGeneration) state.pendingPostal='';
+        if (postalLookupPromise === operation) postalLookupPromise=null;
+      }
+    })();
+    postalLookupPromise = operation;
+    return operation;
+  }
   async function onProvinceInput() {
-    const value = normalize(ui.province?.value);
-    const record = exactRow(state.provinceRows, value);
+    const zip=normalize(ui.postal?.value), value=normalize(ui.province?.value);
+    if (!/^\d{5}$/.test(zip) || state.activePostal !== zip) {
+      resetAreaSelections(true); addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อน จึงจะเลือกจังหวัดได้','error'); ui.postal?.focus(); return;
+    }
+    const record=exactRow(state.postalProvinces,value);
     if (!record) {
-      state.selectedProvince=null;
-      clearFromProvince();
-      if (value) addressMessage('กรุณาเลือกชื่อจังหวัดจากรายการแนะนำ ไม่ใช่พิมพ์ข้อความใกล้เคียง','error');
-      else addressMessage('เริ่มจากเลือกจังหวัด ระบบจะแสดงเฉพาะอำเภอและตำบลที่อยู่ในพื้นที่นั้น');
+      state.selectedProvince=null; clearFromProvince();
+      if (value) addressMessage('เลือกจังหวัดจากรายการที่สัมพันธ์กับรหัสไปรษณีย์นี้เท่านั้น','info');
+      else addressMessage(`รหัส ${zip} พร้อมแล้ว • กรุณาเลือกจังหวัดก่อน`,'info');
       return;
     }
-    if (state.selectedProvince?.id === record.id) return;
+    if (state.selectedProvince?.id===record.id) return;
     state.selectedProvince=record; clearFromProvince();
-    addressMessage('กำลังโหลดอำเภอ/เขตของจังหวัดที่เลือก…','loading');
-    try {
-      const rows = await fetchLevel('district',900);
-      if (state.selectedProvince?.id !== record.id) return;
-      const children = rows.filter(row => row.parent_id === record.id || (row.parent_name_local && sameName(row.parent_name_local,record.name_local)));
-      if (!children.length) throw new Error('ไม่พบรายการอำเภอ/เขตของจังหวัดนี้ในข้อมูลอ้างอิง');
-      populateDatalist(ui.districtList,children); setEnabled(ui.district,true,'พิมพ์ค้นหาอำเภอ/เขต…');
-      state.filteredDistricts=children;
-      addressMessage(`เลือกจังหวัด ${record.name_local} แล้ว • พบ ${children.length} อำเภอ/เขต กรุณาเลือกอำเภอถัดไป`,'success');
-      await restoreAddressCascade();
-    } catch (err) { addressMessage(`${err.message || 'โหลดข้อมูลอำเภอไม่สำเร็จ'} • กดช่องจังหวัดใหม่เพื่อลองอีกครั้ง`,'error'); }
+    const subdistrictDistrictIds=new Set(state.postalSubdistricts.map(row=>row.parent_id));
+    const allowedDistrictIds=new Set(state.postalDistricts.filter(row=>row.parent_id===record.id && subdistrictDistrictIds.has(row.id)).map(row=>row.id));
+    const candidates=state.postalDistricts.filter(row=>allowedDistrictIds.has(row.id));
+    if (!candidates.length) { state.selectedProvince=null; clearFromProvince(); addressMessage('ไม่พบอำเภอที่ตรงกับรหัสไปรษณีย์และจังหวัดที่เลือก กรุณาเลือกจังหวัดอีกครั้ง','error'); return; }
+    state.filteredDistricts=candidates;
+    populateDatalist(ui.districtList,candidates); setEnabled(ui.district,true,'ค้นหาอำเภอ/เขต…');
+    addressMessage(`เลือกจังหวัด ${record.name_local} แล้ว • พบ ${candidates.length} อำเภอ/เขต กรุณาเลือกต่อ`,'success');
   }
   async function onDistrictInput() {
-    if (!state.selectedProvince) { addressMessage('กรุณาเลือกจังหวัดก่อน แล้วจึงเลือกอำเภอ/เขต','error'); ui.province?.focus(); return; }
-    const record = exactRow(state.filteredDistricts, ui.district?.value);
+    const zip=normalize(ui.postal?.value);
+    if (!state.selectedProvince || state.activePostal !== zip) { addressMessage('เลือกจังหวัดหลังกรอกรหัสไปรษณีย์ก่อน แล้วจึงเลือกอำเภอ/เขต','error'); (state.activePostal ? ui.province : ui.postal)?.focus(); return; }
+    const value=normalize(ui.district?.value), record=exactRow(state.filteredDistricts,value);
     if (!record) {
       state.selectedDistrict=null; clearFromDistrict();
-      if (normalize(ui.district?.value)) addressMessage('ไม่พบอำเภอ/เขตที่ตรงกับจังหวัดนี้ กรุณาเลือกจากรายการแนะนำ','error');
+      if (value) addressMessage('เลือกอำเภอ/เขตจากรายการของจังหวัดและรหัสไปรษณีย์ที่เลือกเท่านั้น','info');
+      else addressMessage('เลือกอำเภอ/เขตก่อน แล้วจึงเลือกตำบล/แขวง','info');
       return;
     }
-    if (state.selectedDistrict?.id === record.id) return;
+    if (state.selectedDistrict?.id===record.id) return;
     state.selectedDistrict=record; clearFromDistrict();
-    addressMessage('กำลังโหลดตำบล/แขวงของพื้นที่ที่เลือก…','loading');
-    try {
-      const rows = await fetchLevel('subdistrict',7000);
-      if (state.selectedDistrict?.id !== record.id) return;
-      const children = rows.filter(row => row.parent_id === record.id || (row.parent_name_local && sameName(row.parent_name_local,record.name_local)));
-      if (!children.length) throw new Error('ไม่พบตำบล/แขวงในอำเภอ/เขตนี้');
-      state.filteredSubdistricts=children;
-      populateDatalist(ui.subdistrictList,children); setEnabled(ui.subdistrict,true,'พิมพ์ค้นหาตำบล/แขวง…');
-      addressMessage(`เลือก ${record.name_local} แล้ว • พบ ${children.length} ตำบล/แขวง กรุณาเลือกตำบลถัดไป`,'success');
-      await restoreAddressCascade();
-    } catch (err) { addressMessage(`${err.message || 'โหลดข้อมูลตำบลไม่สำเร็จ'} • ตรวจสอบการเชื่อมต่อแล้วลองใหม่`,'error'); }
+    const children=state.postalSubdistricts.filter(row=>row.parent_id===record.id && postalMatches(row,zip));
+    if (!children.length) { state.selectedDistrict=null; clearFromDistrict(); addressMessage('ไม่พบตำบลที่ตรงกับรหัสไปรษณีย์ในอำเภอนี้ กรุณาตรวจสอบจังหวัดหรือรหัสอีกครั้ง','error'); return; }
+    state.filteredSubdistricts=children;
+    populateDatalist(ui.subdistrictList,children); setEnabled(ui.subdistrict,true,'ค้นหาตำบล/แขวง…');
+    addressMessage(`เลือกอำเภอ/เขต ${record.name_local} แล้ว • พบ ${children.length} ตำบล/แขวงที่เข้ากับรหัสนี้`,'success');
   }
-  function getPostalOptions(record) {
-    const values = Array.isArray(record?.zip_codes) ? record.zip_codes : (record?.postal_code != null ? [record.postal_code] : []);
-    return [...new Set(values.map(v => String(v).replace(/\D/g,'')).filter(v => /^\d{5}$/.test(v)))];
-  }
-  async function onSubdistrictInput() {
-    if (!state.selectedProvince) { addressMessage('กรุณาเลือกจังหวัดก่อน แล้วจึงเลือกตำบล/แขวง','error'); ui.province?.focus(); return; }
-    if (!state.selectedDistrict) { addressMessage('กรุณาเลือกอำเภอ/เขตก่อน แล้วจึงเลือกตำบล/แขวง','error'); ui.district?.focus(); return; }
-    const record = exactRow(state.filteredSubdistricts, ui.subdistrict?.value);
-    if (!record) {
-      state.selectedSubdistrict=null; state.postalOptions=[];
-      clearInput(ui.postal,ui.postalList,'รหัสไปรษณีย์จะเติมหลังเลือกตำบล',true); updateAddressSummary();
-      if (normalize(ui.subdistrict?.value)) addressMessage('ไม่พบตำบล/แขวงในอำเภอ/เขตนี้ กรุณาเลือกจากรายการแนะนำ','error');
+  function onSubdistrictInput() {
+    const zip=normalize(ui.postal?.value), value=normalize(ui.subdistrict?.value);
+    if (!state.selectedProvince || !state.selectedDistrict || state.activePostal !== zip) {
+      addressMessage('ต้องเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตให้ครบตามลำดับก่อน','error');
+      (!state.activePostal ? ui.postal : !state.selectedProvince ? ui.province : ui.district)?.focus(); return;
+    }
+    const record=exactRow(state.filteredSubdistricts,value);
+    if (!record || !postalMatches(record,zip) || record.parent_id!==state.selectedDistrict.id) {
+      state.selectedSubdistrict=null; updateAddressSummary();
+      if (value) addressMessage('เลือกตำบล/แขวงที่อยู่ในอำเภอและรหัสไปรษณีย์ที่เลือกจากรายการเท่านั้น','info');
+      else addressMessage('เลือกตำบล/แขวงเป็นขั้นตอนสุดท้าย','info');
       return;
     }
-    state.selectedSubdistrict=record;
-    const postals=getPostalOptions(record); state.postalOptions=postals;
-    populateDatalist(ui.postalList,postals,{postal:true});
-    if (postals.length === 1) { ui.postal.value=postals[0]; setEnabled(ui.postal,false,''); }
-    else if (postals.length > 1) { ui.postal.value=postals[0]; setEnabled(ui.postal,true,'เลือกรหัสไปรษณีย์จากรายการ…'); }
-    else { ui.postal.value=''; setEnabled(ui.postal,true,'ไม่พบรหัส • กรอก 5 หลักและตรวจสอบ'); addressMessage('เลือกพื้นที่ครบแล้ว แต่แหล่งอ้างอิงไม่มีรหัสไปรษณีย์สำหรับตำบลนี้ กรุณาตรวจสอบกับไปรษณีย์ไทยก่อนยืนยัน','error'); }
+    state.selectedSubdistrict=record; state.postalOptions=[zip];
+    if (ui.postal) { ui.postal.value=zip; ui.postal.setAttribute('aria-invalid','false'); }
     updateAddressSummary();
-    if (postals.length) addressMessage(`เลือกที่อยู่ ${record.name_local} แล้ว • รหัสไปรษณีย์ ${postals.join(' / ')}`,'success');
+    addressMessage(`ตรวจพบที่อยู่ ${record.name_local} • รหัสไปรษณีย์ ${zip} ตรงกับข้อมูลอ้างอิงแล้ว`,'success');
   }
   function composeAddress() {
     const val = id => normalize($(id)?.value);
@@ -11359,7 +11457,7 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
     if(val('recipient-village')) pieces.push(val('recipient-village'));
     if(val('recipient-soi')) pieces.push(/^ซอย/.test(val('recipient-soi'))?val('recipient-soi'):`ซอย ${val('recipient-soi')}`);
     if(val('recipient-road')) pieces.push(/^ถนน/.test(val('recipient-road'))?val('recipient-road'):`ถนน ${val('recipient-road')}`);
-    const bangkok = state.selectedProvince?.name_local === 'กรุงเทพมหานคร';
+    const bangkok=state.selectedProvince?.name_local==='กรุงเทพมหานคร';
     if(state.selectedSubdistrict) pieces.push(`${bangkok?'แขวง':'ตำบล'}${state.selectedSubdistrict.name_local}`);
     if(state.selectedDistrict) pieces.push(`${bangkok?'เขต':'อำเภอ'}${state.selectedDistrict.name_local}`);
     if(state.selectedProvince) pieces.push(bangkok?'กรุงเทพมหานคร':`จังหวัด${state.selectedProvince.name_local}`);
@@ -11370,119 +11468,94 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
   function updateAddressSummary() {
     const address=composeAddress();
     if(ui.hidden) ui.hidden.value=address;
+    const zip=normalize(ui.postal?.value);
+    const valid = !!(state.activePostal && state.activePostal===zip && state.selectedProvince && state.selectedDistrict && state.selectedSubdistrict && postalMatches(state.selectedSubdistrict,zip) && normalize($('recipient-house-no')?.value));
     if(ui.summary) {
-      const span=ui.summary.querySelector('span'); if(span) span.textContent=address || 'ที่อยู่จะปรากฏตรงนี้หลังเลือกพื้นที่ครบ';
-      ui.summary.hidden=!(state.selectedProvince && state.selectedDistrict && state.selectedSubdistrict && /^\d{5}$/.test(normalize(ui.postal?.value)) && normalize($('recipient-house-no')?.value));
-    }
-  }
-  async function restoreAddressCascade() {
-    // Enables returning to a saved print draft without allowing a child choice to bypass its parent.
-    if (!state.provinceRows || !ui.province) return;
-    const wantedProvince=normalize(ui.province.value), wantedDistrict=normalize(ui.district?.value), wantedSubdistrict=normalize(ui.subdistrict?.value);
-    const prov=exactRow(state.provinceRows,wantedProvince);
-    if (prov && state.selectedProvince?.id !== prov.id) await onProvinceInput();
-    if (wantedDistrict && state.filteredDistricts && exactRow(state.filteredDistricts,wantedDistrict) && !state.selectedDistrict) {
-      ui.district.value=wantedDistrict; await onDistrictInput();
-    }
-    if (wantedSubdistrict && state.filteredSubdistricts && exactRow(state.filteredSubdistricts,wantedSubdistrict) && !state.selectedSubdistrict) {
-      ui.subdistrict.value=wantedSubdistrict; await onSubdistrictInput();
-    }
-  }
-  async function ensureProvinces() {
-    if(!ui.province) return [];
-    if(state.provinceRows) return state.provinceRows;
-    addressMessage('กำลังโหลดรายชื่อจังหวัดจากฐานข้อมูลพื้นที่ประเทศไทย…','loading');
-    try {
-      const rows=await fetchLevel('province',70); state.provinceRows=rows;
-      populateDatalist(ui.provinceList,rows);
-      ui.province.placeholder='พิมพ์ค้นหาจังหวัด เช่น ระยอง…';
-      addressMessage(`พร้อมค้นหา ${rows.length} จังหวัด • กรุณาเลือกจังหวัดก่อน`,'success');
-      await restoreAddressCascade();
-      return rows;
-    } catch(err) {
-      addressMessage(`โหลดรายชื่อจังหวัดไม่ได้: ${err.message || err} • ตรวจอินเทอร์เน็ตแล้วลองเปิดหน้าจัดส่งใหม่`,'error');
-      throw err;
+      const span=ui.summary.querySelector('span'); if(span) span.textContent=address || 'ที่อยู่จะปรากฏตรงนี้เมื่อเลือกครบทุกขั้นตอน';
+      ui.summary.hidden=!valid;
     }
   }
   async function ensureAddressReady() {
-    await ensureProvinces();
-    if(!state.selectedProvince) await onProvinceInput();
-    if(!state.selectedDistrict) await onDistrictInput();
-    if(!state.selectedSubdistrict) await onSubdistrictInput();
+    const zip=normalize(ui.postal?.value).replace(/\D/g,'');
+    if (!/^\d{5}$/.test(zip)) { addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อนดำเนินการต่อ','error'); ui.postal?.focus(); throw new Error('invalid postal code'); }
+    if (state.activePostal !== zip || !state.postalSubdistricts.length) {
+      const ok=await lookupPostal(true);
+      if (!ok || state.activePostal!==zip) throw new Error('postal lookup failed');
+    }
   }
   function resetAddressFields() {
-    state.selectedProvince=null; state.selectedDistrict=null; state.selectedSubdistrict=null; state.postalOptions=[];
-    if(ui.province) ui.province.value='';
-    clearFromProvince();
-    if($('recipient-house-no')) $('recipient-house-no').value='';
-    for(const id of ['recipient-moo','recipient-village','recipient-soi','recipient-road','recipient-address-extra']) if($(id)) $(id).value='';
+    state.postalGeneration++; state.pendingPostal='';
+    resetAreaSelections(false);
+    if (ui.postal) { ui.postal.value=''; ui.postal.setAttribute('aria-invalid','false'); }
+    for (const id of ['recipient-house-no','recipient-moo','recipient-village','recipient-soi','recipient-road','recipient-address-extra']) if($(id)) $(id).value='';
     if(ui.hidden) ui.hidden.value=''; if(ui.summary) ui.summary.hidden=true;
-    addressMessage('เริ่มจากเลือกจังหวัด ระบบจะแสดงเฉพาะอำเภอและตำบลที่อยู่ในพื้นที่นั้น');
+    addressMessage('เริ่มจากกรอกรหัสไปรษณีย์ 5 หลักก่อน แล้วเลือกจังหวัด อำเภอ และตำบลตามลำดับ','info');
   }
-  // Initialize province lookup only once the customer chooses parcel delivery.
-  const oldToggleDelivery = window.toggleDeliveryFields;
-  if (typeof oldToggleDelivery === 'function' && !oldToggleDelivery.__pd19) {
-    const wrapped = function() {
+
+  // Do not fetch geography until a real 5-digit postcode is entered or delivery is selected.
+  const oldToggleDelivery=window.toggleDeliveryFields;
+  if (typeof oldToggleDelivery==='function' && !oldToggleDelivery.__pd20) {
+    const wrapped=function() {
       const result=oldToggleDelivery.apply(this,arguments);
       const delivery=document.querySelector('input[name="delivery_method"]:checked')?.value==='delivery';
-      if(delivery) ensureProvinces().catch(()=>{});
+      if (delivery) {
+        addressMessage('ขั้นตอนแรก: กรอกรหัสไปรษณีย์ 5 หลัก จากนั้นเลือกจังหวัด → อำเภอ/เขต → ตำบล/แขวง','info');
+        if (/^\d{5}$/.test(normalize(ui.postal?.value))) lookupPostal().catch(()=>{});
+      }
       return result;
     };
-    wrapped.__pd19=true; window.toggleDeliveryFields=wrapped;
+    wrapped.__pd20=true; window.toggleDeliveryFields=wrapped;
   }
-  ui.province?.addEventListener('focus',()=>{ensureProvinces().catch(()=>{});});
-  ui.province?.addEventListener('input',()=>{onProvinceInput().catch(()=>{});});
-  ui.province?.addEventListener('change',()=>{onProvinceInput().catch(()=>{});});
-  ui.district?.addEventListener('focus',()=>{if(ui.district.readOnly){addressMessage('ขั้นตอนที่ 1 จาก 3: เลือกจังหวัดก่อน แล้วจึงค้นหาอำเภอ/เขต','error');ui.province?.focus();}});
-  ui.district?.addEventListener('click',()=>{if(ui.district.readOnly){addressMessage('เลือกจังหวัดก่อนจึงจะเลือกอำเภอ/เขตได้','error');ui.province?.focus();}});
-  ui.district?.addEventListener('input',()=>{onDistrictInput().catch(()=>{});});
-  ui.district?.addEventListener('change',()=>{onDistrictInput().catch(()=>{});});
-  ui.subdistrict?.addEventListener('focus',()=>{if(ui.subdistrict.readOnly){addressMessage(!state.selectedProvince?'เลือกจังหวัดก่อนจึงจะเลือกตำบล/แขวงได้':'เลือกอำเภอ/เขตก่อนจึงจะเลือกตำบล/แขวงได้','error');(state.selectedProvince?ui.district:ui.province)?.focus();}});
-  ui.subdistrict?.addEventListener('click',()=>{if(ui.subdistrict.readOnly){addressMessage(!state.selectedProvince?'เลือกจังหวัดก่อนจึงจะเลือกตำบล/แขวงได้':'เลือกอำเภอ/เขตก่อนจึงจะเลือกตำบล/แขวงได้','error');(state.selectedProvince?ui.district:ui.province)?.focus();}});
-  ui.subdistrict?.addEventListener('input',()=>{onSubdistrictInput().catch(()=>{});});
-  ui.subdistrict?.addEventListener('change',()=>{onSubdistrictInput().catch(()=>{});});
-  ui.postal?.addEventListener('input',()=>{updateAddressSummary(); if(state.postalOptions.length && !state.postalOptions.includes(normalize(ui.postal.value))) addressMessage('เลือกรหัสไปรษณีย์จากตัวเลือกที่สัมพันธ์กับตำบลนี้เท่านั้น','error');});
-  ui.postal?.addEventListener('change',()=>{updateAddressSummary();});
+  ui.postal?.addEventListener('input',()=>lookupPostal().catch(err=>addressMessage(err.message||'ค้นหาพื้นที่ไม่สำเร็จ','error')));
+  ui.postal?.addEventListener('change',()=>lookupPostal().catch(err=>addressMessage(err.message||'ค้นหาพื้นที่ไม่สำเร็จ','error')));
+  ui.province?.addEventListener('input',()=>onProvinceInput().catch(err=>addressMessage(err.message||'ค้นหาจังหวัดไม่สำเร็จ','error')));
+  ui.province?.addEventListener('change',()=>onProvinceInput().catch(err=>addressMessage(err.message||'ค้นหาจังหวัดไม่สำเร็จ','error')));
+  ui.district?.addEventListener('focus',()=>{if(ui.district.readOnly) addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้','error');});
+  ui.district?.addEventListener('click',()=>{if(ui.district.readOnly) addressMessage('กรุณากรอกรหัสไปรษณีย์และเลือกจังหวัดก่อน','error');});
+  ui.district?.addEventListener('input',()=>onDistrictInput().catch(err=>addressMessage(err.message||'ค้นหาอำเภอไม่สำเร็จ','error')));
+  ui.district?.addEventListener('change',()=>onDistrictInput().catch(err=>addressMessage(err.message||'ค้นหาอำเภอไม่สำเร็จ','error')));
+  ui.subdistrict?.addEventListener('focus',()=>{if(ui.subdistrict.readOnly) addressMessage('เลือกอำเภอ/เขตให้ครบก่อน จึงจะเลือกตำบล/แขวงได้','error');});
+  ui.subdistrict?.addEventListener('click',()=>{if(ui.subdistrict.readOnly) addressMessage('กรุณาเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตก่อน','error');});
+  ui.subdistrict?.addEventListener('input',onSubdistrictInput);
+  ui.subdistrict?.addEventListener('change',onSubdistrictInput);
   ['recipient-house-no','recipient-moo','recipient-village','recipient-soi','recipient-road','recipient-address-extra'].forEach(id=>$(id)?.addEventListener('input',updateAddressSummary,{passive:true}));
 
-  // Validate and serialize the structured address before the existing order handler writes to Supabase.
+  // Validate postal-first hierarchy before passing the combined address to the existing order flow.
   const originalSubmit=window.handleOrderSubmit;
-  if (typeof originalSubmit === 'function' && !originalSubmit.__pd19) {
-    const wrappedSubmit = async function(event) {
-      if(state.submitBusy) { event?.preventDefault(); return; }
+  if (typeof originalSubmit==='function' && !originalSubmit.__pd20) {
+    const wrappedSubmit=async function(event) {
+      if (state.submitBusy) { event?.preventDefault(); return; }
       const delivery=document.querySelector('input[name="delivery_method"]:checked')?.value==='delivery';
-      if(!delivery) return originalSubmit.apply(this,arguments);
-      event?.preventDefault();
-      state.submitBusy=true;
+      if (!delivery) return originalSubmit.apply(this,arguments);
+      event?.preventDefault(); state.submitBusy=true;
       try {
         try { await ensureAddressReady(); } catch (_) { return; }
-        const name=normalize($('recipient-name')?.value), phone=normalize($('recipient-phone')?.value);
+        const name=normalize($('recipient-name')?.value), phone=normalize($('recipient-phone')?.value).replace(/\D/g,'');
         const house=normalize($('recipient-house-no')?.value), zip=normalize(ui.postal?.value);
-        if(!name) {addressMessage('กรุณากรอกชื่อ-นามสกุลผู้รับ','error');$('recipient-name')?.focus();return;}
-        if(!/^0\d{8,9}$/.test(phone.replace(/\D/g,''))) {addressMessage('กรุณากรอกเบอร์โทรศัพท์ไทย 9–10 หลัก และขึ้นต้นด้วย 0','error');$('recipient-phone')?.focus();return;}
-        if(!house) {addressMessage('กรุณากรอกบ้านเลขที่ก่อนยืนยันจัดส่ง','error');$('recipient-house-no')?.setAttribute('aria-invalid','true');$('recipient-house-no')?.focus();return;}
+        if (!name) { addressMessage('กรุณากรอกชื่อ-นามสกุลผู้รับ','error'); $('recipient-name')?.focus(); return; }
+        if (!/^0\d{8,9}$/.test(phone)) { addressMessage('กรุณากรอกเบอร์โทรศัพท์ไทย 9–10 หลัก และขึ้นต้นด้วย 0','error'); $('recipient-phone')?.focus(); return; }
+        if (!house) { addressMessage('กรุณากรอกบ้านเลขที่ก่อนยืนยันจัดส่ง','error'); $('recipient-house-no')?.setAttribute('aria-invalid','true'); $('recipient-house-no')?.focus(); return; }
         $('recipient-house-no')?.removeAttribute('aria-invalid');
-        if(!state.selectedProvince) {addressMessage('เลือกจังหวัดก่อนเป็นลำดับแรก','error');ui.province?.focus();return;}
-        if(!state.selectedDistrict || state.selectedDistrict.parent_id && state.selectedDistrict.parent_id!==state.selectedProvince.id) {addressMessage('กรุณาเลือกอำเภอ/เขตที่อยู่ภายในจังหวัดที่เลือก','error');ui.district?.focus();return;}
-        if(!state.selectedSubdistrict || state.selectedSubdistrict.parent_id && state.selectedSubdistrict.parent_id!==state.selectedDistrict.id) {addressMessage('กรุณาเลือกตำบล/แขวงที่อยู่ภายในอำเภอ/เขตที่เลือก','error');ui.subdistrict?.focus();return;}
-        if(!/^\d{5}$/.test(zip)) {addressMessage('รหัสไปรษณีย์ต้องเป็นตัวเลข 5 หลัก','error');ui.postal?.focus();return;}
-        if(state.postalOptions.length && !state.postalOptions.includes(zip)) {addressMessage('รหัสไปรษณีย์ไม่ตรงกับตัวเลือกของตำบลนี้ กรุณาเลือกใหม่','error');ui.postal?.focus();return;}
+        if (!/^\d{5}$/.test(zip) || state.activePostal!==zip || !state.postalSubdistricts.length) { addressMessage('กรุณากรอกรหัสไปรษณีย์ที่ตรวจสอบแล้วก่อน','error'); ui.postal?.focus(); return; }
+        if (!state.selectedProvince || !state.postalProvinces.some(x=>x.id===state.selectedProvince.id)) { addressMessage('เลือกจังหวัดจากรายการที่สัมพันธ์กับรหัสไปรษณีย์ก่อน','error'); ui.province?.focus(); return; }
+        if (!state.selectedDistrict || !state.filteredDistricts.some(x=>x.id===state.selectedDistrict.id) || state.selectedDistrict.parent_id!==state.selectedProvince.id) { addressMessage('เลือกอำเภอ/เขตที่อยู่ภายในจังหวัดที่เลือกก่อน','error'); ui.district?.focus(); return; }
+        if (!state.selectedSubdistrict || !state.filteredSubdistricts.some(x=>x.id===state.selectedSubdistrict.id) || state.selectedSubdistrict.parent_id!==state.selectedDistrict.id || !postalMatches(state.selectedSubdistrict,zip)) { addressMessage('เลือกตำบล/แขวงที่ตรงกับอำเภอและรหัสไปรษณีย์ก่อน','error'); ui.subdistrict?.focus(); return; }
         const address=composeAddress();
-        if(!address) {addressMessage('ที่อยู่จัดส่งยังไม่ครบ','error');ui.province?.focus();return;}
-        if(ui.hidden) ui.hidden.value=address;
-        updateAddressSummary();
-        if(ui.message) addressMessage('ตรวจสอบข้อมูลจัดส่งครบแล้ว กำลังส่งรายการไปยังระบบ…','success');
+        if (!address) { addressMessage('ที่อยู่จัดส่งยังไม่ครบ','error'); $('recipient-house-no')?.focus(); return; }
+        if (ui.hidden) ui.hidden.value=address;
+        updateAddressSummary(); addressMessage('ตรวจสอบที่อยู่ครบแล้ว กำลังส่งรายการไปยังระบบ…','success');
         return await originalSubmit.apply(this,arguments);
       } finally { state.submitBusy=false; }
     };
-    wrappedSubmit.__pd19=true; window.handleOrderSubmit=wrappedSubmit;
+    wrappedSubmit.__pd20=true; window.handleOrderSubmit=wrappedSubmit;
   }
 
-  // Do not save delivery PII in localStorage-based print drafts / "last order" preferences.
+  // Remove PII from old localStorage print drafts. The address stays in form memory only.
   try {
     for (const key of ['pd_print_draft_v6','pd_last_print_v6']) {
       const raw=localStorage.getItem(key); if(!raw) continue;
-      const data=JSON.parse(raw); const keys=['recipient-name','recipient-phone','recipient-address','recipient-house-no','recipient-moo','recipient-village','recipient-soi','recipient-road','recipient-province','recipient-district','recipient-subdistrict','recipient-postal-code','recipient-address-extra'];
+      const data=JSON.parse(raw);
+      const keys=['recipient-name','recipient-phone','recipient-address','recipient-house-no','recipient-moo','recipient-village','recipient-soi','recipient-road','recipient-province','recipient-district','recipient-subdistrict','recipient-postal-code','recipient-address-extra'];
       if(data.values) keys.forEach(k=>delete data.values[k]);
       keys.forEach(k=>delete data[k]);
       localStorage.setItem(key,JSON.stringify(data));
@@ -11516,16 +11589,83 @@ html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),html:n
   };
   syncTopupSelection(Number($('selected-topup-amount')?.value || 20));
 
-  // Make the final landing banner genuinely useful while keeping the real order form as the source of truth.
+  // Home-page order flow is intentionally the first section; product brand story remains at the end.
   $('pd19-home-order-title')?.setAttribute('aria-label','สั่งพิมพ์เอกสารง่ายขึ้น ทุกขั้นตอนอยู่ในที่เดียว');
-  if(window.lucide){try{window.lucide.createIcons()}catch(_){}}
+  if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
 
-  window.pdV19AddressDiagnostics = function() {
-    const result={provinceDataLoaded:!!state.provinceRows,districtDataLoaded:!!state.districtRows,subdistrictDataLoaded:!!state.subdistrictRows,selectedProvince:state.selectedProvince?.name_local||null,selectedDistrict:state.selectedDistrict?.name_local||null,selectedSubdistrict:state.selectedSubdistrict?.name_local||null,selectedPostalCode:ui.postal?.value||null,dataSource:'Open Admin Data Thailand API (CC BY 4.0)'};
-    console.info('[PrintDekD address diagnostics]',result);return result;
+  window.pdV20AddressDiagnostics = function() {
+    const result={
+      postalFirst:true,
+      postalCode:ui.postal?.value || null,
+      postalVerified:!!(state.activePostal && state.activePostal===normalize(ui.postal?.value)),
+      matchingProvinces:state.postalProvinces.length,
+      matchingDistricts:state.filteredDistricts.length,
+      matchingSubdistricts:state.filteredSubdistricts.length,
+      selectedProvince:state.selectedProvince?.name_local || null,
+      selectedDistrict:state.selectedDistrict?.name_local || null,
+      selectedSubdistrict:state.selectedSubdistrict?.name_local || null,
+      dataCounts:{provinces:state.provinceRows?.length||0,districts:state.districtRows?.length||0,subdistricts:state.subdistrictRows?.length||0},
+      dataSource:'Open Admin Data Thailand API; postal_code field, CC BY 4.0; user must verify address'
+    };
+    console.info('[PrintDekD postcode-first diagnostics]',result); return result;
   };
+  window.pdV19AddressDiagnostics = window.pdV20AddressDiagnostics;
+  addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อน แล้วเลือกจังหวัด → อำเภอ/เขต → ตำบล/แขวง','info');
+  if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
 })();
 </script>
+
+
+<style id="pd-v20-postcode-first-and-home-flow">
+/* One clear hierarchy: the one-page printing workflow leads; the brand/product hero closes the home story. */
+#view-landing { display:flex !important; flex-direction:column !important; gap:clamp(34px,5vw,76px) !important; }
+#view-landing > :not([hidden]) ~ :not([hidden]) { margin-top:0 !important; }
+#view-landing > .pd19-home-order { order:-1; width:100%; }
+#view-landing > .pd17-hero { order:20; width:100%; }
+#pd19-home-order-title { font-size:clamp(32px,5vw,66px) !important; line-height:1.26 !important; letter-spacing:-.035em !important; text-wrap:balance; overflow-wrap:normal; }
+#pd19-home-order-title em { display:inline-block; padding-block:.04em .12em; line-height:1.28 !important; }
+#view-landing .pd17-hero-copy h1, #view-landing .pd17-hero-copy h2 { line-height:1.16 !important; padding-block:.04em .08em; text-wrap:balance; }
+#view-landing .pd17-hero-copy h1 span, #view-landing .pd17-hero-copy h2 span { display:inline-block; line-height:1.2; padding-bottom:.06em; }
+#view-landing .pd19-home-order { margin-bottom:0 !important; }
+
+/* Address controls: inactive stages look truly disabled; postcode remains the first editable field. */
+#pd19-address-card .pd19-address-divider { margin-top:16px; }
+#pd19-address-card .pd19-address-divider small { line-height:1.55; }
+#pd19-address-card .pd19-address-field.is-disabled { opacity:1; }
+#pd19-address-card .pd19-address-field input[readonly] {
+  cursor:not-allowed !important;
+  background:rgba(120,132,150,.12) !important;
+  border-color:rgba(120,132,150,.25) !important;
+  color:var(--pd19-muted,#7d8795) !important;
+  box-shadow:none !important;
+  opacity:.78;
+}
+html:not(.dark) #pd19-address-card .pd19-address-field input[readonly] {
+  background:#e9edf2 !important; border-color:#d4dbe5 !important; color:#758196 !important;
+}
+#pd19-address-card #recipient-postal-code:not([readonly]) { border-color:rgba(10,132,255,.55) !important; }
+#pd19-address-card .pd19-address-field input[aria-invalid="true"] { border-color:#ef476f !important; box-shadow:0 0 0 3px rgba(239,71,111,.14) !important; }
+#pd19-address-card .pd19-address-message { min-height:48px; align-items:flex-start; line-height:1.65; }
+#pd19-address-card .pd19-address-message[data-state="error"] { color:#ff8398 !important; border-color:rgba(239,71,111,.36) !important; background:rgba(239,71,111,.08) !important; }
+#pd19-address-card .pd19-address-message[data-state="success"] { color:#48d49a !important; }
+#pd19-address-card .pd19-address-message[data-state="loading"] svg { animation:pd20-spin .9s linear infinite; }
+@keyframes pd20-spin { to { transform:rotate(360deg); } }
+#pd19-address-card input, #pd19-address-card label { min-width:0; }
+@media(max-width:640px) {
+  #view-landing { gap:34px !important; }
+  #pd19-home-order-title { font-size:clamp(30px,8.6vw,44px) !important; line-height:1.28 !important; }
+  #pd19-home-order-title em { line-height:1.3 !important; }
+  #pd19-address-card .pd19-address-grid-two { grid-template-columns:minmax(0,1fr) !important; }
+  #pd19-address-card .pd19-address-field input { min-height:52px !important; font-size:16px !important; }
+}
+@media(min-width:641px) and (max-width:900px) {
+  #pd19-address-card .pd19-address-grid-two { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #pd19-address-card .pd19-address-message[data-state="loading"] svg { animation:none !important; }
+  #view-landing > * { scroll-behavior:auto !important; }
+}
+</style>
 
 </body>
 </html>
