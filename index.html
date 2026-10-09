@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" class="scroll-smooth">
+<html lang="th" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +10,30 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <!-- Best-effort document policy. Critical clickjacking / HSTS / server headers still belong on Vercel response headers. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none';">
+  <meta name="color-scheme" content="dark light">
+  <script id="pd-v17-theme-first-paint">
+    (function(){
+      try {
+        var mode = localStorage.getItem('sp_theme_mode') || localStorage.getItem('sp_theme') || 'dark';
+        var isDark = mode === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : mode !== 'light';
+        document.documentElement.classList.toggle('dark', isDark);
+      } catch (_) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
 
   <meta name="description" content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro — KMUTNB ITI Smart Printing Platform</title>
+  <title>PrintDekD Pro v17 — Smart Printing Platform & Support Center</title>
   
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Cpath d='M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6'/%3E%3Crect x='6' y='14' width='12' height='8' rx='1'/%3E%3C/svg%3E">
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <!-- Tailwind CSS & Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -48,9 +58,9 @@
       }
     }
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="https://unpkg.com/lucide@latest"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -2695,7 +2705,7 @@
       </div>
       <div class="flex gap-2 w-full md:w-auto">
         <input type="text" id="supabase-url" placeholder="Project URL" class="px-3.5 py-2 ui-input rounded-xl text-xs w-full sm:w-60 focus:outline-none">
-        <input type="text" id="supabase-key" placeholder="Anon Key" class="px-3.5 py-2 ui-input rounded-xl text-xs w-full sm:w-60 focus:outline-none">
+        <input type="text" id="supabase-key" placeholder="Publishable / Anon Key (ห้ามใช้ Secret / service_role)" class="px-3.5 py-2 ui-input rounded-xl text-xs w-full sm:w-60 focus:outline-none">
         <button onclick="saveAndInitSupabase()" class="bg-amber-500 hover:bg-amber-400 text-black font-bold px-4 py-2 rounded-xl shadow-md transition">บันทึก</button>
       </div>
     </div>
@@ -2915,84 +2925,39 @@
     <!-- VIEW 1: LANDING PAGE -->
     <section id="view-landing" class="py-16 sm:py-24 px-6 sm:px-12 max-w-[1400px] mx-auto space-y-36 sm:space-y-48">
       
-      <!-- PRINTDEKD PRO v17 — editorial home feature + interactive product carousel -->
-      <section class="pd-v17-home-feature" aria-labelledby="pd-v17-home-title">
-        <div class="pd-v17-home-heading">
-          <span class="pd-v17-kicker"><span class="pd-v17-kicker-dot" aria-hidden="true"></span> PRINTDEKD PRO <span class="pd-v17-kicker-sep" aria-hidden="true">/</span> KMUTNB ITI</span>
-          <h1 id="pd-v17-home-title">งานพิมพ์ที่ง่ายขึ้น<br><em>ครบในที่เดียว</em></h1>
-          <p>อัปโหลด ตรวจพรีวิว คำนวณราคา และติดตามคิวงานได้ในที่เดียว — ออกแบบให้ใช้งานง่ายบนมือถือ iPad และคอมพิวเตอร์</p>
-          <div class="pd-v17-home-actions">
-            <button type="button" class="pd-v17-primary" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i><span>เริ่มสั่งพิมพ์</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
-            <button type="button" class="pd-v17-secondary" onclick="switchView('help')"><i data-lucide="life-buoy" aria-hidden="true"></i><span>ศูนย์ช่วยเหลือ</span></button>
-          </div>
-          <div class="pd-v17-proof-row" aria-label="จุดเด่นของ PrintDekD">
-            <span><i data-lucide="shield-check" aria-hidden="true"></i> ขั้นตอนชัดเจน</span>
-            <span><i data-lucide="wallet-cards" aria-hidden="true"></i> จ่ายด้วย Coins</span>
-            <span><i data-lucide="package-check" aria-hidden="true"></i> รับหน้าร้านหรือจัดส่ง</span>
+      <section class="pd17-hero apple-reveal" aria-labelledby="pd17-hero-title">
+        <div class="pd17-hero-copy">
+          <span class="pd17-eyebrow"><i data-lucide="sparkles" aria-hidden="true"></i> PRINTDEKD PRO · KMUTNB ITI</span>
+          <h1 id="pd17-hero-title">งานพิมพ์ที่ง่ายขึ้น<br><span>ตั้งแต่ไฟล์แรกจนรับงาน</span></h1>
+          <p>อัปโหลดเอกสาร ดูตัวอย่าง เลือกหน้าที่ต้องการ และคำนวณราคาได้ในที่เดียว พร้อมชำระผ่าน Coins และเลือกรับหน้าร้านหรือจัดส่ง</p>
+          <div class="pd17-hero-actions">
+            <button type="button" class="pd17-primary-cta" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i> เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <button type="button" class="pd17-secondary-cta" onclick="switchView('dashboard')"><i data-lucide="clipboard-list" aria-hidden="true"></i> ติดตามคิวงาน</button>
+            <button type="button" class="pd17-text-cta" onclick="switchView('help')">ศูนย์ช่วยเหลือ <i data-lucide="chevron-right" aria-hidden="true"></i></button>
           </div>
         </div>
 
-        <section id="pd-v17-carousel" class="pd-v17-carousel" role="region" aria-roledescription="carousel" aria-label="คุณสมบัติเด่นของ PrintDekD Pro">
-          <div class="pd-v17-slide-stage">
-            <article class="pd-v17-slide is-active" data-pd-v17-slide="0" role="group" aria-roledescription="slide" aria-label="1 จาก 3" aria-hidden="false">
-              <div class="pd-v17-slide-media">
-                <img id="pd-v17-image-0" src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1500&q=78" srcset="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=1500&q=78 1500w" sizes="(max-width: 767px) calc(100vw - 26px), (max-width: 1023px) 52vw, 750px" alt="เครื่องพิมพ์เลเซอร์สำหรับงานพิมพ์เอกสาร" width="1500" height="900" loading="eager" fetchpriority="high" decoding="async">
-                <span class="pd-v17-media-label"><span></span> SMART PRINT FLOW</span>
-              </div>
-              <div class="pd-v17-slide-copy">
-                <span class="pd-v17-slide-overline">01 <span>UPLOAD · PREVIEW · PRINT</span></span>
-                <h2>จากไฟล์<br>สู่หน้ากระดาษ</h2>
-                <p>เลือกไฟล์ PDF แล้วตรวจดูหน้าเอกสาร ตั้งค่ากระดาษ จำนวนชุด และตัวเลือกพิมพ์ได้ก่อนยืนยันรายการ</p>
-                <div class="pd-v17-slide-meta"><span><i data-lucide="file-check-2" aria-hidden="true"></i> พรีวิวก่อนสั่ง</span><span><i data-lucide="sliders-horizontal" aria-hidden="true"></i> ปรับงานได้</span></div>
-              </div>
-            </article>
-
-            <article class="pd-v17-slide" data-pd-v17-slide="1" role="group" aria-roledescription="slide" aria-label="2 จาก 3" aria-hidden="true">
-              <div class="pd-v17-slide-media">
-                <img id="pd-v17-image-1" data-pd-v17-src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1500&q=78" data-pd-v17-srcset="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1500&q=78 1500w" alt="คอมพิวเตอร์สำหรับจัดการไฟล์และงานเอกสาร" width="1500" height="900" loading="lazy" decoding="async">
-                <span class="pd-v17-media-label"><span></span> COINS WALLET</span>
-              </div>
-              <div class="pd-v17-slide-copy">
-                <span class="pd-v17-slide-overline">02 <span>CHECK · PAY · CONTINUE</span></span>
-                <h2>เห็นราคา<br>ก่อนตัดสินใจ</h2>
-                <p>ดูยอดคำนวณจากการตั้งค่างาน และใช้ Coins ผ่านกระเป๋าระบบในขั้นตอนชำระเงินที่รองรับ</p>
-                <div class="pd-v17-slide-meta"><span><i data-lucide="calculator" aria-hidden="true"></i> คำนวณราคา</span><span><i data-lucide="coins" aria-hidden="true"></i> กระเป๋า Coins</span></div>
-              </div>
-            </article>
-
-            <article class="pd-v17-slide" data-pd-v17-slide="2" role="group" aria-roledescription="slide" aria-label="3 จาก 3" aria-hidden="true">
-              <div class="pd-v17-slide-media">
-                <img id="pd-v17-image-2" data-pd-v17-src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1500&q=78" data-pd-v17-srcset="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=720&q=74 720w, https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1500&q=78 1500w" alt="พัสดุที่เตรียมสำหรับการจัดส่ง" width="1500" height="900" loading="lazy" decoding="async">
-                <span class="pd-v17-media-label"><span></span> TRACK YOUR ORDER</span>
-              </div>
-              <div class="pd-v17-slide-copy">
-                <span class="pd-v17-slide-overline">03 <span>QUEUE · PICKUP · DELIVERY</span></span>
-                <h2>รู้สถานะงาน<br>ได้ทุกขั้นตอน</h2>
-                <p>กลับมาตรวจคิวและรายละเอียดรายการได้จากบัญชี พร้อมเลือกช่องทางรับงานที่ระบบเปิดให้บริการ</p>
-                <div class="pd-v17-slide-meta"><span><i data-lucide="list-checks" aria-hidden="true"></i> ติดตามคิว</span><span><i data-lucide="truck" aria-hidden="true"></i> วิธีรับงาน</span></div>
-              </div>
-            </article>
+        <div class="pd17-hero-stage" aria-label="บริการสั่งพิมพ์เอกสารออนไลน์">
+          <img
+            src="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1200&amp;q=82"
+            srcset="https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=640&amp;q=78 640w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1000&amp;q=82 1000w, https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&amp;fit=crop&amp;w=1400&amp;q=82 1400w"
+            sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 64px), 1280px"
+            alt="เครื่องพิมพ์เลเซอร์สำหรับงานเอกสาร"
+            loading="eager" fetchpriority="high" decoding="async">
+          <div class="pd17-hero-scrim" aria-hidden="true"></div>
+          <div class="pd17-stage-top"><span class="pd17-stage-dot"></span><span>SMART PRINT FLOW</span><span class="pd17-stage-index">01 / 03</span></div>
+          <div class="pd17-stage-caption">
+            <span class="pd17-stage-label">UPLOAD · PREVIEW · PRINT</span>
+            <h2>จากเอกสารของคุณ<br>สู่งานพิมพ์ที่พร้อมรับ</h2>
+            <p>ทุกขั้นตอนอยู่ในลำดับที่เข้าใจง่าย ตรวจสอบข้อมูลก่อนยืนยันได้เสมอ</p>
           </div>
+          <div class="pd17-stage-chip"><i data-lucide="file-check-2" aria-hidden="true"></i><span><strong>พร้อมตรวจสอบ</strong><small>ดูไฟล์และจำนวนหน้าก่อนส่งรายการ</small></span></div>
+        </div>
 
-          <div class="pd-v17-carousel-controls">
-            <button type="button" class="pd-v17-rotation" id="pd-v17-rotation" aria-label="หยุดเปลี่ยนภาพอัตโนมัติ" title="หยุดเปลี่ยนภาพอัตโนมัติ"><span class="pd-v17-rotation-icon" aria-hidden="true">Ⅱ</span><span class="pd-v17-rotation-label">พักสไลด์</span></button>
-            <div class="pd-v17-slide-pickers" role="group" aria-label="เลือกเรื่องที่ต้องการดู">
-              <button type="button" class="pd-v17-slide-picker is-active" data-pd-v17-go="0" aria-pressed="true" aria-label="ดูสไลด์ 1: สั่งพิมพ์ง่ายขึ้น"><span>01</span><b>สั่งพิมพ์</b><i></i></button>
-              <button type="button" class="pd-v17-slide-picker" data-pd-v17-go="1" aria-pressed="false" aria-label="ดูสไลด์ 2: Coins Wallet"><span>02</span><b>Coins Wallet</b><i></i></button>
-              <button type="button" class="pd-v17-slide-picker" data-pd-v17-go="2" aria-pressed="false" aria-label="ดูสไลด์ 3: ติดตามคิว"><span>03</span><b>ติดตามคิว</b><i></i></button>
-            </div>
-            <div class="pd-v17-prev-next">
-              <button type="button" id="pd-v17-prev" aria-label="สไลด์ก่อนหน้า" title="สไลด์ก่อนหน้า"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
-              <button type="button" id="pd-v17-next" aria-label="สไลด์ถัดไป" title="สไลด์ถัดไป"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
-            </div>
-          </div>
-          <p class="pd-v17-sr-status" id="pd-v17-slide-status" aria-live="polite" aria-atomic="true">สไลด์ 1 จาก 3: สั่งพิมพ์</p>
-        </section>
-
-        <div class="pd-v17-value-strip" aria-label="จุดเด่นบริการ">
-          <div><span class="pd-v17-value-icon pd-v17-blue"><i data-lucide="scan-text" aria-hidden="true"></i></span><span><b>คมชัดทุกหน้า</b><small>ตรวจเอกสารก่อนส่งงาน</small></span></div>
-          <div><span class="pd-v17-value-icon pd-v17-gold"><i data-lucide="coins" aria-hidden="true"></i></span><span><b>Coins สะดวกขึ้น</b><small>จัดการยอดในที่เดียว</small></span></div>
-          <div><span class="pd-v17-value-icon pd-v17-green"><i data-lucide="package-check" aria-hidden="true"></i></span><span><b>รับงานได้ตามสะดวก</b><small>เลือกวิธีรับที่เหมาะกับคุณ</small></span></div>
+        <div class="pd17-benefits" aria-label="จุดเด่นของบริการ">
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-blue"><i data-lucide="scan-eye" aria-hidden="true"></i></span><div><strong>เห็นก่อนสั่ง</strong><small>พรีวิวและเลือกหน้าเอกสาร</small></div><b>01</b></article>
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-gold"><i data-lucide="wallet-cards" aria-hidden="true"></i></span><div><strong>ราคาโปร่งใส</strong><small>คำนวณยอดก่อนยืนยัน</small></div><b>02</b></article>
+          <article class="pd17-benefit"><span class="pd17-benefit-icon pd17-benefit-green"><i data-lucide="package-check" aria-hidden="true"></i></span><div><strong>เลือกรับได้</strong><small>รับหน้าร้านหรือจัดส่ง</small></div><b>03</b></article>
         </div>
       </section>
 
@@ -3905,8 +3870,20 @@
 
     function validSupabaseConfig(url, key) {
       try {
-        const u = new URL(url);
-        return /^https:$/.test(u.protocol) && /\.supabase\.co$/i.test(u.hostname) && typeof key === 'string' && key.length > 80;
+        const u = new URL(String(url || '').trim());
+        const k = String(key || '').trim();
+        if (u.protocol !== 'https:' || !/\.supabase\.co$/i.test(u.hostname) || u.username || u.password) return false;
+        // Never permit Supabase secret/service-role keys in browser-side configuration.
+        if (/^(sb_secret_|service_role)/i.test(k)) return false;
+        // Current publishable API keys use sb_publishable_... (opaque, short keys).
+        if (/^sb_publishable_[A-Za-z0-9_-]{20,}$/i.test(k)) return true;
+        // Backward compatibility: accept only legacy Supabase JWT keys whose role is anon.
+        const parts = k.split('.');
+        if (parts.length !== 3 || parts.some(part => !/^[A-Za-z0-9_-]+$/.test(part))) return false;
+        const payloadPart = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        const padded = payloadPart + '='.repeat((4 - payloadPart.length % 4) % 4);
+        const payload = JSON.parse(atob(padded));
+        return payload?.role === 'anon' && typeof payload?.ref === 'string';
       } catch { return false; }
     }
 
@@ -3947,15 +3924,18 @@
       setSecurityBadge('security-db-status', dbReady ? 'good' : (dbConfigReady ? 'warn' : 'bad'), dbReady ? 'Supabase เชื่อมต่อแล้ว' : (dbConfigReady ? 'กำลังเชื่อมต่อ' : 'ยังไม่พร้อม'));
       setSecurityBadge('security-session-status', sessionReady ? 'good' : 'warn', sessionReady ? 'เซสชันใช้งานอยู่' : 'ยังไม่ได้ล็อกอิน');
 
-      let stripState = 'good';
-      let title = 'Security baseline พร้อมใช้งาน';
-      let copy = 'ตรวจสอบการส่งข้อมูลและสถานะการเชื่อมต่อแล้ว';
+      let stripState = 'warn';
+      let title = 'การเชื่อมต่อพร้อม — ต้องตรวจสอบ Policy';
+      let copy = 'ตรวจ HTTPS และการเชื่อมต่อเบื้องต้นแล้ว แต่หน้าเว็บไม่สามารถยืนยัน RLS / Storage policies แทนฝั่ง Supabase ได้';
       if (!transportSecure) {
         stripState = 'bad'; title = 'ควรหยุดก่อน: การเชื่อมต่อไม่ปลอดภัย'; copy = 'เปิดเว็บผ่าน HTTPS เพื่อป้องกันข้อมูลระหว่างทาง';
       } else if (!dbReady) {
         stripState = 'warn'; title = 'ต้องตรวจสอบ: ฐานข้อมูลยังไม่พร้อม'; copy = 'ยังไม่ควรทำรายการที่ต้องบันทึกข้อมูลหรือชำระเงิน';
       } else if (!sessionReady) {
         stripState = 'warn'; title = 'พร้อมใช้งานแบบสาธารณะ'; copy = 'ต้องเข้าสู่ระบบก่อนสร้างคิวพิมพ์หรือจัดการ Coins';
+      } else {
+        stripState = 'warn'; title = 'เชื่อมต่อพร้อม — ยังไม่ยืนยันความปลอดภัยฐานข้อมูล';
+        copy = 'ตรวจการเชื่อมต่อแล้วเท่านั้น ต้องตรวจ Supabase Auth, RLS และ Storage policies ใน Dashboard ก่อนใช้งานจริง';
       }
       setSecurityStatus(stripState, title, copy);
 
@@ -3967,8 +3947,8 @@
           ? 'การเชื่อมต่อไม่อยู่ใน Secure Context — อย่าทำรายการสำคัญจนกว่าจะเปิดผ่าน HTTPS'
           : !dbReady
             ? 'Supabase ยังไม่พร้อม ระบบจะไม่อนุญาตให้ส่งรายการสำคัญไปยังฐานข้อมูล'
-            : 'พื้นฐานด้านความปลอดภัยพร้อมใช้งาน แต่ Policy/RLS ใน Supabase ต้องตั้งค่าให้ถูกต้องเพื่อป้องกันข้อมูลจริงฝั่งเซิร์ฟเวอร์';
-        showCustomModal({ title: 'ผลตรวจสอบความปลอดภัย', message: detail, icon: !transportSecure || !dbReady ? 'shield-alert' : 'shield-check' });
+            : 'เชื่อมต่อ HTTPS / Supabase ได้ แต่ฟังก์ชันนี้ไม่ได้ตรวจยืนยัน RLS หรือ Storage Policy โปรดตรวจ Security Advisor และ Policies ที่ฝั่ง Supabase';
+        showCustomModal({ title: 'ผลตรวจการเชื่อมต่อ', message: detail, icon: 'shield-alert' });
       }
       return { transportSecure, dbReady, sessionReady, dbConfigReady };
     }
@@ -4526,6 +4506,7 @@
       target.classList.remove('view-enter-once');
       requestAnimationFrame(() => target.classList.add('view-enter-once'));
       syncNavigationState(viewName);
+      window.dispatchEvent(new CustomEvent('pd:viewchange', { detail: { viewName } }));
 
       touchSession();
       if (viewName === 'dashboard') fetchQueues();
@@ -4564,7 +4545,7 @@
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
       if (!url || !key) return showCustomModal({ title:'กรอกข้อมูลไม่ครบ', message:'กรุณากรอก URL และ Key', icon:'alert-triangle' });
-      if (!validSupabaseConfig(url,key)) return showCustomModal({ title:'ตรวจสอบการเชื่อมต่อ', message:'Project URL หรือ Anon Key ไม่อยู่ในรูปแบบที่คาดหวัง ระบบจึงไม่บันทึกค่า', icon:'shield-alert' });
+      if (!validSupabaseConfig(url,key)) return showCustomModal({ title:'ตรวจสอบการเชื่อมต่อ', message:'กรุณาใช้ Project URL ของ Supabase และ Publishable key (sb_publishable_...) หรือ legacy anon JWT เท่านั้น ห้ามใส่ sb_secret หรือ service_role key ในเว็บไซต์ เพราะเป็นกุญแจสิทธิ์สูง', icon:'shield-alert' });
       localStorage.setItem('sp_url', url); localStorage.setItem('sp_key', key);
       const ok = await initSupabase(url, key);
       if (!ok) return;
@@ -4631,7 +4612,6 @@
       const walletNavBtn = document.getElementById('nav-wallet-btn');
       const adminNavBtn = document.getElementById('admin-menu-btn');
       const appleAdminBtn = document.getElementById('apple-admin-menu-btn');
-      const appleAdminBtnV11 = document.getElementById('apple-admin-menu-btn-v11');
       const dbConfigBtn = document.getElementById('admin-db-config-btn');
 
       if (currentUser) {
@@ -4647,13 +4627,11 @@
 
         if (currentUser.role === 'admin') {
           adminNavBtn.classList.remove('hidden');
-          appleAdminBtn?.classList.remove('hidden');
-          appleAdminBtnV11?.classList.remove('hidden');
+          appleAdminBtn.classList.remove('hidden');
           dbConfigBtn.classList.remove('hidden');
         } else {
           adminNavBtn.classList.add('hidden');
-          appleAdminBtn?.classList.add('hidden');
-          appleAdminBtnV11?.classList.add('hidden');
+          appleAdminBtn.classList.add('hidden');
           dbConfigBtn.classList.add('hidden');
         }
       } else {
@@ -4662,8 +4640,7 @@
         coinsBadge.classList.add('hidden');
         walletNavBtn.classList.add('hidden');
         adminNavBtn.classList.add('hidden');
-        appleAdminBtn?.classList.add('hidden');
-          appleAdminBtnV11?.classList.add('hidden');
+        appleAdminBtn.classList.add('hidden');
         dbConfigBtn.classList.add('hidden');
       }
     }
@@ -5550,7 +5527,8 @@
           { id:'profile', icon:'user-round', title:'โปรไฟล์ของฉัน', desc:'ข้อมูลบัญชี ความปลอดภัย และการตั้งค่า', key:'Profile', action:()=>currentUser ? openUserProfileModal() : (switchView('auth'), switchAuthTab('login')) },
           { id:'theme', icon:'sun-moon', title:'เปลี่ยนธีม', desc:'Dark / Light / System', key:'Theme', action:()=>{ closePDCommandPalette(); toggleTheme(); } },
           { id:'security', icon:'shield-check', title:'ตรวจสอบความปลอดภัย', desc:'ตรวจสอบสถานะการเชื่อมต่อและเซสชัน', key:'Security', action:()=>runSecurityAudit(true) },
-          { id:'help', icon:'life-buoy', title:'ศูนย์ช่วยเหลือ PrintDekD', desc:'ค้นหาคู่มือ วิธีใช้งาน และคำถามที่พบบ่อย', key:'Help', action:()=>switchView('help') }
+          { id:'help', icon:'life-buoy', title:'ศูนย์ช่วยเหลือ PrintDekD', desc:'ค้นหาคู่มือ วิธีใช้งาน และคำถามที่พบบ่อย', key:'Help', action:()=>switchView('help') },
+          { id:'performance', icon:'gauge', title:'ตรวจสุขภาพและความลื่นไหล', desc:'ตรวจขนาดจอ, overflow, DOM, รูปภาพ และ long tasks ภายในเครื่อง', key:'Performance', action:()=>window.pdV17RunPerformanceAudit?.(true) }
         ];
         if (currentUser?.role === 'admin') {
           items.splice(5, 0, { id:'admin', icon:'layout-dashboard', title:'Admin Backoffice', desc:'จัดการคิว ผู้ใช้ และ Top-up', key:'Admin', action:()=>switchView('admin') });
@@ -5645,7 +5623,7 @@
         const update = () => {
           const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
           const pct = Math.min(100, Math.max(0, (scrollY / max) * 100));
-          if (progress) progress.style.width = pct + '%';
+          if (progress) { progress.style.width = '100%'; progress.style.transformOrigin = 'left center'; progress.style.transform = `scaleX(${pct / 100})`; }
           nav?.classList.toggle('is-compact', scrollY > 28);
           dock?.classList.toggle('is-hidden', scrollY < 220);
           island?.classList.toggle('is-visible', scrollY > 360);
@@ -5767,7 +5745,8 @@
           if (label && visible) label.textContent = visible[1];
         };
         update();
-        window.updateLiveIslandStatus = update; // event-driven in v17; no one-second polling loop.
+        window.addEventListener('pd:viewchange', update, { passive:true });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) update(); }, { passive:true });
       }
 
       function setupThemeFirstPaint() {
@@ -6187,32 +6166,24 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
     if(/โปรไฟล์|รูป|avatar/.test(x))return 'เปิด Account Center → โปรไฟล์ → แก้ไขโปรไฟล์\nเลือกรูป PNG/JPG/WEBP ไม่เกิน 2 MB แล้ว Profile Studio จะให้ลาก/ซูม/ครอปก่อนบันทึก';
     if(/promptpay|สลิป|เติมเงิน/.test(x))return 'Wallet รองรับการเลือกแพ็กเกจ Coins และแนบสลิปเพื่อรอแอดมินตรวจสอบ\nแอดมินสามารถเปิดสลิปจากหน้า Admin ได้';
     if(/ราคา|คิดราคา|คำนวณ/.test(x))return 'ระบบคำนวณจากจำนวนหน้า × อัตราพิมพ์ × จำนวนชุด และเพิ่มค่าจัดส่ง 30 บาทเมื่อเลือกจัดส่ง โดยจะแสดงยอดรวมแบบเรียลไทม์';
-    return 'ผมเป็น AI ผู้ช่วยภายใน PrintDekD Pro รุ่นนี้ จึงตอบจากข้อมูลและความสามารถที่มีอยู่ในหน้าเว็บ เช่น โปรไฟล์, Coins, การอัปโหลด, คิวงาน และ Admin\n\nลองถามว่า “Coins เหลือเท่าไร”, “อัปโหลดไฟล์อะไรได้บ้าง”, “ดูคิวอย่างไร” หรือ “Admin ทำอะไรได้บ้าง”';
+    return 'ผมเป็นผู้ช่วยคู่มือภายใน PrintDekD Pro โดยรุ่นนี้ใช้คำสำคัญและคำตอบที่เตรียมไว้ ยังไม่ได้เชื่อมต่อ Generative AI เพื่อสร้างคำตอบอิสระ\n\nลองถามว่า “Coins เหลือเท่าไร”, “อัปโหลดไฟล์อะไรได้บ้าง”, “ดูคิวอย่างไร” หรือ “Admin ทำอะไรได้บ้าง”';
   }
   window.togglePDAssistant=function(){const p=$('pd-ai-panel');p?.classList.toggle('is-open');if(p?.classList.contains('is-open'))$('pd-ai-input')?.focus()};
-  function installAI(){if($('pd-ai-launcher'))return;const l=document.createElement('button');l.id='pd-ai-launcher';l.type='button';l.setAttribute('aria-label','เปิด AI ผู้ช่วย');l.innerHTML='<span class="pd-ai-pulse"></span><i data-lucide="sparkles" class="w-7 h-7"></i>';l.onclick=togglePDAssistant;document.body.appendChild(l);const p=document.createElement('div');p.id='pd-ai-panel';p.innerHTML='<div class="pd-ai-head"><div class="pd-ai-brand"><div class="pd-ai-icon"><i data-lucide="sparkles"></i></div><div><div class="pd-ai-title">PrintDekD AI</div><div class="pd-ai-sub">ผู้ช่วยตอบจากระบบเว็บปัจจุบัน</div></div></div><button class="pd-ai-close" type="button" onclick="togglePDAssistant()"><i data-lucide="x"></i></button></div><div id="pd-ai-messages" class="pd-ai-messages"></div><div class="pd-ai-suggestions"><button>Coins เหลือเท่าไร?</button><button>อัปโหลดไฟล์อะไรได้บ้าง?</button><button>ดูคิวอย่างไร?</button><button>Admin ทำอะไรได้บ้าง?</button></div><form id="pd-ai-form" class="pd-ai-form"><input id="pd-ai-input" autocomplete="off" placeholder="ถามอะไรเกี่ยวกับระบบก็ได้…"><button type="submit"><i data-lucide="arrow-up"></i></button></form>';document.body.appendChild(p);p.querySelectorAll('.pd-ai-suggestions button').forEach(b=>b.onclick=()=>{addAiMsg(b.textContent,'user');setTimeout(()=>addAiMsg(aiAnswer(b.textContent)),220)});$('pd-ai-form').onsubmit=e=>{e.preventDefault();const v=$('pd-ai-input').value.trim();if(!v)return;$('pd-ai-input').value='';addAiMsg(v,'user');setTimeout(()=>addAiMsg(aiAnswer(v)),240)};if(window.lucide)lucide.createIcons();addAiMsg('สวัสดีครับ 👋 ผมช่วยตอบเรื่อง Coins, การอัปโหลด, คิวงาน, โปรไฟล์ และฟังก์ชัน Admin ได้ ลองถามได้เลย');}
+  function installAI(){if($('pd-ai-launcher'))return;const l=document.createElement('button');l.id='pd-ai-launcher';l.type='button';l.setAttribute('aria-label','เปิด AI ผู้ช่วย');l.innerHTML='<span class="pd-ai-pulse"></span><i data-lucide="sparkles" class="w-7 h-7"></i>';l.onclick=togglePDAssistant;document.body.appendChild(l);const p=document.createElement('div');p.id='pd-ai-panel';p.innerHTML='<div class="pd-ai-head"><div class="pd-ai-brand"><div class="pd-ai-icon"><i data-lucide="sparkles"></i></div><div><div class="pd-ai-title">PrintDekD AI</div><div class="pd-ai-sub">ผู้ช่วยคู่มือและคำถามที่พบบ่อย</div></div></div><button class="pd-ai-close" type="button" onclick="togglePDAssistant()"><i data-lucide="x"></i></button></div><div id="pd-ai-messages" class="pd-ai-messages"></div><div class="pd-ai-suggestions"><button>Coins เหลือเท่าไร?</button><button>อัปโหลดไฟล์อะไรได้บ้าง?</button><button>ดูคิวอย่างไร?</button><button>Admin ทำอะไรได้บ้าง?</button></div><form id="pd-ai-form" class="pd-ai-form"><input id="pd-ai-input" autocomplete="off" placeholder="ถามอะไรเกี่ยวกับระบบก็ได้…"><button type="submit"><i data-lucide="arrow-up"></i></button></form>';document.body.appendChild(p);p.querySelectorAll('.pd-ai-suggestions button').forEach(b=>b.onclick=()=>{addAiMsg(b.textContent,'user');setTimeout(()=>addAiMsg(aiAnswer(b.textContent)),220)});$('pd-ai-form').onsubmit=e=>{e.preventDefault();const v=$('pd-ai-input').value.trim();if(!v)return;$('pd-ai-input').value='';addAiMsg(v,'user');setTimeout(()=>addAiMsg(aiAnswer(v)),240)};if(window.lucide)lucide.createIcons();addAiMsg('สวัสดีครับ 👋 ผมช่วยตอบเรื่อง Coins, การอัปโหลด, คิวงาน, โปรไฟล์ และฟังก์ชัน Admin ได้ ลองถามได้เลย');}
 
   /* ---------- scroll / cinematic motion ---------- */
   function installMotion(){
-    // v17: one lazy-image observer; scroll handling stays in the single RAF-throttled handler.
-    if (!('IntersectionObserver' in window)) return;
-    if (!window.__pdV17ImageObserver) {
-      window.__pdV17ImageObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('pd-slide-image');
-            window.__pdV17ImageObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: .12, rootMargin: '100px 0px' });
-    }
-    document.querySelectorAll('#view-landing img, #view-dashboard img, #view-wallet img, #view-admin img').forEach(img => {
-      if (img.dataset.pdV17Observed) return;
-      img.dataset.pdV17Observed = '1';
-      if (!img.loading) img.loading = 'lazy';
-      if (!img.decoding) img.decoding = 'async';
-      window.__pdV17ImageObserver.observe(img);
-    });
+    // Use the browser's intersection scheduler for image entrances; no scroll event timer/blur wash.
+    const imgs = [...document.querySelectorAll('#view-landing img, #view-dashboard img, #view-wallet img, #view-admin img')];
+    if (!('IntersectionObserver' in window)) { imgs.forEach(img => img.classList.add('pd-slide-image')); return; }
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('pd-slide-image');
+        io.unobserve(entry.target);
+      });
+    }, { threshold:.08, rootMargin:'100px 0px' });
+    imgs.forEach(img => io.observe(img));
   }
   installAI();installMotion();
 })();
@@ -6398,7 +6369,7 @@ function rebuildV11Menu(){
        <button type="button" class="apple-menu-item" data-view="wallet" data-menu-link="wallet" style="--accent:#f5a400">
          <span class="menu-icon"><i data-lucide="wallet-cards" class="w-5 h-5"></i></span><span><span class="menu-kicker">03 · WALLET</span><span class="menu-title block">Coins Wallet</span></span><span class="menu-state">เปิดอยู่</span>
        </button>
-       <button type="button" id="apple-admin-menu-btn-v11" class="hidden apple-menu-item" data-view="admin" data-menu-link="admin" style="--accent:#a855f7">
+       <button type="button" id="apple-admin-menu-btn" class="hidden apple-menu-item" data-view="admin" data-menu-link="admin" style="--accent:#a855f7">
          <span class="menu-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></span><span><span class="menu-kicker">04 · ADMIN</span><span class="menu-title block">Admin Backoffice</span></span><span class="menu-state">ผู้ดูแล</span>
        </button>
      </nav>
@@ -6634,13 +6605,7 @@ window.pdV11RunDiagnostics=async function(){
    fine pointers. This never runs on touch devices.
    --------------------------------------------------------------- */
 function installLandingMotion(){
- if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
- if(!window.matchMedia?.('(pointer:fine)').matches)return;
- qa('#view-landing .pd-feature-card,#view-landing .pd-service-pill').forEach(el=>{
-  if(el.dataset.v11Tilt)return;el.dataset.v11Tilt='1';el.classList.add('v11-tilt');
-  let raf=0;el.addEventListener('pointermove',e=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(800px) rotateX(${(-y*2).toFixed(2)}deg) rotateY(${(x*2).toFixed(2)}deg) translateY(-5px)`})});
-  el.addEventListener('pointerleave',()=>{cancelAnimationFrame(raf);raf=0;el.style.transform=''});
- });
+  // CSS-only hover animation is smoother and more predictable than pointer-driven 3D transforms.
 }
 installLandingMotion();
 
@@ -10294,6 +10259,7 @@ html.dark .pd-help-contact-card { background:linear-gradient(155deg,#142a42,#101
       const selected = btn.dataset.helpCategory === activeCategory;
       btn.setAttribute('aria-pressed', String(selected));
     });
+    if (window.lucide) window.lucide.createIcons();
   }
   $('pd-help-search-form')?.addEventListener('submit', e => { e.preventDefault(); activeCategory = ''; updateHelpFilter(); });
   helpSearch?.addEventListener('input', () => { activeCategory = ''; updateHelpFilter(); });
@@ -10360,234 +10326,189 @@ html.dark .pd-help-contact-card { background:linear-gradient(155deg,#142a42,#101
 })();
 </script>
 
-<style id="pd-v17-smooth-editorial">
-/* ==============================================================
-   PRINTDEKD PRO v17 — smooth editorial responsive design system
-   Visual inspiration: Apple-style product storytelling, original
-   PrintDekD interface and content. Motion uses opacity/transform.
-   ============================================================== */
+<style id="pd-v17-performance-design">
+/* =============================================================
+   PrintDekD Pro v17 — refined product landing + measured motion
+   Principles: readable Thai typography, fluid responsive layout,
+   compositor-friendly motion, no permanent pointer animation loops.
+   ============================================================= */
 :root {
   --pd17-blue:#087cff;
-  --pd17-blue-deep:#075ed1;
-  --pd17-green:#16a36a;
-  --pd17-gold:#c78307;
-  --pd17-copy:#f5f7fb;
-  --pd17-muted:#aeb7c6;
-  --pd17-panel:#101721;
-  --pd17-panel-soft:#151e2a;
-  --pd17-line:rgba(148,163,184,.20);
-  --pd17-ease:cubic-bezier(.22,1,.36,1);
-  --pd17-shadow:0 24px 70px rgba(0,0,0,.20);
+  --pd17-blue-hi:#006be6;
+  --pd17-ink:#080b10;
+  --pd17-card:#101722;
+  --pd17-border:rgba(148,163,184,.24);
+  --pd17-ease:cubic-bezier(.2,.75,.25,1);
 }
-html:not(.dark) {
-  --pd17-copy:#141821;
-  --pd17-muted:#596578;
-  --pd17-panel:#ffffff;
-  --pd17-panel-soft:#f4f7fb;
-  --pd17-line:rgba(20,30,45,.13);
-  --pd17-shadow:0 24px 70px rgba(20,35,58,.11);
-}
-/* Reduce layout/paint work from legacy glass and scroll-out blur. */
-#pd-ambient-orb,#pd-cursor-glow,#pd-page-wash { display:none!important; }
-.apple-reveal,.apple-reveal.is-visible,.apple-reveal.is-scrolled-out {
-  opacity:1!important; transform:none!important; filter:none!important;
-  will-change:auto!important; transition:none!important;
-}
-.pd-v11-shimmer:after,.v11-shimmer:after { animation:none!important; }
-.pd-island-dot { animation:none!important; }
-.ui-card,.ui-panel {
-  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
-}
-nav.sticky > .navbar-inner {
-  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
-  transition:background-color .22s ease,border-color .22s ease,box-shadow .22s ease!important;
-}
-#apple-tab-menu,#pd-ai-panel,.pd-account-popover,#pd-command-palette .pd-command-sheet,
-#pd-crop-modal,#pd-v10-crop-modal {
-  -webkit-backdrop-filter:none!important; backdrop-filter:none!important;
-}
-/* No horizontal overflow; reserve a safe region for bottom navigation on touch. */
+html { scroll-behavior:smooth; }
 html,body { max-width:100%; overflow-x:clip; }
-img,video,canvas,svg { max-width:100%; }
-body { padding-bottom:env(safe-area-inset-bottom); }
+body { text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
+img { max-width:100%; }
+button,a { -webkit-tap-highlight-color:transparent; }
+button { touch-action:manipulation; }
+:focus-visible { outline:3px solid rgba(8,124,255,.62); outline-offset:3px; }
+#pd17-skip-link { position:fixed; z-index:9999; top:8px; left:8px; transform:translateY(-160%); padding:12px 16px; border-radius:12px; background:#087cff; color:#fff; font-size:14px; font-weight:800; box-shadow:0 8px 28px rgba(0,0,0,.25); }
+#pd17-skip-link:focus { transform:translateY(0); }
+
+/* ---- Product landing hero ---- */
 #view-landing {
-  width:100%!important; max-width:none!important; margin-inline:0!important;
-  padding:0!important; overflow:clip;
+  width:100% !important; max-width:1540px !important; margin-inline:auto !important;
+  padding:clamp(22px,4vw,62px) clamp(16px,4.2vw,64px) clamp(42px,6vw,90px) !important;
+  gap:clamp(54px,8vw,122px) !important;
 }
-#view-landing > * + * { margin-top:clamp(48px,6vw,104px)!important; }
-.pd-v17-home-feature {
-  width:100%; margin:0 auto; padding:clamp(30px,5vw,76px) clamp(16px,4.3vw,68px) clamp(28px,4.2vw,56px);
-  position:relative; isolation:isolate; overflow:hidden;
-  color:var(--pd17-copy);
-  background:
-    radial-gradient(ellipse at 50% -20%,rgba(8,124,255,.15),transparent 58%),
-    linear-gradient(180deg,#080c13 0%,#0c121b 100%);
-  border-bottom:1px solid rgba(148,163,184,.12);
+#view-landing > .pd17-hero {
+  width:100%; max-width:100%; min-width:0; overflow:hidden;
+  padding:clamp(22px,5vw,68px) clamp(14px,3.5vw,48px) clamp(18px,2.6vw,34px);
+  border-radius:clamp(24px,4vw,42px);
+  color:#f8fafc; background:
+    radial-gradient(750px 330px at 50% -16%,rgba(10,132,255,.20),transparent 72%),
+    radial-gradient(520px 340px at 90% 65%,rgba(89,72,214,.13),transparent 72%),
+    linear-gradient(180deg,#0a0d13 0%,#06080c 100%);
+  border:1px solid rgba(148,163,184,.18);
+  box-shadow:0 34px 100px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
+  isolation:isolate;
 }
-html:not(.dark) .pd-v17-home-feature {
-  background:
-    radial-gradient(ellipse at 50% -20%,rgba(8,124,255,.09),transparent 58%),
-    linear-gradient(180deg,#fbfcff 0%,#f2f5f9 100%);
-}
-.pd-v17-home-heading { max-width:1000px; text-align:center; margin:0 auto clamp(26px,3.6vw,48px); }
-.pd-v17-kicker {
-  display:inline-flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:9px;
-  padding:8px 12px; border:1px solid var(--pd17-line); border-radius:999px;
-  color:var(--pd17-muted); background:rgba(128,148,172,.075);
-  font-size:11px; font-weight:850; letter-spacing:.095em; line-height:1.45;
-}
-.pd-v17-kicker-dot { width:7px;height:7px;border-radius:50%;background:#28c783; box-shadow:0 0 0 4px rgba(40,199,131,.12); }
-.pd-v17-kicker-sep { opacity:.45; }
-#view-landing .pd-v17-home-heading h1 {
-  margin:21px auto 0!important; max-width:15ch!important; font-size:clamp(38px,6.1vw,82px)!important;
-  font-weight:850!important; line-height:1.12!important; letter-spacing:-.045em!important;
-  color:var(--pd17-copy)!important; text-wrap:balance; overflow-wrap:normal;
-}
-#view-landing .pd-v17-home-heading h1 em { color:#58a6ff!important; font-style:normal; }
-html:not(.dark) #view-landing .pd-v17-home-heading h1 em { color:#076fe5!important; }
-#view-landing .pd-v17-home-heading > p {
-  max-width:760px!important; margin:19px auto 0!important; font-size:clamp(15px,1.4vw,19px)!important;
-  line-height:1.8!important; color:var(--pd17-muted)!important; text-wrap:pretty;
-}
-.pd-v17-home-actions { display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:25px; }
-.pd-v17-primary,.pd-v17-secondary {
-  min-height:50px!important;display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  padding:0 20px!important;border-radius:999px!important;font-size:14px!important;font-weight:800!important;
-  border:1px solid transparent; transition:transform .22s var(--pd17-ease),background-color .22s ease,border-color .22s ease,box-shadow .22s ease;
-}
-.pd-v17-primary { background:#087cff!important;color:#fff!important;box-shadow:0 8px 25px rgba(8,124,255,.18); }
-.pd-v17-primary:hover { background:#218aff!important; transform:translateY(-2px);box-shadow:0 12px 30px rgba(8,124,255,.24); }
-.pd-v17-secondary { background:rgba(128,148,172,.08)!important;color:var(--pd17-copy)!important;border-color:var(--pd17-line)!important; }
-.pd-v17-secondary:hover { background:rgba(128,148,172,.14)!important;transform:translateY(-2px); }
-.pd-v17-primary svg,.pd-v17-secondary svg { width:17px;height:17px;flex:0 0 auto; }
-.pd-v17-proof-row { display:flex;justify-content:center;align-items:center;gap:12px 25px;flex-wrap:wrap;margin-top:23px;color:var(--pd17-muted);font-size:12px;font-weight:650; }
-.pd-v17-proof-row span { display:inline-flex;align-items:center;gap:7px; }
-.pd-v17-proof-row svg { width:16px;height:16px;color:#45b0ff; }
-.pd-v17-carousel {
-  width:min(1320px,100%); margin:0 auto; position:relative;
-  border:1px solid var(--pd17-line); border-radius:clamp(20px,2.2vw,34px); overflow:hidden;
-  background:var(--pd17-panel); box-shadow:var(--pd17-shadow); contain:layout paint style;
-}
-.pd-v17-slide-stage { position:relative; min-height:360px; background:var(--pd17-panel); }
-.pd-v17-slide {
-  position:absolute; inset:0; display:grid; grid-template-columns:minmax(0,1.14fr) minmax(300px,.86fr);
-  align-items:stretch; min-width:0; opacity:0; visibility:hidden; pointer-events:none;
-  transform:translateY(7px); transition:opacity .38s ease,transform .38s var(--pd17-ease),visibility 0s linear .38s;
-}
-.pd-v17-slide.is-active { position:relative; opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); transition:opacity .38s ease,transform .38s var(--pd17-ease),visibility 0s; }
-.pd-v17-slide-media { min-width:0;position:relative;overflow:hidden;min-height:360px;background:linear-gradient(135deg,#1a2635,#0a111a); }
-.pd-v17-slide-media img { display:block;width:100%;height:100%;min-height:360px;max-height:590px;object-fit:cover;object-position:center;transition:opacity .24s ease; }
-.pd-v17-slide-media img:not([src]) { opacity:0; }
-.pd-v17-slide-media:after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(4,9,16,.05),rgba(4,9,16,0) 65%,rgba(4,9,16,.08)); }
-.pd-v17-media-label { position:absolute;left:20px;top:20px;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:rgba(8,13,20,.88);color:#f7fbff;border:1px solid rgba(255,255,255,.18);font-size:10px;line-height:1.3;font-weight:850;letter-spacing:.085em; }
-.pd-v17-media-label span { width:6px;height:6px;border-radius:50%;background:#35d390; }
-.pd-v17-slide-copy { display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0;padding:clamp(25px,4vw,58px);background:var(--pd17-panel);color:var(--pd17-copy); }
-.pd-v17-slide-overline { display:flex;align-items:center;gap:12px;color:#5daeff;font-size:12px;font-weight:900;letter-spacing:.07em; }
-.pd-v17-slide-overline span { color:var(--pd17-muted);font-size:10px;letter-spacing:.09em; }
-.pd-v17-slide-copy h2 { margin:18px 0 0!important;font-size:clamp(27px,3.2vw,46px)!important;font-weight:850!important;line-height:1.15!important;letter-spacing:-.04em!important;color:var(--pd17-copy)!important;text-wrap:balance; }
-.pd-v17-slide-copy p { margin:15px 0 0!important;max-width:42ch;font-size:clamp(14px,1.15vw,16px)!important;line-height:1.85!important;color:var(--pd17-muted)!important; }
-.pd-v17-slide-meta { display:flex;align-items:center;gap:9px 16px;flex-wrap:wrap;margin-top:24px;color:var(--pd17-muted);font-size:12px;font-weight:700; }
-.pd-v17-slide-meta span { display:inline-flex;align-items:center;gap:6px; }
-.pd-v17-slide-meta svg { width:15px;height:15px;color:#54a7ff; }
-.pd-v17-carousel-controls { display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;background:var(--pd17-panel-soft);border-top:1px solid var(--pd17-line); }
-.pd-v17-rotation,.pd-v17-prev-next button {
-  min-width:42px;min-height:42px!important;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  border:1px solid var(--pd17-line);border-radius:999px;background:transparent;color:var(--pd17-copy);
-  transition:background-color .18s ease,border-color .18s ease,transform .18s var(--pd17-ease);
-}
-.pd-v17-rotation { padding:0 13px!important;font-size:11px!important;font-weight:800!important;white-space:nowrap; }
-.pd-v17-rotation-icon { display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;font-size:15px;line-height:1;font-weight:900; }
-.pd-v17-prev-next { display:flex;gap:7px;flex:0 0 auto; }
-.pd-v17-prev-next button { width:42px;padding:0!important; }
-.pd-v17-rotation:hover,.pd-v17-prev-next button:hover { background:rgba(128,148,172,.12);border-color:rgba(8,124,255,.45);transform:translateY(-1px); }
-.pd-v17-slide-pickers { display:flex;align-items:stretch;justify-content:center;gap:6px;min-width:0;flex:1; }
-.pd-v17-slide-picker { position:relative;min-width:0;min-height:42px!important;display:flex;align-items:center;gap:8px;padding:0 11px!important;border-radius:12px!important;color:var(--pd17-muted)!important;background:transparent!important;white-space:nowrap;transition:background-color .18s ease,color .18s ease; }
-.pd-v17-slide-picker span { font-size:10px;font-weight:850;opacity:.66; }
-.pd-v17-slide-picker b { font-size:12px;font-weight:750; }
-.pd-v17-slide-picker i { display:none;position:absolute;left:11px;right:11px;bottom:2px;height:2px;border-radius:99px;background:#1684ff; }
-.pd-v17-slide-picker.is-active { color:var(--pd17-copy)!important;background:rgba(8,124,255,.09)!important; }
-.pd-v17-slide-picker.is-active i { display:block; }
-.pd-v17-sr-status { position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important; }
-.pd-v17-value-strip { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:min(1320px,100%);margin:16px auto 0; }
-.pd-v17-value-strip>div { display:flex;align-items:center;gap:13px;min-width:0;padding:17px 18px;border:1px solid var(--pd17-line);border-radius:19px;background:var(--pd17-panel); }
-.pd-v17-value-icon { width:42px;height:42px;flex:0 0 auto;display:grid;place-items:center;border-radius:14px;background:rgba(8,124,255,.12);color:#228cff; }
-.pd-v17-value-icon svg { width:20px;height:20px; }
-.pd-v17-gold { color:#f2bb4a;background:rgba(222,157,32,.12); }
-.pd-v17-green { color:#28bb80;background:rgba(40,187,128,.12); }
-.pd-v17-value-strip b { display:block;color:var(--pd17-copy);font-size:14px;line-height:1.4;font-weight:850; }
-.pd-v17-value-strip small { display:block;margin-top:4px;color:var(--pd17-muted);font-size:11px;line-height:1.5; }
-.pd-v17-home-feature button:focus-visible { outline:3px solid rgba(42,148,255,.72)!important;outline-offset:3px!important; }
-/* Light theme is solid and legible rather than glass over text. */
-html:not(.dark) .pd-v17-carousel,html:not(.dark) .pd-v17-slide-copy,html:not(.dark) .pd-v17-value-strip>div { background:#fff; }
-html:not(.dark) .pd-v17-carousel-controls { background:#f5f7fb; }
-html:not(.dark) .pd-v17-rotation,html:not(.dark) .pd-v17-prev-next button { background:#fff;color:#151821; }
-/* Preserve useful motion but do not animate blur, height, shadow spread, or layout dimensions. */
-button,a,.ui-card,.pd-story-card,.pd-account-action { transition-property:color,background-color,border-color,opacity,transform,box-shadow!important;transition-duration:.18s!important; }
-button:active { transform:scale(.985); }
+.pd17-hero-copy { width:min(100%,1020px); margin:0 auto clamp(24px,4vw,46px); text-align:center; }
+.pd17-eyebrow { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:34px; padding:7px 12px; border:1px solid rgba(96,165,250,.26); border-radius:999px; background:rgba(10,132,255,.11); color:#9dcaff; font-size:11px; line-height:1.35; letter-spacing:.11em; font-weight:900; }
+.pd17-eyebrow svg { width:15px; height:15px; color:#69b0ff; }
+.pd17-hero-copy h1 { margin:22px auto 16px; color:#f8fafc!important; font-size:clamp(36px,6.4vw,84px)!important; line-height:1.035!important; letter-spacing:-.048em!important; font-weight:900!important; max-width:1000px; text-wrap:balance; }
+.pd17-hero-copy h1 span { color:#b8c6da; background:linear-gradient(180deg,#f8fafc 0%,#9dacc2 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.pd17-hero-copy > p { width:min(100%,760px); margin:0 auto; color:#b1bdcd!important; font-size:clamp(15px,1.55vw,20px)!important; line-height:1.75!important; font-weight:450; text-wrap:pretty; }
+.pd17-hero-actions { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:10px; margin-top:clamp(22px,3.2vw,34px); }
+.pd17-primary-cta,.pd17-secondary-cta,.pd17-text-cta { display:inline-flex; justify-content:center; align-items:center; gap:9px; min-height:52px; padding:0 19px; border-radius:999px; border:1px solid transparent; font-size:14px; line-height:1.2; font-weight:850; transition:transform .2s var(--pd17-ease),background-color .2s ease,border-color .2s ease,box-shadow .2s ease; }
+.pd17-primary-cta { color:#fff; background:#087cff; box-shadow:0 12px 28px rgba(8,124,255,.22); }
+.pd17-primary-cta:hover { background:#218cff; transform:translateY(-2px); box-shadow:0 17px 36px rgba(8,124,255,.30); }
+.pd17-secondary-cta { color:#f1f5f9; background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.16); }
+.pd17-secondary-cta:hover { background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.28); transform:translateY(-2px); }
+.pd17-text-cta { min-height:44px; padding:0 10px; background:transparent; color:#a9ceff; border-color:transparent; }
+.pd17-text-cta:hover { color:#fff; background:rgba(255,255,255,.05); }
+.pd17-primary-cta svg,.pd17-secondary-cta svg,.pd17-text-cta svg { width:17px; height:17px; flex:none; }
+.pd17-hero-stage { position:relative; width:100%; max-width:1320px; aspect-ratio:16/7.4; min-height:330px; max-height:720px; margin:0 auto; overflow:hidden; isolation:isolate; border-radius:clamp(18px,3vw,30px); border:1px solid rgba(255,255,255,.13); background:#121821; box-shadow:0 30px 75px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.08); }
+.pd17-hero-stage > img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; object-position:center 48%; opacity:.86; filter:contrast(1.04) saturate(.78); transform:scale(1.012); animation:pd17-art-arrive .85s var(--pd17-ease) both; }
+.pd17-hero-scrim { position:absolute; z-index:1; inset:0; pointer-events:none; background:linear-gradient(180deg,rgba(5,8,13,.34) 0%,rgba(5,8,13,.05) 30%,rgba(5,8,13,.45) 63%,rgba(5,8,13,.92) 100%),linear-gradient(90deg,rgba(5,8,13,.2),transparent 40%,rgba(5,8,13,.08)); }
+.pd17-stage-top { position:absolute; z-index:2; left:clamp(14px,2.3vw,28px); right:clamp(14px,2.3vw,28px); top:clamp(14px,2.3vw,28px); display:flex; align-items:center; gap:10px; color:#f8fafc; font-size:11px; letter-spacing:.13em; line-height:1.3; font-weight:900; text-shadow:0 2px 15px rgba(0,0,0,.5); }
+.pd17-stage-dot { width:8px; height:8px; border-radius:50%; background:#4ade80; box-shadow:0 0 0 5px rgba(74,222,128,.13); }
+.pd17-stage-index { margin-left:auto; color:rgba(255,255,255,.62); font-variant-numeric:tabular-nums; }
+.pd17-stage-caption { position:absolute; z-index:2; left:clamp(18px,4vw,54px); bottom:clamp(20px,4.5vw,60px); max-width:min(700px,74%); color:#fff; }
+.pd17-stage-label { color:#a9d1ff; font-size:11px; line-height:1.35; font-weight:900; letter-spacing:.13em; }
+.pd17-stage-caption h2 { margin:9px 0 8px; font-size:clamp(22px,3.8vw,48px); line-height:1.08; letter-spacing:-.035em; font-weight:900; color:#fff; text-wrap:balance; text-shadow:0 2px 18px rgba(0,0,0,.48); }
+.pd17-stage-caption p { max-width:52ch; margin:0; color:rgba(248,250,252,.85); font-size:clamp(12px,1.25vw,16px); line-height:1.65; text-shadow:0 2px 14px rgba(0,0,0,.45); }
+.pd17-stage-chip { position:absolute; z-index:3; right:clamp(14px,2.3vw,28px); bottom:clamp(18px,2.5vw,30px); display:flex; align-items:center; gap:10px; padding:12px 15px; max-width:270px; border-radius:17px; border:1px solid rgba(255,255,255,.18); background:rgba(10,15,23,.82); color:#fff; box-shadow:0 12px 35px rgba(0,0,0,.23); }
+.pd17-stage-chip > svg { width:20px; height:20px; color:#72bdff; flex:none; }
+.pd17-stage-chip strong,.pd17-stage-chip small { display:block; }
+.pd17-stage-chip strong { font-size:12px; line-height:1.35; font-weight:900; }
+.pd17-stage-chip small { margin-top:3px; color:#bbc7d7; font-size:10px; line-height:1.45; }
+.pd17-benefits { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; max-width:1320px; margin:14px auto 0; }
+.pd17-benefit { min-width:0; display:grid; grid-template-columns:46px minmax(0,1fr) auto; align-items:center; gap:12px; min-height:88px; padding:16px 18px; border:1px solid rgba(255,255,255,.10); border-radius:19px; background:rgba(255,255,255,.045); transition:transform .22s var(--pd17-ease),background .22s ease,border-color .22s ease; }
+.pd17-benefit:hover { transform:translateY(-3px); border-color:rgba(125,180,255,.34); background:rgba(255,255,255,.065); }
+.pd17-benefit-icon { width:46px; height:46px; display:grid; place-items:center; border-radius:14px; }
+.pd17-benefit-icon svg { width:22px; height:22px; }
+.pd17-benefit-blue { color:#91c8ff; background:rgba(8,124,255,.16); }
+.pd17-benefit-gold { color:#ffd37a; background:rgba(245,179,24,.13); }
+.pd17-benefit-green { color:#83e6b4; background:rgba(52,211,153,.13); }
+.pd17-benefit strong { display:block; color:#f5f8fc; font-size:15px; line-height:1.4; font-weight:900; }
+.pd17-benefit small { display:block; margin-top:4px; color:#aebacc; font-size:12px; line-height:1.5; }
+.pd17-benefit > b { align-self:start; color:rgba(203,213,225,.43); font-size:11px; font-variant-numeric:tabular-nums; }
+@keyframes pd17-art-arrive { from { opacity:.35; transform:scale(1.035) translateY(8px); } to { opacity:.86; transform:scale(1.012) translateY(0); } }
+
+/* ---- Reuse the same type scale on the rest of the app ---- */
+#view-landing > :not(.pd17-hero) { min-width:0; }
+#view-landing h2,#view-landing h3 { text-wrap:balance; }
+#view-landing .ui-panel,#view-landing .ui-card { min-width:0; }
+#view-dashboard,#view-wallet,#view-admin,#view-auth,#view-help { min-width:0; max-width:100%; }
+#view-dashboard table,#view-admin table { max-width:100%; }
+#pd-scroll-progress-bar { width:100% !important; transform:scaleX(0); transform-origin:left center; will-change:transform; }
+
+/* ---- Reduce work from animated reveals and decorative blur ---- */
+.apple-reveal { filter:none !important; will-change:auto !important; transition:opacity .48s var(--pd17-ease),transform .48s var(--pd17-ease) !important; }
+.apple-reveal.is-visible { opacity:1 !important; transform:translateY(0) scale(1) !important; filter:none !important; }
+.apple-reveal.is-scrolled-out { opacity:1 !important; transform:none !important; filter:none !important; }
+.pd-story-card,.pd-help-category,.pd17-benefit,.pd-help-article { transition-property:transform,border-color,background-color,box-shadow !important; transition-duration:.2s !important; }
+#pd-page-wash { display:none !important; }
+.pd-story-card[data-tilt],.v11-tilt,[data-tilt] { transform:none !important; }
+.pd-card-glow,.pd-final-orb { filter:none !important; }
+.pd-final-orb { animation-duration:22s !important; }
+#apple-tab-menu,#pd-ai-panel,.pd-account-popover,#pd-command-palette .pd-command-sheet,#pd-crop-modal,#pd-v10-crop-modal { -webkit-backdrop-filter:blur(12px) saturate(120%) !important; backdrop-filter:blur(12px) saturate(120%) !important; }
+
+/* content-visibility lets offscreen editorial sections defer paint work while preserving scroll geometry. */
+#view-landing > .space-y-16,.pd-story-section,.pd-final-cta,#view-help .pd-help-section { content-visibility:auto; contain-intrinsic-size:auto 760px; }
+
 @media (min-width:1280px) {
-  .pd-v17-slide-stage,.pd-v17-slide-media,.pd-v17-slide-media img { min-height:440px; }
+  .pd17-hero { padding-inline:clamp(36px,5vw,76px) !important; }
+  .pd17-hero-stage { aspect-ratio:16/7; }
 }
-@media (max-width:1023px) {
-  .pd-v17-home-feature { padding:42px 20px 30px; }
-  .pd-v17-slide { grid-template-columns:minmax(0,1.04fr) minmax(270px,.96fr); }
-  .pd-v17-slide-copy { padding:27px; }
-  .pd-v17-slide-stage,.pd-v17-slide-media,.pd-v17-slide-media img { min-height:320px; }
-  .pd-v17-slide-picker { padding-inline:8px!important; }
+@media (min-width:768px) and (max-width:1023px) {
+  #view-landing { padding:32px 24px 60px !important; }
+  .pd17-hero { padding:34px 22px 22px !important; }
+  .pd17-hero-copy h1 { font-size:clamp(42px,6.5vw,66px) !important; }
+  .pd17-hero-stage { aspect-ratio:16/9; min-height:300px; }
+  .pd17-stage-chip { max-width:225px; }
+  .pd17-benefit { padding:14px; grid-template-columns:40px minmax(0,1fr); gap:9px; }
+  .pd17-benefit-icon { width:40px; height:40px; }
+  .pd17-benefit > b { display:none; }
+  #view-landing > .grid:first-child { grid-template-columns:minmax(0,1fr) !important; }
+  #view-landing > .grid:first-child > * { grid-column:1/-1 !important; }
 }
 @media (max-width:767px) {
-  #view-landing > * + * { margin-top:48px!important; }
-  .pd-v17-home-feature { padding:34px 13px 24px; }
-  .pd-v17-home-heading { margin-bottom:24px; }
-  #view-landing .pd-v17-home-heading h1 { font-size:clamp(36px,10.2vw,52px)!important;line-height:1.17!important;letter-spacing:-.04em!important;margin-top:17px!important; }
-  #view-landing .pd-v17-home-heading > p { font-size:15px!important;line-height:1.75!important;margin-top:13px!important; }
-  .pd-v17-kicker { font-size:9px;letter-spacing:.065em;padding:7px 10px; }
-  .pd-v17-home-actions { display:grid;grid-template-columns:minmax(0,1fr);gap:9px;margin-top:20px; }
-  .pd-v17-primary,.pd-v17-secondary { width:100%;min-height:50px!important; }
-  .pd-v17-proof-row { display:grid;grid-template-columns:minmax(0,1fr);justify-content:start;gap:10px;margin-top:21px;font-size:12px; }
-  .pd-v17-carousel { border-radius:22px; }
-  .pd-v17-slide-stage { min-height:0; }
-  .pd-v17-slide { grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto; }
-  .pd-v17-slide-media,.pd-v17-slide-media img { min-height:0;height:auto;aspect-ratio:16/9;max-height:none; }
-  .pd-v17-slide-media img { position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto; }
-  .pd-v17-slide-copy { padding:22px 19px 23px; }
-  .pd-v17-slide-copy h2 { font-size:clamp(26px,7.5vw,35px)!important;margin-top:12px!important; }
-  .pd-v17-slide-copy p { font-size:14px!important;line-height:1.75!important;margin-top:11px!important; }
-  .pd-v17-slide-meta { margin-top:17px;font-size:11px;gap:8px 14px; }
-  .pd-v17-media-label { left:11px;top:11px;font-size:9px;padding:6px 8px; }
-  .pd-v17-carousel-controls { display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:10px;background:var(--pd17-panel-soft); }
-  .pd-v17-rotation { grid-row:1;grid-column:1;min-width:40px;min-height:40px!important;padding:0 10px!important; }
-  .pd-v17-rotation-label { display:none; }
-  .pd-v17-slide-pickers { grid-row:1;grid-column:2;gap:3px; }
-  .pd-v17-slide-picker { justify-content:center;padding:0!important;min-height:40px!important;flex:1; }
-  .pd-v17-slide-picker b { display:none; }
-  .pd-v17-slide-picker span { font-size:11px; }
-  .pd-v17-slide-picker i { left:7px;right:7px; }
-  .pd-v17-prev-next { grid-row:1;grid-column:3;gap:4px; }
-  .pd-v17-prev-next button { min-width:40px;width:40px;min-height:40px!important; }
-  .pd-v17-value-strip { grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px; }
-  .pd-v17-value-strip>div { padding:12px 13px;border-radius:16px; }
-  .pd-v17-value-icon { width:39px;height:39px; }
-  .pd-v17-value-strip b { font-size:13px; }
-  .pd-v17-value-strip small { font-size:11px; }
-  /* Keep persistent navigation visible but reserve its touch-safe area in the document. */
-  body { padding-bottom:calc(90px + env(safe-area-inset-bottom))!important; }
-  #pd-quick-dock,#pd-quick-dock.is-hidden {
-    left:50%!important;right:auto!important;bottom:calc(7px + env(safe-area-inset-bottom))!important;
-    transform:translateX(-50%)!important;opacity:1!important;pointer-events:auto!important;
-  }
-  #pd-ai-launcher { bottom:calc(83px + env(safe-area-inset-bottom))!important; }
+  html { scroll-padding-top:70px; }
+  #view-landing { padding:20px 12px 40px !important; gap:42px !important; }
+  #view-landing > .pd17-hero { border-radius:24px; padding:26px 12px 12px; }
+  .pd17-hero-copy { margin-bottom:24px; padding:0 3px; }
+  .pd17-eyebrow { max-width:100%; font-size:9px; letter-spacing:.08em; padding:7px 10px; }
+  .pd17-hero-copy h1 { margin:19px auto 13px; font-size:clamp(32px,9.4vw,47px) !important; line-height:1.07 !important; letter-spacing:-.04em !important; }
+  .pd17-hero-copy > p { font-size:14px !important; line-height:1.72 !important; }
+  .pd17-hero-actions { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; margin-top:22px; }
+  .pd17-primary-cta,.pd17-secondary-cta { width:100%; min-height:49px; font-size:14px; }
+  .pd17-text-cta { min-height:40px; }
+  .pd17-hero-stage { min-height:0; aspect-ratio:4/4.1; border-radius:18px; }
+  .pd17-hero-stage > img { object-position:54% center; }
+  .pd17-stage-top { left:12px; right:12px; top:12px; font-size:9px; gap:7px; }
+  .pd17-stage-caption { left:13px; right:13px; bottom:14px; max-width:100%; }
+  .pd17-stage-label { font-size:9px; letter-spacing:.09em; }
+  .pd17-stage-caption h2 { font-size:clamp(20px,6.2vw,27px); line-height:1.13; margin:7px 0; }
+  .pd17-stage-caption p { font-size:11px; line-height:1.55; max-width:35ch; }
+  .pd17-stage-chip { display:none; }
+  .pd17-benefits { grid-template-columns:minmax(0,1fr); gap:8px; margin-top:10px; }
+  .pd17-benefit { grid-template-columns:40px minmax(0,1fr) auto; min-height:70px; padding:12px; border-radius:16px; }
+  .pd17-benefit-icon { width:40px; height:40px; border-radius:12px; }
+  .pd17-benefit strong { font-size:14px; }
+  .pd17-benefit small { font-size:12px; margin-top:2px; }
+  .pd17-benefit > b { display:block; }
+  #view-landing > :not(.pd17-hero) { margin-top:38px !important; }
+  #view-landing > .space-y-16 { gap:30px !important; }
+  #view-landing h2 { font-size:clamp(27px,7.4vw,38px) !important; line-height:1.14 !important; }
+  #view-landing .ui-panel { border-radius:22px !important; }
+  #view-landing .grid.grid-cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:7px !important; }
+  #view-landing .grid.grid-cols-3 > .ui-card { min-width:0; padding:11px 5px !important; }
+  #view-landing .grid.grid-cols-3 > .ui-card p:first-child { font-size:clamp(15px,4.6vw,21px) !important; overflow-wrap:anywhere; }
+  #view-landing .grid.grid-cols-3 > .ui-card p:last-child { font-size:11px !important; line-height:1.4 !important; }
+  #view-dashboard,#view-wallet,#view-admin { padding-inline:12px !important; }
+  #view-dashboard input,#view-dashboard select,#view-dashboard textarea,#view-wallet input,#view-wallet select,#view-wallet textarea { font-size:16px !important; }
+  #view-auth,#view-help { padding-inline:12px !important; }
+  .pd-help-categories { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  .pd-help-content-grid { grid-template-columns:minmax(0,1fr) !important; }
+  #pd-ai-launcher { bottom:calc(82px + env(safe-area-inset-bottom)) !important; }
+  #pd-ai-panel { bottom:calc(140px + env(safe-area-inset-bottom)) !important; }
+  #pd-quick-dock { bottom:calc(7px + env(safe-area-inset-bottom)) !important; }
 }
 @media (max-width:380px) {
-  .pd-v17-home-feature { padding-inline:10px; }
-  .pd-v17-slide-copy { padding:19px 15px 20px; }
-  .pd-v17-slide-picker span { font-size:10px; }
-  .pd-v17-prev-next button { width:36px;min-width:36px; }
-  .pd-v17-prev-next { gap:3px; }
-  .pd-v17-carousel-controls { padding:8px;gap:5px; }
+  #view-landing { padding-inline:9px !important; }
+  #view-landing > .pd17-hero { padding-inline:9px; }
+  .pd17-hero-copy h1 { font-size:31px !important; }
+  .pd17-benefit { padding:10px; }
+  .pd-help-categories { grid-template-columns:minmax(0,1fr) !important; }
+}
+@media (hover:none), (max-width:900px) {
+  .pd17-benefit:hover,.pd-help-category:hover,.pd-help-article:hover { transform:none !important; }
+  .pd-ai-pulse,.pd-final-orb,.pd-card-glow { animation:none !important; }
+  #apple-tab-menu,#pd-ai-panel,.pd-account-popover,#pd-command-palette .pd-command-sheet,#pd-crop-modal,#pd-v10-crop-modal { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+  .pd17-hero-stage > img { animation:none !important; }
 }
 @media (prefers-reduced-motion:reduce) {
-  *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; }
-  .pd-v17-slide { transform:none!important; }
+  html { scroll-behavior:auto !important; }
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  .apple-reveal,.apple-reveal.is-visible,.apple-reveal.is-scrolled-out { opacity:1 !important; transform:none !important; filter:none !important; }
+  .pd17-benefit,.pd-help-category,.pd-help-primary,.pd-help-search button { transform:none !important; }
 }
 </style>
 
@@ -10596,168 +10517,120 @@ button:active { transform:scale(.985); }
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const carousel = $('pd-v17-carousel');
-  if (!carousel || carousel.dataset.pdV17Bound === '1') return;
-  carousel.dataset.pdV17Bound = '1';
-  const slides = [...carousel.querySelectorAll('[data-pd-v17-slide]')];
-  const pickers = [...carousel.querySelectorAll('[data-pd-v17-go]')];
-  const status = $('pd-v17-slide-status');
-  const rotation = $('pd-v17-rotation');
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
-  const coarse = window.matchMedia?.('(hover: none), (max-width: 767px)').matches || false;
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const dataSaver = !!connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '');
-  let index = 0;
-  let autoEnabled = !reduceMotion && !coarse && !dataSaver;
-  let userPaused = false;
-  let focusPaused = false;
-  let hoverPaused = false;
-  let timer = 0;
-  let visibilityObserver = null;
-  let onScreen = true;
+  const reduceMotion = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const coarsePointer = !!window.matchMedia?.('(pointer: coarse)').matches;
+  const memory = Number(navigator.deviceMemory || 0);
+  const cores = Number(navigator.hardwareConcurrency || 0);
+  const lowPower = coarsePointer || (memory > 0 && memory <= 4) || (cores > 0 && cores <= 4);
+  document.documentElement.dataset.pdMotion = reduceMotion ? 'reduced' : (lowPower ? 'lite' : 'full');
 
-  function describeSlide(i) {
-    const title = slides[i]?.querySelector('h2')?.innerText?.replace(/\s+/g, ' ').trim() || `สไลด์ ${i+1}`;
-    return title;
-  }
-  function loadSlideImage(slide, eager = false) {
-    const img = slide?.querySelector('img[data-pd-v17-src]');
-    if (!img) return;
-    const src = img.dataset.pdV17Src;
-    if (!src) return;
-    img.loading = eager ? 'eager' : 'lazy';
-    img.decoding = 'async';
-    img.sizes = '(max-width: 767px) calc(100vw - 26px), (max-width: 1023px) 52vw, 750px';
-    if (img.dataset.pdV17Srcset) { img.srcset = img.dataset.pdV17Srcset; delete img.dataset.pdV17Srcset; }
-    img.src = src;
-    img.removeAttribute('data-pd-v17-src');
-  }
-  function clearTimer() {
-    if (timer) window.clearTimeout(timer);
-    timer = 0;
-  }
-  function canAutoRun() {
-    return autoEnabled && !userPaused && !focusPaused && !hoverPaused && onScreen &&
-      document.visibilityState === 'visible' && !$('view-landing')?.classList.contains('hidden');
-  }
-  function renderRotationControl() {
-    if (!rotation) return;
-    const playing = canAutoRun();
-    rotation.setAttribute('aria-label', playing ? 'หยุดเปลี่ยนภาพอัตโนมัติ' : 'เล่นเปลี่ยนภาพอัตโนมัติ');
-    rotation.title = playing ? 'หยุดเปลี่ยนภาพอัตโนมัติ' : 'เล่นเปลี่ยนภาพอัตโนมัติ';
-    const label = rotation.querySelector('span');
-    if (label) label.textContent = playing ? 'พักสไลด์' : 'เล่นอัตโนมัติ';
-    const icon = rotation.querySelector('.pd-v17-rotation-icon');
-    if (icon) icon.textContent = playing ? 'Ⅱ' : '▶';
-  }
-  function scheduleRotation() {
-    clearTimer();
-    renderRotationControl();
-    if (status) status.setAttribute('aria-live', canAutoRun() ? 'off' : 'polite');
-    if (!canAutoRun() || slides.length < 2) return;
-    timer = window.setTimeout(() => {
-      showSlide(index + 1, false);
-      scheduleRotation();
-    }, 7200);
-  }
-  function showSlide(nextIndex, manual = true) {
-    if (!slides.length) return;
-    index = (nextIndex + slides.length) % slides.length;
-    slides.forEach((slide, i) => {
-      const active = i === index;
-      slide.classList.toggle('is-active', active);
-      slide.setAttribute('aria-hidden', String(!active));
-      if (!active) slide.setAttribute('inert', '');
-      else slide.removeAttribute('inert');
-    });
-    pickers.forEach((button, i) => {
-      const active = i === index;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-    });
-    loadSlideImage(slides[index], true);
-    if (status) status.textContent = `สไลด์ ${index + 1} จาก ${slides.length}: ${describeSlide(index)}`;
-    if (manual) scheduleRotation();
-  }
-  function toggleRotation() {
-    const wasPlaying = autoEnabled && !userPaused && !focusPaused;
-    if (wasPlaying) {
-      userPaused = true;
-    } else {
-      autoEnabled = true;
-      userPaused = false;
-      focusPaused = false;
-    }
-    scheduleRotation();
-  }
-  rotation?.addEventListener('click', toggleRotation);
-  $('pd-v17-prev')?.addEventListener('click', () => showSlide(index - 1, true));
-  $('pd-v17-next')?.addEventListener('click', () => showSlide(index + 1, true));
-  pickers.forEach(button => button.addEventListener('click', () => showSlide(Number(button.dataset.pdV17Go) || 0, true)));
-
-  // Stop automatic movement when the pointer hovers or keyboard focus enters; focus-resume is explicit.
-  carousel.addEventListener('mouseenter', () => { hoverPaused = true; scheduleRotation(); });
-  carousel.addEventListener('mouseleave', () => { hoverPaused = false; scheduleRotation(); });
-  carousel.addEventListener('focusin', () => { focusPaused = true; clearTimer(); if (status) status.setAttribute('aria-live','polite'); renderRotationControl(); });
-  carousel.addEventListener('keydown', event => {
-    if (event.altKey || event.ctrlKey || event.metaKey) return;
-    if (event.key === 'ArrowRight') { event.preventDefault(); showSlide(index + 1, true); }
-    if (event.key === 'ArrowLeft') { event.preventDefault(); showSlide(index - 1, true); }
-  });
-  document.addEventListener('visibilitychange', scheduleRotation);
-  window.addEventListener('resize', () => {
-    // On resizing between mobile and desktop, keep the current slide and avoid sudden auto-start.
-    if (window.matchMedia?.('(hover: none), (max-width: 767px)').matches) {
-      autoEnabled = false; clearTimer();
-    }
-    renderRotationControl();
-  }, {passive:true});
+  // Keep the landing reveal one-way: no fade/blur while scrolling back up.
   if ('IntersectionObserver' in window) {
-    visibilityObserver = new IntersectionObserver(entries => {
-      onScreen = !!entries[0]?.isIntersecting;
-      scheduleRotation();
-    }, {threshold:.08});
-    visibilityObserver.observe(carousel);
-  }
-
-  showSlide(0, false);
-  scheduleRotation();
-
-  // Wrap view routing once so status copy updates only when a view changes (not once per second).
-  if (typeof window.switchView === 'function' && !window.switchView.__pdV17Wrapped) {
-    const originalSwitchView = window.switchView;
-    const wrappedSwitchView = function(viewName, ...args) {
-      const result = originalSwitchView.call(this, viewName, ...args);
-      window.requestAnimationFrame(() => {
-        window.updateLiveIslandStatus?.(viewName);
-        document.dispatchEvent(new CustomEvent('pd:viewchange', {detail:{viewName}}));
-        scheduleRotation();
+    const revealIO = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          entry.target.classList.remove('is-scrolled-out');
+          revealIO.unobserve(entry.target);
+        }
       });
-      return result;
-    };
-    wrappedSwitchView.__pdV17Wrapped = true;
-    window.switchView = wrappedSwitchView;
+    }, { threshold:.06, rootMargin:'0px 0px -4% 0px' });
+    document.querySelectorAll('#view-landing .apple-reveal, #view-landing .pd-reveal-card, #view-landing .pd-final-cta').forEach(el => revealIO.observe(el));
+  } else {
+    document.querySelectorAll('.apple-reveal,.pd-reveal-card,.pd-final-cta').forEach(el => el.classList.add('is-visible','is-in'));
   }
-  window.addEventListener('pageshow', scheduleRotation);
-  window.pdV17Diagnostics = function() {
+
+  // Fix navigation indicators after visiting the Support Center (previous map omitted 'help').
+  window.addEventListener('pd:viewchange', ev => {
+    const view = ev.detail?.viewName || document.body.dataset.pdView;
+    document.body.dataset.pdView = view || '';
+    document.querySelectorAll('[data-view]').forEach(el => {
+      const active = el.dataset.view === view;
+      el.classList.toggle('is-active', active);
+      if (el.matches('button[role="tab"],a[role="tab"]')) el.setAttribute('aria-selected', String(active));
+    });
+    if (window.lucide && !lowPower) window.lucide.createIcons();
+  });
+
+  // Defer below-the-fold images and decode asynchronously without touching data URLs.
+  document.querySelectorAll('img').forEach(img => {
+    if (img.closest('.pd17-hero-stage')) {
+      img.loading = 'eager'; img.fetchPriority = 'high';
+    } else if (!img.complete || img.naturalWidth === 0) {
+      img.loading = 'lazy';
+    }
+    if (!img.hasAttribute('decoding')) img.decoding = 'async';
+  });
+
+  // Honor memory-aware motion profile: disable decorative, infinite, paint-heavy effects only.
+  if (lowPower || reduceMotion) {
+    document.documentElement.classList.add('pd-motion-lite');
+    document.querySelectorAll('.pd-card-glow,.pd-final-orb,.pd-ai-pulse').forEach(el => { el.style.animation = 'none'; });
+  }
+  document.addEventListener('visibilitychange', () => {
+    document.documentElement.classList.toggle('pd-page-hidden', document.hidden);
+  }, { passive:true });
+
+  // Allow the browser to yield before recalculating off-screen text metrics.
+  // Existing v9 ResizeObserver still performs the exact text-overflow checks.
+
+  // Non-invasive diagnostics: logs aggregate device/page facts only; never sends telemetry.
+  let longTaskCount = 0;
+  try {
+    if ('PerformanceObserver' in window && PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+      const po = new PerformanceObserver(list => { longTaskCount += list.getEntries().length; });
+      po.observe({ type:'longtask', buffered:true });
+    }
+  } catch (_) {}
+  window.pdV17RunPerformanceAudit = function(showModal=false) {
     const root = document.documentElement;
+    const nav = performance.getEntriesByType?.('navigation')?.[0];
     const result = {
-      version: 'v17',
-      viewport: {width:innerWidth,height:innerHeight,dpr:Math.min(3,devicePixelRatio||1)},
+      viewport: `${innerWidth}×${innerHeight}`,
       documentWidth: root.scrollWidth,
       horizontalOverflow: root.scrollWidth > root.clientWidth + 2,
-      reducedMotion: !!reduceMotion,
-      dataSaver: !!dataSaver,
-      activeSlide: index + 1,
-      carouselReady: !!carousel,
-      supportCenterReady: !!$('view-help'),
+      imageCount: document.images.length,
+      lazyImages: document.querySelectorAll('img[loading="lazy"]').length,
+      scripts: document.scripts.length,
+      stylesheetCount: document.styleSheets.length,
+      domNodes: document.getElementsByTagName('*').length,
+      loadMs: nav ? Math.round(nav.loadEventEnd || nav.duration) : null,
+      longTasksObserved: longTaskCount,
+      motionProfile: root.dataset.pdMotion || 'default',
       secureContext: !!window.isSecureContext,
-      supabaseConfigured: !!window.supabaseClient,
-      pdfjsLoaded: !!window.pdfjsLib
+      pdfjsLoaded: !!window.pdfjsLib,
+      supabaseClientReady: !!(window.supabaseClient || (typeof supabaseClient !== 'undefined' && supabaseClient)),
+      helpCenterAvailable: !!$('view-help')
     };
-    console.info('[PrintDekD v17 diagnostics]', result);
+    console.table(result);
+    if (showModal && typeof window.showCustomModal === 'function') {
+      const message = [
+        `Viewport: ${result.viewport}`,
+        `Horizontal overflow: ${result.horizontalOverflow ? 'พบ — ตรวจ layout ตามขนาดจอ' : 'ไม่พบ'}`,
+        `DOM nodes: ${result.domNodes}`,
+        `Images: ${result.imageCount} (lazy ${result.lazyImages})`,
+        `Long tasks observed: ${result.longTasksObserved}`,
+        `Motion profile: ${result.motionProfile}`,
+        `HTTPS secure context: ${result.secureContext ? 'ใช่' : 'ไม่ใช่'}`,
+        'ผลนี้เป็น diagnostics ฝั่งเบราว์เซอร์ ไม่ใช่ผลทดสอบ performance จริงของผู้ใช้ทุกคน'
+      ].join('\n');
+      window.showCustomModal({title:'ตรวจสุขภาพหน้าเว็บ',message,icon:result.horizontalOverflow?'activity':'gauge'});
+    }
     return result;
   };
+  window.pdV17Diagnostics = window.pdV17RunPerformanceAudit;
+
+
+
+  // Theme state should be restored without changing storage semantics from previous versions.
+  try {
+    const mode = localStorage.getItem('sp_theme_mode') || localStorage.getItem('sp_theme') || 'dark';
+    document.documentElement.classList.toggle('dark', mode !== 'light');
+  } catch (_) {}
+
+  // Run a light viewport diagnostic after initial layout settles; no alert and no network traffic.
+  if ('requestIdleCallback' in window) requestIdleCallback(() => window.pdV17RunPerformanceAudit(false), {timeout:1800});
+  else setTimeout(() => window.pdV17RunPerformanceAudit(false), 900);
 })();
 </script>
 
