@@ -9,7 +9,7 @@
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <!-- Best-effort document policy. Critical clickjacking / HSTS / server headers still belong on Vercel response headers. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://raw.githubusercontent.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none';">
   <meta name="color-scheme" content="dark light">
   <script id="pd-v17-theme-first-paint">
     (function(){
@@ -2291,7 +2291,116 @@
     .pd-token-29 { --pd-token-index:29; }
     /* DESIGNER TOKEN GROUP 30 — surfaces */
     .pd-token-30 { --pd-token-index:30; }
-  </style>
+  
+
+/* PrintDekD Pro v19 — address cascade, reliable selected packages, and homepage end-cap. */
+.pd19-address { margin-top:12px; padding:clamp(14px,2.2vw,22px); border:1px solid rgba(10,132,255,.22); border-radius:24px; background:linear-gradient(145deg,rgba(10,132,255,.07),rgba(255,255,255,.018)); display:grid; gap:17px; }
+.pd19-address-heading { display:flex; align-items:flex-start; gap:13px; min-width:0; }
+.pd19-address-heading-icon { display:grid; place-items:center; width:48px; height:48px; flex:0 0 auto; border-radius:16px; color:#71b8ff; background:rgba(10,132,255,.12); border:1px solid rgba(10,132,255,.22); }
+.pd19-address-heading-icon svg { width:23px; height:23px; }
+.pd19-address-heading h3 { margin:0; font-size:clamp(19px,2vw,24px); line-height:1.35; font-weight:900; color:var(--pd-white); }
+.pd19-address-heading p { margin:5px 0 0; max-width:75ch; color:var(--pd-muted); font-size:13px; line-height:1.7; }
+.pd19-address-status { display:grid; grid-template-columns:38px minmax(0,1fr); align-items:center; gap:11px; padding:12px; border:1px solid var(--pd-stroke); border-radius:16px; background:var(--pd-surface-0); }
+.pd19-status-mark { display:grid; place-items:center; width:36px; height:36px; border-radius:12px; color:#f3bd42; background:rgba(245,185,63,.10); }
+.pd19-status-mark svg { width:19px; height:19px; }
+.pd19-address-status[data-state="loading"] .pd19-status-mark svg { animation:pd19-spin 1.2s linear infinite; }
+.pd19-address-status[data-state="ready"] .pd19-status-mark { color:#35d07f; background:rgba(53,208,127,.10); }
+.pd19-address-status[data-state="error"] .pd19-status-mark { color:#ffbd55; background:rgba(255,189,85,.10); }
+.pd19-address-status strong { display:block; color:var(--pd-white); font-size:13px; font-weight:900; line-height:1.5; }
+.pd19-address-status p { margin:3px 0 0; color:var(--pd-muted); font-size:12px; line-height:1.65; overflow-wrap:anywhere; }
+.pd19-address-section-title { display:flex; align-items:center; gap:11px; margin:3px 0 0; }
+.pd19-address-section-title>span { width:34px; height:34px; flex:0 0 auto; display:grid; place-items:center; border-radius:11px; color:#70b4ff; background:rgba(10,132,255,.11); border:1px solid rgba(10,132,255,.20); font-size:11px; font-weight:900; }
+.pd19-address-section-title strong { display:block; color:var(--pd-white); font-size:14px; line-height:1.5; font-weight:900; }
+.pd19-address-section-title small { display:block; margin-top:2px; color:var(--pd-muted); font-size:12px; line-height:1.55; }
+.pd19-field { min-width:0; position:relative; }
+.pd19-field>label,.pd19-manual-fallback>label { display:block; margin:0 0 7px; color:var(--pd-white); font-size:13px; line-height:1.5; font-weight:850; }
+.pd19-field>label span,.pd19-manual-fallback>label span { color:#ffbd55; }
+.pd19-field>label small { margin-left:4px; color:var(--pd-muted); font-weight:500; font-size:11px; }
+.pd19-field>input { min-height:52px !important; padding:12px 14px !important; font-size:16px !important; line-height:1.5 !important; border-radius:14px !important; }
+.pd19-field-help { display:block; min-height:18px; margin-top:6px; color:var(--pd-muted); font-size:11px; line-height:1.55; overflow-wrap:anywhere; }
+.pd19-combo-wrap { position:relative; min-width:0; }
+.pd19-combo-input { display:block; width:100%; min-width:0; min-height:54px !important; padding:13px 47px 13px 14px !important; border-radius:14px !important; font-size:16px !important; line-height:1.5 !important; text-overflow:ellipsis; }
+.pd19-combo-input[readonly] { cursor:not-allowed; opacity:.62; }
+.pd19-combo-input[aria-expanded="true"] { border-color:#1687ff !important; box-shadow:0 0 0 3px rgba(22,135,255,.12) !important; }
+.pd19-combo-toggle { position:absolute; top:5px; right:5px; display:grid; place-items:center; width:44px; height:44px; min-height:44px !important; border-radius:12px; border:1px solid transparent; color:var(--pd-muted); background:transparent; cursor:pointer; }
+.pd19-combo-toggle:hover { color:#71b8ff; background:rgba(10,132,255,.08); }
+.pd19-combo-toggle svg { width:19px; height:19px; }
+.pd19-combo-list { position:absolute; z-index:200; top:calc(100% + 6px); left:0; right:0; max-height:min(300px,40dvh); overflow:auto; padding:6px; border:1px solid var(--pd-stroke-strong); border-radius:16px; background:#111720; color:#f5f7fb; box-shadow:0 24px 70px rgba(0,0,0,.42); overscroll-behavior:contain; }
+html:not(.dark) .pd19-combo-list { background:#fff; color:#162235; border-color:#d5deea; box-shadow:0 20px 55px rgba(15,23,42,.17); }
+.pd19-combo-list[hidden] { display:none !important; }
+.pd19-option { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; width:100%; min-height:46px; padding:10px 11px; border:0; border-radius:11px; text-align:left; color:inherit; background:transparent; font-size:14px; line-height:1.5; cursor:pointer; }
+.pd19-option:hover,.pd19-option:focus-visible { outline:none; background:rgba(10,132,255,.12); }
+.pd19-option small { color:#8e9bad; font-size:11px; line-height:1.4; }
+.pd19-empty { padding:16px 12px; color:var(--pd-muted); font-size:12px; line-height:1.6; text-align:center; }
+.pd19-manual-fallback { padding:14px; border:1px solid rgba(245,185,63,.32); border-radius:16px; background:rgba(245,185,63,.07); }
+.pd19-manual-fallback[hidden] { display:none !important; }
+.pd19-manual-fallback>strong { display:flex; align-items:center; gap:7px; color:#f7bd4f; font-size:14px; line-height:1.5; }
+.pd19-manual-fallback>strong svg { width:18px; height:18px; flex:0 0 auto; }
+.pd19-manual-fallback p { margin:7px 0 12px; color:var(--pd-muted); font-size:12px; line-height:1.75; }
+#recipient-manual-address { font-size:16px !important; line-height:1.7 !important; resize:vertical; }
+.pd19-address-preview { display:grid; gap:10px; padding:13px; border-radius:16px; border:1px solid var(--pd-stroke); background:var(--pd-surface-0); }
+.pd19-address-preview>div { display:grid; grid-template-columns:20px minmax(0,1fr); align-items:center; column-gap:8px; }
+.pd19-address-preview>div svg { width:18px; height:18px; grid-row:span 2; color:#35d07f; }
+.pd19-address-preview strong { color:var(--pd-white); font-size:13px; line-height:1.5; }
+.pd19-address-preview small { margin-top:2px; color:var(--pd-muted); font-size:11px; line-height:1.6; }
+#recipient-address { min-height:74px !important; font-size:14px !important; line-height:1.8 !important; resize:vertical; }
+.pd19-privacy-note { display:flex; align-items:flex-start; gap:8px; margin:0; color:var(--pd-muted); font-size:11px; line-height:1.7; }
+.pd19-privacy-note svg { width:16px; height:16px; flex:0 0 auto; margin-top:2px; color:#35d07f; }
+.pd19-source-note { margin:0; color:var(--pd-dim); font-size:10px; line-height:1.7; overflow-wrap:anywhere; }
+.pd19-source-note a { color:#71b8ff; text-decoration:underline; text-underline-offset:3px; }
+@keyframes pd19-spin { to { transform:rotate(360deg); } }
+
+/* The active Coins package and both of its text lines use one shared visual state. */
+#view-wallet .topup-pkg-btn { color:var(--pd-white) !important; border-color:var(--pd-stroke-strong) !important; background:var(--pd-surface-0) !important; box-shadow:none !important; }
+#view-wallet .topup-pkg-btn>span:first-child { color:var(--pd-white) !important; opacity:1 !important; }
+#view-wallet .topup-pkg-btn>span:last-child { color:var(--pd-muted) !important; opacity:1 !important; }
+#view-wallet .topup-pkg-btn.is-selected { border:2px solid #f5b93f !important; color:#ffdb70 !important; background:linear-gradient(145deg,rgba(245,185,63,.18),rgba(245,185,63,.075)) !important; box-shadow:inset 0 0 0 1px rgba(245,185,63,.16),0 12px 35px rgba(245,185,63,.09) !important; }
+#view-wallet .topup-pkg-btn.is-selected>span:first-child,#view-wallet .topup-pkg-btn.is-selected>span:last-child { color:#ffd34f !important; opacity:1 !important; }
+#view-wallet .topup-pkg-btn:focus-visible { outline:3px solid rgba(245,185,63,.30) !important; outline-offset:3px; }
+
+/* Homepage final CTA: integrated four-step workflow at the bottom of the landing page. */
+#view-landing>.pd-final-cta { min-height:0 !important; padding:clamp(28px,5vw,68px) !important; border-radius:clamp(24px,3vw,38px) !important; }
+#view-landing>.pd-final-cta h2 { max-width:18ch !important; font-size:clamp(32px,5vw,66px) !important; line-height:1.18 !important; }
+#view-landing>.pd-final-cta>p { max-width:70ch !important; font-size:clamp(14px,1.3vw,18px) !important; line-height:1.8 !important; }
+.pd19-home-flow { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; width:100%; margin:clamp(24px,3vw,38px) 0; text-align:left; }
+.pd19-home-flow>div { position:relative; display:grid; align-content:start; gap:9px; min-width:0; min-height:145px; padding:17px; border:1px solid rgba(255,255,255,.12); border-radius:19px; background:rgba(255,255,255,.045); }
+html:not(.dark) .pd19-home-flow>div { border-color:rgba(15,23,42,.10); background:rgba(15,23,42,.025); }
+.pd19-home-flow>div>span { position:absolute; right:13px; top:11px; color:rgba(255,255,255,.42); font-size:10px; font-weight:900; }
+html:not(.dark) .pd19-home-flow>div>span { color:#8591a1; }
+.pd19-home-flow>div>svg { width:24px; height:24px; color:#83bdff; margin-top:5px; }
+.pd19-home-flow>div>b { color:var(--pd-white); font-size:14px; line-height:1.5; font-weight:900; }
+.pd19-home-flow>div>small { color:var(--pd-muted); font-size:12px; line-height:1.6; }
+#view-landing>.pd-final-cta .pd-final-actions { justify-content:flex-start; gap:11px; flex-wrap:wrap; }
+#view-landing>.pd-final-cta .pd-primary-cta,#view-landing>.pd-final-cta .pd-secondary-cta { min-height:54px; border-radius:16px !important; padding:14px 21px; }
+@media (max-width:900px) {
+  .pd19-home-flow { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .pd19-home-flow>div { min-height:128px; }
+  .pd19-combo-list { max-height:36dvh; }
+}
+@media (max-width:600px) {
+  .pd19-address { padding:13px; gap:14px; border-radius:20px; }
+  .pd19-address-heading-icon { width:43px; height:43px; border-radius:14px; }
+  .pd19-address-heading h3 { font-size:19px; }
+  .pd19-address-heading p { font-size:12px; }
+  .pd19-field>label { font-size:13px; }
+  .pd19-field>input,.pd19-combo-input { min-height:52px !important; font-size:16px !important; }
+  .pd19-combo-toggle { width:42px; height:42px; min-height:42px !important; }
+  .pd19-combo-list { position:fixed; top:auto; bottom:max(8px,env(safe-area-inset-bottom)); left:10px; right:10px; max-height:min(48dvh,420px); z-index:10000; border-radius:20px; padding:8px; }
+  .pd19-option { min-height:48px; font-size:15px; }
+  .pd19-address-section-title small { font-size:11px; }
+  .pd19-home-flow { gap:8px; margin:23px 0; }
+  .pd19-home-flow>div { min-height:126px; padding:12px; border-radius:15px; gap:7px; }
+  .pd19-home-flow>div>b { font-size:13px; }
+  .pd19-home-flow>div>small { font-size:11px; }
+  #view-landing>.pd-final-cta .pd-final-actions { display:grid; grid-template-columns:minmax(0,1fr); }
+  #view-landing>.pd-final-cta .pd-primary-cta,#view-landing>.pd-final-cta .pd-secondary-cta { width:100%; justify-content:center; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .pd19-address-status[data-state="loading"] .pd19-status-mark svg { animation:none !important; }
+  .pd19-combo-toggle,.pd19-option,#view-wallet .topup-pkg-btn { transition:none !important; }
+}
+
+</style>
 
   <!-- PRINTDEKD PRO — DESIGNER ADVANCED BOOT -->
   <script>
@@ -2473,6 +2582,7 @@
             <div class="security-row"><span class="text-xs font-semibold titanium-text">การเชื่อมต่อ</span><span id="security-db-status" class="security-badge warn">กำลังตรวจสอบ</span></div>
             <div class="security-row"><span class="text-xs font-semibold titanium-text">การส่งข้อมูล</span><span id="security-transport-status" class="security-badge warn">กำลังตรวจสอบ</span></div>
             <div class="security-row"><span class="text-xs font-semibold titanium-text">เซสชันบัญชี</span><span id="security-session-status" class="security-badge warn">กำลังตรวจสอบ</span></div>
+            <div class="security-row"><span class="text-xs font-semibold titanium-text">RLS / Storage Policies</span><span id="security-policy-status" class="security-badge warn">ต้องตรวจใน Dashboard</span></div>
             <div class="flex items-center justify-between gap-2 mt-3">
               <span id="security-audit-time" class="text-[10px] sub-text">ยังไม่ได้ตรวจสอบ</span>
               <button type="button" onclick="runSecurityAudit(true)" class="min-h-[38px] px-3 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-500/15 text-[11px] font-extrabold">ตรวจสอบอีกครั้ง</button>
@@ -3126,11 +3236,17 @@
         <div class="pd-final-orb pd-orb-one"></div>
         <div class="pd-final-orb pd-orb-two"></div>
         <span class="pd-eyebrow">PRINTDEKD PRO</span>
-        <h2>พร้อมสำหรับงานพิมพ์<br><em>ครั้งต่อไปของคุณ</em></h2>
-        <p>ประสบการณ์ใหม่ที่เร็วขึ้น ชัดขึ้น และดูดีขึ้นตั้งแต่คลิกแรก</p>
+        <h2>สั่งพิมพ์เอกสารง่ายขึ้น<br><em>ทุกขั้นตอนอยู่ในที่เดียว</em></h2>
+        <p>เริ่มจากอัปโหลดไฟล์ ไปจนถึงเลือกที่อยู่ จ่าย Coins และติดตามคิวได้ตามลำดับ ตรวจสอบรายการก่อนส่งทุกครั้ง</p>
+        <div class="pd19-home-flow" aria-label="ขั้นตอนการสั่งพิมพ์ทั้งหมด">
+          <div><span>01</span><i data-lucide="file-up" aria-hidden="true"></i><b>อัปโหลดเอกสาร</b><small>ดูไฟล์และพรีวิว</small></div>
+          <div><span>02</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i><b>ตั้งค่างานพิมพ์</b><small>เลือกหน้า สี และจำนวนชุด</small></div>
+          <div><span>03</span><i data-lucide="map-pin" aria-hidden="true"></i><b>เลือกวิธีรับ</b><small>รับหน้าร้านหรือกรอกที่อยู่</small></div>
+          <div><span>04</span><i data-lucide="wallet-cards" aria-hidden="true"></i><b>ชำระและติดตาม</b><small>ตรวจราคาแล้วดูสถานะคิว</small></div>
+        </div>
         <div class="pd-final-actions">
-          <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()">เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right"></i></button>
-          <button type="button" class="pd-secondary-cta" onclick="openPDCommandPalette()">เปิด Command Center <kbd>⌘K</kbd></button>
+          <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()"><i data-lucide="printer" aria-hidden="true"></i> เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right"></i></button>
+          <button type="button" class="pd-secondary-cta" onclick="switchView('dashboard')"><i data-lucide="clipboard-list" aria-hidden="true"></i> ติดตามคิวงาน</button>
         </div>
       </section>
 
@@ -3441,15 +3557,46 @@
                 </label>
               </div>
 
-              <div id="delivery-address-box" class="hidden space-y-2.5 bg-blue-500/10 p-3.5 rounded-xl border border-blue-500/20">
-                <p class="text-xs font-bold text-blue-500 flex items-center gap-1">
-                  <i data-lucide="map-pin" class="w-4 h-4"></i> กรอกที่อยู่จัดส่งพัสดุ
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <input type="text" id="recipient-name" placeholder="ชื่อ-นามสกุล ผู้รับ" class="w-full px-3 py-2 ui-input rounded-lg text-xs">
-                  <input type="text" id="recipient-phone" placeholder="เบอร์โทรศัพท์ติดต่อ" class="w-full px-3 py-2 ui-input rounded-lg text-xs">
+              <div id="delivery-address-box" class="hidden pd19-address">
+                <div class="pd19-address-heading">
+                  <span class="pd19-address-heading-icon"><i data-lucide="map-pinned" aria-hidden="true"></i></span>
+                  <div><h3>ที่อยู่จัดส่งถึงบ้าน</h3><p>กรอกบ้านเลขที่เอง แล้วเลือกพื้นที่ตามลำดับ จังหวัด → อำเภอ/เขต → ตำบล/แขวง → รหัสไปรษณีย์</p></div>
                 </div>
-                <textarea id="recipient-address" rows="2" placeholder="ที่อยู่จัดส่งโดยละเอียด..." class="w-full px-3 py-2 ui-input rounded-lg text-xs leading-relaxed"></textarea>
+                <div id="pd19-address-status" class="pd19-address-status" data-state="loading" role="status" aria-live="polite">
+                  <span class="pd19-status-mark" aria-hidden="true"><i data-lucide="loader-circle"></i></span>
+                  <div><strong id="pd19-address-status-title">กำลังโหลดข้อมูลที่อยู่ประเทศไทย</strong><p id="pd19-address-status-copy">กำลังเตรียมตัวเลือกสำหรับ 77 จังหวัด โปรดรอสักครู่</p></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="pd19-field"><label for="recipient-name">ชื่อ–นามสกุลผู้รับ <span>*</span></label><input type="text" id="recipient-name" maxlength="100" autocomplete="name" placeholder="ชื่อและนามสกุล" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                  <div class="pd19-field"><label for="recipient-phone">เบอร์โทรศัพท์ติดต่อ <span>*</span></label><input type="tel" id="recipient-phone" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="เช่น 0812345678" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                </div>
+                <div id="pd19-structured-address" class="space-y-4">
+                  <div class="pd19-address-section-title"><span>01</span><div><strong>รายละเอียดบ้านและถนน</strong><small>ข้อมูลเหล่านี้กรอกได้ตามที่อยู่จริง</small></div></div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="pd19-field"><label for="recipient-house-number">บ้านเลขที่ <span>*</span></label><input type="text" id="recipient-house-number" maxlength="80" autocomplete="address-line1" placeholder="เช่น 99/12" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                    <div class="pd19-field"><label for="recipient-moo">หมู่ที่ <small>ถ้ามี</small></label><input type="text" id="recipient-moo" maxlength="30" placeholder="เช่น 4" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                    <div class="pd19-field"><label for="recipient-village">ชื่อหมู่บ้าน <small>ถ้ามี</small></label><input type="text" id="recipient-village" maxlength="100" autocomplete="address-line2" placeholder="ชื่อหมู่บ้าน / โครงการ" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                    <div class="pd19-field"><label for="recipient-building">อาคาร / ชั้น / ห้อง <small>ถ้ามี</small></label><input type="text" id="recipient-building" maxlength="100" placeholder="อาคาร ชั้น หรือห้อง" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                    <div class="pd19-field"><label for="recipient-alley">ซอย <small>ถ้ามี</small></label><input type="text" id="recipient-alley" maxlength="100" placeholder="ชื่อซอย" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                    <div class="pd19-field"><label for="recipient-road">ถนน <small>ถ้ามี</small></label><input type="text" id="recipient-road" maxlength="100" autocomplete="street-address" placeholder="ชื่อถนน" class="ui-input w-full px-4 py-3 rounded-xl"></div>
+                  </div>
+                  <div class="pd19-address-section-title"><span>02</span><div><strong>ค้นหาพื้นที่จัดส่ง</strong><small>ตัวเลือกจะปลดล็อกตามลำดับ เพื่อป้องกันการจับคู่เขตและรหัสไปรษณีย์ผิด</small></div></div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="pd19-field" data-pd19-field="province"><label for="pd19-province-input">จังหวัด <span>*</span></label><div class="pd19-combo-wrap"><input type="text" id="pd19-province-input" class="pd19-combo-input ui-input" role="combobox" aria-expanded="false" aria-controls="pd19-province-options" aria-autocomplete="list" autocomplete="off" placeholder="ค้นหาชื่อจังหวัด..." readonly><button type="button" class="pd19-combo-toggle" data-pd19-toggle="province" aria-label="เปิดรายชื่อจังหวัด"><i data-lucide="chevron-down"></i></button><div id="pd19-province-options" class="pd19-combo-list" role="listbox" hidden></div></div><small id="pd19-province-help" class="pd19-field-help">เลือกจังหวัดก่อนเป็นอันดับแรก (77 จังหวัด)</small></div>
+                    <div class="pd19-field" data-pd19-field="district"><label for="pd19-district-input">อำเภอ / เขต <span>*</span></label><div class="pd19-combo-wrap"><input type="text" id="pd19-district-input" class="pd19-combo-input ui-input" role="combobox" aria-expanded="false" aria-controls="pd19-district-options" aria-autocomplete="list" autocomplete="off" placeholder="เลือกจังหวัดก่อน" readonly aria-disabled="true"><button type="button" class="pd19-combo-toggle" data-pd19-toggle="district" aria-label="เปิดรายชื่ออำเภอหรือเขต"><i data-lucide="chevron-down"></i></button><div id="pd19-district-options" class="pd19-combo-list" role="listbox" hidden></div></div><small id="pd19-district-help" class="pd19-field-help">ต้องเลือกจังหวัดก่อน</small></div>
+                    <div class="pd19-field" data-pd19-field="subdistrict"><label for="pd19-subdistrict-input">ตำบล / แขวง <span>*</span></label><div class="pd19-combo-wrap"><input type="text" id="pd19-subdistrict-input" class="pd19-combo-input ui-input" role="combobox" aria-expanded="false" aria-controls="pd19-subdistrict-options" aria-autocomplete="list" autocomplete="off" placeholder="เลือกอำเภอหรือเขตก่อน" readonly aria-disabled="true"><button type="button" class="pd19-combo-toggle" data-pd19-toggle="subdistrict" aria-label="เปิดรายชื่อตำบลหรือแขวง"><i data-lucide="chevron-down"></i></button><div id="pd19-subdistrict-options" class="pd19-combo-list" role="listbox" hidden></div></div><small id="pd19-subdistrict-help" class="pd19-field-help">ต้องเลือกอำเภอหรือเขตก่อน</small></div>
+                    <div class="pd19-field" data-pd19-field="postal"><label for="pd19-postal-input">รหัสไปรษณีย์ <span>*</span></label><div class="pd19-combo-wrap"><input type="text" id="pd19-postal-input" class="pd19-combo-input ui-input" role="combobox" aria-expanded="false" aria-controls="pd19-postal-options" aria-autocomplete="list" autocomplete="postal-code" inputmode="numeric" maxlength="5" placeholder="เลือกตำบลหรือแขวงก่อน" readonly aria-disabled="true"><button type="button" class="pd19-combo-toggle" data-pd19-toggle="postal" aria-label="เปิดรหัสไปรษณีย์ที่ใช้ได้"><i data-lucide="chevron-down"></i></button><div id="pd19-postal-options" class="pd19-combo-list" role="listbox" hidden></div></div><small id="pd19-postal-help" class="pd19-field-help">ระบบจะแสดงรหัสที่สัมพันธ์กับตำบลที่เลือก</small></div>
+                  </div>
+                </div>
+                <div id="pd19-manual-fallback" class="pd19-manual-fallback" hidden>
+                  <strong><i data-lucide="triangle-alert" aria-hidden="true"></i> ค้นหาฐานข้อมูลที่อยู่ไม่สำเร็จ</strong>
+                  <p>คุณยังกรอกที่อยู่เองได้ โปรดระบุบ้านเลขที่ ตำบล/แขวง อำเภอ/เขต จังหวัด และรหัสไปรษณีย์ให้ครบ และตรวจทานก่อนส่ง ระบบจะไม่อ้างว่าได้ตรวจความถูกต้องจากฐานข้อมูลแล้ว</p>
+                  <label for="recipient-manual-address">ที่อยู่ฉบับเต็ม <span>*</span></label>
+                  <textarea id="recipient-manual-address" rows="4" maxlength="700" placeholder="บ้านเลขที่, หมู่บ้าน, ซอย, ถนน, ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์" class="ui-input w-full px-4 py-3 rounded-xl"></textarea>
+                </div>
+                <div class="pd19-address-preview"><div><i data-lucide="file-check-2" aria-hidden="true"></i><strong>ตรวจทานที่อยู่ก่อนยืนยัน</strong><small>ข้อมูลนี้จะถูกบันทึกเป็นที่อยู่จัดส่งของคำสั่งพิมพ์</small></div><textarea id="recipient-address" rows="3" readonly aria-label="ตัวอย่างที่อยู่จัดส่งที่ระบบจะบันทึก" placeholder="กรอกข้อมูลบ้านและเลือกพื้นที่ให้ครบ ที่อยู่จะแสดงตรงนี้" class="ui-input w-full px-4 py-3 rounded-xl"></textarea></div>
+                <p class="pd19-privacy-note"><i data-lucide="shield-check" aria-hidden="true"></i> รายชื่อพื้นที่โหลดจากฐานข้อมูลสาธารณะมาไว้ในเบราว์เซอร์ การเลือกค้นหาไม่ส่งชื่อหรือที่อยู่ผู้รับไปยังผู้ให้บริการข้อมูล</p>
+                <p class="pd19-source-note">แหล่งข้อมูล: <a href="https://github.com/open-admin-data/thailand-administrative-divisions" target="_blank" rel="noopener noreferrer">Thailand Administrative Divisions · Open Admin Data</a> (CC BY 4.0, ระบุอัปเดต 1 มิ.ย. 2026) · หากเป็นพื้นที่พิเศษ โปรดตรวจรหัสไปรษณีย์กับไปรษณีย์ไทยอีกครั้ง</p>
               </div>
             </div>
 
@@ -3551,23 +3698,23 @@
               </label>
               
               <div class="grid grid-cols-3 gap-3">
-                <button type="button" onclick="selectTopupAmount(20)" class="topup-pkg-btn p-4 border-2 border-amber-500 bg-amber-500/20 text-amber-400 font-black rounded-2xl text-center transition shadow-lg scale-105 active:scale-95">
+                <button type="button" data-topup-amount="20" aria-pressed="true" onclick="selectTopupAmount(20)" class="topup-pkg-btn is-selected p-4 border-2 border-amber-500 bg-amber-500/20 text-amber-400 font-black rounded-2xl text-center transition shadow-lg scale-105 active:scale-95">
                   <span class="text-base block">20 บาท</span>
                   <span class="text-[11px] font-bold opacity-80 block mt-0.5">(20 Coins)</span>
                 </button>
-                <button type="button" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                <button type="button" data-topup-amount="50" aria-pressed="false" onclick="selectTopupAmount(50)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
                   <span class="text-base block titanium-text">50 บาท</span>
                   <span class="text-[11px] sub-text block mt-0.5">(50 Coins)</span>
                 </button>
-                <button type="button" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                <button type="button" data-topup-amount="100" aria-pressed="false" onclick="selectTopupAmount(100)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
                   <span class="text-base block titanium-text">100 บาท</span>
                   <span class="text-[11px] sub-text block mt-0.5">(100 Coins)</span>
                 </button>
-                <button type="button" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                <button type="button" data-topup-amount="200" aria-pressed="false" onclick="selectTopupAmount(200)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
                   <span class="text-base block titanium-text">200 บาท</span>
                   <span class="text-[11px] sub-text block mt-0.5">(200 Coins)</span>
                 </button>
-                <button type="button" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
+                <button type="button" data-topup-amount="500" aria-pressed="false" onclick="selectTopupAmount(500)" class="topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95">
                   <span class="text-base block titanium-text">500 บาท</span>
                   <span class="text-[11px] sub-text block mt-0.5">(500 Coins)</span>
                 </button>
@@ -3924,18 +4071,18 @@
       setSecurityBadge('security-db-status', dbReady ? 'good' : (dbConfigReady ? 'warn' : 'bad'), dbReady ? 'Supabase เชื่อมต่อแล้ว' : (dbConfigReady ? 'กำลังเชื่อมต่อ' : 'ยังไม่พร้อม'));
       setSecurityBadge('security-session-status', sessionReady ? 'good' : 'warn', sessionReady ? 'เซสชันใช้งานอยู่' : 'ยังไม่ได้ล็อกอิน');
 
+      // RLS and Storage authorization cannot be proven by a browser-only check.
+      setSecurityBadge('security-policy-status', 'warn', 'ยังไม่ยืนยัน');
       let stripState = 'warn';
-      let title = 'การเชื่อมต่อพร้อม — ต้องตรวจสอบ Policy';
-      let copy = 'ตรวจ HTTPS และการเชื่อมต่อเบื้องต้นแล้ว แต่หน้าเว็บไม่สามารถยืนยัน RLS / Storage policies แทนฝั่ง Supabase ได้';
+      let title = 'กำลังตรวจสอบการเชื่อมต่อ';
+      let copy = 'ตรวจสอบ HTTPS, Supabase และสถานะเซสชัน';
       if (!transportSecure) {
-        stripState = 'bad'; title = 'ควรหยุดก่อน: การเชื่อมต่อไม่ปลอดภัย'; copy = 'เปิดเว็บผ่าน HTTPS เพื่อป้องกันข้อมูลระหว่างทาง';
+        stripState = 'bad'; title = 'การเชื่อมต่อยังไม่ปลอดภัย'; copy = 'ควรเปิดเว็บไซต์ผ่าน HTTPS ก่อนส่งข้อมูลหรือทำรายการสำคัญ';
       } else if (!dbReady) {
-        stripState = 'warn'; title = 'ต้องตรวจสอบ: ฐานข้อมูลยังไม่พร้อม'; copy = 'ยังไม่ควรทำรายการที่ต้องบันทึกข้อมูลหรือชำระเงิน';
-      } else if (!sessionReady) {
-        stripState = 'warn'; title = 'พร้อมใช้งานแบบสาธารณะ'; copy = 'ต้องเข้าสู่ระบบก่อนสร้างคิวพิมพ์หรือจัดการ Coins';
+        stripState = 'warn'; title = 'HTTPS พร้อม — ฐานข้อมูลยังไม่พร้อม'; copy = 'ระบบยังยืนยันการเชื่อมต่อ Supabase ไม่ได้ จึงไม่ควรส่งรายการสำคัญ';
       } else {
-        stripState = 'warn'; title = 'เชื่อมต่อพร้อม — ยังไม่ยืนยันความปลอดภัยฐานข้อมูล';
-        copy = 'ตรวจการเชื่อมต่อแล้วเท่านั้น ต้องตรวจ Supabase Auth, RLS และ Storage policies ใน Dashboard ก่อนใช้งานจริง';
+        stripState = 'warn'; title = 'เชื่อมต่อ HTTPS / Supabase ได้';
+        copy = 'สถานะ RLS / Storage ยังไม่ถูกทดสอบจากฝั่งเซิร์ฟเวอร์ ต้องตรวจใน Supabase Dashboard';
       }
       setSecurityStatus(stripState, title, copy);
 
@@ -3943,12 +4090,22 @@
       if (auditTime) auditTime.innerText = `ตรวจสอบล่าสุด ${new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'})}`;
 
       if (notify) {
-        const detail = !transportSecure
-          ? 'การเชื่อมต่อไม่อยู่ใน Secure Context — อย่าทำรายการสำคัญจนกว่าจะเปิดผ่าน HTTPS'
-          : !dbReady
-            ? 'Supabase ยังไม่พร้อม ระบบจะไม่อนุญาตให้ส่งรายการสำคัญไปยังฐานข้อมูล'
-            : 'เชื่อมต่อ HTTPS / Supabase ได้ แต่ฟังก์ชันนี้ไม่ได้ตรวจยืนยัน RLS หรือ Storage Policy โปรดตรวจ Security Advisor และ Policies ที่ฝั่ง Supabase';
-        showCustomModal({ title: 'ผลตรวจการเชื่อมต่อ', message: detail, icon: 'shield-alert' });
+        let detail, icon;
+        if (!transportSecure) {
+          detail = 'ไม่ผ่าน: เว็บไซต์ไม่ได้อยู่ใน Secure Context\nวิธีแก้: เปิดเว็บไซต์ผ่าน HTTPS ก่อนอัปโหลดไฟล์หรือส่งข้อมูลสำคัญ';
+          icon = 'shield-alert';
+        } else if (!dbReady) {
+          detail = 'ตรวจพบว่า HTTPS พร้อม แต่ยังไม่มี Supabase client ที่ใช้งานได้\nวิธีแก้: ตรวจ Project URL และ Publishable/anon key จากค่าตั้งค่า แล้วลองเชื่อมต่ออีกครั้ง';
+          icon = 'database-zap';
+        } else {
+          detail = `ผลการตรวจเบื้องต้น: HTTPS ${transportSecure ? 'พร้อม' : 'ไม่พร้อม'} · Supabase client ${dbReady ? 'พร้อม' : 'ไม่พร้อม'} · เซสชัน ${sessionReady ? 'เข้าสู่ระบบแล้ว' : 'ยังไม่ได้เข้าสู่ระบบ'}
+
+ข้อจำกัด: ผลนี้ไม่ได้หมายความว่า RLS หรือ Storage Policies ผ่านการตรวจ และไม่ใช่หลักฐานว่าการกำหนดสิทธิ์ถูกต้อง
+
+วิธีตรวจเพิ่มเติม: เปิด Supabase Dashboard → Security Advisor / Authentication → Policies และ Storage → Policies แล้วทดสอบว่าบัญชีสมาชิกอ่านหรือแก้ไขได้เฉพาะข้อมูลที่ตนมีสิทธิ์เท่านั้น`;
+          icon = 'shield-check';
+        }
+        showCustomModal({ title: 'ผลตรวจการเชื่อมต่อ', message: detail, icon });
       }
       return { transportSecure, dbReady, sessionReady, dbConfigReady };
     }
@@ -4965,10 +5122,14 @@
       let recipientName = '', recipientPhone = '', recipientAddress = '';
       if (deliveryMethod === 'delivery') {
         recipientName = document.getElementById('recipient-name').value.trim();
-        recipientPhone = document.getElementById('recipient-phone').value.trim();
+        recipientPhone = document.getElementById('recipient-phone').value.replace(/[\s-]/g, '').trim();
+        if (!recipientName || recipientName.length > 100 || !/^0\d{8,9}$/.test(recipientPhone)) {
+          return showCustomModal({ title:'ตรวจสอบข้อมูลผู้รับ', message:'กรุณากรอกชื่อผู้รับไม่เกิน 100 ตัวอักษร และเบอร์โทรศัพท์ไทย 9–10 หลักที่ขึ้นต้นด้วย 0', icon:'map-pin-x' });
+        }
+        if (typeof window.pd19ValidateShipping !== 'function' || !window.pd19ValidateShipping()) return;
         recipientAddress = document.getElementById('recipient-address').value.trim();
-        if (!recipientName || !/^0[0-9\-\s]{8,14}$/.test(recipientPhone) || !recipientAddress) {
-          return showCustomModal({ title:'ตรวจสอบข้อมูลจัดส่ง', message:'กรุณากรอกชื่อ เบอร์โทรศัพท์ และที่อยู่ให้ครบถ้วน และใช้หมายเลขโทรศัพท์ที่ถูกต้อง', icon:'map-pin-x' });
+        if (!recipientAddress || recipientAddress.length < 15 || recipientAddress.length > 700) {
+          return showCustomModal({ title:'ตรวจสอบที่อยู่จัดส่ง', message:'กรุณากรอกข้อมูลที่อยู่ให้ครบและตรวจทานตัวอย่างที่อยู่ก่อนยืนยันรายการ', icon:'map-pin-x' });
         }
       }
 
@@ -5046,6 +5207,7 @@
         document.getElementById('preview-file-drawer-btn').classList.add('hidden');
         document.getElementById('pdf-preview-wrapper').innerHTML = '<p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>';
         document.getElementById('pages-grid-container').innerHTML = '<p class="col-span-full text-center text-xs sub-text py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>';
+        if (typeof window.pd19ResetAddressForm === 'function') window.pd19ResetAddressForm();
         toggleDeliveryFields();
         fetchQueues();
         await fetchUserWallet();
@@ -5116,15 +5278,17 @@
     }
 
     function selectTopupAmount(amt) {
-      document.getElementById('selected-topup-amount').value = amt;
-      document.getElementById('topup-qr-amount').innerText = parseFloat(amt).toFixed(2);
-
-      document.querySelectorAll('.topup-pkg-btn').forEach(btn => {
-        if (btn.innerText.includes(`${amt} บาท`)) {
-          btn.className = 'topup-pkg-btn p-4 border-2 border-amber-500 bg-amber-500/20 text-amber-400 font-black rounded-2xl text-center transition shadow-lg scale-105 active:scale-95';
-        } else {
-          btn.className = 'topup-pkg-btn p-4 ui-input border hover:border-amber-500 rounded-2xl font-bold text-center transition hover:scale-105 active:scale-95';
-        }
+      const amount = Number(amt);
+      if (!ALLOWED_TOPUP_AMOUNTS.includes(amount)) return showCustomModal({ title:'แพ็กเกจไม่ถูกต้อง', message:'กรุณาเลือกจำนวน Coins จากแพ็กเกจที่ระบบกำหนด', icon:'shield-alert' });
+      const hiddenAmount = document.getElementById('selected-topup-amount');
+      const qrAmount = document.getElementById('topup-qr-amount');
+      if (hiddenAmount) hiddenAmount.value = String(amount);
+      if (qrAmount) qrAmount.textContent = amount.toFixed(2);
+      document.querySelectorAll('#view-wallet .topup-pkg-btn').forEach(btn => {
+        const selected = Number(btn.dataset.topupAmount) === amount;
+        btn.classList.toggle('is-selected', selected);
+        btn.classList.toggle('scale-105', selected);
+        btn.setAttribute('aria-pressed', String(selected));
       });
     }
 
@@ -6406,9 +6570,18 @@ rebuildV11Menu();
 function calmSecurityCopy(){
  const t=q('#security-title'),c=q('#security-copy');
  if(!t||!c)return;
- const ok=!!window.isSecureContext || location.protocol==='https:' || location.hostname==='localhost';
- t.textContent=ok?'ปลอดภัย โดยไม่รบกวน':'การเชื่อมต่อยังไม่ปลอดภัย';
- c.textContent=ok?'ระบบตรวจสอบเฉพาะเมื่อจำเป็น • เปิดรายละเอียดได้จากการตั้งค่าระบบ':'ควรเปิดเว็บผ่าน HTTPS ก่อนใช้งานจริง';
+ const secure=!!window.isSecureContext || location.protocol==='https:' || location.hostname==='localhost';
+ const dbState=q('#security-db-status')?.textContent || '';
+ if(!secure){
+  t.textContent='การเชื่อมต่อยังไม่ปลอดภัย';
+  c.textContent='ควรเปิดเว็บไซต์ผ่าน HTTPS ก่อนส่งข้อมูลสำคัญ';
+ }else if(dbState.includes('เชื่อมต่อแล้ว')){
+  t.textContent='เชื่อมต่อแล้ว — สิทธิ์ยังไม่ยืนยัน';
+  c.textContent='HTTPS และ Supabase client พร้อม แต่ RLS / Storage Policies ยังไม่ได้ตรวจยืนยันจากเซิร์ฟเวอร์';
+ }else{
+  t.textContent='HTTPS พร้อม — ยังไม่ยืนยันฐานข้อมูล';
+  c.textContent='การเชื่อมต่อที่ปลอดภัยเพียงอย่างเดียวไม่ยืนยันสิทธิ์ RLS / Storage หรือความพร้อมของ Supabase';
+ }
 }
 calmSecurityCopy(); setTimeout(calmSecurityCopy,1200);
 
@@ -10970,6 +11143,419 @@ nav.sticky > .navbar-inner,#apple-tab-menu .apple-menu-sheet,.pd-theme-sheet,.pd
   if (wallet && window.lucide) {
     try { window.lucide.createIcons({attrs:{'stroke-width':2}}); } catch (_) { try { window.lucide.createIcons(); } catch (_) {} }
   }
+})();
+</script>
+
+
+
+<script id="pd-v19-address-and-workflow-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const dataSources = [
+    'https://cdn.jsdelivr.net/gh/open-admin-data/thailand-administrative-divisions@main/data/all-subdistrict.json',
+    'https://raw.githubusercontent.com/open-admin-data/thailand-administrative-divisions/main/data/all-subdistrict.json'
+  ];
+  const comboNames = ['province','district','subdistrict','postal'];
+  const comboElements = Object.fromEntries(comboNames.map(name => [name, {
+    input: $(`pd19-${name}-input`), list: $(`pd19-${name}-options`),
+    help: $(`pd19-${name}-help`), toggle: document.querySelector(`[data-pd19-toggle="${name}"]`)
+  }]));
+  const selected = { province:null, district:null, subdistrict:null, postal:null };
+  let addressRows = [];
+  let provinceOptions = [];
+  let districtOptionsByProvince = new Map();
+  let subdistrictOptionsByDistrict = new Map();
+  let postalOptionsBySubdistrict = new Map();
+  let dataStatus = 'loading';
+  let currentOpen = null;
+
+  function showNotice(title, message, icon='map-pin') {
+    if (typeof window.showCustomModal === 'function') window.showCustomModal({title, message, icon});
+    else window.alert(`${title}\n\n${message}`);
+  }
+  function nodeName(node) {
+    if (!node) return '';
+    if (typeof node === 'string' || typeof node === 'number') return String(node).trim();
+    const n = node.name;
+    if (typeof n === 'string') return n.trim();
+    return String(n?.local || n?.th || node.name_th || node.nameTh || node.th || node.local_name || node.local || node.label || '').trim();
+  }
+  function nodeLevel(node) { return Number(node?.level ?? node?.administrative_level ?? node?.division_level ?? 0); }
+  function nodeId(node, fallback) {
+    return String(node?.id ?? node?.code?.id ?? node?.code ?? node?.code_id ?? fallback ?? '');
+  }
+  function zipArray(value) {
+    const input = Array.isArray(value) ? value : value == null ? [] : [value];
+    const result = [];
+    for (const entry of input) {
+      let candidate = entry;
+      if (entry && typeof entry === 'object') {
+        candidate = entry.postal_code ?? entry.postalCode ?? entry.zip_code ?? entry.zipCode ?? entry.zip ?? entry.value ?? entry.code ?? entry.name?.local ?? entry.name_th ?? '';
+      }
+      const digits = String(candidate ?? '').replace(/\D/g,'');
+      if (/^\d{5}$/.test(digits) && !result.includes(digits)) result.push(digits);
+    }
+    return result.sort();
+  }
+  function normalizeRows(raw) {
+    const records = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : Array.isArray(raw?.results) ? raw.results : []);
+    const output = [];
+    const seen = new Set();
+    for (const rec of records) {
+      if (!rec || (rec.level != null && Number(rec.level) !== 3)) continue;
+      const ancestors = Array.isArray(rec.ancestors) ? rec.ancestors : [];
+      const provinceNode = ancestors.find(n => nodeLevel(n) === 1) || ancestors[0] || rec.province || rec.province_data;
+      const districtNode = ancestors.find(n => nodeLevel(n) === 2) || rec.parent || rec.district || rec.district_data || ancestors[1];
+      const provinceName = nodeName(provinceNode) || String(rec.province_name_th || rec.provinceNameTh || rec.province_th || '');
+      const districtName = nodeName(districtNode) || String(rec.district_name_th || rec.districtNameTh || rec.district_th || '');
+      const subdistrictName = nodeName(rec) || String(rec.subdistrict_name_th || rec.subdistrictNameTh || rec.subdistrict_th || '');
+      if (!provinceName || !districtName || !subdistrictName) continue;
+      const provinceId = nodeId(provinceNode, rec.province_code ?? rec.provinceCode ?? provinceName);
+      const districtId = nodeId(districtNode, rec.district_code ?? rec.districtCode ?? `${provinceId}:${districtName}`);
+      const subdistrictId = nodeId(rec, rec.subdistrict_code ?? rec.subdistrictCode ?? `${districtId}:${subdistrictName}`);
+      const key = `${provinceId}|${districtId}|${subdistrictId}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const postalCodes = zipArray(rec.zip_codes ?? rec.postal_codes ?? rec.postalCodes ?? rec.postal_code ?? rec.postalCode ?? rec.zip_code ?? rec.zipCode);
+      const nameEn = String(rec.name?.en || rec.name_en || rec.nameEn || rec.en || '').trim();
+      const provinceEn = String(provinceNode?.name?.en || provinceNode?.name_en || provinceNode?.nameEn || '').trim();
+      const districtEn = String(districtNode?.name?.en || districtNode?.name_en || districtNode?.nameEn || '').trim();
+      output.push({provinceId, provinceName, provinceEn, districtId, districtName, districtEn, subdistrictId, subdistrictName, nameEn, postalCodes});
+    }
+    return output;
+  }
+  function setStatus(state, title, copy) {
+    dataStatus = state;
+    const panel = $('pd19-address-status');
+    if (panel) panel.dataset.state = state;
+    const titleEl = $('pd19-address-status-title');
+    const copyEl = $('pd19-address-status-copy');
+    if (titleEl) titleEl.textContent = title;
+    if (copyEl) copyEl.textContent = copy;
+    const mark = panel?.querySelector('.pd19-status-mark');
+    if (mark) {
+      const iconName = state === 'ready' ? 'check-circle-2' : state === 'error' ? 'triangle-alert' : 'loader-circle';
+      mark.innerHTML = `<i data-lucide="${iconName}" aria-hidden="true"></i>`;
+      try { window.lucide?.createIcons({attrs:{'stroke-width':2}}); } catch (_) { try { window.lucide?.createIcons(); } catch (_) {} }
+    }
+    $('pd19-structured-address')?.toggleAttribute('hidden', state === 'error');
+    $('pd19-manual-fallback')?.toggleAttribute('hidden', state !== 'error');
+    comboNames.forEach(type => { if (comboElements[type]?.input) comboElements[type].input.readOnly = state !== 'ready' || !isUnlocked(type); });
+  }
+  function makeOption(key, name, en='') { return {key:String(key), name:String(name), en:String(en || ''), search:`${name} ${en || ''}`.toLocaleLowerCase()}; }
+  function buildIndexes(rows) {
+    const provinces = new Map(), districts = new Map(), subdistricts = new Map(), postals = new Map();
+    for (const row of rows) {
+      if (!provinces.has(row.provinceId)) provinces.set(row.provinceId, makeOption(row.provinceId,row.provinceName,row.provinceEn));
+      const dKey = `${row.provinceId}|${row.districtId}`;
+      if (!districts.has(dKey)) districts.set(dKey, {...makeOption(dKey,row.districtName,row.districtEn), provinceId:row.provinceId, rawId:row.districtId});
+      const sKey = `${dKey}|${row.subdistrictId}`;
+      if (!subdistricts.has(sKey)) subdistricts.set(sKey, {...makeOption(sKey,row.subdistrictName,row.nameEn), provinceId:row.provinceId, districtId:dKey, rawId:row.subdistrictId, postalCodes:row.postalCodes});
+      const current = subdistricts.get(sKey);
+      current.postalCodes = [...new Set([...(current.postalCodes || []), ...row.postalCodes])].sort();
+    }
+    provinceOptions = [...provinces.values()].sort((a,b)=>a.name.localeCompare(b.name,'th'));
+    districtOptionsByProvince = new Map();
+    for (const opt of districts.values()) {
+      if (!districtOptionsByProvince.has(opt.provinceId)) districtOptionsByProvince.set(opt.provinceId, []);
+      districtOptionsByProvince.get(opt.provinceId).push(opt);
+    }
+    for (const list of districtOptionsByProvince.values()) list.sort((a,b)=>a.name.localeCompare(b.name,'th'));
+    subdistrictOptionsByDistrict = new Map();
+    for (const opt of subdistricts.values()) {
+      if (!subdistrictOptionsByDistrict.has(opt.districtId)) subdistrictOptionsByDistrict.set(opt.districtId, []);
+      subdistrictOptionsByDistrict.get(opt.districtId).push(opt);
+      for (const code of opt.postalCodes || []) {
+        if (!postals.has(code)) postals.set(code, []);
+        postals.get(code).push(opt);
+      }
+    }
+    for (const list of subdistrictOptionsByDistrict.values()) list.sort((a,b)=>a.name.localeCompare(b.name,'th'));
+    postalOptionsBySubdistrict = new Map();
+    for (const opt of subdistricts.values()) {
+      postalOptionsBySubdistrict.set(opt.key, (opt.postalCodes || []).map(code => makeOption(code,code,'รหัสไปรษณีย์')).sort((a,b)=>a.name.localeCompare(b.name)));
+    }
+  }
+  function isUnlocked(type) {
+    if (type === 'province') return dataStatus === 'ready';
+    if (type === 'district') return dataStatus === 'ready' && !!selected.province;
+    if (type === 'subdistrict') return dataStatus === 'ready' && !!selected.district;
+    return dataStatus === 'ready' && !!selected.subdistrict;
+  }
+  function optionsFor(type) {
+    if (type === 'province') return provinceOptions;
+    if (type === 'district') return selected.province ? (districtOptionsByProvince.get(selected.province.key) || []) : [];
+    if (type === 'subdistrict') return selected.district ? (subdistrictOptionsByDistrict.get(selected.district.key) || []) : [];
+    if (type === 'postal') return selected.subdistrict ? (postalOptionsBySubdistrict.get(selected.subdistrict.key) || []) : [];
+    return [];
+  }
+  function closeCombo(type) {
+    const els = comboElements[type];
+    if (!els) return;
+    els.list.hidden = true;
+    els.input.setAttribute('aria-expanded','false');
+    if (currentOpen === type) currentOpen = null;
+  }
+  function closeAllCombos(except=null) { comboNames.forEach(type => { if (type !== except) closeCombo(type); }); }
+  function renderOptions(type, query='') {
+    const els = comboElements[type];
+    if (!els?.list) return;
+    const q = query.trim().toLocaleLowerCase();
+    const options = optionsFor(type).filter(opt => !q || opt.search.includes(q) || opt.name.toLocaleLowerCase().includes(q));
+    els.list.replaceChildren();
+    if (!options.length) {
+      const empty = document.createElement('div'); empty.className='pd19-empty';
+      empty.textContent = type === 'postal' && selected.subdistrict ? 'ฐานข้อมูลไม่มีรหัสไปรษณีย์ระบุไว้สำหรับพื้นที่นี้ โปรดลองค้นหาหรือใช้คำแนะนำกรอกที่อยู่เอง' : 'ไม่พบตัวเลือกที่ตรงกับคำค้น ลองพิมพ์คำอื่น';
+      els.list.appendChild(empty);
+    } else {
+      options.slice(0,90).forEach(opt => {
+        const button = document.createElement('button');
+        button.type='button'; button.className='pd19-option'; button.setAttribute('role','option');
+        button.setAttribute('aria-selected', String(selected[type]?.key === opt.key));
+        const name = document.createElement('span'); name.textContent = opt.name;
+        button.appendChild(name);
+        if (opt.en) { const small=document.createElement('small'); small.textContent=opt.en; button.appendChild(small); }
+        button.addEventListener('click', () => chooseOption(type,opt));
+        button.addEventListener('keydown', ev => {
+          if (ev.key === 'Escape') { ev.preventDefault(); closeCombo(type); els.input.focus(); }
+          if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+            ev.preventDefault(); const buttons=[...els.list.querySelectorAll('.pd19-option')];
+            const idx=buttons.indexOf(button); buttons[Math.max(0,Math.min(buttons.length-1,idx+(ev.key==='ArrowDown'?1:-1)))]?.focus();
+          }
+          if (ev.key === 'Tab') closeCombo(type);
+        });
+        els.list.appendChild(button);
+      });
+      if (options.length > 90) { const note=document.createElement('div'); note.className='pd19-empty'; note.textContent=`พบ ${options.length.toLocaleString('th-TH')} รายการ · พิมพ์เพิ่มเพื่อกรองผลลัพธ์`; els.list.appendChild(note); }
+    }
+    els.list.hidden = false; els.input.setAttribute('aria-expanded','true'); currentOpen=type;
+  }
+  function resetField(type, locked=true) {
+    selected[type] = null;
+    const els = comboElements[type]; if (!els) return;
+    els.input.value=''; els.input.readOnly=locked || dataStatus !== 'ready';
+    els.input.setAttribute('aria-disabled',String(locked || dataStatus !== 'ready'));
+    closeCombo(type);
+  }
+  function syncAreaNotes() {
+    if (comboElements.province.help) comboElements.province.help.textContent = dataStatus === 'ready' ? `ค้นหาได้ทั้งภาษาไทยและอังกฤษ · ${provinceOptions.length} จังหวัด` : 'รอโหลดข้อมูลก่อนเลือกจังหวัด';
+    if (comboElements.district.help) comboElements.district.help.textContent = selected.province ? `แสดงเฉพาะอำเภอ/เขตใน${selected.province.name}` : 'ต้องเลือกจังหวัดก่อน';
+    if (comboElements.subdistrict.help) comboElements.subdistrict.help.textContent = selected.district ? `แสดงเฉพาะตำบล/แขวงใน${selected.district.name}` : 'ต้องเลือกอำเภอหรือเขตก่อน';
+    if (comboElements.postal.help) comboElements.postal.help.textContent = selected.subdistrict ? (optionsFor('postal').length ? `รหัสไปรษณีย์ที่พบ ${optionsFor('postal').length} รายการสำหรับพื้นที่นี้` : 'ไม่พบรหัสในแหล่งข้อมูล ต้องตรวจและกรอกรหัสที่ถูกต้อง') : 'ต้องเลือกตำบลหรือแขวงก่อน';
+    const provinceIsBangkok = selected.province?.name === 'กรุงเทพมหานคร';
+    const districtLabel = document.querySelector('label[for="pd19-district-input"]');
+    const subdistrictLabel = document.querySelector('label[for="pd19-subdistrict-input"]');
+    if (districtLabel) districtLabel.firstChild.textContent = provinceIsBangkok ? 'เขต ' : 'อำเภอ / เขต ';
+    if (subdistrictLabel) subdistrictLabel.firstChild.textContent = provinceIsBangkok ? 'แขวง ' : 'ตำบล / แขวง ';
+  }
+  function buildAddressPreview() {
+    if (dataStatus === 'error') {
+      const manual = $('recipient-manual-address')?.value.trim() || '';
+      if ($('recipient-address')) $('recipient-address').value = manual;
+      return manual;
+    }
+    const parts=[];
+    const house=$('recipient-house-number')?.value.trim();
+    const moo=$('recipient-moo')?.value.trim();
+    const village=$('recipient-village')?.value.trim();
+    const building=$('recipient-building')?.value.trim();
+    const alley=$('recipient-alley')?.value.trim();
+    const road=$('recipient-road')?.value.trim();
+    if (house) parts.push(`บ้านเลขที่ ${house}`);
+    if (moo) parts.push(`หมู่ที่ ${moo}`);
+    if (village) parts.push(`หมู่บ้าน${village}`);
+    if (building) parts.push(`อาคาร/ชั้น/ห้อง ${building}`);
+    if (alley) parts.push(`ซอย${alley}`);
+    if (road) parts.push(`ถนน${road}`);
+    const bangkok = selected.province?.name === 'กรุงเทพมหานคร';
+    if (selected.subdistrict) parts.push(`${bangkok?'แขวง':'ตำบล'}${selected.subdistrict.name}`);
+    if (selected.district) parts.push(`${bangkok?'เขต':'อำเภอ'}${selected.district.name}`);
+    if (selected.province) parts.push(selected.province.name);
+    if (selected.postal) parts.push(selected.postal.name);
+    const address=parts.join(' ');
+    if ($('recipient-address')) $('recipient-address').value=address;
+    return address;
+  }
+  function clearChildren(type) {
+    if (type === 'province') { resetField('district',true); resetField('subdistrict',true); resetField('postal',true); }
+    if (type === 'district') { resetField('subdistrict',true); resetField('postal',true); }
+    if (type === 'subdistrict') { resetField('postal',true); }
+  }
+  function chooseOption(type,opt) {
+    selected[type]=opt;
+    const els=comboElements[type];
+    els.input.value=opt.name;
+    els.input.readOnly=false;
+    els.input.setAttribute('aria-disabled','false');
+    closeCombo(type);
+    if (type === 'province') {
+      clearChildren('province');
+      if (comboElements.district) { comboElements.district.input.readOnly=false; comboElements.district.input.placeholder='ค้นหาชื่ออำเภอหรือเขต...'; comboElements.district.input.setAttribute('aria-disabled','false'); }
+      if (comboElements.subdistrict) comboElements.subdistrict.input.placeholder='เลือกอำเภอหรือเขตก่อน';
+      if (comboElements.postal) comboElements.postal.input.placeholder='เลือกตำบลหรือแขวงก่อน';
+    } else if (type === 'district') {
+      clearChildren('district');
+      if (comboElements.subdistrict) { comboElements.subdistrict.input.readOnly=false; comboElements.subdistrict.input.placeholder='ค้นหาชื่อตำบลหรือแขวง...'; comboElements.subdistrict.input.setAttribute('aria-disabled','false'); }
+    } else if (type === 'subdistrict') {
+      clearChildren('subdistrict');
+      if (comboElements.postal) { comboElements.postal.input.readOnly=false; comboElements.postal.input.placeholder=optionsFor('postal').length ? 'ค้นหารหัสไปรษณีย์...' : 'ไม่มีรหัสในฐานข้อมูล · ตรวจสอบเอง'; comboElements.postal.input.setAttribute('aria-disabled','false'); }
+      if (!optionsFor('postal').length) {
+        showNotice('ไม่พบรหัสไปรษณีย์ในแหล่งข้อมูล', 'ไม่สามารถยืนยันรหัสของตำบล/แขวงที่เลือกได้ กรุณาตรวจสอบรหัสไปรษณีย์กับไปรษณีย์ไทยก่อนกรอกและยืนยัน', 'map-pin');
+      }
+    }
+    syncAreaNotes(); buildAddressPreview();
+  }
+  function lockedMessage(type) {
+    if (dataStatus !== 'ready') return {title:'ข้อมูลที่อยู่ยังไม่พร้อม', message:'รอให้ระบบโหลดข้อมูลที่อยู่ให้เสร็จก่อน หรือใช้ช่องกรอกที่อยู่เองเมื่อระบบแจ้งว่าโหลดไม่สำเร็จ'};
+    if (type === 'district' && !selected.province) return {title:'ต้องเลือกจังหวัดก่อน', message:'เลือกจังหวัดก่อน ระบบจึงจะแสดงเฉพาะอำเภอ/เขตในจังหวัดนั้น'};
+    if (type === 'subdistrict' && !selected.province) return {title:'ต้องเลือกจังหวัดก่อน', message:'เริ่มจากจังหวัดก่อน แล้วเลือกอำเภอ/เขต ระบบจึงจะแสดงตำบล/แขวงที่สัมพันธ์กัน'};
+    if (type === 'subdistrict' && !selected.district) return {title:'ต้องเลือกอำเภอหรือเขตก่อน', message:'โปรดเลือกจังหวัดและอำเภอ/เขตก่อน แล้วระบบจึงเปิดรายชื่อตำบล/แขวงให้เลือก'};
+    if (type === 'postal' && !selected.province) return {title:'ต้องเลือกจังหวัดก่อน', message:'ยังไม่สามารถเลือกหรือค้นหารหัสไปรษณีย์ได้ โปรดเลือกจังหวัดก่อน'};
+    if (type === 'postal' && !selected.district) return {title:'ต้องเลือกอำเภอหรือเขตก่อน', message:'เลือกลำดับ จังหวัด → อำเภอ/เขต → ตำบล/แขวง ก่อนเลือกหรือค้นหารหัสไปรษณีย์'};
+    if (type === 'postal' && !selected.subdistrict) return {title:'ต้องเลือกตำบลหรือแขวงก่อน', message:'รหัสไปรษณีย์จะถูกกรองจากตำบล/แขวงที่เลือก เพื่อช่วยป้องกันที่อยู่ไม่ตรงกัน'};
+    return {title:'กรุณาเลือกพื้นที่ตามลำดับ', message:'เริ่มจากจังหวัด แล้วเลือกอำเภอ/เขต ตำบล/แขวง และรหัสไปรษณีย์ตามลำดับ'};
+  }
+  function handleTyping(type) {
+    const els=comboElements[type];
+    if (!isUnlocked(type)) { const msg=lockedMessage(type); showNotice(msg.title,msg.message); return; }
+    const currentValue=els.input.value.trim();
+    if (type === 'postal' && selected.subdistrict && optionsFor('postal').length === 0) {
+      const digits = currentValue.replace(/\D/g,'').slice(0,5);
+      if (els.input.value !== digits) els.input.value = digits;
+      selected.postal = /^\d{5}$/.test(digits) ? makeOption(digits,digits,'กรอกเอง · ตรวจสอบกับไปรษณีย์ไทย') : null;
+      syncAreaNotes(); buildAddressPreview();
+      return;
+    }
+    if (selected[type] && currentValue !== selected[type].name) {
+      selected[type]=null; clearChildren(type);
+      if (type==='province') {
+        comboElements.district.input.readOnly=true; comboElements.district.input.placeholder='เลือกจังหวัดก่อน';
+      }
+      if (type==='district') {
+        comboElements.subdistrict.input.readOnly=true; comboElements.subdistrict.input.placeholder='เลือกอำเภอหรือเขตก่อน';
+      }
+      if (type==='subdistrict') {
+        comboElements.postal.input.readOnly=true; comboElements.postal.input.placeholder='เลือกตำบลหรือแขวงก่อน';
+      }
+      syncAreaNotes(); buildAddressPreview();
+    }
+    renderOptions(type,currentValue);
+  }
+  function bindCombo(type) {
+    const els=comboElements[type]; if (!els.input) return;
+    els.input.addEventListener('focus', () => { if (!isUnlocked(type)) return; if (selected[type]) els.input.select(); });
+    els.input.addEventListener('click', () => {
+      if (!isUnlocked(type)) { const msg=lockedMessage(type); showNotice(msg.title,msg.message); return; }
+      if (els.list.hidden) renderOptions(type,els.input.value === selected[type]?.name ? '' : els.input.value);
+    });
+    els.input.addEventListener('input', () => handleTyping(type));
+    if (type === 'postal') els.input.addEventListener('blur', () => {
+      if (selected.subdistrict && optionsFor('postal').length === 0) {
+        const digits = els.input.value.replace(/\D/g,'').slice(0,5);
+        selected.postal = /^\d{5}$/.test(digits) ? makeOption(digits,digits,'กรอกเอง · ตรวจสอบกับไปรษณีย์ไทย') : null;
+        syncAreaNotes(); buildAddressPreview();
+      }
+    });
+    els.input.addEventListener('keydown', ev => {
+      if (!isUnlocked(type) && (ev.key==='Enter'||ev.key===' ')) { ev.preventDefault(); const msg=lockedMessage(type); showNotice(msg.title,msg.message); return; }
+      if (ev.key==='ArrowDown') { ev.preventDefault(); if (els.list.hidden) renderOptions(type,els.input.value); els.list.querySelector('.pd19-option')?.focus(); }
+      else if (ev.key==='Enter') { if (!els.list.hidden) { ev.preventDefault(); els.list.querySelector('.pd19-option')?.click(); } }
+      else if (ev.key==='Escape') closeCombo(type);
+    });
+    els.toggle?.addEventListener('click', () => {
+      if (!isUnlocked(type)) { const msg=lockedMessage(type); showNotice(msg.title,msg.message); return; }
+      if (selected[type]) { selected[type]=null; clearChildren(type); els.input.value=''; buildAddressPreview(); syncAreaNotes(); }
+      els.input.focus(); renderOptions(type,'');
+    });
+  }
+  async function fetchDataset(url) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 9500);
+    try {
+      const response=await fetch(url,{method:'GET',mode:'cors',credentials:'omit',cache:'force-cache',headers:{'Accept':'application/json'},signal:controller.signal});
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data=await response.json();
+      if (!Array.isArray(data) && !Array.isArray(data?.data) && !Array.isArray(data?.results)) throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
+      return data;
+    } finally { clearTimeout(timer); }
+  }
+  async function loadDataset() {
+    setStatus('loading','กำลังโหลดข้อมูลที่อยู่ประเทศไทย','ดาวน์โหลดรายชื่อพื้นที่แบบสาธารณะมาไว้ในเบราว์เซอร์ โดยไม่ส่งข้อมูลผู้รับไปยังแหล่งข้อมูล');
+    let failure=null;
+    for (const source of dataSources) {
+      try {
+        const raw=await fetchDataset(source);
+        const rows=normalizeRows(raw);
+        const provinces=new Set(rows.map(r=>r.provinceId));
+        const districts=new Set(rows.map(r=>`${r.provinceId}|${r.districtId}`));
+        if (rows.length < 7000 || provinces.size < 70 || districts.size < 850) throw new Error(`ข้อมูลไม่ครบตามเกณฑ์ตรวจสอบ (${rows.length} ตำบล, ${provinces.size} จังหวัด)`);
+        addressRows=rows; buildIndexes(rows);
+        setStatus('ready','ข้อมูลที่อยู่พร้อมใช้งาน',`พบ ${provinceOptions.length} จังหวัด · ${districts.size.toLocaleString('th-TH')} อำเภอ/เขต · ${new Set(rows.map(r=>`${r.provinceId}|${r.districtId}|${r.subdistrictId}`)).size.toLocaleString('th-TH')} ตำบล/แขวง · ค้นหาได้ในหน้านี้`);
+        comboElements.province.input.readOnly=false; comboElements.province.input.setAttribute('aria-disabled','false');
+        comboElements.district.input.readOnly=true; comboElements.subdistrict.input.readOnly=true; comboElements.postal.input.readOnly=true;
+        syncAreaNotes(); return;
+      } catch (err) { failure=err; }
+    }
+    console.warn('Address dataset unavailable:', failure);
+    setStatus('error','ไม่สามารถโหลดฐานข้อมูลที่อยู่ได้','สาเหตุอาจมาจากเครือข่ายหรือแหล่งข้อมูลภายนอก โปรดใช้ช่องกรอกที่อยู่เองและตรวจทานข้อมูลกับผู้ให้บริการขนส่ง');
+    comboNames.forEach(type => { comboElements[type].input.readOnly=true; comboElements[type].input.setAttribute('aria-disabled','true'); });
+  }
+  function validateShipping() {
+    if (dataStatus === 'loading') {
+      showNotice('กำลังเตรียมตัวเลือกที่อยู่','โปรดรอสักครู่ให้ฐานข้อมูลที่อยู่โหลดเสร็จก่อนส่งคำสั่งพิมพ์', 'loader-circle'); return false;
+    }
+    if (dataStatus === 'error') {
+      const manual=$('recipient-manual-address')?.value.trim() || '';
+      if (manual.length < 15) { showNotice('กรอกที่อยู่ยังไม่ครบ','กรอกบ้านเลขที่ ตำบล/แขวง อำเภอ/เขต จังหวัด และรหัสไปรษณีย์ในช่องที่อยู่ฉบับเต็ม อย่างน้อย 15 ตัวอักษร', 'map-pin-x'); return false; }
+      if (!/(?:\d{5})/.test(manual)) { showNotice('ไม่พบรหัสไปรษณีย์ 5 หลัก','เพิ่มรหัสไปรษณีย์ 5 หลักและตรวจสอบกับไปรษณีย์ไทยก่อนยืนยัน', 'map-pin-x'); return false; }
+      buildAddressPreview(); return true;
+    }
+    const missing=[];
+    if (!$('recipient-house-number')?.value.trim()) missing.push('บ้านเลขที่');
+    if (!selected.province) missing.push('จังหวัด');
+    if (!selected.district) missing.push('อำเภอ/เขต');
+    if (!selected.subdistrict) missing.push('ตำบล/แขวง');
+    if (!selected.postal) missing.push('รหัสไปรษณีย์');
+    if (missing.length) { showNotice('กรุณากรอกที่อยู่ให้ครบ',`ยังไม่ได้ระบุ: ${missing.join('、 ')}\n\nโปรดเลือกพื้นที่ตามลำดับ จังหวัด → อำเภอ/เขต → ตำบล/แขวง → รหัสไปรษณีย์`, 'map-pin-x'); return false; }
+    const currentPostalOptions=optionsFor('postal');
+    if (currentPostalOptions.length && !currentPostalOptions.some(o=>o.key===selected.postal.key)) { showNotice('รหัสไปรษณีย์ไม่สัมพันธ์กับตำบล','เลือกจากรหัสไปรษณีย์ที่ระบบแสดงหลังเลือกตำบล/แขวงอีกครั้ง', 'shield-alert'); return false; }
+    if (!/^\d{5}$/.test(selected.postal.name)) { showNotice('รหัสไปรษณีย์ไม่ถูกต้อง','รหัสไปรษณีย์ต้องมีตัวเลข 5 หลัก', 'map-pin-x'); return false; }
+    buildAddressPreview(); return true;
+  }
+  function resetAddressForm() {
+    Object.keys(selected).forEach(k=>selected[k]=null);
+    comboNames.forEach(type=>resetField(type,type!=='province'));
+    if (dataStatus==='ready') { comboElements.province.input.readOnly=false; comboElements.province.input.setAttribute('aria-disabled','false'); }
+    $('recipient-manual-address').value='';
+    $('recipient-address').value='';
+    ['recipient-house-number','recipient-moo','recipient-village','recipient-building','recipient-alley','recipient-road'].forEach(id=>{const el=$(id);if(el)el.value='';});
+    syncAreaNotes();
+  }
+  window.pd19ValidateShipping=validateShipping;
+  window.pd19ResetAddressForm=resetAddressForm;
+  window.pd19AddressDataStatus=()=>({status:dataStatus, subdistrictCount:addressRows.length, provinceCount:provinceOptions.length});
+
+  comboNames.forEach(bindCombo);
+  document.addEventListener('click',ev=>{
+    if (!ev.target.closest('.pd19-combo-wrap')) closeAllCombos();
+  });
+  ['recipient-house-number','recipient-moo','recipient-village','recipient-building','recipient-alley','recipient-road'].forEach(id=>$(id)?.addEventListener('input',buildAddressPreview,{passive:true}));
+  $('recipient-manual-address')?.addEventListener('input',buildAddressPreview,{passive:true});
+
+  // Keep the requested printing workflow panel at the end of the homepage.
+  const landing=$('view-landing');
+  const closingCta=landing?.querySelector(':scope > .pd-final-cta');
+  if (landing && closingCta) {
+    closingCta.classList.remove('pd18-top-cta');
+    if (landing.lastElementChild !== closingCta) landing.appendChild(closingCta);
+    closingCta.classList.add('is-visible','is-in');
+    closingCta.style.opacity='1'; closingCta.style.transform='none'; closingCta.style.filter='none';
+  }
+  // Initialize the package state through the same path used by a click.
+  try { if (typeof window.selectTopupAmount === 'function') window.selectTopupAmount(20); } catch (_) {}
+  try { window.lucide?.createIcons({attrs:{'stroke-width':2}}); } catch (_) { try { window.lucide?.createIcons(); } catch (_) {} }
+  loadDataset();
 })();
 </script>
 
