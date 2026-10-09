@@ -13497,6 +13497,12 @@
         const printCost = pages * pageRate * copies;
         const deliveryFee = deliveryMethod === 'delivery' ? 30 : 0;
         const total = Number((printCost + deliveryFee).toFixed(2));
+        if (!Number.isFinite(pageRate) || pageRate < 0 || !Number.isFinite(total) || total <= 0) {
+          return notifyV12('ราคายังยืนยันไม่ได้', 'ระบบพบราคาหรือยอดรวมไม่ถูกต้อง จึงหยุดก่อนสร้างคำสั่งซื้อ', 'shield-alert');
+        }
+        if (!['coins', 'promptpay'].includes(payMethod) || !['pickup', 'delivery'].includes(deliveryMethod)) {
+          return notifyV12('วิธีทำรายการไม่ถูกต้อง', 'กรุณาเลือกวิธีชำระเงินและรับสินค้าใหม่', 'shield-alert');
+        }
 
         if (payMethod === 'coins') {
           try { await window.fetchUserWallet?.(); } catch (err) { return notifyV12('ตรวจสอบ Coins ไม่สำเร็จ', err.message || 'ไม่สามารถอ่าน wallets.balance', 'shield-alert'); }
@@ -13507,7 +13513,7 @@
         const orderId = crypto.randomUUID();
         const docId = crypto.randomUUID();
         let documentPath = '', slipPath = '', orderCreated = false, docCreated = false, jobCreated = false, deliveryCreated = false, paymentCreated = false, walletChanged = false;
-        let walletBefore = 0, walletId = null;
+        let walletBefore = 0, walletId = null, checkoutCommitted = false, walletRollbackConflict = false;
 
         try {
           const safeName = String(file.name || 'document').replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 100) || 'document';
@@ -13571,8 +13577,11 @@
             if (txError) throw txError;
           }
 
-          await window.fetchUserWallet?.();
-          await window.fetchQueues?.();
+          // The database writes above are the checkout commit. Refresh failures must not
+          // roll back a paid order or delete its audit trail after a successful transaction.
+          checkoutCommitted = true;
+          try { await window.fetchUserWallet?.(); } catch (refreshError) { console.warn('[PrintDekD] Wallet refresh failed after checkout commit:', refreshError); }
+          try { await window.fetchQueues?.(); } catch (refreshError) { console.warn('[PrintDekD] Queue refresh failed after checkout commit:', refreshError); }
           notifyV12('สร้างรายการสำเร็จ', `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด • ${money(total)} Coins`, 'check-circle-2');
           $('print-form')?.reset(); window.selectedFileObj = null;
           $('upload-placeholder')?.classList.remove('hidden'); $('file-details')?.classList.add('hidden'); $('preview-file-drawer-btn')?.classList.add('hidden');
@@ -13580,17 +13589,34 @@
           if ($('pages-grid-container')) $('pages-grid-container').innerHTML = '<p class="col-span-full text-center text-xs sub-text py-2">กรุณาอัปโหลดไฟล์ PDF เพื่อเลือกหน้า</p>';
           toggleDeliveryFields?.();
         } catch (err) {
-          if (walletChanged && walletId) {
-            try { await client.from('wallets').update({ balance: walletBefore, updated_at: new Date().toISOString() }).eq('id', walletId); } catch (_) { }
+          if (checkoutCommitted) {
+            console.error('[PrintDekD] Checkout committed, but a later UI step failed:', err);
+            notifyV12('บันทึกคำสั่งซื้อแล้ว', 'คำสั่งซื้อถูกบันทึกแล้ว แต่มีขั้นตอนแสดงผลบางส่วนไม่สำเร็จ กรุณากดรีเฟรชคิวแทนการสั่งซ้ำ', 'check-circle-2');
+            return;
           }
-          if (paymentCreated) try { await client.from('payments').delete().eq('order_id', orderId); } catch (_) { }
-          if (deliveryCreated) try { await client.from('deliveries').delete().eq('order_id', orderId); } catch (_) { }
-          if (jobCreated) try { await client.from('print_jobs').delete().eq('order_id', orderId); } catch (_) { }
-          if (orderCreated) try { await client.from('orders').delete().eq('id', orderId); } catch (_) { }
-          if (docCreated) try { await client.from('documents').delete().eq('id', docId); } catch (_) { }
-          await removeStorageV12('documents', documentPath);
-          await removeStorageV12('slips', slipPath);
-          notifyV12('สร้างรายการไม่สำเร็จ', err?.message || 'ไม่สามารถบันทึกข้อมูลได้', 'shield-alert');
+          if (walletChanged && walletId) {
+            const expectedAfterDebit = Number((walletBefore - total).toFixed(2));
+            try {
+              const restored = await client.from('wallets').update({ balance: walletBefore, updated_at: new Date().toISOString() })
+                .eq('id', walletId).eq('balance', expectedAfterDebit).select('id').maybeSingle();
+              if (restored.error || !restored.data) walletRollbackConflict = true;
+            } catch (_) { walletRollbackConflict = true; }
+          }
+          if (!walletRollbackConflict) {
+            if (paymentCreated) try { await client.from('payments').delete().eq('order_id', orderId); } catch (_) { }
+            if (deliveryCreated) try { await client.from('deliveries').delete().eq('order_id', orderId); } catch (_) { }
+            if (jobCreated) try { await client.from('print_jobs').delete().eq('order_id', orderId); } catch (_) { }
+            if (orderCreated) try { await client.from('orders').delete().eq('id', orderId); } catch (_) { }
+            if (docCreated) try { await client.from('documents').delete().eq('id', docId); } catch (_) { }
+            await removeStorageV12('documents', documentPath);
+            await removeStorageV12('slips', slipPath);
+          } else {
+            // Preserve order/payment evidence when a safe balance rollback cannot be proven.
+            console.error('[PrintDekD] Wallet rollback conflict; retain order records for admin reconciliation.', { orderId, walletId, total });
+          }
+          notifyV12('สร้างรายการไม่สำเร็จ', walletRollbackConflict
+            ? 'ตรวจพบยอด Wallet เปลี่ยนพร้อมกันและไม่สามารถคืนยอดอย่างปลอดภัย ระบบเก็บหลักฐานรายการไว้ให้ผู้ดูแลตรวจสอบแล้ว กรุณาอย่าส่งคำสั่งซื้อซ้ำ'
+            : (err?.message || 'ไม่สามารถบันทึกข้อมูลได้'), 'shield-alert');
         }
       };
 
@@ -13677,24 +13703,58 @@
         } catch (err) { notifyV12('อัปเดตสถานะไม่สำเร็จ', err.message || 'เกิดข้อผิดพลาด', 'shield-alert'); }
       };
 
-      window.approveTopup = async function (topupId, userId, amount) {
+      window.approveTopup = async function (topupId, _userId, _amount) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        const value = Number(amount);
-        if (!Number.isFinite(value) || value <= 0) return notifyV12('ยอด Coins ไม่ถูกต้อง', 'ระบบหยุดการอนุมัติเพื่อป้องกันยอดผิด', 'shield-alert');
+        let claimed = false, walletChanged = false, ledgerCreated = false, rollbackSafe = true;
+        let walletId = null, before = 0, after = 0;
         try {
-          const claim = await db().from('topups').update({ status: 'approved' }).eq('id', topupId).eq('status', 'pending').select('id,user_id,amount').maybeSingle();
-          if (claim.error) throw claim.error; if (!claim.data) return notifyV12('รายการถูกจัดการแล้ว', 'คำขอนี้ไม่ได้อยู่ในสถานะ pending', 'shield-check');
-          const wallet = await window.ensureUserWalletV12(userId);
-          const before = Number(wallet.balance || 0), after = Number((before + value).toFixed(2));
-          const changed = await db().from('wallets').update({ balance: after, updated_at: new Date().toISOString() }).eq('id', wallet.id).eq('balance', before).select('id,balance').maybeSingle();
+          // Claim the pending row first, then trust only the values read back from Postgres.
+          const claim = await db().from('topups').update({ status: 'approved' })
+            .eq('id', topupId).eq('status', 'pending').select('id,user_id,amount').maybeSingle();
+          if (claim.error) throw claim.error;
+          if (!claim.data) return notifyV12('รายการถูกจัดการแล้ว', 'คำขอนี้ไม่ได้อยู่ในสถานะ pending', 'shield-check');
+          claimed = true;
+          const targetUserId = claim.data.user_id;
+          const value = Number(claim.data.amount);
+          if (!targetUserId || !Number.isFinite(value) || ![20, 50, 100, 200, 500].includes(value)) {
+            throw new Error('ข้อมูลคำขอเติมเงินไม่ถูกต้อง: user_id/amount ไม่ตรงกับแพ็กเกจที่ระบบอนุญาต');
+          }
+          const wallet = await window.ensureUserWalletV12(targetUserId);
+          walletId = wallet.id;
+          before = Number(wallet.balance || 0);
+          if (!Number.isFinite(before) || before < 0) throw new Error('ยอด Wallet ปัจจุบันไม่ถูกต้อง');
+          after = Number((before + value).toFixed(2));
+          const changed = await db().from('wallets').update({ balance: after, updated_at: new Date().toISOString() })
+            .eq('id', wallet.id).eq('balance', before).select('id,balance').maybeSingle();
           if (changed.error || !changed.data) throw changed.error || new Error('ยอด Coins เปลี่ยนระหว่างการอนุมัติ');
-          const tx = await db().from('wallet_transactions').insert([{ wallet_id: wallet.id, order_id: null, transaction_type: 'topup', amount: value, description: 'เติมเงิน Coins ผ่านสลิปโอนเงิน', transaction_date: new Date().toISOString() }]);
+          walletChanged = true;
+          const tx = await db().from('wallet_transactions').insert([{
+            wallet_id: wallet.id, order_id: null, transaction_type: 'topup', amount: value,
+            description: 'เติมเงิน Coins ผ่านสลิปโอนเงิน', transaction_date: new Date().toISOString()
+          }]);
           if (tx.error) throw tx.error;
+          ledgerCreated = true;
           notifyV12('อนุมัติเรียบร้อย', `เพิ่ม ${money(value)} Coins ให้ผู้ใช้แล้ว`, 'shield-check');
           await window.loadAdminData?.();
         } catch (err) {
-          try { await db().from('topups').update({ status: 'pending' }).eq('id', topupId).eq('status', 'approved'); } catch (_) { }
-          notifyV12('อนุมัติไม่สำเร็จ', err.message || 'ระบบยกเลิกรายการเพื่อความปลอดภัย', 'shield-alert');
+          // Roll back only if the balance is still exactly the value written by this operation.
+          if (walletChanged && !ledgerCreated && walletId) {
+            try {
+              const restored = await db().from('wallets').update({ balance: before, updated_at: new Date().toISOString() })
+                .eq('id', walletId).eq('balance', after).select('id').maybeSingle();
+              rollbackSafe = !restored.error && !!restored.data;
+            } catch (_) { rollbackSafe = false; }
+          }
+          // Never return a row to pending when a balance change may have survived: that can double-credit on retry.
+          if (claimed && (!walletChanged || (walletChanged && !ledgerCreated && rollbackSafe))) {
+            try { await db().from('topups').update({ status: 'pending' }).eq('id', topupId).eq('status', 'approved'); } catch (_) { }
+          }
+          if (walletChanged && !ledgerCreated && !rollbackSafe) {
+            console.error('[PrintDekD] Top-up needs reconciliation; status retained to prevent duplicate credit.', { topupId, walletId, before, after });
+            notifyV12('ต้องตรวจสอบรายการเติม Coins', 'ไม่สามารถยืนยันการคืนยอด Wallet ได้ ระบบคงสถานะคำขอไว้เพื่อป้องกันการเติมซ้ำ กรุณาตรวจสอบ Wallet และประวัติธุรกรรมก่อนดำเนินการต่อ', 'shield-alert');
+          } else {
+            notifyV12('อนุมัติไม่สำเร็จ', err.message || 'ระบบยกเลิกรายการเพื่อความปลอดภัย', 'shield-alert');
+          }
         }
       };
 
@@ -13791,17 +13851,9 @@
 
       window.filterAdminWorkspace = () => window.loadAdminData?.();
 
-      /* Make view switching call the new normalized loaders. */
-      if (typeof window.switchView === 'function') {
-        const originalSwitch = window.switchView;
-        window.switchView = function (viewName) {
-          const result = originalSwitch.apply(this, arguments);
-          if (viewName === 'dashboard') window.fetchQueues?.();
-          if (viewName === 'wallet') { window.fetchUserTopups?.(); window.fetchUserWallet?.(); }
-          if (viewName === 'admin') window.loadAdminData?.();
-          return result;
-        };
-      }
+      /* No extra switchView wrapper here: the original switchView already refreshes
+         the selected view. Wrapping it and calling these same loaders again doubled
+         database traffic on every navigation. */
 
       /* Prevent the old schema probe from blocking the new normalized model. */
       window.pdV11EnsureOrderSchema = async () => true;
@@ -22399,10 +22451,16 @@
     (() => {
       'use strict';
       const $ = id => document.getElementById(id);
-      const API = 'https://openadmindata.org/api/v1/th/';
+      // Prefer same-origin Vercel rewrites to remove browser CORS dependence.
+      // The remote API host below is the host documented by Open Admin Data.
+      // If the API is unavailable, use its CC BY 4.0 dataset files as a read-only fallback.
+      const API = '/api/address/';
+      const STATIC_API = '/api/address-static/';
+      const OFFICIAL_API = 'https://api.openadmindata.org/api/v1/th/';
+      const RAW_DATA_API = 'https://raw.githubusercontent.com/open-admin-data/thailand-administrative-divisions/main/data/';
       const state = {
         provinceRows: null, districtRows: null, subdistrictRows: null, dataPromise: null,
-        selectedProvince: null, selectedDistrict: null, selectedSubdistrict: null,
+        sourceByLevel: {}, selectedProvince: null, selectedDistrict: null, selectedSubdistrict: null,
         postalSubdistricts: [], postalDistricts: [], postalProvinces: [],
         filteredDistricts: [], filteredSubdistricts: [], postalOptions: [],
         activePostal: '', pendingPostal: '', postalGeneration: 0, submitBusy: false
@@ -22468,31 +22526,44 @@
       async function fetchLevel(level, minimum) {
         const cacheKey = level + 'Rows';
         if (state[cacheKey]) return state[cacheKey];
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 16000);
-        try {
-          const response = await fetch(`${API}${level}.json`, {
-            method: 'GET', mode: 'cors', credentials: 'omit', cache: 'force-cache', signal: controller.signal,
-            headers: { 'Accept': 'application/json' }
-          });
-          if (!response.ok) throw new Error(`โหลดข้อมูล${level}ไม่สำเร็จ (HTTP ${response.status})`);
-          const payload = await response.json();
-          const rows = unwrapRecords(payload, level);
-          if (rows.length < minimum) throw new Error(`ข้อมูล${level}ไม่ครบตามเกณฑ์ตรวจสอบ (${rows.length} รายการ)`);
-          if (new Set(rows.map(x => x.id)).size !== rows.length) throw new Error(`ข้อมูล${level}มีรหัสซ้ำ จึงหยุดเพื่อป้องกันการเลือกพื้นที่ผิด`);
-          state[cacheKey] = rows;
-          return rows;
-        } catch (err) {
-          if (err?.name === 'AbortError') throw new Error('โหลดข้อมูลที่อยู่นานเกินไป กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
-          throw err;
-        } finally { clearTimeout(timer); }
+        const candidates = [
+          { url: `${API}${level}.json`, source: 'Vercel same-origin API proxy' },
+          { url: `${STATIC_API}all-${level}.json`, source: 'Vercel same-origin CC BY 4.0 dataset fallback' },
+          { url: `${OFFICIAL_API}${level}.json`, source: 'Open Admin Data official API fallback' },
+          { url: `${RAW_DATA_API}all-${level}.json`, source: 'Open Admin Data GitHub CC BY 4.0 dataset fallback' }
+        ];
+        const failures = [];
+        for (const candidate of candidates) {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 9000);
+          try {
+            const response = await fetch(candidate.url, {
+              method: 'GET', mode: 'cors', credentials: 'omit', cache: 'force-cache', signal: controller.signal,
+              headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const payload = await response.json();
+            const rows = unwrapRecords(payload, level);
+            if (rows.length < minimum) throw new Error(`ข้อมูลมี ${rows.length} รายการ ต่ำกว่าเกณฑ์ ${minimum}`);
+            if (new Set(rows.map(x => x.id)).size !== rows.length) throw new Error('พบรหัสรายการซ้ำ');
+            state[cacheKey] = rows;
+            state.sourceByLevel[level] = candidate.source;
+            return rows;
+          } catch (err) {
+            const reason = err?.name === 'AbortError' ? 'หมดเวลา' : (err?.message || String(err));
+            failures.push(`${candidate.source}: ${reason}`);
+          } finally {
+            clearTimeout(timer);
+          }
+        }
+        throw new Error(`โหลดข้อมูล${level}ไม่ได้จากทุกแหล่งที่ตั้งไว้ — ${failures.join(' | ')}`);
       }
       async function ensureAddressData() {
         if (state.provinceRows && state.districtRows && state.subdistrictRows) return;
         if (state.dataPromise) return state.dataPromise;
         state.dataPromise = (async () => {
           const [provinces, districts, subdistricts] = await Promise.all([
-            fetchLevel('province', 70), fetchLevel('district', 900), fetchLevel('subdistrict', 7000)
+            fetchLevel('province', 77), fetchLevel('district', 928), fetchLevel('subdistrict', 7364)
           ]);
           const provinceIds = new Set(provinces.map(x => x.id));
           const districtIds = new Set(districts.map(x => x.id));
@@ -22762,11 +22833,16 @@
       const originalSubmit = window.handleOrderSubmit;
       if (typeof originalSubmit === 'function' && !originalSubmit.__pd20) {
         const wrappedSubmit = async function (event) {
-          if (state.submitBusy) { event?.preventDefault(); return; }
-          const delivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
-          if (!delivery) return originalSubmit.apply(this, arguments);
-          event?.preventDefault(); state.submitBusy = true;
+          if (state.submitBusy) {
+            event?.preventDefault();
+            addressMessage('กำลังส่งคำสั่งซื้ออยู่ กรุณารอให้รายการแรกเสร็จก่อน', 'loading');
+            return;
+          }
+          state.submitBusy = true;
           try {
+            const delivery = document.querySelector('input[name="delivery_method"]:checked')?.value === 'delivery';
+            if (!delivery) return await originalSubmit.apply(this, arguments);
+            event?.preventDefault();
             try { await ensureAddressReady(); } catch (_) { return; }
             const name = normalize($('recipient-name')?.value), phone = normalize($('recipient-phone')?.value).replace(/\D/g, '');
             const house = normalize($('recipient-house-no')?.value), zip = normalize(ui.postal?.value);
@@ -22827,10 +22903,47 @@
       };
       syncTopupSelection(Number($('selected-topup-amount')?.value || 20));
 
+      // Stop accidental duplicate top-up requests while upload + database insert are in flight.
+      const originalTopupSubmit = window.handleTopupSubmit;
+      if (typeof originalTopupSubmit === 'function' && !originalTopupSubmit.__pd20BusyGuard) {
+        const guardedTopupSubmit = async function (event) {
+          if (window.__pd20TopupSubmitBusy) {
+            event?.preventDefault();
+            if (typeof window.showCustomModal === 'function') window.showCustomModal({ title: 'กำลังส่งคำขอเติม Coins', message: 'กรุณารอให้รายการแรกเสร็จก่อน เพื่อป้องกันคำขอซ้ำ', icon: 'loader-circle' });
+            return;
+          }
+          window.__pd20TopupSubmitBusy = true;
+          try { return await originalTopupSubmit.apply(this, arguments); }
+          finally { window.__pd20TopupSubmitBusy = false; }
+        };
+        guardedTopupSubmit.__pd20BusyGuard = true;
+        window.handleTopupSubmit = guardedTopupSubmit;
+      }
+
       // Home-page order flow is intentionally the first section; product brand story remains at the end.
       $('pd19-home-order-title')?.setAttribute('aria-label', 'สั่งพิมพ์เอกสารง่ายขึ้น ทุกขั้นตอนอยู่ในที่เดียว');
       if (window.lucide) { try { window.lucide.createIcons(); } catch (_) { } }
 
+      window.pdV20TestAddressApi = async function () {
+        const url = `${API}province.json`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 9000);
+        try {
+          const response = await fetch(url, { method: 'GET', credentials: 'omit', cache: 'no-store', signal: controller.signal, headers: { 'Accept': 'application/json' } });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          const rows = unwrapRecords(payload, 'province');
+          const result = { ok: rows.length >= 77, mode: 'same-origin (browser CORS not required)', path: url, httpStatus: response.status, provinceCount: rows.length, note: rows.length >= 70 ? 'proxy answered with a valid province dataset' : 'expected at least 77 provinces' };
+          console.info('[PrintDekD API/CORS check]', result);
+          if (ui.message) addressMessage(result.ok ? `ทดสอบเส้นทางข้อมูลสำเร็จ (${rows.length} จังหวัด) · same-origin` : 'เส้นทาง API ตอบกลับ แต่จำนวนจังหวัดไม่ครบ', result.ok ? 'success' : 'error');
+          return result;
+        } catch (err) {
+          const result = { ok: false, mode: 'same-origin (browser CORS not required)', path: url, error: err?.name === 'AbortError' ? 'หมดเวลารอ proxy' : (err?.message || String(err)) };
+          console.error('[PrintDekD API/CORS check]', result);
+          if (ui.message) addressMessage('ทดสอบ API proxy ไม่ผ่าน: ตรวจ Vercel rewrites/Deployment ก่อน', 'error');
+          return result;
+        } finally { clearTimeout(timer); }
+      };
       window.pdV20AddressDiagnostics = function () {
         const result = {
           postalFirst: true,
@@ -22843,10 +22956,24 @@
           selectedDistrict: state.selectedDistrict?.name_local || null,
           selectedSubdistrict: state.selectedSubdistrict?.name_local || null,
           dataCounts: { provinces: state.provinceRows?.length || 0, districts: state.districtRows?.length || 0, subdistricts: state.subdistrictRows?.length || 0 },
-          dataSource: 'Open Admin Data Thailand API; postal_code field, CC BY 4.0; user must verify address'
+          dataSource: state.sourceByLevel,
+          attribution: 'Thailand Administrative Divisions Dataset — Open Admin Data, CC BY 4.0 (data release 2026.06); check the real address with the recipient/postal service.'
         };
         console.info('[PrintDekD postcode-first diagnostics]', result); return result;
       };
+      if (ui.card && !$('pd-v20-address-attribution')) {
+        const attribution = document.createElement('p');
+        attribution.id = 'pd-v20-address-attribution';
+        attribution.className = 'mt-3 text-[10px] leading-relaxed sub-text';
+        attribution.append(document.createTextNode('ข้อมูลเขตการปกครองอ้างอิง '));
+        const sourceLink = document.createElement('a');
+        sourceLink.href = 'https://github.com/open-admin-data/thailand-administrative-divisions';
+        sourceLink.target = '_blank'; sourceLink.rel = 'noopener noreferrer';
+        sourceLink.className = 'underline underline-offset-2';
+        sourceLink.textContent = 'Open Admin Data Thailand Administrative Divisions';
+        attribution.append(sourceLink, document.createTextNode(' (CC BY 4.0) · โปรดตรวจสอบที่อยู่และรหัสไปรษณีย์ก่อนยืนยันจัดส่ง'));
+        ui.card.appendChild(attribution);
+      }
       window.pdV19AddressDiagnostics = window.pdV20AddressDiagnostics;
       addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อน แล้วเลือกจังหวัด → อำเภอ/เขต → ตำบล/แขวง', 'info');
       if (window.lucide) { try { window.lucide.createIcons(); } catch (_) { } }
