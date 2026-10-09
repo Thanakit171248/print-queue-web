@@ -28,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v21 — CSP + Exclusive Views + Friendly Typography</title>
+  <title>PrintDekD Pro v23 — Admin Reliability & Responsive Account Center</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -6658,7 +6658,7 @@
         <div class="pd-admin-search"><i data-lucide="search" class="w-4 h-4"></i><input id="pd-admin-search"
             type="search" placeholder="ค้นหาออเดอร์ / สมาชิก / ไฟล์…" oninput="filterAdminWorkspace(this.value)"></div>
       </div>
-      <div class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
+      <div id="pd-admin-tabs" class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')"
           class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')"
@@ -8225,7 +8225,7 @@
         const isDelivery = ord.delivery_method === 'delivery';
 
         return `
-          <div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" onkeydown="if(event.key==='Enter'||event.key===' ') openQueueDetailModal(${JSON.stringify(ord.id)})">
+          <div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${escapeHtml(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold font-mono text-blue-500">#${ord.id}</span>
               ${statusTag}
@@ -8410,20 +8410,20 @@
           ordersTb.innerHTML = (orders || []).map(ord => `
             <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
               <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${escapeHtml(ord.id)}</td>
-              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p>${ord.file_path ? `<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)})" class="mt-1 text-[10px] font-black text-blue-500 hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> เปิดไฟล์</button>` : '<span class="text-[10px] sub-text">ไม่มีไฟล์ Storage</span>'}</td>
+              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${escapeHtml(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-xs font-black text-blue-500 hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> เปิดไฟล์</button>` : '<span class="text-[10px] sub-text">ไม่มีไฟล์ Storage</span>'}</td>
               <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
-              <td class="py-3 px-3">${ord.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
+              <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
               <td class="py-3 px-3">
-                <select onchange="updateOrderStatus(${JSON.stringify(ord.id)}, this.value)" class="ui-input rounded-xl p-2 text-xs font-bold">
-                  <option value="pending" ${ord.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
+                <select data-pd-admin-action="status" data-order-id="${escapeHtml(ord.id)}" aria-label="เปลี่ยนสถานะงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold">
+                  <option value="queued" ${ord.status === 'queued' || ord.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
                   <option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
                   <option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
                   <option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
                 </select>
               </td>
               <td class="py-3 px-3 text-right space-x-1">
-                ${ord.delivery_method === 'delivery' ? `<button type="button" onclick="promptTracking(${JSON.stringify(ord.id)})" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold">Tracking</button>` : ''}
-                <button type="button" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">ดูข้อมูล</button>
+                ${ord.delivery_method === 'delivery' ? `<button type="button" data-pd-admin-action="tracking" data-order-id="${safe(ord.id)}" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold">Tracking</button>` : ''}
+                <button type="button" data-pd-admin-action="detail" data-order-id="${escapeHtml(ord.id)}" class="px-3 py-2 ui-card rounded-xl text-sm font-bold">ดูข้อมูล</button><button type="button" data-pd-admin-action="delete-order" data-order-id="${escapeHtml(ord.id)}" class="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-sm font-extrabold transition">⌫ ลบงาน</button>
               </td>
             </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
         }
@@ -8437,9 +8437,9 @@
               <td class="py-3 px-3 sub-text text-[10px]">${escapeHtml(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
               <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(tp.user_name || tp.user_id)}</td>
               <td class="py-3 px-3 font-black text-amber-500">+${Number(tp.amount || 0).toFixed(2)} Coins</td>
-              <td class="py-3 px-3">${tp.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(tp.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
+              <td class="py-3 px-3">${tp.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(tp.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
               <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${escapeHtml(tp.status || 'pending')}</td>
-              <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" onclick="approveTopup(${JSON.stringify(tp.id)}, ${JSON.stringify(tp.user_id)}, ${Number(tp.amount)})" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-[11px]">อนุมัติ</button><button type="button" onclick="rejectTopup(${JSON.stringify(tp.id)})" class="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-[11px]">ปฏิเสธ</button></div>` : '-'}</td>
+              <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" data-pd-admin-action="approve-topup" data-topup-id="${escapeHtml(tp.id)}" data-user-id="${escapeHtml(tp.user_id)}" data-amount="${Number(tp.amount)}" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm">อนุมัติ</button><button type="button" data-pd-admin-action="reject-topup" data-topup-id="${escapeHtml(tp.id)}" class="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-sm">ปฏิเสธ</button></div>` : '-'}</td>
             </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
         }
 
@@ -8453,7 +8453,7 @@
               <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(u.full_name)}</td>
               <td class="py-3 px-3 sub-text">${escapeHtml(u.email)}</td>
               <td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${escapeHtml(u.role)}</td>
-              <td class="py-3 px-3 text-right"><button type="button" onclick="changeUserRole(${JSON.stringify(u.id)}, ${JSON.stringify(u.role === 'admin' ? 'member' : 'admin')})" class="px-3 py-2 ui-card hover:border-purple-500 rounded-xl text-[11px] font-bold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td>
+              <td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${escapeHtml(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card hover:border-purple-500 rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td>
             </tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
         }
       } catch (err) {
@@ -10104,7 +10104,7 @@
           const sb = $('qd-modal-status-badge'); if (sb) { sb.textContent = statusLabel(order.status); sb.className = 'px-3 py-1 rounded-full text-xs font-black ' + (order.status === 'completed' ? 'bg-emerald-500/15 text-emerald-500' : order.status === 'printing' ? 'bg-blue-500/15 text-blue-500' : order.status === 'cancelled' ? 'bg-rose-500/15 text-rose-500' : 'bg-amber-500/15 text-amber-500') }
           const tr = $('qd-modal-tracking-box'); if (order.delivery_method === 'delivery') { set('qd-modal-tracking-num', order.tracking_number ? `เลข Tracking: ${order.tracking_number} (${order.courier_name || 'Kerry Express'})` : 'กำลังเตรียมจัดส่ง'); set('qd-modal-recipient-info', `ผู้รับ: ${order.recipient_name || '-'} (${order.recipient_phone || '-'}) | ที่อยู่: ${order.recipient_address || '-'}`); tr?.classList.remove('hidden') } else tr?.classList.add('hidden');
           const slip = $('qd-modal-slip-box'); if (order.slip_url) { $('qd-modal-slip-img').src = order.slip_url; slip?.classList.remove('hidden') } else slip?.classList.add('hidden');
-          let body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto'); if (body && currentUser?.role === 'admin') { let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) } panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safe(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>User ID</small><strong>${safe(order.user_id || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safe(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safe(order.file_bucket || '-')}</strong></div><div class="pd-admin-detail-item"><small>หมายเหตุแอดมิน</small><strong>${safe(order.admin_note || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" onclick="openAdminFileViewer(${JSON.stringify(order.file_path)},${JSON.stringify(order.file_bucket || 'print-files')},${JSON.stringify(order.file_name || 'เอกสาร')},${JSON.stringify(order.file_mime || '')})"><i data-lucide="file-eye" class="w-4 h-4 inline"></i> ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" onclick="openSlipModal(${JSON.stringify(order.slip_url)})"><i data-lucide="receipt" class="w-4 h-4 inline"></i> ดูสลิป</button>` : ''}<button type="button" class="ui-card" onclick="closeQueueDetailModal()">ปิดรายละเอียด</button></div>`; if (window.lucide) lucide.createIcons() }
+          let body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto'); if (body && currentUser?.role === 'admin') { let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) } panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safe(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>User ID</small><strong>${safe(order.user_id || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safe(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safe(order.file_bucket || '-')}</strong></div><div class="pd-admin-detail-item"><small>หมายเหตุแอดมิน</small><strong>${safe(order.admin_note || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" data-pd-detail-action="open-file" data-file-path="${safe(order.file_path)}" data-file-bucket="${safe(order.file_bucket || 'print-files')}" data-file-name="${safe(order.file_name || 'เอกสาร')}" data-file-mime="${safe(order.file_mime || '')}"><i data-lucide="file-eye" class="w-4 h-4 inline"></i> ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" data-pd-detail-action="slip" data-slip-url="${safe(order.slip_url)}"><i data-lucide="receipt" class="w-4 h-4 inline"></i> ดูสลิป</button>` : ''}<button type="button" class="ui-card" data-pd-detail-action="close">ปิดรายละเอียด</button></div>`; if (window.lucide) lucide.createIcons() }
           $('queue-detail-modal')?.classList.remove('hidden');
         } catch (err) { console.error(err); showCustomModal({ title: 'แสดงรายละเอียดไม่สำเร็จ', message: err.message || 'ข้อมูลบางส่วนไม่พร้อม', icon: 'alert-circle' }) }
       };
@@ -13414,7 +13414,7 @@
               : ord.status === 'cancelled'
                 ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">❌ ยกเลิก</span>'
                 : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">⏳ รอคิว</span>';
-          return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" onkeydown="if(event.key==='Enter'||event.key===' ')openQueueDetailModal(${JSON.stringify(ord.id)})">
+          return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${safe(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
         <div class="flex items-center justify-between"><span class="text-xs font-bold font-mono text-blue-500">คิว #${safe(ord.queue_label)}</span>${status}</div>
         <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${ord.page_count || 1} หน้า | ${ord.copies || 1} ชุด | ${ord.delivery_method === 'delivery' ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
         ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-xs font-bold text-emerald-500">🚚 Tracking: ${safe(ord.tracking_number)} ${ord.delivery_provider ? `(${safe(ord.delivery_provider)})` : ''}</div>` : ''}
@@ -13823,13 +13823,13 @@
           const tb = $('admin-orders-tbody');
           if (tb) tb.innerHTML = filtered.map(ord => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${safe(ord.queue_number ?? ord.id)}</td>
-        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)},'documents')" class="mt-1 text-[10px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
+        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
         <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[150px]">${safe(ord.recipient_name)} (${safe(ord.recipient_phone)})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
-        <td class="py-3 px-3">${ord.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
-        <td class="py-3 px-3"><select onchange="updateOrderStatus(${JSON.stringify(ord.id)},this.value)" class="ui-input rounded-xl p-2 text-xs font-bold">
+        <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
+        <td class="py-3 px-3"><select data-pd-admin-action="status" data-order-id="${safe(ord.id)}" aria-label="เปลี่ยนสถานะงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold">
           <option value="queued" ${ord.status === 'queued' ? 'selected' : ''}>⏳ รอคิว</option><option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option><option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option><option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
         </select></td>
-        <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method === 'delivery' ? `<button type="button" onclick="promptTracking(${JSON.stringify(ord.id)})" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold">Tracking</button>` : ''}<button type="button" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">ดูข้อมูล</button></td>
+        <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method === 'delivery' ? `<button type="button" data-pd-admin-action="tracking" data-order-id="${safe(ord.id)}" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold">Tracking</button>` : ''}<button type="button" data-pd-admin-action="detail" data-order-id="${safe(ord.id)}" class="px-3 py-2 ui-card rounded-xl text-sm font-bold">ดูข้อมูล</button><button type="button" data-pd-admin-action="delete-order" data-order-id="${safe(ord.id)}" class="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-sm font-extrabold transition" aria-label="ลบคิว #${safe(ord.queue_number ?? ord.id)}"><span aria-hidden="true">⌫</span> ลบงาน</button></td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
 
           const topupTb = $('admin-topups-tbody');
@@ -13837,13 +13837,13 @@
         <td class="py-3 px-3 sub-text text-[10px]">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
         <td class="py-3 px-3 font-bold titanium-text">${safe(tp.user_name || tp.user_id)}</td>
         <td class="py-3 px-3 font-black text-amber-500">+${money(tp.amount)} Coins</td>
-        <td class="py-3 px-3">${tp.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(tp.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
+        <td class="py-3 px-3">${tp.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(tp.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
         <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${safe(tp.status || 'pending')}</td>
-        <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" onclick="approveTopup(${JSON.stringify(tp.id)},${JSON.stringify(tp.user_id)},${Number(tp.amount)})" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-[11px]">อนุมัติ</button><button type="button" onclick="rejectTopup(${JSON.stringify(tp.id)})" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-[11px]">ปฏิเสธ</button></div>` : '-'}</td>
+        <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" data-pd-admin-action="approve-topup" data-topup-id="${safe(tp.id)}" data-user-id="${safe(tp.user_id)}" data-amount="${Number(tp.amount)}" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-sm">อนุมัติ</button><button type="button" data-pd-admin-action="reject-topup" data-topup-id="${safe(tp.id)}" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-sm">ปฏิเสธ</button></div>` : '-'}</td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
 
           const userTb = $('admin-users-tbody');
-          if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" onclick="changeUserRole(${JSON.stringify(u.id)},${JSON.stringify(u.role === 'admin' ? 'member' : 'admin')})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
+          if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${safe(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
 
           $('pd-admin-orders-count') && ($('pd-admin-orders-count').textContent = String(orders.length));
           $('pd-admin-pending-count') && ($('pd-admin-pending-count').textContent = String(orders.filter(o => o.status === 'queued').length));
@@ -17090,7 +17090,7 @@
         const body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto');
         if (body && window.currentUser?.role === 'admin') {
           let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) }
-          panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safeText(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safeText(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safeText(order.file_bucket || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" onclick="openAdminFileViewer(${JSON.stringify(order.file_path)},${JSON.stringify(order.file_bucket || 'documents')},${JSON.stringify(order.file_name || 'เอกสาร')},${JSON.stringify(order.file_mime || '')})">ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" onclick="openSlipModal(${JSON.stringify(order.slip_url)})">ดูสลิป</button>` : ''}</div>`;
+          panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safeText(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safeText(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safeText(order.file_bucket || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" data-pd-detail-action="open-file" data-file-path="${safeText(order.file_path)}" data-file-bucket="${safeText(order.file_bucket || 'documents')}" data-file-name="${safeText(order.file_name || 'เอกสาร')}" data-file-mime="${safeText(order.file_mime || '')}">ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" data-pd-detail-action="slip" data-slip-url="${safeText(order.slip_url)}">ดูสลิป</button>` : ''}</div>`;
         }
         const modal = $('queue-detail-modal'); if (modal) { modal.classList.remove('hidden'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden' }
         if (window.lucide) window.lucide.createIcons();
@@ -23874,6 +23874,363 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   #pd19-address-card .pd19-address-field input { min-height: 54px !important; font-size: 16px !important; }
 }
 </style>
+
+
+
+  <!-- PrintDekD Pro v23: Admin reliability, responsive workspace and account-center polish -->
+  <style id="pd-v23-admin-account-design">
+    /* Larger, calmer global confirmation dialog */
+    #custom-modal { z-index: 25000 !important; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)) !important; }
+    #custom-modal > div {
+      width: min(560px, 100%) !important; max-width: 560px !important;
+      padding: clamp(24px, 4vw, 38px) !important; border-radius: 30px !important;
+      box-shadow: 0 28px 100px rgba(0,0,0,.45) !important;
+    }
+    #custom-modal #modal-icon { width: 30px !important; height: 30px !important; }
+    #custom-modal > div > div:first-child {
+      width: 68px !important; height: 68px !important; border-radius: 22px !important; margin-bottom: 20px !important;
+    }
+    #custom-modal #modal-title { font-size: clamp(24px, 3.2vw, 31px) !important; line-height: 1.25 !important; margin-bottom: 10px !important; font-weight: 900 !important; }
+    #custom-modal #modal-message { font-size: clamp(15px, 1.8vw, 17px) !important; line-height: 1.8 !important; margin-bottom: 25px !important; white-space: pre-line; overflow-wrap: anywhere; }
+    #custom-modal #modal-actions { gap: 12px !important; }
+    #custom-modal #modal-actions button { min-height: 54px !important; border-radius: 16px !important; padding: 13px 18px !important; font-size: 15px !important; font-weight: 850 !important; }
+    @media (max-width: 520px) {
+      #custom-modal { align-items: flex-end !important; padding: 12px 10px max(10px, env(safe-area-inset-bottom)) !important; }
+      #custom-modal > div { padding: 25px 20px 20px !important; border-radius: 26px !important; }
+      #custom-modal #modal-actions { flex-direction: column-reverse; }
+      #custom-modal #modal-actions button { width: 100%; flex: auto !important; }
+    }
+
+    /* Leading brand icons for the profile URL/name inputs */
+    .pd-input-icon-wrap { position: relative; width: 100%; min-width: 0; }
+    .pd-input-leading-icon { position: absolute; z-index: 2; left: 16px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; color: #8abfff; pointer-events: none; }
+    .pd-input-leading-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+    #profile-edit-section .pd-profile-icon-input { width: 100% !important; min-height: 56px !important; padding-left: 50px !important; padding-right: 16px !important; border-radius: 17px !important; margin-bottom: 0 !important; font-size: 16px !important; }
+    .pd-input-icon-wrap:focus-within .pd-input-leading-icon { color: #3b9cff; }
+
+    /* Admin dashboard: information hierarchy, spacing, and touch targets */
+    #view-admin { width: min(1560px, 100%) !important; max-width: 1560px !important; padding: clamp(16px, 2.5vw, 36px) clamp(12px, 2.3vw, 34px) max(44px, env(safe-area-inset-bottom)) !important; }
+    #view-admin > .flex:first-child { align-items: flex-end; margin-bottom: 24px !important; gap: 18px !important; }
+    #view-admin > .flex:first-child h1 { font-size: clamp(25px, 2.5vw, 36px) !important; line-height: 1.35 !important; max-width: 960px; text-wrap: balance; }
+    #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(130px, .8fr)) minmax(260px, 1.6fr) !important; gap: 12px !important; margin-bottom: 18px !important; }
+    #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 90px !important; padding: 18px 20px !important; border-radius: 22px !important; border-color: var(--pd-stroke-strong) !important; background: var(--pd-surface-0) !important; }
+    #view-admin .pd-admin-stat span { font-size: 13px !important; line-height: 1.5 !important; }
+    #view-admin .pd-admin-stat strong { font-size: clamp(27px, 2.4vw, 36px) !important; line-height: 1.15 !important; }
+    #view-admin .pd-admin-search input { font-size: 16px !important; min-height: 48px !important; }
+    #view-admin #admin-tab-orders-btn, #view-admin #admin-tab-topups-btn, #view-admin #admin-tab-users-btn { min-height: 52px !important; padding: 12px 16px !important; font-size: 14px !important; border-radius: 15px !important; line-height: 1.45 !important; }
+    #view-admin .ui-panel { padding: clamp(16px, 2.2vw, 30px) !important; border-radius: 26px !important; }
+    #view-admin .ui-panel h2 { font-size: clamp(20px, 2vw, 26px) !important; line-height: 1.4 !important; }
+    #view-admin .overflow-x-auto { border-radius: 20px !important; border-color: var(--pd-stroke-strong) !important; }
+    #view-admin table { min-width: 1020px !important; border-collapse: separate !important; border-spacing: 0 !important; }
+    #view-admin thead { background: rgba(148,163,184,.08); }
+    #view-admin th { position: sticky; top: 0; z-index: 1; font-size: 13px !important; line-height: 1.5 !important; padding: 16px 15px !important; white-space: nowrap; }
+    #view-admin td { font-size: 14px !important; line-height: 1.65 !important; padding: 15px !important; }
+    #view-admin td button, #view-admin td select { min-height: 44px !important; font-size: 13px !important; white-space: nowrap; }
+    #view-admin td .font-bold, #view-admin td .font-black { line-height: 1.5 !important; }
+    #view-admin td[data-label="การจัดการ"] { min-width: 220px; }
+    #view-admin td[data-label="การจัดการ"] button { margin: 3px 2px; }
+    #view-admin .overflow-x-auto { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,.45) transparent; }
+    #view-admin .overflow-x-auto:focus-within { outline: 2px solid rgba(10,132,255,.20); outline-offset: 3px; }
+    #view-admin button[data-pd-admin-action="delete-order"] { border-width: 1px !important; }
+    #view-admin button[data-pd-admin-action="role"] { min-width: 150px; }
+    .pd-v23-busy { opacity: .62 !important; pointer-events: none !important; }
+
+    @media (max-width: 1100px) {
+      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
+      #view-admin > .flex:first-child { align-items: flex-start; }
+      #view-admin > .flex:first-child button { min-height: 48px !important; }
+    }
+    @media (max-width: 820px) {
+      #view-admin { padding-left: 12px !important; padding-right: 12px !important; }
+      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
+      #view-admin > .flex:first-child { flex-direction: column; align-items: stretch; }
+      #view-admin > .flex:first-child button { align-self: stretch !important; justify-content: center; }
+      #pd-admin-tabs { display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; }
+      #pd-admin-tabs button { width: 100%; }
+      #view-admin .ui-panel { padding: 14px !important; border-radius: 22px !important; }
+      /* Reflow data tables into labeled cards on phone/iPad portrait */
+      #view-admin .overflow-x-auto { overflow: visible !important; border: 0 !important; }
+      #view-admin table { display: block !important; width: 100% !important; min-width: 0 !important; }
+      #view-admin thead { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
+      #view-admin tbody { display: grid !important; gap: 12px !important; width: 100% !important; }
+      #view-admin tr { display: block !important; width: 100% !important; min-width: 0 !important; padding: 8px 14px !important; border: 1px solid var(--pd-stroke-strong) !important; border-radius: 18px !important; background: var(--pd-surface-0) !important; }
+      #view-admin td { display: grid !important; grid-template-columns: minmax(86px, 31%) minmax(0, 1fr) !important; align-items: start; gap: 10px !important; width: 100% !important; min-width: 0 !important; padding: 11px 0 !important; text-align: left !important; border-bottom: 1px solid var(--pd-stroke) !important; overflow-wrap: anywhere; }
+      #view-admin td:last-child { border-bottom: 0 !important; }
+      #view-admin td::before { content: attr(data-label); color: var(--pd-muted); font-size: 12px; font-weight: 850; line-height: 1.6; }
+      #view-admin td[colspan] { display: block !important; text-align: center !important; padding: 22px 8px !important; }
+      #view-admin td[colspan]::before { content: none; }
+      #view-admin td[data-label="การจัดการ"] { display: flex !important; flex-wrap: wrap; gap: 7px; min-width: 0; }
+      #view-admin td[data-label="การจัดการ"]::before { flex: 0 0 100%; }
+      #view-admin td[data-label="การจัดการ"] button { flex: 1 1 auto; margin: 0 !important; }
+      #view-admin td p { max-width: none !important; white-space: normal !important; overflow-wrap: anywhere; }
+      #view-admin td select { width: 100% !important; max-width: 100%; }
+    }
+    @media (max-width: 420px) {
+      #view-admin .pd-admin-commandbar { gap: 8px !important; }
+      #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 78px !important; padding: 13px !important; border-radius: 17px !important; }
+      #view-admin .pd-admin-stat span { font-size: 12px !important; }
+      #view-admin .pd-admin-stat strong { font-size: 25px !important; }
+      #view-admin td { grid-template-columns: 78px minmax(0,1fr) !important; gap: 8px !important; }
+      #view-admin td::before { font-size: 11px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #view-admin *, #custom-modal *, .pd-input-icon-wrap * { animation: none !important; transition: none !important; }
+    }
+  </style>
+  <script id="pd-v23-admin-account-runtime">
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+      const asText = value => String(value ?? '');
+
+      function appNotice(title, message, icon = 'info') {
+        if (typeof window.showCustomModal === 'function') {
+          window.showCustomModal({ title, message, icon });
+          const confirm = $('modal-confirm-btn'); if (confirm) confirm.textContent = 'ตกลง';
+          const cancel = $('modal-cancel-btn'); if (cancel) cancel.textContent = 'ยกเลิก';
+        } else window.alert(`${title}\n\n${message}`);
+      }
+      function appConfirm({ title, message, icon = 'alert-triangle', confirmText = 'ยืนยัน', onConfirm }) {
+        if (typeof window.showCustomModal !== 'function') {
+          if (window.confirm(`${title}\n\n${message}`)) onConfirm?.();
+          return;
+        }
+        window.showCustomModal({ title, message, icon, showCancel: true, onConfirm });
+        const confirm = $('modal-confirm-btn'); if (confirm) confirm.textContent = confirmText;
+        const cancel = $('modal-cancel-btn'); if (cancel) cancel.textContent = 'ยกเลิก';
+      }
+
+      function decorateAdminResponsiveTables() {
+        const labels = {
+          'admin-orders-tbody': ['คิว', 'ไฟล์และยอด', 'การจัดส่งและที่อยู่', 'ชำระเงินและสลิป', 'สถานะงานพิมพ์', 'การจัดการ'],
+          'admin-topups-tbody': ['วันที่', 'ผู้ใช้งาน', 'ยอดเงินและ Coins', 'รูปสลิป', 'สถานะ', 'จัดการคำขอ'],
+          'admin-users-tbody': ['ชื่อ-นามสกุล', 'อีเมล', 'สิทธิ์', 'จัดการสิทธิ์']
+        };
+        for (const [tbodyId, rowLabels] of Object.entries(labels)) {
+          const tbody = $(tbodyId); if (!tbody) continue;
+          tbody.querySelectorAll('tr').forEach(tr => {
+            const cells = [...tr.querySelectorAll(':scope > td')];
+            if (cells.length === 1 && cells[0].hasAttribute('colspan')) return;
+            cells.forEach((cell, i) => { if (rowLabels[i]) cell.dataset.label = rowLabels[i]; });
+          });
+        }
+      }
+
+      function decorateProfileInputs() {
+        const items = [
+          ['edit-avatar-url', 'link-2', 'ลิงก์รูปโปรไฟล์'],
+          ['edit-fullname', 'user-round', 'ชื่อ-นามสกุล']
+        ];
+        let changed = false;
+        for (const [id, icon, label] of items) {
+          const input = $(id);
+          if (!input || input.closest('.pd-input-icon-wrap')) continue;
+          const parent = input.parentElement; if (!parent) continue;
+          const wrap = document.createElement('div'); wrap.className = 'pd-input-icon-wrap';
+          parent.insertBefore(wrap, input); wrap.appendChild(input);
+          const leading = document.createElement('span'); leading.className = 'pd-input-leading-icon'; leading.setAttribute('aria-hidden', 'true');
+          const glyph = document.createElement('i'); glyph.setAttribute('data-lucide', icon); leading.appendChild(glyph); wrap.prepend(leading);
+          input.classList.add('pd-profile-icon-input');
+          if (!input.getAttribute('aria-label')) input.setAttribute('aria-label', label);
+          changed = true;
+        }
+        if (changed) { try { window.lucide?.createIcons(); } catch (_) { } }
+      }
+
+      // Data-action event delegation avoids invalid inline onclick attributes with quoted IDs.
+      document.addEventListener('click', async event => {
+        const detailAction = event.target.closest('[data-pd-detail-action]');
+        if (detailAction) {
+          event.preventDefault();
+          const detailType = detailAction.dataset.pdDetailAction;
+          if (detailType === 'open-file') await window.openAdminFileViewer?.(detailAction.dataset.filePath, detailAction.dataset.fileBucket || 'documents', detailAction.dataset.fileName || 'เอกสาร', detailAction.dataset.fileMime || '');
+          else if (detailType === 'slip') window.openSlipModal?.(detailAction.dataset.slipUrl);
+          else if (detailType === 'close') window.closeQueueDetailModal?.();
+          return;
+        }
+        const queueCard = event.target.closest('[data-pd-order-detail]');
+        if (queueCard) { await window.openQueueDetailModal?.(queueCard.dataset.pdOrderDetail); return; }
+        const button = event.target.closest('[data-pd-admin-action]');
+        if (!button) return;
+        const action = button.dataset.pdAdminAction;
+        if (action === 'status') return;
+        event.preventDefault();
+        const orderId = button.dataset.orderId;
+        switch (action) {
+          case 'role':
+            await window.changeUserRole?.(button.dataset.userId, button.dataset.targetRole);
+            break;
+          case 'delete-order':
+            window.deleteCompletedPrintOrder?.(orderId);
+            break;
+          case 'detail':
+            await window.openQueueDetailModal?.(orderId);
+            break;
+          case 'tracking':
+            await window.promptTracking?.(orderId);
+            break;
+          case 'open-file':
+            await window.openStoredPrintFile?.(button.dataset.filePath, button.dataset.fileBucket || 'documents');
+            break;
+          case 'slip':
+            window.openSlipModal?.(button.dataset.slipUrl);
+            break;
+          case 'approve-topup':
+            await window.approveTopup?.(button.dataset.topupId, button.dataset.userId, Number(button.dataset.amount));
+            break;
+          case 'reject-topup':
+            await window.rejectTopup?.(button.dataset.topupId);
+            break;
+        }
+      });
+      document.addEventListener('keydown', async event => {
+        if (!['Enter', ' '].includes(event.key)) return;
+        const queueCard = event.target.closest('[data-pd-order-detail]');
+        if (!queueCard) return;
+        event.preventDefault();
+        await window.openQueueDetailModal?.(queueCard.dataset.pdOrderDetail);
+      });
+      document.addEventListener('change', async event => {
+        const control = event.target.closest('[data-pd-admin-action="status"]');
+        if (!control) return;
+        const orderId = control.dataset.orderId;
+        const previous = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId))?.status || 'queued';
+        if (control.value === previous) return;
+        control.disabled = true;
+        try { await window.updateOrderStatus?.(orderId, control.value); }
+        finally { if (control.isConnected) control.disabled = false; }
+      });
+
+      // Rebind responsive labels after every data refresh without duplicating listeners.
+      const originalLoadAdminData = window.loadAdminData;
+      if (typeof originalLoadAdminData === 'function' && !originalLoadAdminData.__pdV23Wrapped) {
+        const wrapped = async function (...args) {
+          const result = await originalLoadAdminData.apply(this, args);
+          requestAnimationFrame(() => { decorateAdminResponsiveTables(); decorateProfileInputs(); });
+          return result;
+        };
+        wrapped.__pdV23Wrapped = true;
+        window.loadAdminData = wrapped;
+      }
+
+      window.changeUserRole = async function (userId, newRole) {
+        if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
+        if (!['admin', 'member'].includes(String(newRole))) return appNotice('สิทธิ์ไม่ถูกต้อง', 'ระบบรองรับเฉพาะ Admin และ Member', 'shield-alert');
+        if (String(window.currentUser?.id) === String(userId)) return appNotice('เปลี่ยนสิทธิ์ไม่ได้', 'ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้ เพื่อป้องกันการล็อกตัวเองออกจากระบบ', 'shield-alert');
+        const button = [...document.querySelectorAll('#admin-users-tbody [data-pd-admin-action="role"]')].find(b => String(b.dataset.userId) === String(userId));
+        const performUpdate = async () => {
+          const client = db();
+          if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่สำเร็จ จึงไม่ได้เปลี่ยนสิทธิ์', 'database-zap');
+          const beforeText = button?.textContent;
+          if (button) { button.disabled = true; button.classList.add('pd-v23-busy'); button.textContent = 'กำลังบันทึก…'; }
+          try {
+            const result = await client.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle();
+            if (result.error) throw result.error;
+            if (!result.data || String(result.data.role) !== String(newRole)) throw new Error('ฐานข้อมูลไม่ยืนยันการเปลี่ยนสิทธิ์ ตรวจสอบ RLS Policy ของ public.users ว่า Admin มีสิทธิ์ UPDATE และ SELECT');
+            appNotice('สลับสิทธิ์สำเร็จ', `เปลี่ยนสิทธิ์สมาชิกเป็น ${String(newRole).toUpperCase()} แล้ว`, 'shield-check');
+            await window.loadAdminData?.();
+          } catch (error) {
+            const raw = error?.message || String(error);
+            const hint = /row.level security|permission denied|not authorized|policy/i.test(raw) ? `${raw}\n\nตรวจสอบ RLS Policy ของตาราง public.users ใน Supabase` : raw;
+            appNotice('เปลี่ยนสิทธิ์ไม่สำเร็จ', hint, 'shield-alert');
+          } finally {
+            if (button?.isConnected) { button.disabled = false; button.classList.remove('pd-v23-busy'); if (beforeText) button.textContent = beforeText; }
+          }
+        };
+        appConfirm({
+          title: 'ยืนยันการเปลี่ยนสิทธิ์',
+          message: `ต้องการเปลี่ยนบัญชีนี้เป็น ${String(newRole).toUpperCase()} ใช่หรือไม่?\n\nระบบจะบันทึกลงฐานข้อมูลจริงเมื่อคุณยืนยัน`,
+          icon: 'shield-check', confirmText: 'ยืนยันเปลี่ยนสิทธิ์', onConfirm: performUpdate
+        });
+      };
+
+      window.deleteCompletedPrintOrder = async function (orderId) {
+        if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
+        const client = db();
+        if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ไม่สามารถลบรายการได้จนกว่า Supabase จะเชื่อมต่อ', 'database-zap');
+        // Always read the current status from the database before deciding whether deletion is allowed.
+        let order;
+        try {
+          const lookup = await client.from('orders').select('id,queue_number,status').eq('id', orderId).maybeSingle();
+          if (lookup.error) throw lookup.error;
+          order = lookup.data;
+          const cached = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId));
+          if (cached && order) { cached.status = order.status; cached.queue_number = order.queue_number ?? cached.queue_number; }
+        } catch (error) { return appNotice('ตรวจสอบคิวไม่สำเร็จ', error?.message || String(error), 'shield-alert'); }
+        if (!order) return appNotice('ไม่พบคิวงาน', 'ไม่พบรายการนี้ในฐานข้อมูล อาจมีผู้จัดการลบไปแล้ว', 'search-x');
+        if (order.status !== 'completed') {
+          const statusLabel = ({ queued: 'รอคิว', pending: 'รอคิว', printing: 'กำลังพิมพ์', cancelled: 'ยกเลิกแล้ว' })[order.status] || String(order.status || 'ไม่ทราบสถานะ');
+          return appNotice('ยังลบงานนี้ไม่ได้', `คิว #${order.queue_number ?? order.id} มีสถานะ “${statusLabel}”\n\nระบบอนุญาตให้ลบได้เฉพาะงานที่มีสถานะ “พิมพ์เสร็จแล้ว” เท่านั้น กรุณาอัปเดตสถานะให้ถูกต้องก่อน`, 'alert-triangle');
+        }
+        appConfirm({
+          title: 'ยืนยันการลบงานพิมพ์',
+          message: `คิว #${order.queue_number ?? order.id} ทำงานเสร็จแล้ว\n\nเมื่อยืนยัน รายการจะถูกลบออกจากฐานข้อมูล หากต้องการเก็บประวัติไว้ กรุณากดยกเลิก`,
+          icon: 'trash-2', confirmText: 'ยืนยันลบงาน',
+          onConfirm: async () => {
+            const rowButton = [...document.querySelectorAll('#admin-orders-tbody [data-pd-admin-action="delete-order"]')].find(b => String(b.dataset.orderId) === String(orderId));
+            if (rowButton) { rowButton.disabled = true; rowButton.classList.add('pd-v23-busy'); rowButton.textContent = 'กำลังลบ…'; }
+            try {
+              // Read related document references before deletion. No child data is removed unless the parent deletion succeeds.
+              const jobsResult = await client.from('print_jobs').select('id,document_id').eq('order_id', orderId);
+              if (jobsResult.error) throw jobsResult.error;
+              const documentIds = [...new Set((jobsResult.data || []).map(job => job.document_id).filter(Boolean).map(String))];
+              let documentRows = [];
+              if (documentIds.length) {
+                const docsResult = await client.from('documents').select('id,file_path').in('id', documentIds);
+                if (docsResult.error) throw docsResult.error;
+                documentRows = docsResult.data || [];
+              }
+              const deleted = await client.from('orders').delete().eq('id', orderId).eq('status', 'completed').select('id').maybeSingle();
+              if (deleted.error) throw deleted.error;
+              if (!deleted.data) throw new Error('ฐานข้อมูลไม่ได้ยืนยันการลบ อาจมีการเปลี่ยนสถานะพร้อมกันหรือ RLS ไม่อนุญาต');
+
+              // After successful parent deletion, clean orphaned document rows/files only when no other print job references them.
+              for (const doc of documentRows) {
+                try {
+                  const references = await client.from('print_jobs').select('id').eq('document_id', doc.id).limit(1);
+                  if (references.error || references.data?.length) continue;
+                  if (doc.file_path && !/^https?:\/\//i.test(doc.file_path)) {
+                    try { await client.storage.from('documents').remove([doc.file_path]); } catch (_) { }
+                  }
+                  await client.from('documents').delete().eq('id', doc.id);
+                } catch (_) { /* Successful order deletion must not be misreported because optional file cleanup failed. */ }
+              }
+              appNotice('ลบงานพิมพ์สำเร็จ', `ลบคิว #${order.queue_number ?? order.id} ออกจากรายการแล้ว`, 'check-circle-2');
+              await window.loadAdminData?.();
+              await window.fetchQueues?.();
+            } catch (error) {
+              const raw = error?.message || String(error);
+              const message = /foreign key|violates.*constraint|constraint/i.test(raw)
+                ? `${raw}\n\nฐานข้อมูลยังมีตารางที่อ้างอิงคิวนี้อยู่ จึงยกเลิกการลบเพื่อป้องกันข้อมูลที่เกี่ยวข้องเสียหาย กรุณาตรวจสอบ Foreign Key ของ orders ใน Supabase`
+                : raw;
+              appNotice('ลบงานไม่สำเร็จ', message, 'shield-alert');
+            } finally {
+              if (rowButton?.isConnected) { rowButton.disabled = false; rowButton.classList.remove('pd-v23-busy'); rowButton.textContent = '⌫ ลบงาน'; }
+            }
+          }
+        });
+      };
+
+      function ready() { decorateAdminResponsiveTables(); decorateProfileInputs(); }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true }); else ready();
+      const profileForm = $('profile-edit-section');
+      if (profileForm && 'MutationObserver' in window) {
+        const observer = new MutationObserver(() => decorateProfileInputs());
+        observer.observe(profileForm, { childList: true, subtree: true });
+      }
+      document.addEventListener('click', event => {
+        if (event.target.closest('[onclick*="toggleProfileEdit(true)"]')) setTimeout(decorateProfileInputs, 80);
+      }, true);
+      const adminBody = $('view-admin');
+      if (adminBody && 'MutationObserver' in window) {
+        const observer = new MutationObserver(() => decorateAdminResponsiveTables());
+        observer.observe(adminBody, { childList: true, subtree: true });
+      }
+    })();
+  </script>
 
 </body>
 
