@@ -25,9 +25,61 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://openadmindata.org https://api.openadmindata.org https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; frame-src 'self' https://*.supabase.co"
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://openadmindata.org https://api.openadmindata.org https://raw.githubusercontent.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; frame-src 'self' https://*.supabase.co"
         }
       ]
+    },
+    {
+      "source": "/api/address/(.*)",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    },
+    {
+      "source": "/api/address-static/(.*)",
+      "headers": [
+        {
+          "key": "x-vercel-enable-rewrite-caching",
+          "value": "1"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/address/province.json",
+      "destination": "https://api.openadmindata.org/api/v1/th/province.json"
+    },
+    {
+      "source": "/api/address/district.json",
+      "destination": "https://api.openadmindata.org/api/v1/th/district.json"
+    },
+    {
+      "source": "/api/address/subdistrict.json",
+      "destination": "https://api.openadmindata.org/api/v1/th/subdistrict.json"
+    },
+    {
+      "source": "/api/address-static/all-province.json",
+      "destination": "https://raw.githubusercontent.com/open-admin-data/thailand-administrative-divisions/main/data/all-province.json"
+    },
+    {
+      "source": "/api/address-static/all-district.json",
+      "destination": "https://raw.githubusercontent.com/open-admin-data/thailand-administrative-divisions/main/data/all-district.json"
+    },
+    {
+      "source": "/api/address-static/all-subdistrict.json",
+      "destination": "https://raw.githubusercontent.com/open-admin-data/thailand-administrative-divisions/main/data/all-subdistrict.json"
     }
   ]
 }
