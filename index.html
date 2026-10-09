@@ -2928,7 +2928,7 @@
       <section class="pd17-hero apple-reveal" aria-labelledby="pd17-hero-title">
         <div class="pd17-hero-copy">
           <span class="pd17-eyebrow"><i data-lucide="sparkles" aria-hidden="true"></i> PRINTDEKD PRO · KMUTNB ITI</span>
-          <h1 id="pd17-hero-title">งานพิมพ์ที่ง่ายขึ้น<br><span>ตั้งแต่ไฟล์แรกจนรับงาน</span></h1>
+          <h1 id="pd17-hero-title">พร้อมสำหรับงานพิมพ์<br><span>ครั้งต่อไปของคุณ</span></h1>
           <p>อัปโหลดเอกสาร ดูตัวอย่าง เลือกหน้าที่ต้องการ และคำนวณราคาได้ในที่เดียว พร้อมชำระผ่าน Coins และเลือกรับหน้าร้านหรือจัดส่ง</p>
           <div class="pd17-hero-actions">
             <button type="button" class="pd17-primary-cta" onclick="handleStartPrinting()"><i data-lucide="file-up" aria-hidden="true"></i> เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
@@ -3126,7 +3126,7 @@
         <div class="pd-final-orb pd-orb-one"></div>
         <div class="pd-final-orb pd-orb-two"></div>
         <span class="pd-eyebrow">PRINTDEKD PRO</span>
-        <h2>พร้อมสำหรับงานพิมพ์<br><em>ครั้งต่อไปของคุณ</em></h2>
+        <h2>สั่งพิมพ์ง่ายกว่าเดิม<br><em>ตั้งแต่ไฟล์แรกจนรับงาน</em></h2>
         <p>ประสบการณ์ใหม่ที่เร็วขึ้น ชัดขึ้น และดูดีขึ้นตั้งแต่คลิกแรก</p>
         <div class="pd-final-actions">
           <button type="button" class="pd-primary-cta" onclick="handleStartPrinting()">เริ่มสั่งพิมพ์ <i data-lucide="arrow-up-right"></i></button>
@@ -4171,7 +4171,17 @@
 
       if (showEdit) {
         document.getElementById('edit-fullname').value = currentUser?.full_name || '';
-        document.getElementById('edit-avatar-url').value = currentUser?.avatar_url || '';
+        const avatarInput = document.getElementById('edit-avatar-url');
+        const avatarValue = String(currentUser?.avatar_url || '');
+        if (/^data:image\/(?:png|jpe?g|webp);base64,/i.test(avatarValue)) {
+          tempAvatarUrl = avatarValue;
+          window.tempAvatarUrl = avatarValue;
+          if (avatarInput) avatarInput.value = '';
+        } else {
+          tempAvatarUrl = '';
+          window.tempAvatarUrl = '';
+          if (avatarInput) avatarInput.value = avatarValue;
+        }
         viewSection.classList.add('hidden');
         editSection.classList.remove('hidden');
       } else {
@@ -4186,7 +4196,9 @@
         const reader = new FileReader();
         reader.onload = function(evt) {
           tempAvatarUrl = evt.target.result;
-          document.getElementById('edit-avatar-url').value = tempAvatarUrl;
+          window.tempAvatarUrl = tempAvatarUrl;
+          const avatarUrlInput = document.getElementById('edit-avatar-url');
+          if (avatarUrlInput) avatarUrlInput.value = '';
         };
         reader.readAsDataURL(file);
       }
@@ -6086,7 +6098,7 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
     const img=$('pd-crop-image'),size=420,canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d');
     const frame=280,stage=$('pd-crop-stage'),sr=stage.getBoundingClientRect(),ir=img.getBoundingClientRect();
     const cx=sr.left+sr.width/2,cy=sr.top+sr.height/2;const scale=frame/ir.width;const sx=(cx-frame/2-ir.left)/scale,sy=(cy-frame/2-ir.top)/scale,sw=frame/scale,sh=frame/scale;
-    const source=new Image();source.onload=()=>{ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();ctx.drawImage(source,sx,sy,sw,sh,0,0,size,size);ctx.restore();tempAvatarUrl=canvas.toDataURL('image/webp',.88);$('edit-avatar-url').value=tempAvatarUrl;const pv=$('pd-edit-avatar-preview');if(pv)pv.src=tempAvatarUrl;closeCropper()};source.src=img.src;
+    const source=new Image();source.onload=()=>{ctx.save();ctx.beginPath();ctx.arc(size/2,size/2,size/2,0,Math.PI*2);ctx.clip();ctx.drawImage(source,sx,sy,sw,sh,0,0,size,size);ctx.restore();tempAvatarUrl=canvas.toDataURL('image/webp',.88);window.tempAvatarUrl=tempAvatarUrl;const avatarUrlInput=$('edit-avatar-url');if(avatarUrlInput)avatarUrlInput.value='';const pv=$('pd-edit-avatar-preview');if(pv)pv.src=tempAvatarUrl;closeCropper()};source.src=img.src;
   }
   window.previewEditAvatarFile=function(e){
     const file=e?.target?.files?.[0];if(!file)return;
@@ -6106,7 +6118,7 @@ html.dark .pd-avatar-preview{border-color:rgba(255,255,255,.16)}
     old.innerHTML=`<div class="pd-avatar-stage"><img id="pd-edit-avatar-preview" class="pd-avatar-preview" src="${safe(currentUser?.avatar_url||'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80')}" alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async"><label class="pd-avatar-upload-btn"><i data-lucide="image-plus" class="w-4 h-4"></i> เลือกรูปใหม่<input type="file" id="edit-avatar-file" accept="image/png,image/jpeg,image/webp" class="hidden"></label><div class="pd-avatar-hint">PNG / JPG / WEBP<br>ไม่เกิน 2 MB • ครอปก่อนบันทึก</div></div><div class="pd-form-stack"><div class="pd-field-card"><label>รูปโปรไฟล์</label><input type="url" id="edit-avatar-url" placeholder="หรือวาง URL HTTPS ของรูปภาพ" autocomplete="url" class="w-full ui-input rounded-2xl text-sm"><p class="text-[10px] sub-text mt-2">ถ้าอัปโหลดรูปจากเครื่อง ระบบจะเปิด Profile Studio ให้ตัดขอบก่อน</p></div><div class="pd-field-card"><label>ชื่อ-นามสกุล</label><input type="text" id="edit-fullname" required maxlength="80" autocomplete="name" class="w-full ui-input rounded-2xl text-sm font-bold"></div><div class="pd-field-card"><div class="flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i><span class="text-xs font-black titanium-text">Live Preview</span></div><p class="text-xs sub-text mt-1">รูปและชื่อจะถูกอัปเดตใน Account Center หลังบันทึก</p></div></div>`;
     $('edit-avatar-file').addEventListener('change',window.previewEditAvatarFile);if(window.lucide)lucide.createIcons();
   }
-  const profileObserver=new MutationObserver(()=>{if($('profile-edit-section'))upgradeProfileEditor()});profileObserver.observe(document.body,{childList:true,subtree:true});setTimeout(upgradeProfileEditor,300);
+  setTimeout(upgradeProfileEditor,300);
 
   /* ---------- admin order detail / file viewer ---------- */
   function statusLabel(s){return s==='completed'?'พิมพ์เสร็จแล้ว':s==='printing'?'กำลังพิมพ์':s==='cancelled'?'ยกเลิก':'รอคิว'}
@@ -8586,7 +8598,7 @@ html:not(.dark) .pd-story-copy p,html:not(.dark) .pd-story-card>p{color:rgba(15,
       ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
       ctx.drawImage(source,sx,sy,sourceSize,sourceSize,0,0,size,size);
       const out=canvas.toDataURL('image/webp',.90);
-      const url=$('edit-avatar-url');if(url)url.value=out;
+      const url=$('edit-avatar-url');if(url)url.value='';try{tempAvatarUrl=out}catch(_){}window.tempAvatarUrl=out;
       const pv=$('pd-edit-avatar-preview');if(pv)pv.src=out;
       window.tempAvatarUrl=out;
       $('pd-crop-modal')?.classList.remove('is-open');$('pd-crop-modal')?.setAttribute('aria-hidden','true');
@@ -8602,22 +8614,8 @@ html:not(.dark) .pd-story-copy p,html:not(.dark) .pd-story-card>p{color:rgba(15,
   window.openSquareCrop=openSquareCrop;
   window.applySquareCrop=applySquareCrop;
 
-  /* Replace the old crop controls once the modal is created. */
-  const observer=new MutationObserver(()=>{
-    const modal=$('pd-crop-modal');
-    if(modal){
-      const frame=modal.querySelector('.pd-crop-frame');
-      if(frame)frame.style.borderRadius='24px';
-      const title=modal.querySelector('h3');if(title)title.textContent='จัดวางรูปโปรไฟล์แบบสี่เหลี่ยม';
-      const desc=modal.querySelector('p');if(desc)desc.textContent='ลากเพื่อจัดตำแหน่ง • ซูมอย่างลื่น • ครอปสี่เหลี่ยม';
-      const apply=$('pd-crop-apply');if(apply&&!apply.dataset.v8bound){apply.dataset.v8bound='1';apply.onclick=applySquareCrop}
-      setupCropper();
-    }
-    const input=$('edit-avatar-file');
-    if(input&&!input.dataset.v8bound){input.dataset.v8bound='1';input.onchange=window.previewEditAvatarFileV8}
-  });
-  observer.observe(document.body,{childList:true,subtree:true});
-  setTimeout(()=>{setupCropper();const input=$('edit-avatar-file');if(input&&!input.dataset.v8bound){input.dataset.v8bound='1';input.onchange=window.previewEditAvatarFileV8}},500);
+  /* The v10 cropper owns the active file input. Initialize the legacy crop UI only once, rather than observing every DOM mutation. */
+  setTimeout(()=>{setupCropper();const input=$('edit-avatar-file');if(input&&!input.dataset.v8bound&&!input.dataset.v10Installed){input.dataset.v8bound='1';input.onchange=window.previewEditAvatarFileV8}},500);
 })();
 </script>
 
@@ -8899,7 +8897,7 @@ body{font-size:var(--pd-v9-body);line-height:var(--pd-v9-leading);text-rendering
     const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;
     const source=new Image();source.onload=()=>{
       ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(source,sx,sy,sourceSize,sourceSize,0,0,512,512);
-      const out=canvas.toDataURL('image/webp',.9);const url=$('edit-avatar-url');if(url)url.value=out;
+      const out=canvas.toDataURL('image/webp',.9);const url=$('edit-avatar-url');if(url)url.value='';try{tempAvatarUrl=out}catch(_){}window.tempAvatarUrl=out;
       const pv=$('pd-edit-avatar-preview');if(pv)pv.src=out;window.tempAvatarUrl=out;
       $('pd-crop-modal')?.classList.remove('is-open');$('pd-crop-modal')?.setAttribute('aria-hidden','true');
     };source.src=crop.img.src;
@@ -8918,17 +8916,9 @@ body{font-size:var(--pd-v9-body);line-height:var(--pd-v9-leading);text-rendering
     }
   }
   window.openSquareCropV9=open;window.applySquareCropV9=apply;
-  const mo=new MutationObserver(install);mo.observe(document.body,{childList:true,subtree:true});
   setTimeout(install,300);
 
-  /* Small, cheap scroll polish — no scroll-linked blur or expensive paints. */
-  let ticking=false;
-  window.addEventListener('scroll',()=>{
-    if(ticking)return;ticking=true;requestAnimationFrame(()=>{
-      ticking=false;document.documentElement.style.setProperty('--pd-scroll-y',`${window.scrollY}px`);
-      document.body.classList.toggle('pd-scrolled',window.scrollY>24);
-    });
-  },{passive:true});
+  /* Scroll state and progress are handled by the primary navigation controller; duplicate scroll work removed. */
 
   /* Responsive text QA: add a class to containers whose text actually overflows. */
   function textQA(){
@@ -9166,7 +9156,7 @@ html:not(.dark) .pd-v10-page-card .pd-page-number{color:#111827!important}
     ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     ctx.drawImage(cropV10.img,sx,sy,sourceSize,sourceSize,0,0,512,512);
     const out=canvas.toDataURL('image/webp',.9);
-    const url=$('edit-avatar-url');if(url)url.value=out;
+    const url=$('edit-avatar-url');if(url)url.value='';try{tempAvatarUrl=out}catch(_){}window.tempAvatarUrl=out;
     const pv=$('pd-edit-avatar-preview');if(pv)pv.src=out;
     window.tempAvatarUrl=out;closeCropV10();
     notify('ครอปรูปเรียบร้อย','รูปถูกจัดเป็นสี่เหลี่ยม 1:1 และพร้อมบันทึกแล้ว','check-circle');
@@ -9208,8 +9198,7 @@ html:not(.dark) .pd-v10-page-card .pd-page-number{color:#111827!important}
   window.previewEditAvatarFile=openCropV10;
   window.openSquareCropV10=openCropV10;
   installAvatarInput();
-  const avatarObserver=new MutationObserver(()=>installAvatarInput());
-  avatarObserver.observe(document.body,{childList:true,subtree:true});
+  // The profile form is upgraded on a bounded timer; retry once after that upgrade, without a whole-document observer.
   setTimeout(installAvatarInput,500);
 
   /* ---------- 2. Make the page selector a visual 1:1-style document grid ---------- */
@@ -11053,107 +11042,246 @@ html.pd-motion-lite .topup-pkg-btn,html.pd-motion-lite .pd-theme-option,html.pd-
 </script>
 
 
-<style id="pd-v18-polish-responsive-performance">
-/* PrintDekD Pro v18 — final responsive polish, clarity and low-cost motion */
-:root{--pd18-blue:#087cff;--pd18-ease:cubic-bezier(.22,.75,.25,1);--pd18-text:#f5f7fb;--pd18-muted:#aab4c4}
-html{scroll-behavior:smooth;scroll-padding-top:88px}
-body{ text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
-button,a,input,select,textarea{ -webkit-tap-highlight-color:transparent }
-button,a{touch-action:manipulation}
-:where(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid rgba(10,132,255,.78)!important;outline-offset:3px}
-/* Hero closing CTA: strong type hierarchy, no text buried under decoration */
-.pd-final-cta{isolation:isolate;position:relative;overflow:hidden;min-height:clamp(320px,40vw,470px);padding:clamp(34px,7vw,88px) clamp(20px,5vw,64px)!important;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(14px,2vw,22px);border-radius:clamp(22px,3vw,36px)}
-.pd-final-cta>*:not(.pd-final-orb){position:relative;z-index:2}
-.pd-final-cta .pd-final-orb{z-index:0;pointer-events:none;opacity:.36;filter:none!important;will-change:auto}
-.pd-final-cta h2{font-size:clamp(2.15rem,5.6vw,4.8rem)!important;line-height:1.08!important;letter-spacing:-.045em!important;max-width:14ch;margin:0 auto;text-wrap:balance}
-.pd-final-cta h2 em{display:inline-block;margin-top:.08em;color:#7ebdff!important}
-.pd-final-cta p{max-width:54ch;margin:0 auto;font-size:clamp(1rem,1.4vw,1.18rem)!important;line-height:1.8!important;color:var(--pd-muted)!important;text-wrap:pretty}
-.pd-final-actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:4px}
-.pd-final-actions button{min-height:50px;padding:0 22px;border-radius:16px;font-size:14px;transition:transform .2s var(--pd18-ease),background-color .2s,border-color .2s;}
-.pd-final-actions button:hover{transform:translateY(-2px)}.pd-final-actions button:active{transform:scale(.98)}
-/* Wallet page: more breathing room, larger readable package choices */
-#view-wallet{width:min(1180px,100%);padding:clamp(20px,4vw,48px) clamp(14px,2.5vw,28px) max(42px,env(safe-area-inset-bottom))!important}
-#view-wallet .grid{gap:clamp(16px,2.2vw,28px)!important}
-#view-wallet h2{font-size:clamp(1.3rem,2.2vw,1.85rem)!important;line-height:1.3!important}
-#view-wallet p,#view-wallet label{line-height:1.65}
-#view-wallet .topup-pkg-btn{min-height:88px;padding:16px 10px!important;border-radius:18px!important;transform:none!important;transition:transform .2s var(--pd18-ease),border-color .2s,background-color .2s!important}
-#view-wallet .topup-pkg-btn:hover{transform:translateY(-2px)!important}
-#view-wallet input,#view-wallet select,#view-wallet textarea{min-height:48px;font-size:16px!important}
-/* Theme / command panels: readable sizing on tablet and mobile */
-.pd-theme-overlay,.pd-command-overlay{padding:clamp(14px,5vh,64px) 14px max(18px,env(safe-area-inset-bottom))!important;align-items:flex-start;overflow-y:auto}
-.pd-theme-sheet,.pd-command-sheet{width:min(760px,100%);max-height:calc(100dvh - 40px);overflow:auto;border-radius:26px}
-.pd-theme-head,.pd-command-head{padding:clamp(18px,3vw,28px)!important}
-.pd-theme-head h2,.pd-command-head h2{font-size:clamp(1.35rem,3vw,1.8rem)!important;line-height:1.2!important}
-.pd-theme-option,.pd-theme-card{min-height:124px}
-/* Profile editor: never show an encoded image as a giant text string; clear icon-led fields */
-#profile-edit-section input:not([type=file]){width:100%;min-height:52px;font-size:16px!important;border-radius:16px!important;padding:12px 14px 12px 48px!important}
-#profile-edit-section .pd-v18-input-wrap{position:relative;width:100%;}
-#profile-edit-section .pd-v18-input-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#1685ff;pointer-events:none;z-index:2}
-#profile-edit-section .pd-v18-input-icon svg{width:20px;height:20px}
-#profile-edit-section .pd-v18-input-wrap:focus-within .pd-v18-input-icon{color:#62b1ff}
-#profile-edit-section .pd-v18-avatar-help{font-size:13px;line-height:1.65;color:var(--pd-muted);margin-top:8px}
-.profile-shell{width:min(100%,1040px)!important;max-height:min(92dvh,1000px);overflow:auto;padding:clamp(18px,3vw,34px)!important;border-radius:clamp(22px,3vw,32px)!important}
-/* Responsive layout safety */
-img,video,canvas,svg{max-width:100%}
-#view-landing,#view-dashboard,#view-wallet,#view-admin,#view-help{min-width:0}
-@media(max-width:760px){
- .pd-final-cta{min-height:unset!important;padding:42px 20px!important;border-radius:24px!important}
- .pd-final-cta h2{font-size:clamp(2rem,9vw,3rem)!important;max-width:12ch}
- .pd-final-cta p{font-size:15px!important;max-width:34ch}
- .pd-final-actions{width:100%;display:grid;grid-template-columns:1fr;gap:10px}
- .pd-final-actions button{width:100%;min-height:52px}
- #view-wallet .grid{grid-template-columns:minmax(0,1fr)!important}
- #view-wallet .topup-pkg-btn{min-height:78px}
- #profile-edit-section .pd-profile-editor{grid-template-columns:minmax(0,1fr)!important}
- .profile-shell{max-height:calc(100dvh - 16px)!important;padding:18px!important}
- .pd-theme-overlay,.pd-command-overlay{padding:12px 10px max(14px,env(safe-area-inset-bottom))!important}
- .pd-theme-sheet,.pd-command-sheet{max-height:calc(100dvh - 24px);border-radius:22px}
+<style id="pd-v19-premium-motion-and-forms">
+/* PrintDekD Pro v19 — fast interaction, clearer forms, premium print & wallet UI */
+:root { --pd19-speed:cubic-bezier(.2,.75,.25,1); }
+html { scroll-behavior:smooth; }
+
+/* Keep view changes elegant but remove blur filters from full-page transition frames. */
+main > section:not(.hidden) {
+  animation:pd-view-in .24s var(--pd19-speed) both !important;
+  filter:none !important;
 }
-@media(min-width:761px) and (max-width:1100px){
- #view-wallet{padding-inline:22px!important}
- .pd-final-cta{min-height:360px}
+@keyframes pd-view-in {
+  from { opacity:0; transform:translateY(8px); filter:none; }
+  to { opacity:1; transform:translateY(0); filter:none; }
 }
-@media(hover:none){.pd-story-card:hover,.pd-final-actions button:hover,#view-wallet .topup-pkg-btn:hover{transform:none!important}}
-@media(prefers-reduced-motion:reduce){
- html{scroll-behavior:auto!important}
- *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
- .pd-final-orb{display:none!important}
+.view-enter-once { animation:pd-view-in .24s var(--pd19-speed) both !important; filter:none !important; }
+.apple-reveal { filter:none !important; transition:opacity .36s var(--pd19-speed),transform .36s var(--pd19-speed) !important; }
+.apple-reveal.is-visible { filter:none !important; }
+.pd-slide-image { will-change:auto !important; filter:none !important; transition:transform .28s var(--pd19-speed),opacity .28s ease !important; }
+.pd-slide-image.is-shifting { transform:scale(1.015) translateX(3px) !important; filter:none !important; }
+.pd-final-orb { animation:none !important; will-change:auto !important; }
+.pd-page-wash,#pd-page-wash { display:none !important; }
+.pd-ai-launcher .pd-ai-pulse { animation-duration:3.4s !important; }
+
+/* Wider, more readable appearance panel with bigger text and previews. */
+#pd-theme-sheet.pd-theme-overlay { padding:clamp(14px,3vw,34px) !important; background:rgba(3,7,14,.72) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+#pd-theme-sheet .pd-theme-sheet {
+  width:min(1040px,calc(100vw - 32px)) !important;
+  max-height:calc(100dvh - 36px) !important;
+  overflow:auto !important;
+  padding:clamp(28px,4vw,48px) !important;
+  border-radius:32px !important;
+  box-shadow:0 28px 90px rgba(0,0,0,.38) !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  animation:pd19-sheet-in .22s var(--pd19-speed) both !important;
+}
+#pd-theme-sheet .pd-theme-head { align-items:flex-start; gap:22px; }
+#pd-theme-sheet .pd-theme-head h2 { font-size:clamp(30px,3.2vw,42px) !important; line-height:1.16 !important; }
+#pd-theme-sheet .pd-theme-head p { max-width:720px !important; font-size:clamp(15px,1.4vw,17px) !important; line-height:1.72 !important; }
+#pd-theme-sheet .pd-theme-options { grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:16px !important; margin-top:30px !important; }
+#pd-theme-sheet .pd-theme-option { min-height:248px !important; padding:17px !important; gap:15px !important; border-radius:24px !important; }
+#pd-theme-sheet .pd-theme-option.is-active { padding:16px !important; }
+#pd-theme-sheet .pd-theme-preview { height:138px !important; border-radius:18px !important; }
+#pd-theme-sheet .pd-theme-preview svg { width:36px !important; height:36px !important; }
+#pd-theme-sheet .pd-theme-option b { font-size:18px !important; line-height:1.4 !important; }
+#pd-theme-sheet .pd-theme-option small { font-size:13px !important; line-height:1.55 !important; }
+#pd-theme-sheet .pd-theme-check { width:22px !important; height:22px !important; }
+#pd-theme-sheet .pd-round-close { width:48px !important; height:48px !important; min-height:48px !important; }
+@keyframes pd19-sheet-in { from { opacity:0; transform:translateY(7px) scale(.995); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* Profile fields: familiar icon-leading inputs, aligned like login/register. */
+#profile-edit-section .pd19-input-icon-wrap { position:relative; width:100%; min-width:0; }
+#profile-edit-section .pd19-input-icon {
+  position:absolute; z-index:2; top:50%; left:16px; width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center; transform:translateY(-50%);
+  color:#7c8ba0; pointer-events:none; transition:color .16s ease;
+}
+#profile-edit-section .pd19-input-icon svg { width:19px; height:19px; stroke-width:1.9; }
+#profile-edit-section .pd19-input-icon-wrap:focus-within .pd19-input-icon { color:#1685ff; }
+#profile-edit-section .pd19-input-icon-wrap #edit-fullname,
+#profile-edit-section .pd19-input-icon-wrap #edit-avatar-url {
+  display:block; width:100% !important; max-width:100%; min-width:0; min-height:58px !important;
+  padding-left:51px !important; padding-right:15px !important; border-radius:17px !important;
+  font-size:16px !important; line-height:1.5 !important; box-sizing:border-box !important;
+}
+#profile-edit-section .pd-field-card { overflow:visible; }
+#profile-edit-section .pd-field-card label { margin-bottom:9px !important; }
+#profile-edit-section .pd18-avatar-help { font-size:13px !important; }
+#profile-edit-section .pd18-avatar-state { border:1px solid rgba(16,185,129,.22); background:rgba(16,185,129,.08); padding:10px 12px; border-radius:12px; }
+#profile-edit-section .pd-avatar-hint { max-width:250px; margin-inline:auto; font-size:12px !important; line-height:1.65 !important; }
+#profile-edit-section .pd-avatar-upload-btn { min-height:48px !important; font-size:13px !important; }
+
+/* Print flow: clearer title, upload affordance, controls and live price. */
+#view-dashboard .pd-order-hero { gap:clamp(18px,2.8vw,34px) !important; padding:clamp(24px,3.8vw,48px) !important; }
+#view-dashboard .pd-order-hero-main .pd-eyebrow { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border-radius:999px; background:rgba(8,124,255,.08); border:1px solid rgba(8,124,255,.16); }
+#view-dashboard .pd-order-hero-main h1 { max-width:960px !important; font-size:clamp(34px,4.5vw,64px) !important; line-height:1.08 !important; text-wrap:balance; }
+#view-dashboard .pd-order-hero-main p { max-width:70ch !important; font-size:clamp(15px,1.25vw,17px) !important; }
+#view-dashboard .pd-order-stepper { padding:13px 15px; border:1px solid var(--pd18-border); border-radius:18px; background:var(--pd18-surface-soft); }
+#view-dashboard .pd-order-stepper span { font-size:13px !important; }
+#view-dashboard #upload-placeholder { border:1.5px dashed #8da5bf !important; border-radius:22px !important; background:var(--pd18-surface-soft) !important; transition:border-color .18s ease,background-color .18s ease !important; }
+#view-dashboard #upload-placeholder:hover { border-color:#1685ff !important; background:rgba(8,124,255,.045) !important; }
+#view-dashboard #file-details { border:1px solid var(--pd18-border) !important; background:var(--pd18-surface-soft) !important; padding:14px 16px !important; }
+#view-dashboard #file-info-name { overflow-wrap:anywhere; line-height:1.5; }
+#view-dashboard .pd-live-order-strip { transition:box-shadow .18s ease,border-color .18s ease !important; }
+#view-dashboard .pd-live-price strong { font-size:clamp(22px,2vw,28px) !important; font-variant-numeric:tabular-nums; }
+#view-dashboard .pd-v10-page-card,#view-dashboard .pd-v15-thumb-card { transition:border-color .16s ease,background-color .16s ease,box-shadow .16s ease !important; }
+#view-dashboard .pd-v10-page-card:hover,#view-dashboard .pd-v15-thumb-card:hover { transform:none !important; }
+
+/* Wallet: a calm payment sequence, legible package options, no scale-pop on each click. */
+.pd18-wallet-hero { padding:clamp(24px,3.5vw,44px) !important; }
+.pd18-wallet-copy h1 { font-size:clamp(32px,4vw,54px) !important; }
+#view-wallet .topup-pkg-btn { min-height:108px !important; transition:border-color .17s ease,background-color .17s ease,box-shadow .17s ease !important; transform:none !important; }
+#view-wallet .topup-pkg-btn:hover { transform:none !important; }
+#view-wallet .topup-pkg-btn[aria-pressed="true"],#view-wallet .topup-pkg-btn.border-2.border-amber-500 { border:2px solid #d99a13 !important; box-shadow:inset 0 0 0 1px rgba(245,158,11,.12),0 8px 22px rgba(245,158,11,.08) !important; }
+#view-wallet .topup-pkg-btn:focus-visible { outline:3px solid rgba(8,124,255,.5) !important; outline-offset:3px; }
+#view-wallet .topup-pkg-btn span:first-child { font-variant-numeric:tabular-nums; }
+#view-wallet form > div > label { font-size:14px !important; line-height:1.6 !important; }
+#view-wallet .topup-pkg-btn svg { flex:none; }
+
+/* Limit expensive blur on overlays; keep depth using border and shadow instead. */
+.pd-theme-overlay,.pd-command-overlay { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+.pd-theme-overlay { background:rgba(3,7,14,.72) !important; }
+.pd-command-overlay { background:rgba(3,7,14,.66) !important; }
+#pd-ai-panel,#apple-tab-menu,.pd-account-popover { -webkit-backdrop-filter:blur(10px) saturate(115%) !important; backdrop-filter:blur(10px) saturate(115%) !important; }
+
+@media (max-width:900px) {
+  #pd-theme-sheet .pd-theme-sheet { width:min(900px,calc(100vw - 24px)) !important; padding:25px !important; }
+  #pd-theme-sheet .pd-theme-option { min-height:220px !important; }
+  #pd-theme-sheet .pd-theme-preview { height:120px !important; }
+}
+@media (max-width:640px) {
+  #pd-theme-sheet.pd-theme-overlay { padding:10px !important; }
+  #pd-theme-sheet .pd-theme-sheet { width:calc(100vw - 20px) !important; max-height:calc(100dvh - 20px) !important; padding:20px 16px !important; border-radius:24px !important; }
+  #pd-theme-sheet .pd-theme-head h2 { font-size:26px !important; }
+  #pd-theme-sheet .pd-theme-head p { font-size:14px !important; }
+  #pd-theme-sheet .pd-theme-options { grid-template-columns:minmax(0,1fr) !important; gap:9px !important; margin-top:18px !important; }
+  #pd-theme-sheet .pd-theme-option { min-height:108px !important; grid-template-columns:100px minmax(0,1fr) 22px !important; gap:12px !important; padding:10px !important; display:grid !important; align-items:center !important; }
+  #pd-theme-sheet .pd-theme-option.is-active { padding:9px !important; }
+  #pd-theme-sheet .pd-theme-preview { width:100px !important; height:82px !important; }
+  #pd-theme-sheet .pd-theme-option b { font-size:16px !important; }
+  #pd-theme-sheet .pd-theme-option small { font-size:12px !important; }
+  #profile-edit-section .pd-field-card { padding:15px !important; }
+  #profile-edit-section .pd19-input-icon-wrap #edit-fullname,#profile-edit-section .pd19-input-icon-wrap #edit-avatar-url { min-height:54px !important; font-size:16px !important; }
+  #view-dashboard .pd-order-stepper { gap:6px !important; padding:10px !important; }
+  #view-dashboard .pd-order-stepper span { font-size:11px !important; }
+  #view-wallet .topup-pkg-btn { min-height:96px !important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  main > section:not(.hidden),.pd-view-enter,.pd-theme-sheet { animation:none !important; }
+  .pd17-hero-stage > img,.pd-final-orb,.pd-ai-pulse { animation:none !important; }
+  .apple-reveal,.pd-slide-image { transition:none !important; transform:none !important; filter:none !important; }
+  .pd-theme-option,.topup-pkg-btn,.pd-order-shortcuts button { transition:none !important; transform:none !important; }
 }
 </style>
-<script id="pd-v18-polish-runtime">
-(function(){
- 'use strict';
- // Lightweight, one-time profile field enhancement. Existing save/auth handlers remain intact.
- function enhanceProfileFields(){
-  const form=document.getElementById('profile-edit-section'); if(!form||form.dataset.pd18Enhanced)return;
-  form.dataset.pd18Enhanced='1';
-  const fields=[['edit-avatar-url','image','ลิงก์รูปโปรไฟล์'],['edit-fullname','user-round','ชื่อ-นามสกุล']];
-  fields.forEach(([id,icon,label])=>{
-   const input=document.getElementById(id);if(!input)return;
-   // If a legacy avatar was stored as a data URI, keep the preview but do not dump it into the URL textbox.
-   if(id==='edit-avatar-url' && /^data:image\//i.test(input.value||'')) input.value='';
-   input.setAttribute('aria-label',label);
-   if(input.parentElement?.classList.contains('pd-v18-input-wrap'))return;
-   const wrap=document.createElement('div');wrap.className='pd-v18-input-wrap';
-   input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);
-   const mark=document.createElement('span');mark.className='pd-v18-input-icon';mark.setAttribute('aria-hidden','true');
-   mark.innerHTML=icon==='image'?'<i data-lucide="image"></i>':'<i data-lucide="user-round"></i>';
-   wrap.appendChild(mark);
-  });
-  const help=form.querySelector('input[type="file"]');
-  if(help&&!form.querySelector('.pd-v18-avatar-help')){const note=document.createElement('p');note.className='pd-v18-avatar-help';note.textContent='แนะนำ PNG, JPG หรือ WebP ขนาดไม่เกิน 2 MB เพื่อให้เปิดได้รวดเร็วทั้งมือถือและคอมพิวเตอร์';help.insertAdjacentElement('afterend',note)}
-  if(window.lucide?.createIcons)window.lucide.createIcons({attrs:{'stroke-width':2}});
- }
- const oldToggle=window.toggleProfileEdit;
- if(typeof oldToggle==='function'&&!oldToggle.__pd18Wrapped){
-  const wrapped=function(show){const result=oldToggle.apply(this,arguments);if(show)requestAnimationFrame(enhanceProfileFields);return result};
-  wrapped.__pd18Wrapped=true;window.toggleProfileEdit=wrapped;
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enhanceProfileFields,{once:true});else enhanceProfileFields();
- // Keep icon generation event-driven; avoid animation loops and expensive continuous pointer tracking.
- document.addEventListener('pd:viewchange',()=>{if(document.getElementById('profile-edit-section')&&!document.getElementById('profile-edit-section').classList.contains('hidden'))enhanceProfileFields()},{passive:true});
- // Expose a safe local diagnostic helper without transmitting data.
- window.pdV18Diagnostics=function(){const root=document.documentElement;return {viewport:{width:innerWidth,height:innerHeight},horizontalOverflow:root.scrollWidth>root.clientWidth+2,reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches,secureContext:isSecureContext,profileEditorReady:!!document.getElementById('profile-edit-section'),walletViewReady:!!document.getElementById('view-wallet'),helpViewReady:!!document.getElementById('view-help')}};
+
+
+<script id="pd-v19-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const isImageData = value => typeof value === 'string' && /^data:image\/(?:png|jpe?g|webp);base64,/i.test(value);
+
+  // Keep cropped avatars in draft state; the URL field is only for https:// links.
+  function keepAvatarDraft(value, updatePreview = true) {
+    if (!isImageData(value)) return false;
+    try { tempAvatarUrl = value; } catch (_) {}
+    window.tempAvatarUrl = value;
+    const url = $('edit-avatar-url'); if (url) url.value = '';
+    const preview = $('pd-edit-avatar-preview'); if (preview && updatePreview) preview.src = value;
+    const state = $('pd18-avatar-state'); if (state) state.hidden = false;
+    return true;
+  }
+
+  function decorateProfileInput(id, iconName, labelText) {
+    const input = $(id); if (!input) return;
+    if (input.parentElement?.classList.contains('pd19-input-icon-wrap')) return;
+    const parent = input.parentElement; if (!parent) return;
+    const wrap = document.createElement('div'); wrap.className = 'pd19-input-icon-wrap';
+    parent.insertBefore(wrap, input);
+    const icon = document.createElement('span'); icon.className = 'pd19-input-icon'; icon.setAttribute('aria-hidden','true');
+    const glyph = document.createElement('i'); glyph.setAttribute('data-lucide', iconName); icon.appendChild(glyph);
+    wrap.append(icon, input);
+    input.setAttribute('aria-label', labelText);
+  }
+
+  function syncProfileEditor() {
+    const form = $('profile-edit-section'); if (!form) return;
+    decorateProfileInput('edit-avatar-url','image','ลิงก์ HTTPS ของรูปโปรไฟล์ หรือไม่กรอกหากใช้รูปที่อัปโหลด');
+    decorateProfileInput('edit-fullname','user-round','ชื่อ-นามสกุล');
+    const url = $('edit-avatar-url');
+    if (url && isImageData(url.value)) keepAvatarDraft(url.value);
+    const formUser = (typeof currentUser !== 'undefined' && currentUser) || window.currentUser;
+    if (url && !url.value && isImageData(formUser?.avatar_url) && !window.tempAvatarUrl) keepAvatarDraft(formUser.avatar_url);
+    if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
+  }
+
+  // Decorate once at startup and when the account editor is opened; no global body observer.
+  syncProfileEditor();
+  const previousToggle = window.toggleProfileEdit;
+  if (typeof previousToggle === 'function' && !previousToggle.__pd19) {
+    const wrappedToggle = function(show) {
+      if (show) {
+        const liveUser = (typeof currentUser !== 'undefined' && currentUser) || window.currentUser;
+        const avatar = String(liveUser?.avatar_url || '');
+        if (isImageData(avatar)) keepAvatarDraft(avatar, false);
+        else { try { tempAvatarUrl = ''; } catch (_) {} window.tempAvatarUrl = ''; }
+      }
+      const result = previousToggle.apply(this, arguments);
+      if (show) requestAnimationFrame(syncProfileEditor);
+      return result;
+    };
+    wrappedToggle.__pd19 = true;
+    window.toggleProfileEdit = wrappedToggle;
+  }
+
+  // Last-resort save guard: never submit a data URI as a visible URL field.
+  const previousSave = window.saveProfileChanges;
+  if (typeof previousSave === 'function' && !previousSave.__pd19) {
+    const wrappedSave = function(event) {
+      const url = $('edit-avatar-url');
+      if (url && isImageData(url.value)) keepAvatarDraft(url.value, false);
+      return previousSave.apply(this, arguments);
+    };
+    wrappedSave.__pd19 = true;
+    window.saveProfileChanges = wrappedSave;
+  }
+
+  // Update the selected-state semantics without changing the existing payment flow.
+  function syncTopupSelection() {
+    const selected = String($('selected-topup-amount')?.value || '20');
+    document.querySelectorAll('#view-wallet .topup-pkg-btn').forEach(button => {
+      const match = (button.getAttribute('onclick') || '').match(/selectTopupAmount\((\d+)\)/);
+      if (match) button.setAttribute('aria-pressed', String(match[1] === selected));
+    });
+  }
+  document.addEventListener('click', event => {
+    if (event.target.closest('#view-wallet .topup-pkg-btn')) requestAnimationFrame(syncTopupSelection);
+  }, {passive:true});
+  window.addEventListener('pd:viewchange', syncTopupSelection, {passive:true});
+  syncTopupSelection();
+
+  // Keep motion useful and short. Respect current OS preference if it changes while the page is open.
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const setMotionMode = () => document.documentElement.classList.toggle('pd19-reduced-motion', !!reduceMotion?.matches);
+  setMotionMode(); reduceMotion?.addEventListener?.('change', setMotionMode);
+
+  // Local diagnostics for quick QA; does not transmit any information.
+  window.pdV19Diagnostics = () => {
+    const root = document.documentElement;
+    const result = {
+      viewport: `${innerWidth}x${innerHeight}`,
+      horizontalOverflow: root.scrollWidth > root.clientWidth + 2,
+      domNodes: document.getElementsByTagName('*').length,
+      wholeBodyMutationObserversRemoved: true,
+      reducedMotion: !!reduceMotion?.matches,
+      activeView: document.body.dataset.currentView || document.body.dataset.pdView || 'unknown',
+      supportCenterAvailable: !!$('view-help')
+    };
+    console.table(result); return result;
+  };
+  if (window.lucide) { try { window.lucide.createIcons(); } catch (_) {} }
 })();
 </script>
 
