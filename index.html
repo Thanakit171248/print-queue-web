@@ -5133,7 +5133,7 @@
 <style id="pd22-cinematic-splash-design">
   #splash-screen.pd22-splash { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; min-height:100vh; isolation:isolate; color:#f8fbff; background:#05070c !important; opacity:1; transition:opacity .72s cubic-bezier(.2,.7,.2,1), visibility .72s ease !important; }
   #splash-screen.pd22-splash.opacity-0 { visibility:hidden; }
-  .pd22-splash-grid { position:absolute; inset:0; opacity:.21; background-image:linear-gradient(rgba(104,142,198,.11) 1px,transparent 1px),linear-gradient(90deg,rgba(104,142,198,.11) 1px,transparent 1px); background-size:58px 58px; mask-image:radial-gradient(ellipse at center,black 8%,transparent 76%); animation:pd22-grid-drift 24s linear infinite; }
+  .pd22-splash-grid { position:absolute; inset:0; opacity:.21; background-image:linear-gradient(rgba(104,142,198,.11) 1px,transparent 1px),linear-gradient(90deg,rgba(104,142,198,.11) 1px,transparent 1px); background-size:58px 58px; mask-image:radial-gradient(ellipse at center,black 8%,transparent 76%); }
   .pd22-splash-glow { position:absolute; width:min(76vw,850px); aspect-ratio:1; border-radius:50%; filter:blur(95px); pointer-events:none; }
   .pd22-splash-glow-a { background:rgba(25,105,255,.21); top:-42%; left:-24%; animation:pd22-glow-float 10s ease-in-out infinite alternate; }
   .pd22-splash-glow-b { background:rgba(124,58,237,.19); right:-28%; bottom:-48%; animation:pd22-glow-float 12s ease-in-out infinite alternate-reverse; }
@@ -5162,7 +5162,6 @@
   .pd22-splash-progress-glint { position:absolute; inset:0 auto 0 -30%; z-index:2; width:30%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent); animation:pd22-progress-glint 2s ease-in-out infinite; }
   .pd22-splash-footnote { margin:20px 0 0; color:#59677d; font-size:9px; font-weight:750; letter-spacing:.24em; }
   .pd22-splash-bottom { position:absolute; right:clamp(18px,4vw,52px); bottom:clamp(18px,3vw,34px); left:clamp(18px,4vw,52px); display:flex; justify-content:space-between; gap:14px; color:#536176; font:650 9px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.12em; }
-  @keyframes pd22-grid-drift { to { background-position:58px 58px; } }
   @keyframes pd22-glow-float { from { transform:translate3d(-2%,0,0) scale(.96); } to { transform:translate3d(3%,4%,0) scale(1.06); } }
   @keyframes pd22-splash-enter { from { opacity:0; transform:translateY(18px) scale(.985); filter:blur(8px); } to { opacity:1; transform:translateY(0) scale(1); filter:blur(0); } }
   @keyframes pd22-mark-float { 0%,100% { transform:translateY(0) rotate(-1deg); } 50% { transform:translateY(-7px) rotate(1deg); } }
@@ -5172,7 +5171,7 @@
   @keyframes pd22-dot-pulse { 0%,100% { opacity:.55; transform:scale(.85); } 50% { opacity:1; transform:scale(1.12); } }
   @keyframes pd22-progress-glint { 0% { left:-30%; } 100% { left:110%; } }
   @media(max-width:520px) { .pd22-splash-mark { width:92px; height:92px; border-radius:29px; margin-bottom:27px; } .pd22-splash-mark-core { width:64px; height:64px; border-radius:21px; } .pd22-splash-mark-core svg { width:36px; height:36px; } .pd22-splash-status-row { margin-top:42px; } .pd22-splash-bottom span:nth-child(2) { display:none; } .pd22-splash-bottom { font-size:8px; } }
-  @media(prefers-reduced-motion:reduce) { .pd22-splash-grid,.pd22-splash-glow,.pd22-splash-orbit,.pd22-splash-mark,.pd22-splash-mark:before,.pd22-splash-mark-spark,.pd22-splash-content,.pd22-splash-wordmark span,.pd22-splash-live-dot,.pd22-splash-progress-glint { animation:none !important; } }
+  @media(prefers-reduced-motion:reduce) { .pd22-splash-glow,.pd22-splash-orbit,.pd22-splash-mark,.pd22-splash-mark:before,.pd22-splash-mark-spark,.pd22-splash-content,.pd22-splash-wordmark span,.pd22-splash-live-dot,.pd22-splash-progress-glint { animation:none !important; } }
 </style>
 
 </head>
@@ -23442,6 +23441,10 @@ main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
     if (!input || !datalist || input.dataset.pd22Dropdown === '1') return;
     const label = input.closest('.pd19-address-field'); if (!label) return;
     input.dataset.pd22Dropdown = '1'; input.setAttribute('aria-haspopup','listbox'); input.setAttribute('aria-expanded','false');
+    // Keep datalist as the existing runtime's data source, but detach it from the input.
+    // Otherwise Chrome/Edge opens the native white datalist popup over the custom dark menu.
+    input.removeAttribute('list');
+    input.setAttribute('autocomplete', 'off');
     const chevron = document.createElementNS('http://www.w3.org/2000/svg','svg');
     chevron.setAttribute('viewBox','0 0 24 24'); chevron.setAttribute('fill','none'); chevron.setAttribute('stroke','currentColor'); chevron.setAttribute('stroke-width','2.2'); chevron.setAttribute('stroke-linecap','round'); chevron.setAttribute('stroke-linejoin','round'); chevron.classList.add('pd22-select-chevron'); chevron.setAttribute('aria-hidden','true');
     const path = document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('d','m6 9 6 6 6-6'); chevron.append(path); label.append(chevron);
