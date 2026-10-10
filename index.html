@@ -22668,7 +22668,7 @@
             state.postalProvinces = matches.provinces;
             state.postalOptions = [zip];
             populateDatalist(ui.provinceList, state.postalProvinces);
-            setEnabled(ui.province, true, 'พิมพ์ค้นหาหรือเลือกจังหวัดที่ตรงกับรหัส…');
+            setEnabled(ui.province, true, 'แตะเพื่อเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์');
             if (ui.postal) ui.postal.setAttribute('aria-invalid', 'false');
             addressMessage(`รหัส ${zip} พบ ${matches.provinces.length} จังหวัดที่เป็นไปได้ • กรุณาเลือกจังหวัดที่ถูกต้อง`, 'success');
             return true;
@@ -22705,7 +22705,7 @@
         const candidates = state.postalDistricts.filter(row => allowedDistrictIds.has(row.id));
         if (!candidates.length) { state.selectedProvince = null; clearFromProvince(); addressMessage('ไม่พบอำเภอที่ตรงกับรหัสไปรษณีย์และจังหวัดที่เลือก กรุณาเลือกจังหวัดอีกครั้ง', 'error'); return; }
         state.filteredDistricts = candidates;
-        populateDatalist(ui.districtList, candidates); setEnabled(ui.district, true, 'ค้นหาอำเภอ/เขต…');
+        populateDatalist(ui.districtList, candidates); setEnabled(ui.district, true, 'แตะเพื่อเลือกอำเภอ/เขต');
         addressMessage(`เลือกจังหวัด ${record.name_local} แล้ว • พบ ${candidates.length} อำเภอ/เขต กรุณาเลือกต่อ`, 'success');
       }
       async function onDistrictInput() {
@@ -22723,7 +22723,7 @@
         const children = state.postalSubdistricts.filter(row => row.parent_id === record.id && postalMatches(row, zip));
         if (!children.length) { state.selectedDistrict = null; clearFromDistrict(); addressMessage('ไม่พบตำบลที่ตรงกับรหัสไปรษณีย์ในอำเภอนี้ กรุณาตรวจสอบจังหวัดหรือรหัสอีกครั้ง', 'error'); return; }
         state.filteredSubdistricts = children;
-        populateDatalist(ui.subdistrictList, children); setEnabled(ui.subdistrict, true, 'ค้นหาตำบล/แขวง…');
+        populateDatalist(ui.subdistrictList, children); setEnabled(ui.subdistrict, true, 'แตะเพื่อเลือกตำบล/แขวง');
         addressMessage(`เลือกอำเภอ/เขต ${record.name_local} แล้ว • พบ ${children.length} ตำบล/แขวงที่เข้ากับรหัสนี้`, 'success');
       }
       function onSubdistrictInput() {
@@ -23232,7 +23232,7 @@ main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
 
 
 <style id="pd-v22-native-free-location-design">
-/* PrintDekD Pro v22 — fully themed searchable location menus; no browser-native datalist popup. */
+/* PrintDekD Pro v23 — tap-to-select location menus; no search field or native datalist popup. */
 #pd19-address-card .pd20-select-shell {
   position: relative;
   z-index: 2;
@@ -23291,11 +23291,11 @@ main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
   overflow: hidden;
   border: 1px solid rgba(101, 157, 222, .37);
   border-radius: 18px;
-  background: linear-gradient(155deg, rgba(19, 29, 43, .99), rgba(10, 16, 25, .99));
+  background: linear-gradient(155deg, #131d2b, #0a1019);
   color: #edf4fc;
   box-shadow: 0 22px 52px rgba(0, 0, 0, .48), 0 0 0 1px rgba(255,255,255,.025) inset, 0 0 25px rgba(31, 128, 255, .10);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   transform-origin: top center;
   animation: pd20-location-in .16s cubic-bezier(.2,.8,.2,1) both;
 }
@@ -23325,42 +23325,10 @@ main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
   background: rgba(39, 137, 255, .10);
   font: 700 10px/1.3 "Kanit", sans-serif;
 }
-#pd19-address-card .pd20-location-search-wrap { position: relative; }
-#pd19-address-card .pd20-location-search-icon {
-  position: absolute;
-  z-index: 1;
-  left: 13px;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  transform: translateY(-50%);
-  color: #8bb7e8;
-  pointer-events: none;
-}
-#pd19-address-card .pd20-location-search {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  min-height: 44px;
-  padding: 10px 12px 10px 39px !important;
-  border: 1px solid rgba(123, 150, 184, .28) !important;
-  border-radius: 12px !important;
-  background: rgba(5, 11, 19, .68) !important;
-  color: #f5f8fd !important;
-  caret-color: #4da1ff;
-  font: 500 14px/1.4 "Kanit", "Noto Sans Thai", sans-serif !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-#pd19-address-card .pd20-location-search::placeholder { color: #94a5ba !important; opacity: 1; }
-#pd19-address-card .pd20-location-search:focus {
-  border-color: rgba(51, 148, 255, .85) !important;
-  box-shadow: 0 0 0 3px rgba(39, 137, 255, .13) !important;
-}
 #pd19-address-card .pd20-location-results {
   display: grid;
   gap: 5px;
-  max-height: min(310px, 42vh);
+  max-height: min(360px, 46dvh);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 1px 2px 2px 0;
@@ -23445,19 +23413,13 @@ html:not(.dark) #pd19-address-card .pd20-select-shell .pd19-address-field input[
   color: #78879b !important;
 }
 html:not(.dark) #pd19-address-card .pd20-location-menu {
-  background: linear-gradient(155deg, rgba(255,255,255,.99), rgba(241,246,252,.99));
+  background: linear-gradient(155deg, #ffffff, #f1f6fc);
   color: #17283d;
   border-color: rgba(97, 135, 181, .34);
   box-shadow: 0 22px 50px rgba(37, 57, 83, .22), 0 0 0 1px rgba(255,255,255,.8) inset;
 }
 html:not(.dark) #pd19-address-card .pd20-location-menu-title,
 html:not(.dark) #pd19-address-card .pd20-location-option-th { color: #17283d; }
-html:not(.dark) #pd19-address-card .pd20-location-search {
-  background: #f5f8fc !important;
-  color: #17283d !important;
-  border-color: #d4dfed !important;
-}
-html:not(.dark) #pd19-address-card .pd20-location-search::placeholder,
 html:not(.dark) #pd19-address-card .pd20-location-option-en,
 html:not(.dark) #pd19-address-card .pd20-location-empty,
 html:not(.dark) #pd19-address-card .pd20-location-foot { color: #657890 !important; }
@@ -23468,8 +23430,8 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
 }
 @media (max-width: 640px) {
   #pd19-address-card .pd20-location-menu { padding: 10px; border-radius: 15px; }
-  #pd19-address-card .pd20-location-results { max-height: min(270px, 38vh); }
-  #pd19-address-card .pd20-location-option { min-height: 49px; }
+  #pd19-address-card .pd20-location-results { max-height: min(320px, 44dvh); }
+  #pd19-address-card .pd20-location-option { min-height: 52px; padding: 10px 12px; touch-action: manipulation; }
 }
 @media (prefers-reduced-motion: reduce) {
   #pd19-address-card .pd20-location-menu,
@@ -23478,17 +23440,17 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
 }
 </style>
 
-<script id="pd-v22-searchable-location-runtime">
+<script id="pd-v23-tap-select-location-runtime">
 (() => {
   'use strict';
   const addressCard = document.getElementById('pd19-address-card');
-  if (!addressCard || addressCard.dataset.pd22Ready === 'true') return;
-  addressCard.dataset.pd22Ready = 'true';
+  if (!addressCard || addressCard.dataset.pd23LocationReady === 'true') return;
+  addressCard.dataset.pd23LocationReady = 'true';
 
   const configs = [
-    { input: 'recipient-province', list: 'recipient-province-options', label: 'จังหวัด', placeholder: 'ค้นหาจังหวัด…', help: 'เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์' },
-    { input: 'recipient-district', list: 'recipient-district-options', label: 'อำเภอ / เขต', placeholder: 'ค้นหาอำเภอ / เขต…', help: 'รายการจะแสดงเฉพาะจังหวัดที่เลือก' },
-    { input: 'recipient-subdistrict', list: 'recipient-subdistrict-options', label: 'ตำบล / แขวง', placeholder: 'ค้นหาตำบล / แขวง…', help: 'รายการจะสัมพันธ์กับอำเภอและรหัสไปรษณีย์' }
+    { input: 'recipient-province', list: 'recipient-province-options', label: 'จังหวัด', placeholder: 'แตะเพื่อเลือกจังหวัด', help: 'เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์' },
+    { input: 'recipient-district', list: 'recipient-district-options', label: 'อำเภอ / เขต', placeholder: 'แตะเพื่อเลือกอำเภอ / เขต', help: 'รายการจะแสดงเฉพาะจังหวัดที่เลือก' },
+    { input: 'recipient-subdistrict', list: 'recipient-subdistrict-options', label: 'ตำบล / แขวง', placeholder: 'แตะเพื่อเลือกตำบล / แขวง', help: 'รายการสัมพันธ์กับอำเภอและรหัสไปรษณีย์' }
   ];
   const widgets = [];
   let activeWidget = null;
@@ -23501,43 +23463,58 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     })).filter(item => item.value);
   }
 
-  function setExpanded(widget, value) {
-    widget.input.setAttribute('aria-expanded', String(value));
-    widget.menu.hidden = !value;
-    widget.shell.classList.toggle('is-open', value);
-    if (value) activeWidget = widget;
+  function setExpanded(widget, expanded) {
+    widget.input.setAttribute('aria-expanded', String(expanded));
+    widget.menu.hidden = !expanded;
+    widget.shell.classList.toggle('is-open', expanded);
+    if (expanded) activeWidget = widget;
     else if (activeWidget === widget) activeWidget = null;
   }
 
   function renderOptions(widget) {
-    const query = String(widget.search.value || '').trim().toLocaleLowerCase('th-TH');
-    const all = optionData(widget.list);
-    const matches = all.filter(item => !query || `${item.value} ${item.secondary}`.toLocaleLowerCase('th-TH').includes(query));
-    widget.count.textContent = `${matches.length} รายการ`;
+    const items = optionData(widget.list);
+    widget.count.textContent = `${items.length} รายการ`;
     widget.results.replaceChildren();
-    if (!matches.length) {
+
+    if (!items.length) {
       const empty = document.createElement('div');
       empty.className = 'pd20-location-empty';
-      empty.textContent = query ? 'ไม่พบรายการที่ตรงกัน ลองใช้คำค้นอื่น' : 'ยังไม่มีรายการให้เลือก กรุณาตรวจสอบรหัสไปรษณีย์ก่อน';
+      empty.textContent = 'ยังไม่มีรายการให้เลือก กรุณาตรวจสอบรหัสไปรษณีย์และขั้นตอนก่อนหน้า';
       widget.results.appendChild(empty);
       return;
     }
+
     const fragment = document.createDocumentFragment();
-    matches.slice(0, 120).forEach(item => {
+    items.forEach(item => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'pd20-location-option';
       button.setAttribute('role', 'option');
       button.setAttribute('aria-selected', String(widget.input.value === item.value));
-      const main = document.createElement('span'); main.className = 'pd20-location-option-main';
-      const thai = document.createElement('span'); thai.className = 'pd20-location-option-th'; thai.textContent = item.value;
+      button.setAttribute('data-location-value', item.value);
+
+      const main = document.createElement('span');
+      main.className = 'pd20-location-option-main';
+      const thai = document.createElement('span');
+      thai.className = 'pd20-location-option-th';
+      thai.textContent = item.value;
       main.appendChild(thai);
+
       if (item.secondary && item.secondary !== item.value) {
-        const english = document.createElement('span'); english.className = 'pd20-location-option-en'; english.textContent = item.secondary;
+        const english = document.createElement('span');
+        english.className = 'pd20-location-option-en';
+        english.textContent = item.secondary;
         main.appendChild(english);
       }
-      const arrow = document.createElement('span'); arrow.className = 'pd20-location-option-arrow'; arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '›';
+
+      const arrow = document.createElement('span');
+      arrow.className = 'pd20-location-option-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '›';
       button.append(main, arrow);
+
+      // Selection runs on click (not pointerdown) so touch browsers have a reliable activation event.
+      // The outside-tap handler already ignores anything inside this shell, so blur cannot auto-close it.
       button.addEventListener('click', () => selectOption(widget, item.value));
       button.addEventListener('keydown', event => {
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -23547,7 +23524,8 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
           const step = event.key === 'ArrowDown' ? 1 : -1;
           options[(current + step + options.length) % options.length]?.focus();
         } else if (event.key === 'Escape') {
-          event.preventDefault(); closeMenu(widget, true);
+          event.preventDefault();
+          closeMenu(widget, true);
         }
       });
       fragment.appendChild(button);
@@ -23564,23 +23542,23 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   }
 
   function selectOption(widget, value) {
-    closeMenu(widget, false);
+    // Close this menu before firing change; dependent lists are then refreshed by the address runtime.
+    const restoreFocus = document.activeElement !== widget.input;
+    setExpanded(widget, false);
     widget.input.value = value;
     widget.input.removeAttribute('aria-invalid');
+    widget.skipFocusOpen = restoreFocus;
     widget.input.dispatchEvent(new Event('change', { bubbles: true }));
-    widget.skipFocusOpen = true;
-    widget.input.focus({ preventScroll: true });
-    widget.search.value = '';
-    renderOptions(widget);
+    if (restoreFocus) widget.input.focus({ preventScroll: true });
   }
 
   function openMenu(widget) {
     if (widget.input.getAttribute('aria-disabled') === 'true') return;
     if (activeWidget && activeWidget !== widget) setExpanded(activeWidget, false);
-    setExpanded(widget, true);
-    widget.search.value = '';
     renderOptions(widget);
-    widget.search.focus({ preventScroll: true });
+    setExpanded(widget, true);
+    // Do not focus a search box or any other input. This is deliberately tap-to-select,
+    // so a mobile keyboard cannot resize the viewport and collapse the menu.
   }
 
   for (const config of configs) {
@@ -23589,52 +23567,56 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     const field = input?.closest('label.pd19-address-field');
     if (!input || !list || !field || !field.parentElement) continue;
 
-    // Detach the native browser popup from the input. We keep the datalist as a data source only.
+    // Keep the datalist as a data source only; the browser must never draw its native popup.
     input.removeAttribute('list');
     input.readOnly = true;
     input.setAttribute('aria-readonly', 'true');
     input.setAttribute('aria-haspopup', 'listbox');
     input.setAttribute('aria-controls', `${config.input}-custom-options`);
     input.setAttribute('autocomplete', 'off');
+    input.setAttribute('placeholder', config.placeholder);
 
-    const shell = document.createElement('div'); shell.className = 'pd20-select-shell';
+    const shell = document.createElement('div');
+    shell.className = 'pd20-select-shell';
     field.parentElement.insertBefore(shell, field);
     shell.appendChild(field);
 
     const menu = document.createElement('div');
-    menu.className = 'pd20-location-menu'; menu.hidden = true;
+    menu.className = 'pd20-location-menu';
+    menu.hidden = true;
     menu.id = `${config.input}-custom-menu`;
     menu.setAttribute('role', 'group');
     menu.setAttribute('aria-label', `${config.label}: รายการตัวเลือก`);
-    const head = document.createElement('div'); head.className = 'pd20-location-menu-head';
-    const title = document.createElement('p'); title.className = 'pd20-location-menu-title'; title.textContent = `เลือก${config.label}`;
-    const count = document.createElement('span'); count.className = 'pd20-location-menu-count'; count.textContent = '0 รายการ';
-    head.append(title, count);
-    const searchWrap = document.createElement('div'); searchWrap.className = 'pd20-location-search-wrap';
-    const searchIcon = document.createElement('span'); searchIcon.className = 'pd20-location-search-icon'; searchIcon.setAttribute('aria-hidden', 'true'); searchIcon.textContent = '⌕';
-    const search = document.createElement('input'); search.type = 'search'; search.className = 'pd20-location-search';
-    search.placeholder = config.placeholder; search.autocomplete = 'off'; search.spellcheck = false;
-    search.setAttribute('aria-label', `ค้นหา${config.label}`); search.setAttribute('aria-controls', `${config.input}-custom-options`);
-    searchWrap.append(searchIcon, search);
-    const results = document.createElement('div'); results.className = 'pd20-location-results'; results.id = `${config.input}-custom-options`; results.setAttribute('role', 'listbox');
-    const foot = document.createElement('div'); foot.className = 'pd20-location-foot'; foot.textContent = config.help;
-    menu.append(head, searchWrap, results, foot); shell.appendChild(menu);
 
-    const widget = { ...config, input, list, field, shell, menu, count, search, results, skipFocusOpen: false };
+    const head = document.createElement('div');
+    head.className = 'pd20-location-menu-head';
+    const title = document.createElement('p');
+    title.className = 'pd20-location-menu-title';
+    title.textContent = `เลือก${config.label}`;
+    const count = document.createElement('span');
+    count.className = 'pd20-location-menu-count';
+    count.textContent = '0 รายการ';
+    head.append(title, count);
+
+    const results = document.createElement('div');
+    results.className = 'pd20-location-results';
+    results.id = `${config.input}-custom-options`;
+    results.setAttribute('role', 'listbox');
+
+    const foot = document.createElement('div');
+    foot.className = 'pd20-location-foot';
+    foot.textContent = config.help;
+    menu.append(head, results, foot);
+    shell.appendChild(menu);
+
+    const widget = { ...config, input, list, field, shell, menu, count, results, skipFocusOpen: false };
     widgets.push(widget);
-    search.addEventListener('input', () => renderOptions(widget));
-    search.addEventListener('keydown', event => {
-      if (event.key === 'Escape') { event.preventDefault(); closeMenu(widget, true); }
-      else if (event.key === 'ArrowDown') { event.preventDefault(); widget.results.querySelector('.pd20-location-option')?.focus(); }
-      else if (event.key === 'Enter') {
-        const first = widget.results.querySelector('.pd20-location-option');
-        const all = optionData(widget.list);
-        if (first) { event.preventDefault(); first.click(); }
-        else if (all.length === 1) { event.preventDefault(); selectOption(widget, all[0].value); }
-      }
-    });
+
     input.addEventListener('focus', () => {
-      if (widget.skipFocusOpen) { widget.skipFocusOpen = false; return; }
+      if (widget.skipFocusOpen) {
+        widget.skipFocusOpen = false;
+        return;
+      }
       if (input.getAttribute('aria-disabled') !== 'true') openMenu(widget);
     });
     input.addEventListener('click', () => {
@@ -23642,9 +23624,14 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     });
     input.addEventListener('keydown', event => {
       if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-        if (input.getAttribute('aria-disabled') !== 'true') { event.preventDefault(); openMenu(widget); }
+        if (input.getAttribute('aria-disabled') !== 'true') {
+          event.preventDefault();
+          openMenu(widget);
+          widget.results.querySelector('.pd20-location-option')?.focus();
+        }
       } else if (event.key === 'Escape' && !widget.menu.hidden) {
-        event.preventDefault(); closeMenu(widget, false);
+        event.preventDefault();
+        closeMenu(widget, false);
       }
     });
 
@@ -23656,6 +23643,8 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     renderOptions(widget);
   }
 
+  // Close only when the user taps outside the open picker. Do not close on viewport resize:
+  // mobile browsers resize viewports for toolbars/orientation changes and this used to collapse the menu.
   document.addEventListener('pointerdown', event => {
     if (!activeWidget) return;
     if (!activeWidget.shell.contains(event.target)) setExpanded(activeWidget, false);
@@ -23663,7 +23652,6 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && activeWidget) closeMenu(activeWidget, false);
   });
-  window.addEventListener('resize', () => { if (activeWidget) setExpanded(activeWidget, false); }, { passive: true });
 })();
 </script>
 
