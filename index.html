@@ -24419,6 +24419,289 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   })();
 </script>
 
+
+<!-- PrintDekD Pro v23: responsive payment + motion/performance layer -->
+<style id="pd-v23-renovation-layer">
+  :root {
+    --pd23-ink: #0b1018;
+    --pd23-panel: #111a26;
+    --pd23-panel-raised: #172334;
+    --pd23-line: rgba(148, 163, 184, .22);
+    --pd23-blue: #1685ff;
+    --pd23-blue-soft: rgba(22, 133, 255, .12);
+    --pd23-gold: #ffbd35;
+    --pd23-radius: clamp(16px, 2vw, 26px);
+    --pd23-motion: cubic-bezier(.2, .75, .25, 1);
+  }
+
+  /* Predictable sizing and safe-area support across phone, tablet and desktop. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: 5rem; }
+  body { min-width: 320px; }
+  img, canvas, video, iframe { max-width: 100%; }
+  button, input, select, textarea { font: inherit; }
+  button, [role="button"], input[type="button"], input[type="submit"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid rgba(56, 156, 255, .9);
+    outline-offset: 3px;
+  }
+
+  /* QR payment card: amount first, QR as the visual anchor, payment details together. */
+  .pd23-payment-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
+    grid-template-areas: "amount qr" "details qr";
+    align-items: center;
+    gap: clamp(14px, 2.2vw, 26px) !important;
+    padding: clamp(16px, 2.5vw, 30px) !important;
+    border-radius: var(--pd23-radius) !important;
+    text-align: left;
+    background:
+      radial-gradient(ellipse at 88% 10%, rgba(245, 158, 11, .09), transparent 46%),
+      linear-gradient(145deg, rgba(30, 41, 59, .96), rgba(12, 17, 25, .98)) !important;
+    border: 1px solid rgba(245, 158, 11, .34) !important;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .16), inset 0 1px rgba(255,255,255,.025);
+    min-width: 0;
+  }
+  .pd23-payment-card > .pd23-amount {
+    grid-area: amount;
+    justify-self: stretch;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+    padding: clamp(14px, 2vw, 20px) !important;
+    border-radius: 18px !important;
+    background: rgba(245, 158, 11, .09) !important;
+    border: 1px solid rgba(245, 158, 11, .24) !important;
+    white-space: normal;
+  }
+  .pd23-payment-card .pd23-amount-label {
+    color: #cbd5e1;
+    font-size: clamp(12px, 1.15vw, 14px);
+    font-weight: 700;
+    letter-spacing: .015em;
+  }
+  .pd23-payment-card #topup-qr-amount {
+    display: inline-block;
+    color: #ffd166 !important;
+    font-size: clamp(28px, 3.2vw, 42px) !important;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+  }
+  .pd23-payment-card .pd23-qr {
+    grid-area: qr;
+    justify-self: center;
+    align-self: center;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 260px;
+    min-width: 0;
+    padding: 12px !important;
+    border: 4px solid rgba(255, 255, 255, .92) !important;
+    border-radius: 22px !important;
+    background: #fff !important;
+    box-shadow: 0 10px 32px rgba(0,0,0,.22);
+  }
+  .pd23-payment-card .pd23-qr img {
+    display: block;
+    width: clamp(150px, 18vw, 220px) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    image-rendering: pixelated;
+    border-radius: 8px;
+  }
+  .pd23-payment-card > .pd23-details {
+    grid-area: details;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    width: 100%;
+    padding-top: 2px;
+  }
+  .pd23-payment-card .pd23-promptpay-note {
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: #cbd5e1;
+    background: rgba(2, 6, 23, .32);
+    border: 1px solid rgba(148, 163, 184, .16);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .pd23-payment-card .pd23-promptpay-note strong { color: #ffd166; }
+  .pd23-payment-card .pd23-details button {
+    min-height: 44px;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  /* More comfortable form controls and modal sizing without changing application logic. */
+  :where(input:not([type="radio"]):not([type="checkbox"]), select, textarea) {
+    max-width: 100%;
+    min-width: 0;
+  }
+  :where(.modal, [role="dialog"], .fixed.inset-0) {
+    overscroll-behavior: contain;
+  }
+  @media (min-width: 1440px) {
+    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(220px, 260px); }
+  }
+  @media (min-width: 641px) and (max-width: 900px) {
+    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(160px, 190px); gap: 14px !important; }
+    .pd23-payment-card .pd23-qr { padding: 9px !important; border-radius: 18px !important; }
+    .pd23-payment-card .pd23-qr img { width: clamp(140px, 23vw, 180px) !important; }
+  }
+  @media (max-width: 640px) {
+    .pd23-payment-card {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "amount" "qr" "details";
+      gap: 14px !important;
+      padding: 14px !important;
+      border-radius: 20px !important;
+    }
+    .pd23-payment-card > .pd23-amount { align-items: center; text-align: center; padding: 14px !important; }
+    .pd23-payment-card #topup-qr-amount { font-size: clamp(30px, 9vw, 38px) !important; }
+    .pd23-payment-card .pd23-qr { width: min(100%, 246px); padding: 10px !important; }
+    .pd23-payment-card .pd23-qr img { width: min(62vw, 218px) !important; }
+    .pd23-payment-card > .pd23-details { align-items: stretch; }
+    .pd23-payment-card .pd23-details > * { max-width: 100%; overflow-wrap: anywhere; }
+    .pd23-payment-card .pd23-details button { width: 100%; justify-content: center; }
+    input[type="file"] { max-width: 100%; font-size: 12px; }
+  }
+  @media (max-width: 380px) {
+    .pd23-payment-card { padding: 11px !important; }
+    .pd23-payment-card .pd23-qr { max-width: 214px; }
+    .pd23-payment-card .pd23-qr img { width: min(60vw, 190px) !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto !important; }
+    *, *::before, *::after { scroll-behavior: auto !important; }
+  }
+  /* Decorative motion pauses only when hidden; active-view animations remain intact. */
+  html.pd23-tab-hidden .pd-ambient-orb,
+  html.pd23-tab-hidden .pd-ai-pulse,
+  html.pd23-tab-hidden .pd-cursor-glow,
+  html.pd23-tab-hidden .pd-live-island,
+  html.pd23-tab-hidden .pd23-ambient-motion {
+    animation-play-state: paused !important;
+  }
+</style>
+<script id="pd-v23-renovation-script">
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const $ = (selector, scope = document) => scope.querySelector(selector);
+  const paymentCard = $('#topup-qr-amount')?.closest('.bg-gradient-to-b');
+
+  /* Build a semantic layout from the existing payment DOM; keep checkout handlers untouched. */
+  function enhancePaymentCard() {
+    const amount = $('#topup-qr-amount');
+    if (!amount) return;
+    const card = amount.closest('.bg-gradient-to-b');
+    if (!card || card.dataset.pd23Enhanced === 'true') return;
+    card.dataset.pd23Enhanced = 'true';
+    card.classList.add('pd23-payment-card');
+
+    const amountBadge = amount.closest('div');
+    const qrImage = card.querySelector('img[alt*="PromptPay Topup QR"]');
+    const qr = qrImage?.parentElement;
+    const copyButton = card.querySelector('button[onclick*="copyPromptPay"]');
+    const details = copyButton?.parentElement;
+    amountBadge?.classList.add('pd23-amount');
+    qr?.classList.add('pd23-qr');
+    details?.classList.add('pd23-details');
+
+    if (amountBadge && !amountBadge.querySelector('.pd23-amount-label')) {
+      const label = document.createElement('span');
+      label.className = 'pd23-amount-label';
+      label.textContent = 'ยอดโอนที่เลือก';
+      amountBadge.prepend(label);
+    }
+    if (details && !details.querySelector('.pd23-promptpay-note')) {
+      const note = document.createElement('p');
+      note.className = 'pd23-promptpay-note';
+      note.setAttribute('role', 'note');
+      note.textContent = 'QR นี้เป็น PromptPay แบบไม่ระบุยอด กรุณาตรวจสอบยอดที่แสดงและกรอกยอดให้ตรงก่อนยืนยันการโอน';
+      details.append(note);
+    }
+    if (qrImage) {
+      qrImage.width = 220;
+      qrImage.height = 220;
+      qrImage.loading = 'lazy';
+      qrImage.decoding = 'async';
+      qrImage.setAttribute('fetchpriority', 'low');
+    }
+    const amountValue = Number.parseFloat(amount.textContent || '0');
+    if (Number.isFinite(amountValue)) amount.textContent = amountValue.toFixed(2);
+  }
+
+  /* No perpetual JS animation loop: pause only selected decorative CSS while page is hidden. */
+  function syncVisibilityMotion() {
+    root.classList.toggle('pd23-tab-hidden', document.visibilityState === 'hidden');
+  }
+  document.addEventListener('visibilitychange', syncVisibilityMotion, { passive: true });
+
+  /* Lightweight, local-only diagnostics. No user data or file names are transmitted. */
+  window.pdV23Diagnostics = function () {
+    const doc = document.documentElement;
+    const nav = navigator;
+    const result = {
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      documentWidth: doc.scrollWidth,
+      horizontalOverflow: doc.scrollWidth > doc.clientWidth + 2,
+      deviceMemoryGB: Number.isFinite(nav.deviceMemory) ? nav.deviceMemory : null,
+      hardwareConcurrency: Number.isFinite(nav.hardwareConcurrency) ? nav.hardwareConcurrency : null,
+      reducedMotion: !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+      paymentCardEnhanced: !!$('.pd23-payment-card'),
+      qrImageLoaded: !!$('#topup-qr-amount')?.closest('.pd23-payment-card')?.querySelector('img')?.complete,
+      secureContext: !!window.isSecureContext,
+      supabaseConfigured: !!window.supabaseClient
+    };
+    console.info('[PrintDekD v23 diagnostics]', result);
+    return result;
+  };
+
+  /* Record browser performance entries locally for DevTools debugging; do not upload telemetry. */
+  if ('PerformanceObserver' in window) {
+    try {
+      const supported = PerformanceObserver.supportedEntryTypes || [];
+      if (supported.includes('longtask')) {
+        const observer = new PerformanceObserver(list => {
+          for (const entry of list.getEntries()) {
+            if (entry.duration >= 100) console.debug('[PrintDekD performance] long task', Math.round(entry.duration) + 'ms');
+          }
+        });
+        observer.observe({ type: 'longtask', buffered: false });
+      }
+    } catch (_) { /* Unsupported browser: diagnostics remain optional. */ }
+  }
+
+  function init() {
+    enhancePaymentCard();
+    syncVisibilityMotion();
+    if (window.lucide?.createIcons) {
+      try { window.lucide.createIcons(); } catch (_) { /* Icon rendering is non-critical. */ }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
+</script>
+
 </body>
 
 </html>
