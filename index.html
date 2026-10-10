@@ -13288,6 +13288,84 @@
       const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
       const $ = (id) => document.getElementById(id);
       const q = (s, r = document) => r.querySelector(s);
+
+      // One reliable, accessible status dialog for checkout validation, success and failure.
+      // This function was referenced by the checkout flow but was missing from the original file.
+      function notifyV12(title, message = '', icon = 'info') {
+        const heading = String(title || 'แจ้งเตือนจากระบบ');
+        const detail = String(message ?? '');
+        const negative = /(ไม่สำเร็จ|ไม่พอ|ไม่ถูกต้อง|ไม่ครบ|ไม่พบ|ไม่สามารถ|ไม่ได้|ไม่พร้อม|ไม่ผ่าน|ผิดพลาด|ล้มเหลว|ขัดข้อง|ไม่อนุญาต|จำกัดสิทธิ์|เกินกำหนด|ไม่รองรับ)/i.test(heading);
+        const warning = !negative && /(ตรวจสอบ|กรุณา|ยังไม่|ยังไม่มี|ยังไม่ได้|ยังตั้งค่า|กำลังส่ง|รอการ|รอตรวจ)/i.test(heading);
+        const positive = !negative && !warning && /(สำเร็จ|เรียบร้อย|อนุมัติแล้ว|บันทึกคำสั่งซื้อแล้ว|ส่งคำขอแล้ว)/i.test(heading);
+        const tone = negative ? 'danger' : warning ? 'warning' : positive ? 'success' : 'info';
+        const icons = { success: 'check-circle-2', danger: 'shield-alert', warning: 'alert-triangle', info: 'info' };
+        let root = document.getElementById('pd-result-modal');
+        if (!root) {
+          root = document.createElement('div');
+          root.id = 'pd-result-modal';
+          root.className = 'pd-result-modal';
+          root.hidden = true;
+          root.innerHTML = `
+            <section class="pd-result-card" role="alertdialog" aria-modal="true" aria-labelledby="pd-result-title" aria-describedby="pd-result-message" tabindex="-1">
+              <button type="button" class="pd-result-dismiss" data-pd-result-close aria-label="ปิดหน้าต่างแจ้งเตือน">×</button>
+              <div class="pd-result-mark" aria-hidden="true"><i data-lucide="info"></i></div>
+              <div class="pd-result-kicker">PRINTDEKD PRO <span>•</span> SYSTEM STATUS</div>
+              <h2 id="pd-result-title"></h2>
+              <p id="pd-result-message"></p>
+              <div class="pd-result-footer"><span class="pd-result-status-dot"></span><span id="pd-result-caption">รายละเอียดสถานะระบบ</span></div>
+              <button type="button" class="pd-result-primary" data-pd-result-close>รับทราบ</button>
+            </section>`;
+          document.body.appendChild(root);
+          root.addEventListener('click', event => {
+            if (event.target === root || event.target.closest('[data-pd-result-close]')) closeV12Notice();
+          });
+          root.addEventListener('keydown', event => {
+            if (event.key !== 'Tab') return;
+            const focusable = [...root.querySelectorAll('button:not([disabled])')];
+            if (!focusable.length) return;
+            const first = focusable[0], last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+          });
+        }
+        const card = root.querySelector('.pd-result-card');
+        const mark = root.querySelector('.pd-result-mark');
+        card.dataset.tone = tone;
+        // Lucide replaces the data-lucide node with SVG after rendering; recreate it for each notice.
+        if (mark) mark.innerHTML = `<i data-lucide="${icons[tone] || 'info'}"></i>`;
+        root.querySelector('#pd-result-title').textContent = heading;
+        root.querySelector('#pd-result-message').textContent = detail;
+        root.querySelector('#pd-result-caption').textContent = tone === 'success'
+          ? 'ระบบบันทึกรายการแล้ว'
+          : tone === 'danger' ? 'รายการยังไม่สำเร็จ — ตรวจสอบรายละเอียดด้านบน'
+          : tone === 'warning' ? 'โปรดตรวจสอบข้อมูลก่อนดำเนินการต่อ'
+          : 'ข้อความจากระบบ PrintDekD Pro';
+        const action = root.querySelector('.pd-result-primary');
+        action.textContent = tone === 'danger' || tone === 'warning' ? 'กลับไปตรวจสอบ' : 'รับทราบ';
+        window.__pdPreviousFocus = document.activeElement;
+        root.hidden = false;
+        document.body.classList.add('pd-result-modal-open');
+        try { window.lucide?.createIcons?.(); } catch (_) { /* Icon rendering is decorative only. */ }
+        requestAnimationFrame(() => action.focus({ preventScroll: true }));
+        return false;
+      }
+
+      function closeV12Notice() {
+        const root = document.getElementById('pd-result-modal');
+        if (!root || root.hidden) return;
+        root.hidden = true;
+        document.body.classList.remove('pd-result-modal-open');
+        const previous = window.__pdPreviousFocus;
+        if (previous && previous.isConnected && typeof previous.focus === 'function') {
+          try { previous.focus({ preventScroll: true }); } catch (_) { }
+        }
+      }
+      window.notifyV12 = notifyV12;
+      window.closeV12Notice = closeV12Notice;
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeV12Notice();
+      });
+
       const qa = (s, r = document) => [...r.querySelectorAll(s)];
 
       function v(id) { return ($(id)?.value ?? '').toString().trim(); }
@@ -13585,7 +13663,10 @@
           checkoutCommitted = true;
           try { await window.fetchUserWallet?.(); } catch (refreshError) { console.warn('[PrintDekD] Wallet refresh failed after checkout commit:', refreshError); }
           try { await window.fetchQueues?.(); } catch (refreshError) { console.warn('[PrintDekD] Queue refresh failed after checkout commit:', refreshError); }
-          notifyV12('สร้างรายการสำเร็จ', `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด • ${money(total)} Coins`, 'check-circle-2');
+          const paymentStatus = payMethod === 'promptpay'
+            ? `ยอดรวม ${money(total)} บาท\nแนบสลิปแล้ว — รอผู้ดูแลตรวจสอบการชำระเงิน`
+            : `ยอดรวม ${money(total)} Coins\nหัก Coins และบันทึกคิวเรียบร้อยแล้ว`;
+          notifyV12('ส่งคำสั่งพิมพ์สำเร็จ', `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด\n${paymentStatus}`, 'check-circle-2');
           $('print-form')?.reset(); window.selectedFileObj = null;
           $('upload-placeholder')?.classList.remove('hidden'); $('file-details')?.classList.add('hidden'); $('preview-file-drawer-btn')?.classList.add('hidden');
           if ($('pdf-preview-wrapper')) $('pdf-preview-wrapper').innerHTML = '<p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>';
@@ -24219,6 +24300,124 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
       }
     })();
   </script>
+
+
+<style id="pd-order-result-responsive-style">
+  body.pd-result-modal-open { overflow: hidden !important; }
+  .pd-result-modal {
+    position: fixed; inset: 0; z-index: 32000;
+    display: flex; align-items: center; justify-content: center;
+    padding: max(20px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    background: rgba(2, 5, 12, .76);
+    -webkit-backdrop-filter: blur(16px) saturate(125%); backdrop-filter: blur(16px) saturate(125%);
+    animation: pd-result-fade .22s ease-out both;
+  }
+  .pd-result-modal[hidden] { display: none !important; }
+  .pd-result-card {
+    box-sizing: border-box; position: relative; isolation: isolate; width: min(100%, 540px); max-height: min(88dvh, 760px); overflow: auto;
+    padding: clamp(25px, 4vw, 42px); border-radius: 32px;
+    color: #f5f7fb; text-align: center;
+    background: radial-gradient(440px 210px at 50% -8%, rgba(10,132,255,.18), transparent 72%), linear-gradient(155deg, rgba(19,24,35,.985), rgba(9,12,19,.99));
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 38px 120px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.055);
+    animation: pd-result-enter .34s cubic-bezier(.16,1,.3,1) both;
+    overflow-wrap: anywhere;
+  }
+  .pd-result-card::before { content:""; position:absolute; z-index:-1; inset:0 18% auto; height:1px; margin:auto; background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent); }
+  .pd-result-dismiss { position:absolute; top:13px; right:13px; width:42px; height:42px; min-height:42px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(255,255,255,.055); color:#aab5c5; font-size:25px; line-height:1; transition:background .18s ease,color .18s ease; }
+  .pd-result-dismiss:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .pd-result-mark { width:76px; height:76px; margin:0 auto 19px; display:grid; place-items:center; border-radius:25px; color:#70b7ff; background:linear-gradient(145deg,rgba(10,132,255,.18),rgba(10,132,255,.07)); border:1px solid rgba(83,164,255,.27); box-shadow:0 15px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.10); }
+  .pd-result-mark svg { width:37px; height:37px; stroke-width:1.9; }
+  .pd-result-kicker { margin-bottom:12px; color:#81baff; font-size:11px; font-weight:900; letter-spacing:.16em; }
+  .pd-result-kicker span { color:#63768d; padding:0 4px; }
+  #pd-result-title { margin:0; color:#f8fafc; font-size:clamp(25px,4vw,34px); font-weight:900; letter-spacing:-.035em; line-height:1.25; text-wrap:balance; }
+  #pd-result-message { margin:15px auto 0; max-width:44ch; white-space:pre-line; color:#b5c0d0; font-size:clamp(15px,1.8vw,17px); line-height:1.85; font-weight:500; }
+  .pd-result-footer { display:flex; justify-content:center; align-items:center; gap:9px; margin:22px auto 25px; color:#8190a4; font-size:12px; font-weight:700; }
+  .pd-result-status-dot { display:block; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:#58a6ff; box-shadow:0 0 0 5px rgba(88,166,255,.10); }
+  .pd-result-primary { width:100%; min-height:54px; display:flex; align-items:center; justify-content:center; padding:14px 20px; border:1px solid rgba(78,160,255,.28); border-radius:17px; color:#fff; font-size:15px; font-weight:900; background:linear-gradient(135deg,#168aff,#0868eb); box-shadow:0 12px 28px rgba(0,105,255,.24); transition:transform .18s ease,filter .18s ease,box-shadow .18s ease; }
+  .pd-result-primary:hover { filter:brightness(1.08); box-shadow:0 16px 34px rgba(0,105,255,.32); }
+  .pd-result-primary:active { transform:scale(.985); }
+  .pd-result-card[data-tone="success"] .pd-result-mark { color:#4ce0a0; border-color:rgba(53,208,127,.30); background:linear-gradient(145deg,rgba(53,208,127,.18),rgba(53,208,127,.06)); }
+  .pd-result-card[data-tone="success"] .pd-result-kicker { color:#62e4aa; }
+  .pd-result-card[data-tone="success"] .pd-result-status-dot { background:#35d07f; box-shadow:0 0 0 5px rgba(53,208,127,.11); }
+  .pd-result-card[data-tone="success"] .pd-result-primary { background:linear-gradient(135deg,#16a875,#0b8b61); border-color:rgba(53,208,127,.28); box-shadow:0 12px 28px rgba(10,150,100,.20); }
+  .pd-result-card[data-tone="danger"] .pd-result-mark { color:#ff7888; border-color:rgba(255,95,115,.30); background:linear-gradient(145deg,rgba(255,95,115,.18),rgba(255,95,115,.06)); }
+  .pd-result-card[data-tone="danger"] .pd-result-kicker { color:#ff8897; }
+  .pd-result-card[data-tone="danger"] .pd-result-status-dot { background:#ff6579; box-shadow:0 0 0 5px rgba(255,95,115,.11); }
+  .pd-result-card[data-tone="danger"] .pd-result-primary { background:linear-gradient(135deg,#dc4560,#b92445); border-color:rgba(255,95,115,.28); box-shadow:0 12px 28px rgba(180,30,60,.20); }
+  .pd-result-card[data-tone="warning"] .pd-result-mark { color:#ffd16a; border-color:rgba(245,185,63,.30); background:linear-gradient(145deg,rgba(245,185,63,.17),rgba(245,185,63,.05)); }
+  .pd-result-card[data-tone="warning"] .pd-result-kicker { color:#ffd16a; }
+  .pd-result-card[data-tone="warning"] .pd-result-status-dot { background:#f5b93f; box-shadow:0 0 0 5px rgba(245,185,63,.11); }
+  .pd-result-card[data-tone="warning"] .pd-result-primary { background:linear-gradient(135deg,#c98a14,#a96b08); border-color:rgba(245,185,63,.28); box-shadow:0 12px 28px rgba(180,115,10,.18); }
+  html:not(.dark) .pd-result-card { color:#111827; background:radial-gradient(440px 210px at 50% -8%,rgba(10,132,255,.10),transparent 72%),linear-gradient(155deg,rgba(255,255,255,.99),rgba(246,249,253,.99)); border-color:rgba(15,23,42,.11); box-shadow:0 35px 100px rgba(15,23,42,.24),inset 0 1px 0 #fff; }
+  html:not(.dark) #pd-result-title { color:#111827; }
+  html:not(.dark) #pd-result-message { color:#526174; }
+  html:not(.dark) .pd-result-dismiss { color:#64748b; background:rgba(15,23,42,.04); border-color:rgba(15,23,42,.09); }
+  .pd-order-submitting { opacity:.88; cursor:wait !important; filter:saturate(.8); }
+  .pd-submit-spinner { width:19px; height:19px; display:inline-block; flex:0 0 19px; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:pd-submit-spin .75s linear infinite; }
+  @keyframes pd-submit-spin { to { transform:rotate(360deg); } }
+  @keyframes pd-result-fade { from { opacity:0; } to { opacity:1; } }
+  @keyframes pd-result-enter { from { opacity:0; transform:translateY(12px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+  @media (max-width:640px) {
+    .pd-result-modal { align-items:flex-end; padding:10px 10px max(10px,env(safe-area-inset-bottom)); }
+    .pd-result-card { width:100%; max-width:none; max-height:min(84dvh,720px); padding:29px 20px max(20px,env(safe-area-inset-bottom)); border-radius:28px 28px 20px 20px; }
+    .pd-result-mark { width:66px; height:66px; margin-bottom:16px; border-radius:22px; }
+    .pd-result-mark svg { width:32px; height:32px; }
+    .pd-result-kicker { font-size:10px; letter-spacing:.13em; }
+    #pd-result-title { font-size:clamp(24px,7vw,30px); }
+    #pd-result-message { margin-top:12px; font-size:15px; line-height:1.75; }
+    .pd-result-footer { margin:18px auto 20px; font-size:11px; }
+    .pd-result-primary { min-height:54px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .pd-result-modal,.pd-result-card,.pd-submit-spinner { animation:none !important; }
+    .pd-result-primary,.pd-result-dismiss { transition:none !important; }
+  }
+</style>
+
+
+<script id="pd-order-submit-feedback-runtime">
+  (() => {
+    'use strict';
+    const form = document.getElementById('print-form');
+    if (!form || typeof window.handleOrderSubmit !== 'function' || window.handleOrderSubmit.__pdOrderFeedbackWrapped) return;
+    const originalSubmit = window.handleOrderSubmit;
+    let submitting = false;
+    window.handleOrderSubmit = async function (event) {
+      event?.preventDefault();
+      if (submitting) return;
+      submitting = true;
+      const button = event?.submitter || form.querySelector('button[type="submit"]');
+      const originalMarkup = button?.innerHTML;
+      if (button) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.classList.add('pd-order-submitting');
+        button.innerHTML = '<span class="pd-submit-spinner" aria-hidden="true"></span><span>กำลังส่งคำสั่งพิมพ์…</span>';
+      }
+      try {
+        return await originalSubmit.apply(this, arguments);
+      } catch (error) {
+        console.error('[PrintDekD] Unexpected checkout error:', error);
+        if (typeof window.notifyV12 === 'function') {
+          window.notifyV12('ส่งคำสั่งพิมพ์ไม่สำเร็จ', error?.message || 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', 'shield-alert');
+        } else if (typeof window.showCustomModal === 'function') {
+          window.showCustomModal({ title: 'ส่งคำสั่งพิมพ์ไม่สำเร็จ', message: error?.message || 'กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', icon: 'shield-alert' });
+        }
+      } finally {
+        submitting = false;
+        if (button?.isConnected) {
+          button.disabled = false;
+          button.removeAttribute('aria-busy');
+          button.classList.remove('pd-order-submitting');
+          button.innerHTML = originalMarkup || '<i data-lucide="send" class="w-5 h-5"></i> ยืนยันการสั่งพิมพ์';
+          try { window.lucide?.createIcons?.(); } catch (_) { }
+        }
+      }
+    };
+    window.handleOrderSubmit.__pdOrderFeedbackWrapped = true;
+  })();
+</script>
 
 </body>
 
