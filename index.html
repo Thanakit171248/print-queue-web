@@ -24702,6 +24702,137 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
 })();
 </script>
 
+
+<style id="pd-notification-center-v1">
+#pd-notification-trigger{position:relative;flex:0 0 auto;width:46px;height:46px;border-radius:15px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--pd-line,rgba(255,255,255,.12));background:var(--pd-surface,rgba(18,21,29,.92));color:var(--text-main,#f8fafc);box-shadow:0 8px 24px rgba(0,0,0,.10);transition:transform .18s ease,border-color .18s ease}
+#pd-notification-trigger:hover{transform:translateY(-1px);border-color:rgba(10,132,255,.55)}
+#pd-notification-badge{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e5484d;color:#fff;border:2px solid var(--bg-main,#080a0f);font:800 10px/16px system-ui,sans-serif;text-align:center;box-shadow:0 3px 10px #0003}
+#pd-notification-panel{position:fixed;z-index:10050;top:calc(env(safe-area-inset-top) + 76px);right:max(14px,env(safe-area-inset-right));width:min(410px,calc(100vw - 24px));max-height:min(72dvh,620px);overflow:hidden;border:1px solid var(--pd-line,rgba(255,255,255,.12));border-radius:24px;background:var(--bg-elevated,#11141c);color:var(--text-main,#f8fafc);box-shadow:0 28px 90px #0005;display:flex;flex-direction:column}
+#pd-notification-panel[hidden]{display:none}
+.pd-notif-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--pd-line,rgba(255,255,255,.12))}
+.pd-notif-list{overflow:auto;padding:8px;overscroll-behavior:contain}
+.pd-notif-item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:13px;border-radius:16px}
+.pd-notif-item.unread{background:rgba(10,132,255,.085)}
+.pd-notif-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(10,132,255,.12);color:#3994ff}
+.pd-notif-title{font-size:14px;font-weight:800;line-height:1.4}
+.pd-notif-copy{font-size:12px;line-height:1.55;color:var(--text-sub,#9ba4b2);overflow-wrap:anywhere}
+.pd-notif-time{font-size:10px;color:var(--text-sub,#9ba4b2);margin-top:5px}
+@media(max-width:767px){#pd-notification-trigger{width:42px;height:42px}#pd-notification-panel{top:calc(env(safe-area-inset-top) + 66px);right:8px;width:calc(100vw - 16px);max-height:70dvh;border-radius:21px}}
+@media(prefers-reduced-motion:reduce){#pd-notification-trigger{transition:none}}
+</style>
+<script id="pd-notification-center-v1-script">
+(function(){
+  'use strict';
+  if (window.__pdNotificationCenterV1) return;
+  window.__pdNotificationCenterV1 = true;
+  const $ = (s, root=document) => root.querySelector(s);
+  const esc = s => typeof window.escapeHtml === 'function' ? window.escapeHtml(String(s ?? '')) : String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let notes=[], baseline=false, busy=false, channel=null, timer=null;
+  let priorOrders=new Map(), priorTopups=new Map();
+  const uid=()=>String(window.currentUser?.id || 'guest');
+  const storageKey=()=>`pd_notifications_v1_${uid()}`;
+  const readState=()=>{try{return JSON.parse(localStorage.getItem(storageKey())||'{"readAt":0,"seen":[]}')}catch(_){return {readAt:0,seen:[]}}};
+  const writeState=s=>{try{localStorage.setItem(storageKey(),JSON.stringify(s))}catch(_){}};
+  const stamp=()=>new Date().toISOString();
+  function addNote(id,title,body,icon='bell',created=stamp()){
+    if(notes.some(n=>n.id===id))return;
+    notes.unshift({id,title,body,icon,created,unread:true});
+    if(notes.length>80)notes.length=80;
+    render();
+  }
+  function render(){
+    const badge=$('#pd-notification-badge'), list=$('#pd-notification-list'), count=notes.filter(n=>n.unread).length;
+    if(badge){badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;badge.setAttribute('aria-label',`${count} การแจ้งเตือนที่ยังไม่อ่าน`)}
+    if(!list)return;
+    list.innerHTML=notes.length?notes.slice(0,50).map(n=>`<article class="pd-notif-item ${n.unread?'unread':''}"><span class="pd-notif-icon"><i data-lucide="${esc(n.icon)}"></i></span><div><div class="pd-notif-title">${esc(n.title)}</div><div class="pd-notif-copy">${esc(n.body)}</div><div class="pd-notif-time">${esc(new Date(n.created).toLocaleString('th-TH'))}</div></div></article>`).join(''):'<div style="padding:28px 16px;text-align:center;color:var(--text-sub,#9ba4b2);font-size:13px">ยังไม่มีการแจ้งเตือนใหม่</div>';
+    try{window.lucide?.createIcons()}catch(_){}
+  }
+  function mount(){
+    if($('#pd-notification-trigger'))return;
+    const nav=$('#nav-menu-toggle');
+    if(!nav)return;
+    const btn=document.createElement('button');
+    btn.type='button';btn.id='pd-notification-trigger';btn.title='การแจ้งเตือน';btn.setAttribute('aria-label','เปิดการแจ้งเตือน');btn.setAttribute('aria-expanded','false');btn.innerHTML='<i data-lucide="bell" width="19" height="19"></i><span id="pd-notification-badge" hidden>0</span>';
+    nav.insertAdjacentElement('afterend',btn);
+    const panel=document.createElement('section');panel.id='pd-notification-panel';panel.hidden=true;panel.setAttribute('aria-label','การแจ้งเตือน');
+    panel.innerHTML='<header class="pd-notif-head"><div><div style="font-weight:900;font-size:17px">การแจ้งเตือน</div><div style="font-size:11px;color:var(--text-sub,#9ba4b2)">สถานะคิวงานและ Coins</div></div><div style="display:flex;gap:8px"><button type="button" id="pd-notif-read" style="padding:8px 10px;border-radius:11px;font-size:11px;font-weight:800;background:rgba(10,132,255,.12);color:#3994ff">อ่านทั้งหมด</button><button type="button" id="pd-notif-close" aria-label="ปิดการแจ้งเตือน" style="width:36px;border-radius:11px;background:rgba(128,128,128,.12)">✕</button></div></header><div id="pd-notification-list" class="pd-notif-list" aria-live="polite"></div>';
+    document.body.appendChild(panel);
+    btn.addEventListener('click',()=>{panel.hidden=!panel.hidden;btn.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){notes.forEach(n=>n.unread=false);saveNotes();render()}});
+    $('#pd-notif-close').addEventListener('click',()=>{panel.hidden=true;btn.setAttribute('aria-expanded','false')});
+    $('#pd-notif-read').addEventListener('click',()=>{notes.forEach(n=>n.unread=false);saveNotes();render()});
+    document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!btn.contains(e.target)){panel.hidden=true;btn.setAttribute('aria-expanded','false')}});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;btn.setAttribute('aria-expanded','false')}});
+    try{window.lucide?.createIcons()}catch(_){}
+    loadNotes();
+  }
+  function loadNotes(){
+    const state=readState(), seen=new Set(state.seen||[]);
+    try{const raw=JSON.parse(localStorage.getItem(`pd_notifications_data_v1_${uid()}`)||'[]');notes=raw.map(n=>({...n,unread:!seen.has(n.id)})).slice(0,80)}catch(_){notes=[]}
+    render();
+  }
+  function saveNotes(){
+    const state=readState();state.seen=notes.filter(n=>!n.unread).map(n=>n.id).slice(0,100);
+    writeState(state);
+    try{localStorage.setItem(`pd_notifications_data_v1_${uid()}`,JSON.stringify(notes.map(({id,title,body,icon,created})=>({id,title,body,icon,created})).slice(0,80)))}catch(_){}
+  }
+  async function poll(){
+    const client=window.supabaseClient, user=window.currentUser;
+    if(busy||!client||!user?.id)return;
+    busy=true;
+    try{
+      const admin=user.role==='admin';
+      let oq=client.from('orders').select('id,user_id,status,created_at,queue_number,file_name,total_price').order('created_at',{ascending:false}).limit(40);
+      let tq=client.from('topups').select('id,user_id,amount,status,created_at').order('created_at',{ascending:false}).limit(40);
+      if(!admin){oq=oq.eq('user_id',user.id);tq=tq.eq('user_id',user.id)}
+      const [or,tr]=await Promise.all([oq,tq]);
+      if(or.error)throw or.error;if(tr.error)throw tr.error;
+      const orders=or.data||[], topups=tr.data||[];
+      const nextO=new Map(), nextT=new Map();
+      for(const o of orders){
+        const id=String(o.id), status=String(o.status||'pending');nextO.set(id,status);
+        if(baseline){
+          if(!priorOrders.has(id)&&admin)addNote(`new-order:${id}`,'มีงานพิมพ์ใหม่เข้ามา',`คิว #${o.queue_number??o.id} · ${o.file_name||'งานพิมพ์ใหม่'}`,'printer',o.created_at);
+          else if(priorOrders.has(id)&&priorOrders.get(id)!==status&&!admin)addNote(`order-status:${id}:${status}`,'สถานะคิวงานเปลี่ยนแล้ว',`คิว #${o.queue_number??o.id} · ${statusLabel(status)}`,'package-check',stamp());
+          else if(priorOrders.has(id)&&priorOrders.get(id)!==status&&admin)addNote(`order-status-admin:${id}:${status}`,'มีการเปลี่ยนสถานะงานพิมพ์',`คิว #${o.queue_number??o.id} · ${statusLabel(status)}`,'printer',stamp());
+        }
+      }
+      for(const t of topups){
+        const id=String(t.id), status=String(t.status||'pending');nextT.set(id,status);
+        if(baseline){
+          if(!priorTopups.has(id)&&admin)addNote(`new-topup:${id}`,'มีคำขอเติม Coins ใหม่',`${t.user_id===user.id?'สมาชิก':`ผู้ใช้ ${String(t.user_id).slice(0,8)}`} · ${Number(t.amount||0).toFixed(2)} Coins`,'wallet',t.created_at);
+          else if(priorTopups.has(id)&&priorTopups.get(id)!==status&&!admin)addNote(`topup-status:${id}:${status}`,'ผลการตรวจสอบสลิป',status==='approved'?`เติมสำเร็จ +${Number(t.amount||0).toFixed(2)} Coins`:`สถานะคำขอ: ${statusLabel(status)}`,status==='approved'?'badge-check':'shield-alert',stamp());
+        }
+      }
+      priorOrders=nextO;priorTopups=nextT;baseline=true;saveNotes();render();
+    }catch(err){console.debug('[PrintDekD notifications] ไม่สามารถอัปเดตได้:',err?.message||err)}
+    finally{busy=false}
+  }
+  function statusLabel(s){return ({pending:'รอดำเนินการ',printing:'กำลังพิมพ์',completed:'เสร็จสิ้น',cancelled:'ยกเลิก',approved:'อนุมัติแล้ว',rejected:'ปฏิเสธคำขอ'})[s]||s}
+  function start(){
+    mount();
+    if(!window.currentUser?.id){if(timer){clearInterval(timer);timer=null}notes=[];render();return}
+    if(window.__pdNotifUser!==uid()){window.__pdNotifUser=uid();baseline=false;priorOrders=new Map();priorTopups=new Map();loadNotes()}
+    poll();
+    if(timer)clearInterval(timer);
+    timer=setInterval(poll,25000);
+    // Subscribe to DB changes where permitted; polling remains a fallback.
+    try{
+      if(channel&&window.supabaseClient)window.supabaseClient.removeChannel(channel);
+      if(window.supabaseClient?.channel){
+        channel=window.supabaseClient.channel('pd-notification-watch-'+uid())
+          .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>poll())
+          .on('postgres_changes',{event:'*',schema:'public',table:'topups'},()=>poll())
+          .subscribe();
+      }
+    }catch(_){}
+  }
+  document.addEventListener('DOMContentLoaded',start);
+  window.addEventListener('load',start);
+  window.addEventListener('pd:viewchange',start);
+  window.addEventListener('storage',e=>{if(e.key===`pd_notifications_data_v1_${uid()}`)loadNotes()});
+})();
+</script>
+
 </body>
 
 </html>
