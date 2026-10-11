@@ -28,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v24 — Responsive Payments & Admin Reliability</title>
+  <title>PrintDekD Pro v24.1 — Readability, PDF Preview & Admin Tools</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -5733,9 +5733,9 @@
       <section class="pd-final-cta pd19-home-order apple-reveal" aria-labelledby="pd19-home-order-title">
         <div class="pd-final-orb pd-orb-one" aria-hidden="true"></div>
         <div class="pd-final-orb pd-orb-two" aria-hidden="true"></div>
-        <span class="pd-eyebrow">PRINTDEKD PRO · ONE SIMPLE FLOW</span>
+        <span class="pd-eyebrow">PRINTDEKD PRO · KMUTNB ITI</span>
         <h1 id="pd19-home-order-title">สั่งพิมพ์เอกสารง่ายขึ้น<br><em>ทุกขั้นตอนอยู่ในที่เดียว</em></h1>
-        <p>ตั้งแต่เลือกไฟล์ ดูตัวอย่าง ปรับค่าพิมพ์ คำนวณราคา เลือก Coins หรือแนบสลิป
+        <p>ตั้งแต่เลือกไฟล์ ดูตัวอย่าง ปรับค่าพิมพ์ คำนวณราคา จ่ายเงิน
           ไปจนถึงกรอกที่อยู่จัดส่งและติดตามคิว</p>
         <div class="pd19-home-order-steps" aria-label="ขั้นตอนสั่งพิมพ์">
           <div><span>01</span><i data-lucide="file-up" aria-hidden="true"></i><strong>อัปโหลดไฟล์</strong><small>PDF /
@@ -5760,8 +5760,7 @@
       <div class="space-y-16">
         <div class="text-center space-y-4 max-w-4xl mx-auto apple-reveal">
           <span
-            class="text-xs font-black uppercase text-blue-500 tracking-widest bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20">Powerful
-            Capabilities</span>
+            class="text-xs font-black uppercase text-blue-500 tracking-widest bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20">Full Printer</span>
           <h2 class="text-3xl sm:text-6xl font-black titanium-text tracking-tight">
             ออกแบบมาเพื่อความสมบูรณ์แบบ
           </h2>
@@ -5869,7 +5868,7 @@
         <div class="pd-section-heading">
           <div>
             <span class="pd-eyebrow">THE PRINT EXPERIENCE</span>
-            <h2>ทุกขั้นตอนถูกออกแบบ<br><em>ให้รู้สึกง่าย</em></h2>
+            <h2>ทุกขั้นตอนถูกออกแบบ <em>ให้รู้สึกง่าย</em></h2>
           </div>
           <p>ตั้งแต่เลือกไฟล์จนถึงรับงาน ทุกอย่างถูกจัดลำดับให้ตัดสินใจได้เร็วขึ้น โดยไม่ทำให้หน้าจอรู้สึกแน่น</p>
         </div>
@@ -8435,7 +8434,7 @@
         const topupsTb = document.getElementById('admin-topups-tbody');
         if (topupsTb) {
           topupsTb.innerHTML = (topups || []).map(tp => `
-            <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
+            <tr data-pd-topup-row-id="${escapeHtml(tp.id)}" class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
               <td class="py-3 px-3 sub-text text-[10px]">${escapeHtml(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
               <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(tp.user_name || tp.user_id)}</td>
               <td class="py-3 px-3 font-black text-amber-500">+${Number(tp.amount || 0).toFixed(2)} Coins</td>
@@ -14049,7 +14048,7 @@
 
           const topupTb = $('admin-topups-tbody');
           if (topupTb && tr.error) topupTb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดรายการเติม Coins ไม่สำเร็จ: ${safe(tr.error.message || String(tr.error))}</td></tr>`;
-          else if (topupTb) topupTb.innerHTML = (tr.data || []).map(tp => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
+          else if (topupTb) topupTb.innerHTML = (tr.data || []).map(tp => `<tr data-pd-topup-row-id="${safe(tp.id)}" class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 sub-text text-[10px]">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
         <td class="py-3 px-3 font-bold titanium-text">${safe(tp.user_name || tp.user_id)}</td>
         <td class="py-3 px-3 font-black text-amber-500">+${money(tp.amount)} Coins</td>
@@ -19942,7 +19941,7 @@
           const result = originalSync.call(this, viewName);
           document.body.dataset.pdView = viewName;
           if (viewName === 'help') document.title = 'บริการช่วยเหลือของ PrintDekD — PrintDekD Pro';
-          else document.title = 'PrintDekD Pro — KMUTNB ITI Smart Printing Platform';
+          else document.title = 'PrintDekD Pro — ITI';
           return result;
         };
         wrappedSync.__pd16wrapped = true;
@@ -23144,7 +23143,7 @@
       }
 
       // Home-page order flow is intentionally the first section; product brand story remains at the end.
-      $('pd19-home-order-title')?.setAttribute('aria-label', 'สั่งพิมพ์เอกสารง่ายขึ้น ทุกขั้นตอนอยู่ในที่เดียว');
+      $('pd19-home-order-title')?.setAttribute('aria-label', 'สั่งพิมพ์เอกสารออนไลน์ ทุกขั้นตอนอยู่ในที่เดียว');
       if (window.lucide) { try { window.lucide.createIcons(); } catch (_) { } }
 
       window.pdV20TestAddressApi = async function () {
@@ -24211,9 +24210,9 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
 
       function decorateAdminResponsiveTables() {
         const labels = {
-          'admin-orders-tbody': ['คิว', 'ไฟล์และยอด', 'การจัดส่งและที่อยู่', 'ชำระเงินและสลิป', 'สถานะงานพิมพ์', 'การจัดการ'],
-          'admin-topups-tbody': ['วันที่', 'ผู้ใช้งาน', 'ยอดเงินและ Coins', 'รูปสลิป', 'สถานะ', 'จัดการคำขอ'],
-          'admin-users-tbody': ['ชื่อ-นามสกุล', 'อีเมล', 'สิทธิ์', 'จัดการสิทธิ์']
+          'admin-orders-tbody': ['เลือก', 'คิว', 'ไฟล์และยอด', 'การจัดส่งและที่อยู่', 'ชำระเงินและสลิป', 'สถานะงานพิมพ์', 'การจัดการ'],
+          'admin-topups-tbody': ['เลือก', 'วันที่', 'ผู้ใช้งาน', 'ยอดเงินและ Coins', 'รูปสลิป', 'สถานะ', 'จัดการคำขอ'],
+          'admin-users-tbody': ['เลือก', 'ชื่อ-นามสกุล', 'อีเมล', 'สิทธิ์', 'จัดการสิทธิ์']
         };
         for (const [tbodyId, rowLabels] of Object.entries(labels)) {
           const tbody = $(tbodyId); if (!tbody) continue;
@@ -24889,6 +24888,456 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
+})();
+</script>
+
+
+<style id="pd24-readability-payment-bulk-style">
+  /* Readability pass: keep the premium look but reduce heavy display weight and prevent Thai glyph overlap. */
+  #view-landing h1,
+  #view-landing h2,
+  #view-landing h3,
+  #view-dashboard h1,
+  #view-dashboard h2,
+  #view-wallet h1,
+  #view-wallet h2,
+  #view-admin h1,
+  #view-admin h2 {
+    font-weight: 700 !important;
+    letter-spacing: -.022em !important;
+    line-height: 1.28 !important;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-wrap: pretty;
+  }
+  #view-landing h1 { font-size: clamp(36px, 5.2vw, 76px) !important; line-height: 1.18 !important; }
+  #view-landing h2 { font-size: clamp(27px, 3.4vw, 50px) !important; }
+  #view-landing h3 { font-size: clamp(19px, 2vw, 27px) !important; }
+  #view-landing .pd-section-heading {
+    grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr) !important;
+    align-items: center !important;
+    gap: clamp(22px, 4vw, 52px) !important;
+  }
+  #view-landing .pd-section-heading > div:first-child { min-width: 0; width: 100%; }
+  #view-landing .pd-section-heading h2 {
+    max-width: 100% !important;
+    width: 100%;
+    margin-top: 12px !important;
+    font-size: clamp(30px, 4.15vw, 58px) !important;
+    font-weight: 700 !important;
+    line-height: 1.28 !important;
+    letter-spacing: -.025em !important;
+    text-wrap: pretty !important;
+  }
+  #view-landing .pd-section-heading h2 em { font-weight: 700 !important; }
+  #view-landing .pd-section-heading p { font-size: clamp(15px, 1.25vw, 17px) !important; line-height: 1.8 !important; }
+  #view-landing .text-3xl,
+  #view-landing .text-4xl,
+  #view-landing .text-5xl,
+  #view-landing .text-6xl { letter-spacing: -.02em !important; line-height: 1.3 !important; }
+  #view-dashboard .ui-panel h2,
+  #view-wallet .ui-panel h2,
+  #view-admin .ui-panel h2 { font-size: clamp(19px, 1.7vw, 25px) !important; line-height: 1.4 !important; }
+  #view-admin > .flex:first-child h1 { font-size: clamp(24px, 2.25vw, 34px) !important; line-height: 1.38 !important; font-weight: 720 !important; }
+  #view-landing p, #view-dashboard p, #view-wallet p, #view-admin p { line-height: 1.72; }
+  @media (max-width: 760px) {
+    #view-landing .pd-section-heading { grid-template-columns: minmax(0,1fr) !important; gap: 14px !important; }
+    #view-landing .pd-section-heading h2 { font-size: clamp(29px, 7.2vw, 42px) !important; line-height: 1.3 !important; }
+  }
+
+  /* QR cards: reserve enough width for the full PromptPay poster, not just a small preview. */
+  .pd24-print-payment {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px) !important;
+    grid-template-areas: "summary qr" "details qr" !important;
+    align-items: stretch !important;
+  }
+  .pd24-print-payment-qr {
+    width: 100%; min-width: 0; padding: clamp(12px, 1.7vw, 20px) !important;
+    border-radius: 24px !important;
+  }
+  .pd24-print-payment-qr img {
+    width: clamp(300px, 28vw, 360px) !important;
+    max-width: 100% !important; height: auto !important;
+    aspect-ratio: 1 / 1; object-fit: contain; image-rendering: auto !important;
+  }
+  .pd23-payment-card {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px) !important;
+    gap: clamp(16px, 2vw, 28px) !important;
+  }
+  .pd23-payment-card .pd23-qr {
+    width: 100% !important; max-width: 390px !important;
+    padding: clamp(12px, 1.7vw, 20px) !important; border-radius: 24px !important;
+  }
+  .pd23-payment-card .pd23-qr img {
+    width: clamp(300px, 28vw, 360px) !important;
+    max-width: 100% !important; height: auto !important;
+    aspect-ratio: 1 / 1; object-fit: contain; image-rendering: auto !important;
+  }
+  .pd24-payment-eyebrow, .pd23-payment-card .pd23-amount-label { line-height: 1.65 !important; }
+
+  /* Bulk-selection toolbar: one predictable interaction model across admin tables. */
+  .pd-admin-bulk-toolbar {
+    display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 14px;
+    margin: 0 0 14px; padding: 15px 17px; border: 1px solid var(--pd-stroke-strong, rgba(148,163,184,.2));
+    border-radius: 18px; background: var(--pd-surface-0, rgba(148,163,184,.06));
+  }
+  .pd-admin-bulk-toolbar .pd-bulk-description { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+  .pd-admin-bulk-toolbar .pd-bulk-count { color: var(--pd-muted, #94a3b8); font-size: 13px; font-weight: 700; }
+  .pd-admin-bulk-toolbar .pd-bulk-action {
+    min-height: 44px; padding: 10px 16px; border-radius: 13px; border: 1px solid rgba(244,63,94,.28);
+    color: #fb7185; background: rgba(244,63,94,.09); font-size: 13px; font-weight: 800;
+    transition: background .18s ease, opacity .18s ease, transform .18s ease;
+  }
+  .pd-admin-bulk-toolbar .pd-bulk-action:hover:not(:disabled) { background: rgba(244,63,94,.16); transform: translateY(-1px); }
+  .pd-admin-bulk-toolbar .pd-bulk-action:disabled { opacity: .42; cursor: not-allowed; }
+  .pd-admin-bulk-toolbar .pd-bulk-select-all,
+  #view-admin .pd-bulk-row-checkbox { width: 19px; height: 19px; accent-color: #0a84ff; cursor: pointer; flex: 0 0 auto; }
+  #view-admin .pd-bulk-row-checkbox:disabled { opacity: .28; cursor: not-allowed; }
+  #view-admin td.pd-bulk-cell { min-width: 54px; width: 54px; text-align: center !important; vertical-align: middle !important; }
+  #view-admin td.pd-bulk-cell::before { content: attr(data-label); }
+  #view-admin tr:has(.pd-bulk-row-checkbox:checked) { background: rgba(10,132,255,.07) !important; }
+  #view-admin .pd-bulk-sr-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  @media (max-width: 820px) {
+    .pd24-print-payment { grid-template-columns: minmax(0,1fr) !important; grid-template-areas: "summary" "qr" "details" !important; }
+    .pd24-print-payment-qr { width: min(100%, 430px) !important; justify-self: center; }
+    .pd24-print-payment-qr img { width: min(82vw, 370px) !important; }
+    .pd23-payment-card { grid-template-columns: minmax(0,1fr) !important; grid-template-areas: "amount" "qr" "details" !important; }
+    .pd23-payment-card .pd23-qr { width: min(100%, 430px) !important; max-width: 430px !important; justify-self: center; }
+    .pd23-payment-card .pd23-qr img { width: min(82vw, 370px) !important; }
+    .pd-admin-bulk-toolbar { grid-template-columns: minmax(0,1fr); padding: 13px; }
+    .pd-admin-bulk-toolbar .pd-bulk-action { width: 100%; }
+    #view-admin td.pd-bulk-cell { display: flex !important; align-items: center; justify-content: flex-start; width: 100% !important; min-width: 0; gap: 12px !important; }
+    #view-admin td.pd-bulk-cell::before { flex: 0 0 78px; }
+  }
+  @media (max-width: 420px) {
+    .pd24-print-payment-qr img, .pd23-payment-card .pd23-qr img { width: min(86vw, 330px) !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pd-admin-bulk-toolbar *, .pd24-print-payment-qr img, .pd23-payment-card .pd23-qr img { transition: none !important; }
+  }
+</style>
+
+
+<script id="pd24-readability-bulk-pdf-runtime">
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+  const notice = (title, message, icon = 'info') => {
+    if (typeof window.showCustomModal === 'function') window.showCustomModal({ title, message, icon });
+    else window.alert(`${title}\n\n${message}`);
+  };
+  function confirmAction({ title, message, icon = 'trash-2', confirmText = 'ยืนยันลบ', onConfirm }) {
+    if (typeof window.showCustomModal !== 'function') {
+      if (window.confirm(`${title}\n\n${message}`)) Promise.resolve(onConfirm?.());
+      return;
+    }
+    window.showCustomModal({ title, message, icon, showCancel: true, onConfirm });
+    const ok = $('modal-confirm-btn'); if (ok) ok.textContent = confirmText;
+    const cancel = $('modal-cancel-btn'); if (cancel) cancel.textContent = 'ยกเลิก';
+  }
+  function assertAdmin() {
+    if (typeof window.assertAdminAccess === 'function') return !!window.assertAdminAccess();
+    notice('ตรวจสอบสิทธิ์ไม่ได้', 'ไม่พบตัวตรวจสอบสิทธิ์แอดมิน ระบบจึงไม่ดำเนินการลบ', 'shield-alert');
+    return false;
+  }
+  const bulkConfigs = {
+    orders: { tbody: 'admin-orders-tbody', title: 'คิวงานพิมพ์', button: 'ลบคิวที่เลือก', note: 'ลบได้เฉพาะงานที่พิมพ์เสร็จแล้ว เพื่อไม่ให้คิวที่กำลังทำงานหายไป' },
+    topups: { tbody: 'admin-topups-tbody', title: 'ประวัติเติม Coins', button: 'ลบประวัติที่เลือก', note: 'ลบได้เฉพาะคำขอที่อนุมัติหรือปฏิเสธแล้ว รายการรอตรวจจะถูกล็อกไว้' },
+    users: { tbody: 'admin-users-tbody', title: 'สมาชิก', button: 'ตรวจสอบการลบสมาชิก', note: 'การลบบัญชีจริงต้องทำผ่าน API ฝั่งเซิร์ฟเวอร์' }
+  };
+  function getRowId(kind, row) {
+    if (kind === 'topups' && row.dataset.pdTopupRowId) return String(row.dataset.pdTopupRowId);
+    const selector = kind === 'orders' ? '[data-order-id]' : kind === 'topups' ? '[data-topup-id]' : '[data-user-id]';
+    const control = row.querySelector(selector);
+    if (!control) return '';
+    return String(kind === 'orders' ? control.dataset.orderId : kind === 'topups' ? control.dataset.topupId : control.dataset.userId || '').trim();
+  }
+  function canSelectRow(kind, row, id) {
+    if (!id) return false;
+    if (kind === 'orders') {
+      const liveStatus = row.querySelector('[data-pd-admin-action="status"]')?.value;
+      const cached = (window.__pdAdminOrders || []).find(o => String(o.id) === String(id));
+      return String(liveStatus || cached?.status || '').toLowerCase() === 'completed';
+    }
+    if (kind === 'topups') {
+      const cells = [...row.querySelectorAll(':scope > td')];
+      const status = String(cells[4]?.textContent || '').trim().toLowerCase();
+      return status === 'approved' || status === 'rejected';
+    }
+    if (kind === 'users') return String(window.currentUser?.id || '') !== String(id);
+    return false;
+  }
+  function selectedFor(kind) {
+    return [...document.querySelectorAll(`#${bulkConfigs[kind].tbody} input[data-pd-bulk-item="${kind}"]:checked`)]
+      .map(cb => cb.dataset.recordId).filter(Boolean);
+  }
+  function syncBulkToolbar(kind) {
+    const config = bulkConfigs[kind], tbody = $(config.tbody);
+    const toolbar = document.querySelector(`[data-pd-bulk-toolbar="${kind}"]`);
+    if (!tbody || !toolbar) return;
+    const selectable = [...tbody.querySelectorAll(`input[data-pd-bulk-item="${kind}"]:not(:disabled)` )];
+    const selected = selectedFor(kind);
+    const all = toolbar.querySelector('[data-pd-bulk-select-all]');
+    if (all) {
+      all.disabled = selectable.length === 0;
+      all.checked = selectable.length > 0 && selectable.every(cb => cb.checked);
+      all.indeterminate = selected.length > 0 && selected.length < selectable.length;
+    }
+    const count = toolbar.querySelector('[data-pd-bulk-count]');
+    if (count) count.textContent = `เลือก ${selected.length} รายการ`;
+    const action = toolbar.querySelector('[data-pd-bulk-action]');
+    if (action) action.disabled = selected.length === 0;
+  }
+  function ensureToolbar(kind, tbody) {
+    let toolbar = document.querySelector(`[data-pd-bulk-toolbar="${kind}"]`);
+    if (toolbar) return toolbar;
+    const panel = tbody.closest('.ui-panel');
+    const tableWrap = tbody.closest('.overflow-x-auto');
+    if (!panel || !tableWrap) return null;
+    toolbar = document.createElement('div');
+    toolbar.className = 'pd-admin-bulk-toolbar';
+    toolbar.dataset.pdBulkToolbar = kind;
+    toolbar.innerHTML = `
+      <div class="pd-bulk-description">
+        <input type="checkbox" class="pd-admin-bulk-toolbar__checkbox" data-pd-bulk-select-all aria-label="เลือกที่ลบได้ทั้งหมด">
+        <div><strong>${bulkConfigs[kind].title}</strong><div class="pd-bulk-count" data-pd-bulk-count>เลือก 0 รายการ</div></div>
+      </div>
+      <button type="button" class="pd-bulk-action" data-pd-bulk-action="${kind}" disabled>${bulkConfigs[kind].button}</button>`;
+    panel.insertBefore(toolbar, tableWrap);
+    return toolbar;
+  }
+  function enhanceAdminTable(kind) {
+    const config = bulkConfigs[kind], tbody = $(config.tbody);
+    if (!tbody) return;
+    ensureToolbar(kind, tbody);
+    const headerRow = tbody.closest('table')?.querySelector('thead tr');
+    if (headerRow && !headerRow.querySelector(`[data-pd-bulk-header="${kind}"]`)) {
+      const th = document.createElement('th'); th.dataset.pdBulkHeader = kind; th.className = 'py-3 px-3'; th.scope = 'col'; th.textContent = 'เลือก';
+      headerRow.prepend(th);
+    }
+    [...tbody.querySelectorAll(':scope > tr')].forEach(row => {
+      if (row.hasAttribute('data-pd-bulk-enhanced')) return;
+      const cells = [...row.querySelectorAll(':scope > td')];
+      if (cells.length === 1 && cells[0].hasAttribute('colspan')) return;
+      const id = getRowId(kind, row);
+      if (!id) return;
+      row.dataset.pdBulkEnhanced = kind;
+      row.dataset.pdBulkId = id;
+      const selectable = canSelectRow(kind, row, id);
+      const cell = document.createElement('td');
+      cell.className = 'pd-bulk-cell py-3 px-3';
+      cell.dataset.label = 'เลือก';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.className = 'pd-bulk-row-checkbox'; cb.dataset.pdBulkItem = kind; cb.dataset.recordId = id;
+      cb.disabled = !selectable;
+      cb.setAttribute('aria-label', selectable ? `เลือก${config.title} ${id} เพื่อลบ` : (kind === 'orders' ? 'ลบได้เฉพาะงานที่เสร็จแล้ว' : kind === 'topups' ? 'ลบได้เฉพาะรายการที่อนุมัติหรือปฏิเสธแล้ว' : 'ไม่สามารถเลือกบัญชีที่กำลังใช้งานอยู่'));
+      if (!selectable) cb.title = cb.getAttribute('aria-label');
+      cell.appendChild(cb); row.prepend(cell);
+    });
+    syncBulkToolbar(kind);
+  }
+  function enhanceAdminTables() {
+    for (const kind of Object.keys(bulkConfigs)) enhanceAdminTable(kind);
+  }
+  async function bulkDeleteOrders(ids) {
+    if (!assertAdmin()) return;
+    const client = db(); if (!client) return notice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่ได้ จึงไม่มีรายการถูกลบ', 'database-zap');
+    const lookup = await client.from('orders').select('id,queue_number,status').in('id', ids);
+    if (lookup.error) throw lookup.error;
+    const rows = lookup.data || [];
+    if (rows.length !== ids.length) throw new Error('มีคิวที่หาไม่พบในฐานข้อมูลแล้ว กรุณารีเฟรชก่อนลองใหม่');
+    const ineligible = rows.filter(o => String(o.status) !== 'completed');
+    if (ineligible.length) throw new Error(`มี ${ineligible.length} คิวที่ยังไม่ใช่สถานะพิมพ์เสร็จ ระบบจึงยกเลิกการลบทั้งหมดเพื่อความปลอดภัย`);
+
+    /* Preflight child references before deleting any parent rows. */
+    const jobsResult = await client.from('print_jobs').select('id,order_id,document_id').in('order_id', ids);
+    if (jobsResult.error) throw jobsResult.error;
+    const documentIds = [...new Set((jobsResult.data || []).map(j => j.document_id).filter(Boolean).map(String))];
+    let documentRows = [];
+    if (documentIds.length) {
+      const docsResult = await client.from('documents').select('id,file_path').in('id', documentIds);
+      if (docsResult.error) throw docsResult.error;
+      documentRows = docsResult.data || [];
+    }
+    const deletedIds = [], failed = [];
+    for (const item of rows) {
+      try {
+        const result = await client.from('orders').delete().eq('id', item.id).eq('status', 'completed').select('id').maybeSingle();
+        if (result.error) throw result.error;
+        if (!result.data) throw new Error('ฐานข้อมูลไม่ได้ยืนยันการลบ หรือสถานะเปลี่ยนไปแล้ว');
+        deletedIds.push(String(item.id));
+      } catch (error) { failed.push({ id: item.id, error: error?.message || String(error) }); }
+    }
+    /* Remove files/metadata only if no remaining job refers to a document. */
+    for (const doc of documentRows) {
+      try {
+        const refs = await client.from('print_jobs').select('id').eq('document_id', doc.id).limit(1);
+        if (refs.error || refs.data?.length) continue;
+        if (doc.file_path && !/^https?:\/\//i.test(doc.file_path)) {
+          try { await client.storage.from('documents').remove([doc.file_path]); } catch (_) { }
+        }
+        await client.from('documents').delete().eq('id', doc.id);
+      } catch (_) { /* The primary order deletion already succeeded. */ }
+    }
+    if (deletedIds.length) {
+      await window.loadAdminData?.(); await window.fetchQueues?.();
+    }
+    if (failed.length) throw new Error(`ลบสำเร็จ ${deletedIds.length} รายการ แต่ลบไม่สำเร็จ ${failed.length} รายการ\n${failed.slice(0, 3).map(x => `คิว ${x.id}: ${x.error}`).join('\n')}`);
+    notice('ลบคิวที่เลือกสำเร็จ', `ลบงานที่เสร็จแล้ว ${deletedIds.length} รายการ\nข้อมูลที่ยังมีความสัมพันธ์ในฐานข้อมูลจะไม่ถูกลบตามโดยอัตโนมัติ`, 'check-circle-2');
+  }
+  async function bulkDeleteTopups(ids) {
+    if (!assertAdmin()) return;
+    const client = db(); if (!client) return notice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่ได้ จึงไม่มีรายการถูกลบ', 'database-zap');
+    const lookup = await client.from('topups').select('id,status').in('id', ids);
+    if (lookup.error) throw lookup.error;
+    const rows = lookup.data || [];
+    if (rows.length !== ids.length) throw new Error('มีประวัติเติม Coins ที่หาไม่พบแล้ว กรุณารีเฟรชก่อนลองใหม่');
+    if (rows.some(r => !['approved', 'rejected'].includes(String(r.status).toLowerCase()))) {
+      throw new Error('มีคำขอเติม Coins ที่ยังรอตรวจสอบ ระบบจึงยกเลิกการลบทั้งหมด');
+    }
+    const result = await client.from('topups').delete().in('id', ids).in('status', ['approved', 'rejected']).select('id');
+    if (result.error) throw result.error;
+    if ((result.data || []).length !== ids.length) throw new Error('ฐานข้อมูลลบได้ไม่ครบตามจำนวนที่เลือก กรุณารีเฟรชและตรวจสอบรายการอีกครั้ง');
+    await window.loadAdminData?.();
+    notice('ลบประวัติสำเร็จ', `ลบประวัติเติม Coins ${ids.length} รายการแล้ว\nการลบนี้ลบเฉพาะประวัติ ไม่เปลี่ยนยอด Coins ในกระเป๋า`, 'check-circle-2');
+  }
+  function bulkUserDeleteBlocked(ids) {
+    if (!assertAdmin()) return;
+    notice('ยังไม่ลบบัญชีผู้ใช้', `เลือกไว้ ${ids.length} บัญชี แต่ไฟล์หน้าเว็บนี้ไม่มี API ฝั่งเซิร์ฟเวอร์ที่สามารถลบบัญชี Supabase Auth และตรวจความสัมพันธ์ orders / topups / wallet ได้ครบถ้วน\n\nการลบแถว public.users จากเบราว์เซอร์อย่างเดียวอาจทำให้ล็อกอินหรือประวัติข้อมูลไม่สอดคล้องกัน จึงยังไม่มีข้อมูลใดถูกลบ\n\nขั้นตอนถัดไปที่ปลอดภัยคือเพิ่ม endpoint ที่ตรวจสิทธิ์แอดมินฝั่งเซิร์ฟเวอร์ ใช้ service role key เฉพาะฝั่งเซิร์ฟเวอร์ และกำหนดนโยบายเก็บ/ลบข้อมูลที่เกี่ยวข้องให้ชัดเจน`, 'shield-alert');
+  }
+  async function runBulkAction(kind) {
+    const ids = [...new Set(selectedFor(kind))];
+    if (!ids.length) return;
+    if (!assertAdmin()) return;
+    if (kind === 'users') return bulkUserDeleteBlocked(ids);
+    const isOrders = kind === 'orders';
+    confirmAction({
+      title: isOrders ? 'ยืนยันลบคิวงานที่เลือก' : 'ยืนยันลบประวัติเติม Coins',
+      message: isOrders
+        ? `คุณเลือก ${ids.length} คิว\nระบบจะตรวจสถานะจริงจากฐานข้อมูลอีกครั้งและลบได้เฉพาะคิวที่พิมพ์เสร็จแล้ว\nการลบไม่สามารถย้อนกลับได้ ต้องการดำเนินการต่อหรือไม่?`
+        : `คุณเลือกประวัติเติม Coins ${ids.length} รายการ\nระบบจะลบเฉพาะรายการที่อนุมัติหรือปฏิเสธแล้ว ไม่เปลี่ยนยอด Coins ในกระเป๋า\nการลบไม่สามารถย้อนกลับได้ ต้องการดำเนินการต่อหรือไม่?`,
+      icon: 'trash-2', confirmText: 'ยืนยันลบรายการ',
+      onConfirm: async () => {
+        const button = document.querySelector(`[data-pd-bulk-action="${kind}"]`);
+        if (button) { button.disabled = true; button.textContent = 'กำลังตรวจสอบ…'; }
+        try { if (kind === 'orders') await bulkDeleteOrders(ids); else await bulkDeleteTopups(ids); }
+        catch (error) { notice('ลบรายการไม่สำเร็จ', error?.message || String(error), 'shield-alert'); }
+        finally {
+          if (button) button.textContent = bulkConfigs[kind].button;
+          enhanceAdminTables();
+        }
+      }
+    });
+  }
+
+  document.addEventListener('change', event => {
+    const all = event.target.closest('[data-pd-bulk-select-all]');
+    if (all) {
+      const kind = all.closest('[data-pd-bulk-toolbar]')?.dataset.pdBulkToolbar;
+      if (!kind) return;
+      const tbody = $(bulkConfigs[kind].tbody);
+      tbody?.querySelectorAll(`input[data-pd-bulk-item="${kind}"]:not(:disabled)`).forEach(cb => { cb.checked = all.checked; });
+      syncBulkToolbar(kind); return;
+    }
+    const cb = event.target.closest('input[data-pd-bulk-item]');
+    if (cb) syncBulkToolbar(cb.dataset.pdBulkItem);
+  });
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-pd-bulk-action]');
+    if (button) { event.preventDefault(); runBulkAction(button.dataset.pdBulkAction); }
+  });
+
+  /* Better small-screen previews: render thumbnails at device pixel ratio, lazily and with a 2-page work queue. */
+  window.renderPdfThumbnails = function (pdf) {
+    const grid = $('pages-grid-container'), drawer = $('pdf-preview-wrapper');
+    if (!grid || !pdf || !Number.isFinite(pdf.numPages)) return;
+    grid.className = 'pd-v10-page-picker ui-input'; grid.innerHTML = '';
+    if (drawer) drawer.innerHTML = '';
+    if (typeof grid.__pdPdfCleanup === 'function') grid.__pdPdfCleanup();
+    let queue = [], active = 0, disposed = false, observer = null;
+    const activeTasks = new Set();
+    const concurrency = 2;
+    const dpr = Math.max(1, Math.min(2, Number(window.devicePixelRatio) || 1));
+    observer = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
+      for (const entry of entries) if (entry.isIntersecting) {
+        const card = entry.target; observer.unobserve(card);
+        const pageNo = Number(card.dataset.page); schedule(card, pageNo);
+      }
+    }, { root: grid, rootMargin: '220px 0px' }) : null;
+    grid.__pdPdfCleanup = () => { disposed = true; queue = []; observer?.disconnect(); activeTasks.forEach(task => { try { task.cancel(); } catch (_) {} }); activeTasks.clear(); };
+    function schedule(card, pageNo) {
+      if (disposed || card.dataset.renderState) return;
+      card.dataset.renderState = 'queued'; queue.push({ card, pageNo }); processQueue();
+    }
+    async function processQueue() {
+      if (disposed) return;
+      while (active < concurrency && queue.length) {
+        const job = queue.shift(); active++;
+        renderCard(job.card, job.pageNo).finally(() => { active--; processQueue(); });
+      }
+    }
+    async function renderCard(card, pageNo) {
+      card.dataset.renderState = 'rendering';
+      const canvas = card.querySelector('canvas'); if (!canvas) { card.dataset.renderState = 'failed'; return; }
+      try {
+        const page = await pdf.getPage(pageNo);
+        if (disposed || !card.isConnected) return;
+        const viewport = page.getViewport({ scale: .65 });
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (!ctx) throw new Error('Canvas 2D is unavailable');
+        canvas.width = Math.ceil(viewport.width * dpr); canvas.height = Math.ceil(viewport.height * dpr);
+        canvas.style.width = '100%'; canvas.style.height = '94px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, viewport.width, viewport.height);
+        const task = page.render({ canvasContext: ctx, viewport });
+        activeTasks.add(task);
+        if (disposed || !card.isConnected) { try { task.cancel(); } catch (_) {} activeTasks.delete(task); return; }
+        try { await task.promise; } finally { activeTasks.delete(task); }
+        if (!disposed && card.isConnected) card.dataset.renderState = 'ready';
+      } catch (error) {
+        if (disposed || !card.isConnected) return;
+        card.dataset.renderState = 'failed';
+        const msg = document.createElement('span'); msg.className = 'pd-page-render-error'; msg.textContent = 'พรีวิวหน้านี้ไม่สำเร็จ';
+        card.appendChild(msg);
+        console.warn('[PrintDekD PDF thumbnail]', pageNo, error?.message || error);
+      }
+    }
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const card = document.createElement('label'); card.className = 'pd-v10-page-card is-selected'; card.dataset.page = String(i);
+      card.innerHTML = `<input type="checkbox" checked value="${i}" class="sr-only"><span class="pd-page-check" aria-hidden="true">✓</span><span class="pd-page-number">หน้า ${i}</span>`;
+      const cb = card.querySelector('input');
+      cb.addEventListener('change', () => { card.classList.toggle('is-selected', cb.checked); window.updateGridSelectedCount?.(); });
+      card.addEventListener('click', event => { if (event.target === cb) return; event.preventDefault(); cb.checked = !cb.checked; cb.dispatchEvent(new Event('change', { bubbles: true })); });
+      const canvas = document.createElement('canvas'); canvas.className = 'pd-pdf-hires-thumb'; canvas.setAttribute('aria-label', `ตัวอย่างหน้า ${i}`); canvas.setAttribute('role', 'img');
+      canvas.style.background = '#fff'; card.insertBefore(canvas, card.querySelector('.pd-page-number'));
+      grid.appendChild(card);
+      if (observer) observer.observe(card); else schedule(card, i);
+    }
+    const selected = $('selected-pages-count-display'); if (selected) selected.textContent = `${pdf.numPages} หน้า`;
+    const printed = $('printed-pages-input'); if (printed) printed.value = pdf.numPages;
+    window.calculatePrice?.();
+    /* The closure's observer is automatically detached when the grid is replaced by the next render. */
+    grid.dataset.pdPreviewDensity = dpr >= 1.5 ? 'high' : 'standard';
+  };
+
+  function ready() {
+    enhanceAdminTables();
+    /* Keep the title natural-flowing if another script re-inserts its copy from cached markup. */
+    const storyHeading = document.querySelector('.pd-story-section .pd-section-heading h2');
+    if (storyHeading && storyHeading.innerHTML.includes('ทุกขั้นตอนถูกออกแบบ<br')) storyHeading.innerHTML = 'ทุกขั้นตอนถูกออกแบบ <em>ให้รู้สึกง่าย</em>';
+    try { window.lucide?.createIcons?.(); } catch (_) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true }); else ready();
+  const admin = $('view-admin');
+  if (admin && 'MutationObserver' in window) {
+    let queued = false;
+    const observer = new MutationObserver(() => {
+      if (queued) return; queued = true;
+      requestAnimationFrame(() => { queued = false; enhanceAdminTables(); });
+    });
+    observer.observe(admin, { childList: true, subtree: true });
+  }
 })();
 </script>
 
