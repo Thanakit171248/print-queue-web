@@ -123,6 +123,8 @@ function normalizedProviderError(body, httpStatus) {
     1006: 'รูปสลิปไม่ถูกต้องหรืออ่านข้อมูลไม่ได้',
     1007: 'ไม่พบ QR สำหรับตรวจสอบในสลิป',
     1008: 'QR ในภาพไม่ใช่ QR สำหรับตรวจสอบการชำระเงิน',
+    1009: 'ข้อมูลจากธนาคารขัดข้องชั่วคราว จึงยังยืนยันสลิปไม่ได้ กรุณาลองใหม่ภายหลัง',
+    1010: 'ธนาคารที่ใช้โอนต้องรอการตรวจสอบเพิ่มเติม กรุณารอสักครู่แล้วลองใหม่',
     1011: 'ไม่พบรายการโอนเงินจริงหรือ QR หมดอายุ'
   };
   const hardReject = reject.has(code);
@@ -132,7 +134,7 @@ function normalizedProviderError(body, httpStatus) {
       ok: false,
       manualReview: !hardReject,
       code: code || `provider_http_${httpStatus}`,
-      message: translated[code] || (hardReject ? message : 'ระบบตรวจสลิปอัตโนมัติขัดข้องหรือยังยืนยันไม่ได้ คำขอจะเข้าคิวให้แอดมินตรวจด้วยตนเอง')
+      message: translated[code] || (hardReject ? message : 'ระบบตรวจสลิปอัตโนมัติขัดข้องหรือยังยืนยันไม่ได้ จึงไม่รับคำขอนี้และไม่มีการเพิ่ม Coins กรุณาลองใหม่ภายหลัง')
     }
   };
 }
@@ -145,14 +147,14 @@ module.exports = async function handler(req, res) {
 
   const origins = configuredOrigins();
   if (!process.env.SLIPOK_API_KEY || !process.env.SLIPOK_BRANCH_ID || origins.size === 0) {
-    return send(res, 503, { ok: false, manualReview: true, code: 'verification_not_configured', message: 'ระบบตรวจสลิปอัตโนมัติยังไม่ได้ตั้งค่า API/โดเมน คำขอจะเข้าคิวให้แอดมินตรวจเอง' });
+    return send(res, 503, { ok: false, manualReview: true, code: 'verification_not_configured', message: 'ระบบตรวจสลิปอัตโนมัติยังไม่ได้ตั้งค่า API/โดเมน จึงยังไม่บันทึกคำขอ กรุณาตั้งค่าระบบก่อนลองใหม่' });
   }
   const origin = String(req.headers.origin || '');
   if (!origin || !origins.has(origin)) {
     return send(res, 403, { ok: false, manualReview: false, code: 'origin_not_allowed', message: 'คำขอตรวจสลิปมาจากโดเมนที่ไม่ได้รับอนุญาต กรุณาเปิดเว็บไซต์ PrintDekD จากโดเมนที่ตั้งค่าไว้' });
   }
   if (!takeRateLimit(req)) {
-    return send(res, 429, { ok: false, manualReview: true, code: 'rate_limited', message: 'มีคำขอตรวจสลิปหลายครั้งเกินไป กรุณารอสักครู่ หรือเลือกส่งให้แอดมินตรวจด้วยตนเอง' });
+    return send(res, 429, { ok: false, manualReview: true, code: 'rate_limited', message: 'มีคำขอตรวจสลิปหลายครั้งเกินไป จึงยังไม่บันทึกคำขอ กรุณารอสักครู่แล้วลองใหม่' });
   }
 
   const contentType = String(req.headers['content-type'] || '');
@@ -219,7 +221,7 @@ module.exports = async function handler(req, res) {
     }
     const transRef = String(data.transRef || '').trim();
     if (!transRef) {
-      return send(res, 503, { ok: false, manualReview: true, code: 'missing_transaction_reference', message: 'สลิปอ่านข้อมูลได้แต่ไม่พบเลขอ้างอิงธุรกรรม จึงส่งให้แอดมินตรวจสอบก่อน' });
+      return send(res, 503, { ok: false, manualReview: true, code: 'missing_transaction_reference', message: 'สลิปไม่มีเลขอ้างอิงธุรกรรมที่ระบบยืนยันได้ จึงยังไม่บันทึกคำขอ กรุณาตรวจสอบสลิปแล้วลองใหม่' });
     }
 
     return send(res, 200, {
@@ -237,12 +239,12 @@ module.exports = async function handler(req, res) {
     });
   } catch (error) {
     const isTimeout = error?.name === 'AbortError';
-    // Do not reject a real customer payment only because the verifier is temporarily unavailable.
+    // Fail closed: without a definitive provider result, the frontend must not create a request.
     return send(res, 503, {
       ok: false,
       manualReview: true,
       code: isTimeout ? 'provider_timeout' : 'provider_unavailable',
-      message: 'บริการตรวจสลิปอัตโนมัติขัดข้องหรือหมดเวลารอ คำขอจะเข้าคิวให้แอดมินตรวจด้วยตนเอง และยังไม่มีการเพิ่ม Coins'
+      message: 'บริการตรวจสลิปอัตโนมัติขัดข้องหรือหมดเวลารอ จึงยังไม่บันทึกคำขอและไม่มีการเพิ่ม Coins กรุณาลองใหม่ภายหลัง'
     });
   }
 };
