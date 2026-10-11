@@ -28,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v23 — Admin Reliability & Responsive Account Center</title>
+  <title>PrintDekD Pro v21 — CSP + Exclusive Views + Friendly Typography</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -5024,16 +5024,13 @@
 
   <!-- SPLASH SCREEN -->
   <div id="splash-screen"
-    class="pd-splash-redesign fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-all duration-700 overflow-hidden">
-    <div class="pd-splash-ambient pd-splash-ambient-one" aria-hidden="true"></div>
-    <div class="pd-splash-ambient pd-splash-ambient-two" aria-hidden="true"></div>
-    <div class="pd-splash-content relative z-10 flex flex-col items-center text-center p-6 space-y-8 max-w-2xl">
+    class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-all duration-700 overflow-hidden">
+    <div class="relative z-10 flex flex-col items-center text-center p-6 space-y-8 max-w-2xl">
       <div
-        class="pd-splash-mark w-28 h-28 bg-white/5 border border-white/15 rounded-[32px] flex items-center justify-center shadow-2xl backdrop-blur-3xl">
+        class="w-28 h-28 bg-white/5 border border-white/15 rounded-[32px] flex items-center justify-center shadow-2xl backdrop-blur-3xl">
         <i data-lucide="printer" class="w-14 h-14 text-blue-500"></i>
       </div>
       <div class="space-y-3">
-        <div class="pd-splash-kicker">PRECISION · SPEED · SMART PRINTING</div>
         <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white">
           PRINTDEKD <span class="blue-gradient-text">PRO</span>
         </h1>
@@ -5041,7 +5038,7 @@
           KMUTNB ITI SMART PRINTING PLATFORM
         </p>
       </div>
-      <div class="pd-splash-progress w-64 space-y-2">
+      <div class="w-64 space-y-2">
         <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/10">
           <div id="splash-progress-bar"
             class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-300 w-0">
@@ -5528,6 +5525,11 @@
           <i data-lucide="command" class="w-5 h-5"></i>
         </button>
 
+        <button type="button" id="pd-notifications-btn" class="hidden nav-icon-btn ui-card relative"
+          onclick="toggleNotificationPanel()" title="เปิดการแจ้งเตือน" aria-label="เปิดการแจ้งเตือน" aria-controls="pd-notification-panel" aria-expanded="false">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span id="pd-notifications-badge" class="pd-notification-badge hidden" aria-label="จำนวนแจ้งเตือนที่ยังไม่อ่าน">0</span>
+        </button>
         <button type="button" id="user-coins-badge"
           class="hidden nav-coin-pill items-center gap-2 bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition"
           onclick="switchView('wallet')" title="เปิด Coins Wallet">
@@ -5606,6 +5608,15 @@
       </div>
     </div>
   </nav>
+
+  <section id="pd-notification-panel" class="pd-notification-panel hidden" role="dialog" aria-modal="false" aria-labelledby="pd-notification-title">
+    <div class="pd-notification-head">
+      <div><span class="pd-eyebrow">PRINTDEKD UPDATE</span><h2 id="pd-notification-title">การแจ้งเตือน</h2><p>สถานะคิวพิมพ์และ Coins</p></div>
+      <div class="pd-notification-head-actions"><button type="button" id="pd-notification-readall" class="pd-notification-readall">อ่านทั้งหมด</button><button type="button" onclick="toggleNotificationPanel(false)" class="pd-notification-close" aria-label="ปิดการแจ้งเตือน"><i data-lucide="x"></i></button></div>
+    </div>
+    <div id="pd-notification-list" class="pd-notification-list"><div class="pd-notification-empty">เข้าสู่ระบบเพื่อดูการแจ้งเตือน</div></div>
+    <div class="pd-notification-foot">อัปเดตจากข้อมูลในฐานข้อมูล · สถานะอ่านแล้วเก็บในอุปกรณ์นี้</div>
+  </section>
 
   <!-- SECURITY STATUS STRIP -->
   <div id="security-strip" class="security-strip relative z-10" aria-live="polite">
@@ -6386,19 +6397,19 @@
                         aria-describedby="pd19-address-message" aria-required="true" aria-invalid="false"><datalist
                         id="recipient-postal-options"></datalist></label>
                     <label class="pd19-address-field is-disabled" id="pd19-field-province"><span>จังหวัด
-                        <b>*</b></span><input id="recipient-province" type="text"
+                        <b>*</b></span><input id="recipient-province" type="text" list="recipient-province-options"
                         autocomplete="off" placeholder="กรอกรหัสไปรษณีย์ก่อน" class="ui-input" readonly
                         aria-disabled="true" aria-describedby="pd19-address-message" aria-autocomplete="list"
                         role="combobox" aria-expanded="false"><datalist
                         id="recipient-province-options"></datalist></label>
                     <label class="pd19-address-field is-disabled" id="pd19-field-district"><span>อำเภอ / เขต
-                        <b>*</b></span><input id="recipient-district" type="text"
+                        <b>*</b></span><input id="recipient-district" type="text" list="recipient-district-options"
                         autocomplete="off" placeholder="เลือกจังหวัดก่อน" class="ui-input" readonly aria-disabled="true"
                         aria-describedby="pd19-address-message" aria-autocomplete="list" role="combobox"
                         aria-expanded="false"><datalist id="recipient-district-options"></datalist></label>
                     <label class="pd19-address-field is-disabled" id="pd19-field-subdistrict"><span>ตำบล / แขวง
                         <b>*</b></span><input id="recipient-subdistrict" type="text"
-                        autocomplete="off" placeholder="เลือกอำเภอ/เขตก่อน"
+                        list="recipient-subdistrict-options" autocomplete="off" placeholder="เลือกอำเภอ/เขตก่อน"
                         class="ui-input" readonly aria-disabled="true" aria-describedby="pd19-address-message"
                         aria-autocomplete="list" role="combobox" aria-expanded="false"><datalist
                         id="recipient-subdistrict-options"></datalist></label>
@@ -6446,11 +6457,12 @@
                 class="hidden space-y-3 bg-blue-500/10 p-4 rounded-xl border border-blue-500/20 text-center">
                 <p class="text-xs font-bold text-blue-500">สแกน QR Code โอนเงิน PromptPay</p>
                 <img
-                  src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020101021129370016A000000677010111011300668999999995802TH5303764"
-                  alt="PromptPay QR"
-                  class="w-28 h-28 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm"
+                  src="assets/promptpay-qr.png"
+                  alt="Thai QR Payment สำหรับโอนเข้าบัญชีกสิกรไทยของ PrintDekD"
+                  class="w-36 h-auto max-h-52 mx-auto rounded-lg border border-slate-300 dark:border-white/20 shadow-sm bg-white"
                   loading="lazy" decoding="async">
-                <p class="text-[10px] sub-text">ร้าน PrintDekD Pro (พร้อมเพย์: 089-999-9999)</p>
+                <p class="text-xs font-bold titanium-text">ธนาคารกสิกรไทย · ธนกฤต พรมป้อ</p>
+                <p class="text-[10px] sub-text">เลขบัญชี 219-3-54005-0 · ตรวจสลิปก่อนยืนยันชำระเงิน</p>
                 <div>
                   <label class="block text-xs font-bold mb-1 text-left titanium-text">แนบสลิปโอนเงิน (Image):</label>
                   <input type="file" id="order-slip-file" accept="image/png,image/jpeg,image/webp"
@@ -6576,18 +6588,17 @@
 
                 <div class="p-3 bg-white rounded-2xl inline-block shadow-xl border-4 border-amber-500/30">
                   <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021129370016A000000677010111011300668999999995802TH5303764"
-                    alt="PromptPay Topup QR" class="w-36 h-36 mx-auto rounded-lg" loading="lazy" decoding="async">
+                    src="assets/promptpay-qr.png"
+                    alt="QR รับชำระเงินเข้าบัญชีกสิกรไทย ธนกฤต พรมป้อ"
+                    class="w-44 max-w-full h-auto mx-auto rounded-lg" loading="lazy" decoding="async">
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
-                  <p class="text-xs font-bold titanium-text">
-                    พร้อมเพย์: <span class="font-mono text-amber-400 text-sm font-black">089-999-9999</span> (ร้าน
-                    PrintDekD Pro)
-                  </p>
-                  <button type="button" onclick="copyPromptPay()"
-                    class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm active:scale-95">
-                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกเบอร์
+                <div class="flex flex-col items-center justify-center gap-2 pt-1">
+                  <p class="text-sm font-black titanium-text">ธนกฤต พรมป้อ · กสิกรไทย</p>
+                  <p class="font-mono text-amber-400 text-base font-black tracking-wide">219-3-54005-0</p>
+                  <button type="button" onclick="copyBankAccount()"
+                    class="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 text-sm font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกเลขบัญชี
                   </button>
                 </div>
               </div>
@@ -6658,7 +6669,7 @@
         <div class="pd-admin-search"><i data-lucide="search" class="w-4 h-4"></i><input id="pd-admin-search"
             type="search" placeholder="ค้นหาออเดอร์ / สมาชิก / ไฟล์…" oninput="filterAdminWorkspace(this.value)"></div>
       </div>
-      <div id="pd-admin-tabs" class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
+      <div class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')"
           class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')"
@@ -6966,7 +6977,7 @@
 
     // SECURITY / VALIDATION HELPERS — client-side hardening only; Supabase RLS remains the server-side boundary.
     const MAX_PRINT_FILE_MB = 20;
-    const MAX_SLIP_FILE_MB = 5;
+    const MAX_SLIP_FILE_MB = 4;
     const MAX_AVATAR_FILE_MB = 2;
     const SESSION_IDLE_MS = 7 * 24 * 60 * 60 * 1000;
     const LOGIN_WINDOW_MS = 5 * 60 * 1000;
@@ -7246,13 +7257,20 @@
       if (event.target.id === modalId) closeFn();
     }
 
-    function copyPromptPay() {
-      navigator.clipboard.writeText('0899999999').then(() => {
-        showCustomModal({ title: 'คัดลอกสำเร็จ', message: 'คัดลอกเบอร์พร้อมเพย์ 089-999-9999 เรียบร้อยแล้ว', icon: 'check-circle' });
+    function copyBankAccount() {
+      const account = '2193540050';
+      if (!navigator.clipboard?.writeText) {
+        showCustomModal({ title: 'คัดลอกเลขบัญชี', message: 'ธนาคารกสิกรไทย · 219-3-54005-0 · ธนกฤต พรมป้อ', icon: 'info' });
+        return;
+      }
+      navigator.clipboard.writeText(account).then(() => {
+        showCustomModal({ title: 'คัดลอกสำเร็จ', message: 'คัดลอกเลขบัญชีกสิกรไทย 219-3-54005-0 เรียบร้อยแล้ว', icon: 'check-circle' });
       }).catch(() => {
-        showCustomModal({ title: 'แจ้งเตือน', message: 'เบอร์พร้อมเพย์คือ 089-999-9999', icon: 'info' });
+        showCustomModal({ title: 'เลขบัญชีสำหรับโอน', message: 'ธนาคารกสิกรไทย · 219-3-54005-0 · ธนกฤต พรมป้อ', icon: 'info' });
       });
     }
+    // Backward-compatible alias for older inline handlers, but never copies the demo PromptPay number.
+    function copyPromptPay() { copyBankAccount(); }
 
     function openUserProfileModal() {
       if (!currentUser) {
@@ -8225,7 +8243,7 @@
         const isDelivery = ord.delivery_method === 'delivery';
 
         return `
-          <div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${escapeHtml(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
+          <div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" onkeydown="if(event.key==='Enter'||event.key===' ') openQueueDetailModal(${JSON.stringify(ord.id)})">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold font-mono text-blue-500">#${ord.id}</span>
               ${statusTag}
@@ -8410,20 +8428,20 @@
           ordersTb.innerHTML = (orders || []).map(ord => `
             <tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
               <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${escapeHtml(ord.id)}</td>
-              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${escapeHtml(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-xs font-black text-blue-500 hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> เปิดไฟล์</button>` : '<span class="text-[10px] sub-text">ไม่มีไฟล์ Storage</span>'}</td>
+              <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[150px]">${escapeHtml(ord.file_name)}</p><p class="sub-text text-[10px]">${Number(ord.total_price || 0).toFixed(2)} ฿ (${Number(ord.page_count || 0)} หน้า)</p>${ord.file_path ? `<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)})" class="mt-1 text-[10px] font-black text-blue-500 hover:underline inline-flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> เปิดไฟล์</button>` : '<span class="text-[10px] sub-text">ไม่มีไฟล์ Storage</span>'}</td>
               <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[120px]">${escapeHtml(ord.recipient_name || '')} (${escapeHtml(ord.recipient_phone || '')})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
-              <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
+              <td class="py-3 px-3">${ord.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
               <td class="py-3 px-3">
-                <select data-pd-admin-action="status" data-order-id="${escapeHtml(ord.id)}" aria-label="เปลี่ยนสถานะงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold">
-                  <option value="queued" ${ord.status === 'queued' || ord.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
+                <select onchange="updateOrderStatus(${JSON.stringify(ord.id)}, this.value)" class="ui-input rounded-xl p-2 text-xs font-bold">
+                  <option value="pending" ${ord.status === 'pending' ? 'selected' : ''}>⏳ รอคิว</option>
                   <option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option>
                   <option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option>
                   <option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
                 </select>
               </td>
               <td class="py-3 px-3 text-right space-x-1">
-                ${ord.delivery_method === 'delivery' ? `<button type="button" data-pd-admin-action="tracking" data-order-id="${safe(ord.id)}" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold">Tracking</button>` : ''}
-                <button type="button" data-pd-admin-action="detail" data-order-id="${escapeHtml(ord.id)}" class="px-3 py-2 ui-card rounded-xl text-sm font-bold">ดูข้อมูล</button><button type="button" data-pd-admin-action="delete-order" data-order-id="${escapeHtml(ord.id)}" class="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-sm font-extrabold transition">⌫ ลบงาน</button>
+                ${ord.delivery_method === 'delivery' ? `<button type="button" onclick="promptTracking(${JSON.stringify(ord.id)})" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold">Tracking</button>` : ''}
+                <button type="button" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">ดูข้อมูล</button>
               </td>
             </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
         }
@@ -8437,9 +8455,9 @@
               <td class="py-3 px-3 sub-text text-[10px]">${escapeHtml(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
               <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(tp.user_name || tp.user_id)}</td>
               <td class="py-3 px-3 font-black text-amber-500">+${Number(tp.amount || 0).toFixed(2)} Coins</td>
-              <td class="py-3 px-3">${tp.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(tp.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
-              <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${escapeHtml(tp.status || 'pending')}</td>
-              <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" data-pd-admin-action="approve-topup" data-topup-id="${escapeHtml(tp.id)}" data-user-id="${escapeHtml(tp.user_id)}" data-amount="${Number(tp.amount)}" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm">อนุมัติ</button><button type="button" data-pd-admin-action="reject-topup" data-topup-id="${escapeHtml(tp.id)}" class="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-sm">ปฏิเสธ</button></div>` : '-'}</td>
+              <td class="py-3 px-3">${tp.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(tp.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
+              <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${escapeHtml(tp.status || 'pending')}${tp.verification_status ? `<div class="text-[10px] mt-1 ${tp.verification_status === 'verified' ? 'text-emerald-500' : 'text-amber-500'}">${tp.verification_status === 'verified' ? 'SlipOK: ผ่าน' : 'ตรวจด้วยตนเอง'}</div>` : ''}</td>
+              <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" onclick="approveTopup(${JSON.stringify(tp.id)}, ${JSON.stringify(tp.user_id)}, ${Number(tp.amount)})" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-[11px]">อนุมัติ</button><button type="button" onclick="rejectTopup(${JSON.stringify(tp.id)})" class="px-3 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-[11px]">ปฏิเสธ</button></div>` : '-'}</td>
             </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
         }
 
@@ -8453,7 +8471,7 @@
               <td class="py-3 px-3 font-bold titanium-text">${escapeHtml(u.full_name)}</td>
               <td class="py-3 px-3 sub-text">${escapeHtml(u.email)}</td>
               <td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${escapeHtml(u.role)}</td>
-              <td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${escapeHtml(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card hover:border-purple-500 rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td>
+              <td class="py-3 px-3 text-right"><button type="button" onclick="changeUserRole(${JSON.stringify(u.id)}, ${JSON.stringify(u.role === 'admin' ? 'member' : 'admin')})" class="px-3 py-2 ui-card hover:border-purple-500 rounded-xl text-[11px] font-bold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td>
             </tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
         }
       } catch (err) {
@@ -10104,7 +10122,7 @@
           const sb = $('qd-modal-status-badge'); if (sb) { sb.textContent = statusLabel(order.status); sb.className = 'px-3 py-1 rounded-full text-xs font-black ' + (order.status === 'completed' ? 'bg-emerald-500/15 text-emerald-500' : order.status === 'printing' ? 'bg-blue-500/15 text-blue-500' : order.status === 'cancelled' ? 'bg-rose-500/15 text-rose-500' : 'bg-amber-500/15 text-amber-500') }
           const tr = $('qd-modal-tracking-box'); if (order.delivery_method === 'delivery') { set('qd-modal-tracking-num', order.tracking_number ? `เลข Tracking: ${order.tracking_number} (${order.courier_name || 'Kerry Express'})` : 'กำลังเตรียมจัดส่ง'); set('qd-modal-recipient-info', `ผู้รับ: ${order.recipient_name || '-'} (${order.recipient_phone || '-'}) | ที่อยู่: ${order.recipient_address || '-'}`); tr?.classList.remove('hidden') } else tr?.classList.add('hidden');
           const slip = $('qd-modal-slip-box'); if (order.slip_url) { $('qd-modal-slip-img').src = order.slip_url; slip?.classList.remove('hidden') } else slip?.classList.add('hidden');
-          let body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto'); if (body && currentUser?.role === 'admin') { let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) } panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safe(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>User ID</small><strong>${safe(order.user_id || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safe(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safe(order.file_bucket || '-')}</strong></div><div class="pd-admin-detail-item"><small>หมายเหตุแอดมิน</small><strong>${safe(order.admin_note || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" data-pd-detail-action="open-file" data-file-path="${safe(order.file_path)}" data-file-bucket="${safe(order.file_bucket || 'print-files')}" data-file-name="${safe(order.file_name || 'เอกสาร')}" data-file-mime="${safe(order.file_mime || '')}"><i data-lucide="file-eye" class="w-4 h-4 inline"></i> ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" data-pd-detail-action="slip" data-slip-url="${safe(order.slip_url)}"><i data-lucide="receipt" class="w-4 h-4 inline"></i> ดูสลิป</button>` : ''}<button type="button" class="ui-card" data-pd-detail-action="close">ปิดรายละเอียด</button></div>`; if (window.lucide) lucide.createIcons() }
+          let body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto'); if (body && currentUser?.role === 'admin') { let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) } panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safe(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>User ID</small><strong>${safe(order.user_id || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safe(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safe(order.file_bucket || '-')}</strong></div><div class="pd-admin-detail-item"><small>หมายเหตุแอดมิน</small><strong>${safe(order.admin_note || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" onclick="openAdminFileViewer(${JSON.stringify(order.file_path)},${JSON.stringify(order.file_bucket || 'print-files')},${JSON.stringify(order.file_name || 'เอกสาร')},${JSON.stringify(order.file_mime || '')})"><i data-lucide="file-eye" class="w-4 h-4 inline"></i> ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" onclick="openSlipModal(${JSON.stringify(order.slip_url)})"><i data-lucide="receipt" class="w-4 h-4 inline"></i> ดูสลิป</button>` : ''}<button type="button" class="ui-card" onclick="closeQueueDetailModal()">ปิดรายละเอียด</button></div>`; if (window.lucide) lucide.createIcons() }
           $('queue-detail-modal')?.classList.remove('hidden');
         } catch (err) { console.error(err); showCustomModal({ title: 'แสดงรายละเอียดไม่สำเร็จ', message: err.message || 'ข้อมูลบางส่วนไม่พร้อม', icon: 'alert-circle' }) }
       };
@@ -13288,84 +13306,6 @@
       const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
       const $ = (id) => document.getElementById(id);
       const q = (s, r = document) => r.querySelector(s);
-
-      // One reliable, accessible status dialog for checkout validation, success and failure.
-      // This function was referenced by the checkout flow but was missing from the original file.
-      function notifyV12(title, message = '', icon = 'info') {
-        const heading = String(title || 'แจ้งเตือนจากระบบ');
-        const detail = String(message ?? '');
-        const negative = /(ไม่สำเร็จ|ไม่พอ|ไม่ถูกต้อง|ไม่ครบ|ไม่พบ|ไม่สามารถ|ไม่ได้|ไม่พร้อม|ไม่ผ่าน|ผิดพลาด|ล้มเหลว|ขัดข้อง|ไม่อนุญาต|จำกัดสิทธิ์|เกินกำหนด|ไม่รองรับ)/i.test(heading);
-        const warning = !negative && /(ตรวจสอบ|กรุณา|ยังไม่|ยังไม่มี|ยังไม่ได้|ยังตั้งค่า|กำลังส่ง|รอการ|รอตรวจ)/i.test(heading);
-        const positive = !negative && !warning && /(สำเร็จ|เรียบร้อย|อนุมัติแล้ว|บันทึกคำสั่งซื้อแล้ว|ส่งคำขอแล้ว)/i.test(heading);
-        const tone = negative ? 'danger' : warning ? 'warning' : positive ? 'success' : 'info';
-        const icons = { success: 'check-circle-2', danger: 'shield-alert', warning: 'alert-triangle', info: 'info' };
-        let root = document.getElementById('pd-result-modal');
-        if (!root) {
-          root = document.createElement('div');
-          root.id = 'pd-result-modal';
-          root.className = 'pd-result-modal';
-          root.hidden = true;
-          root.innerHTML = `
-            <section class="pd-result-card" role="alertdialog" aria-modal="true" aria-labelledby="pd-result-title" aria-describedby="pd-result-message" tabindex="-1">
-              <button type="button" class="pd-result-dismiss" data-pd-result-close aria-label="ปิดหน้าต่างแจ้งเตือน">×</button>
-              <div class="pd-result-mark" aria-hidden="true"><i data-lucide="info"></i></div>
-              <div class="pd-result-kicker">PRINTDEKD PRO <span>•</span> SYSTEM STATUS</div>
-              <h2 id="pd-result-title"></h2>
-              <p id="pd-result-message"></p>
-              <div class="pd-result-footer"><span class="pd-result-status-dot"></span><span id="pd-result-caption">รายละเอียดสถานะระบบ</span></div>
-              <button type="button" class="pd-result-primary" data-pd-result-close>รับทราบ</button>
-            </section>`;
-          document.body.appendChild(root);
-          root.addEventListener('click', event => {
-            if (event.target === root || event.target.closest('[data-pd-result-close]')) closeV12Notice();
-          });
-          root.addEventListener('keydown', event => {
-            if (event.key !== 'Tab') return;
-            const focusable = [...root.querySelectorAll('button:not([disabled])')];
-            if (!focusable.length) return;
-            const first = focusable[0], last = focusable[focusable.length - 1];
-            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-          });
-        }
-        const card = root.querySelector('.pd-result-card');
-        const mark = root.querySelector('.pd-result-mark');
-        card.dataset.tone = tone;
-        // Lucide replaces the data-lucide node with SVG after rendering; recreate it for each notice.
-        if (mark) mark.innerHTML = `<i data-lucide="${icons[tone] || 'info'}"></i>`;
-        root.querySelector('#pd-result-title').textContent = heading;
-        root.querySelector('#pd-result-message').textContent = detail;
-        root.querySelector('#pd-result-caption').textContent = tone === 'success'
-          ? 'ระบบบันทึกรายการแล้ว'
-          : tone === 'danger' ? 'รายการยังไม่สำเร็จ — ตรวจสอบรายละเอียดด้านบน'
-          : tone === 'warning' ? 'โปรดตรวจสอบข้อมูลก่อนดำเนินการต่อ'
-          : 'ข้อความจากระบบ PrintDekD Pro';
-        const action = root.querySelector('.pd-result-primary');
-        action.textContent = tone === 'danger' || tone === 'warning' ? 'กลับไปตรวจสอบ' : 'รับทราบ';
-        window.__pdPreviousFocus = document.activeElement;
-        root.hidden = false;
-        document.body.classList.add('pd-result-modal-open');
-        try { window.lucide?.createIcons?.(); } catch (_) { /* Icon rendering is decorative only. */ }
-        requestAnimationFrame(() => action.focus({ preventScroll: true }));
-        return false;
-      }
-
-      function closeV12Notice() {
-        const root = document.getElementById('pd-result-modal');
-        if (!root || root.hidden) return;
-        root.hidden = true;
-        document.body.classList.remove('pd-result-modal-open');
-        const previous = window.__pdPreviousFocus;
-        if (previous && previous.isConnected && typeof previous.focus === 'function') {
-          try { previous.focus({ preventScroll: true }); } catch (_) { }
-        }
-      }
-      window.notifyV12 = notifyV12;
-      window.closeV12Notice = closeV12Notice;
-      document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') closeV12Notice();
-      });
-
       const qa = (s, r = document) => [...r.querySelectorAll(s)];
 
       function v(id) { return ($(id)?.value ?? '').toString().trim(); }
@@ -13415,12 +13355,15 @@
         const ids = orders.map(o => o.id).filter(Boolean);
         const userIds = [...new Set(orders.map(o => o.user_id).filter(Boolean))];
 
-        const [jobsR, deliveriesR, paymentsR, usersR] = await Promise.all([
+        let [jobsR, deliveriesR, paymentsR, usersR] = await Promise.all([
           client.from('print_jobs').select('id,order_id,document_id,copies,color,paper_size,duplex,status,page_range').in('order_id', ids).order('id', { ascending: true }),
           client.from('deliveries').select('id,order_id,delivery_method,recipient_name,phone_number,delivery_address,delivery_provider,tracking_number').in('order_id', ids),
-          client.from('payments').select('id,order_id,amount,status,payment_method,slip_url,created_at').in('order_id', ids),
+          client.from('payments').select('id,order_id,amount,status,payment_method,slip_url,created_at,verification_status,verification_message,verification_ref,verified_at').in('order_id', ids),
           userIds.length ? client.from('users').select('id,full_name,email').in('id', userIds) : Promise.resolve({ data: [], error: null })
         ]);
+        if (paymentsR.error && /verification_status|verification_ref|verification_message|verified_at|column|schema cache/i.test(paymentsR.error.message || '')) {
+          paymentsR = await client.from('payments').select('id,order_id,amount,status,payment_method,slip_url,created_at').in('order_id', ids);
+        }
         for (const r of [jobsR, deliveriesR, paymentsR, usersR]) if (r.error) throw r.error;
 
         const jobs = jobsR.data || [];
@@ -13470,6 +13413,9 @@
             payment_method: payment.payment_method || '',
             slip_url: payment.slip_url || '',
             payment_status: payment.status || '',
+            payment_verification_status: payment.verification_status || '',
+            payment_verification_message: payment.verification_message || '',
+            payment_verification_ref: payment.verification_ref || '',
             admin_note: order.admin_note || '',
             status: order.status || 'queued',
             created_at: order.created_at
@@ -13492,7 +13438,7 @@
               : ord.status === 'cancelled'
                 ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">❌ ยกเลิก</span>'
                 : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">⏳ รอคิว</span>';
-          return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${safe(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
+          return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" onkeydown="if(event.key==='Enter'||event.key===' ')openQueueDetailModal(${JSON.stringify(ord.id)})">
         <div class="flex items-center justify-between"><span class="text-xs font-bold font-mono text-blue-500">คิว #${safe(ord.queue_label)}</span>${status}</div>
         <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${ord.page_count || 1} หน้า | ${ord.copies || 1} ชุด | ${ord.delivery_method === 'delivery' ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
         ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-xs font-bold text-emerald-500">🚚 Tracking: ${safe(ord.tracking_number)} ${ord.delivery_provider ? `(${safe(ord.delivery_provider)})` : ''}</div>` : ''}
@@ -13522,10 +13468,18 @@
         const client = db();
         if (!client || !window.currentUser?.id) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">กรุณาเข้าสู่ระบบและเชื่อมต่อฐานข้อมูล</p>'; return; }
         try {
-          const { data, error } = await client.from('topups').select('id,user_id,amount,status,created_at').eq('user_id', window.currentUser.id).order('created_at', { ascending: false });
-          if (error) throw error;
-          if (!data?.length) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">ยังไม่มีประวัติการเติม Coins</p>'; return; }
-          list.innerHTML = data.map(tp => `<div class="p-4 rounded-2xl ui-card border flex items-center justify-between gap-3 text-xs shadow-sm"><div><p class="font-black text-amber-500 text-sm">+${money(tp.amount)} Coins</p><p class="text-[10px] sub-text font-mono mt-0.5">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</p></div><span class="security-badge ${tp.status === 'approved' ? 'good' : tp.status === 'rejected' ? 'bad' : 'warn'}">${tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ'}</span></div>`).join('');
+          let result = await client.from('topups').select('id,user_id,amount,status,created_at,verification_status,verification_message').eq('user_id', window.currentUser.id).order('created_at', { ascending: false });
+          if (result.error && /verification_status|verification_message|column|schema cache/i.test(result.error.message || '')) {
+            result = await client.from('topups').select('id,user_id,amount,status,created_at').eq('user_id', window.currentUser.id).order('created_at', { ascending: false });
+          }
+          if (result.error) throw result.error;
+          const data = result.data || [];
+          if (!data.length) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">ยังไม่มีประวัติการเติม Coins</p>'; return; }
+          list.innerHTML = data.map(tp => {
+            const statusLabel = tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ';
+            const verificationLabel = tp.verification_status === 'verified' ? 'ตรวจสลิปผ่าน · รอแอดมิน' : tp.verification_status === 'manual_review' ? 'รอตรวจด้วยตนเอง' : '';
+            return `<div class="p-4 rounded-2xl ui-card border flex items-center justify-between gap-3 text-xs shadow-sm"><div><p class="font-black text-amber-500 text-sm">+${money(tp.amount)} Coins</p><p class="text-[10px] sub-text font-mono mt-0.5">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</p>${verificationLabel ? `<p class="text-[10px] mt-1 ${tp.verification_status === 'verified' ? 'text-emerald-500' : 'text-amber-500'}">${verificationLabel}</p>` : ''}</div><span class="security-badge ${tp.status === 'approved' ? 'good' : tp.status === 'rejected' ? 'bad' : 'warn'}">${statusLabel}</span></div>`;
+          }).join('');
         } catch (err) { list.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">${safe(err?.message || 'ไม่สามารถโหลดประวัติได้')}</p>`; }
       };
 
@@ -13585,6 +13539,25 @@
           return notifyV12('วิธีทำรายการไม่ถูกต้อง', 'กรุณาเลือกวิธีชำระเงินและรับสินค้าใหม่', 'shield-alert');
         }
 
+        // Verify the order slip before writing order records. The API key never reaches the browser.
+        let paymentSlipFile = null;
+        let paymentSlipVerification = null;
+        if (payMethod === 'promptpay') {
+          paymentSlipFile = $('order-slip-file')?.files?.[0] || null;
+          if (!paymentSlipFile) return notifyV12('ยังไม่มีสลิป', 'กรุณาแนบสลิปก่อนสร้างรายการ', 'image-plus');
+          if (!/^image\/(png|jpe?g|webp)$/i.test(paymentSlipFile.type || '') || paymentSlipFile.size > 4 * 1024 * 1024) {
+            return notifyV12('สลิปไม่ผ่านการตรวจสอบ', 'รองรับ PNG/JPG/WEBP และขนาดไม่เกิน 4 MB', 'image-off');
+          }
+          try {
+            paymentSlipVerification = await window.pdVerifySlipFile?.(paymentSlipFile, total);
+          } catch (verifyError) {
+            paymentSlipVerification = { ok: false, manualReview: true, message: verifyError?.message || 'บริการตรวจสลิปยังไม่พร้อม' };
+          }
+          if (!paymentSlipVerification || (!paymentSlipVerification.ok && !paymentSlipVerification.manualReview)) {
+            return notifyV12('ตรวจสลิปไม่ผ่าน', paymentSlipVerification?.message || 'สลิปไม่ผ่านการตรวจยอด/ผู้รับ/รายการซ้ำ จึงไม่สร้างคำสั่งซื้อ', 'shield-alert');
+          }
+        }
+
         if (payMethod === 'coins') {
           try { await window.fetchUserWallet?.(); } catch (err) { return notifyV12('ตรวจสอบ Coins ไม่สำเร็จ', err.message || 'ไม่สามารถอ่าน wallets.balance', 'shield-alert'); }
           const balance = Number(window.currentUser?.coins || 0);
@@ -13629,14 +13602,29 @@
           }
 
           if (payMethod === 'promptpay') {
-            const slipFile = $('order-slip-file')?.files?.[0];
+            const slipFile = paymentSlipFile || $('order-slip-file')?.files?.[0];
             if (!slipFile) throw new Error('กรุณาแนบสลิปก่อนสั่งพิมพ์');
             const slipName = String(slipFile.name || 'slip').replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 100) || 'slip.jpg';
             slipPath = `${user.id}/${orderId}/${Date.now()}-${slipName}`;
             await uploadToBucketV12('slips', slipFile, slipPath);
             const { data: pub } = client.storage.from('slips').getPublicUrl(slipPath);
-            const { error: payError } = await client.from('payments').insert([{ order_id: orderId, amount: total, status: 'pending', payment_method: 'promptpay', slip_url: pub?.publicUrl || slipPath, created_at: new Date().toISOString() }]);
-            if (payError) throw payError;
+            const paymentRow = {
+              order_id: orderId, amount: total, status: 'pending', payment_method: 'promptpay', slip_url: pub?.publicUrl || slipPath,
+              verification_status: paymentSlipVerification?.ok ? 'verified' : 'manual_review',
+              verification_ref: paymentSlipVerification?.transRef || null,
+              verification_message: paymentSlipVerification?.ok ? 'SlipOK verified amount and registered recipient' : 'Automatic verification unavailable; manual review required',
+              verified_at: paymentSlipVerification?.ok ? new Date().toISOString() : null,
+              created_at: new Date().toISOString()
+            };
+            let payResult = await client.from('payments').insert([paymentRow]);
+            if (payResult.error && payResult.error.code !== '23505' && /verification_status|verification_ref|verification_message|verified_at|schema cache|column/i.test(payResult.error.message || '')) {
+              // Compatibility path until the included SQL migration is applied.
+              payResult = await client.from('payments').insert([{
+                order_id: orderId, amount: total, status: 'pending', payment_method: 'promptpay', slip_url: pub?.publicUrl || slipPath, created_at: new Date().toISOString()
+              }]);
+              if (!payResult.error) console.warn('[PrintDekD] Payment inserted without verification metadata; apply database/printdekd-wallet-verification.sql.');
+            }
+            if (payResult.error) throw payResult.error;
             paymentCreated = true;
           } else {
             const { error: payError } = await client.from('payments').insert([{ order_id: orderId, amount: total, status: 'completed', payment_method: 'coins', slip_url: null, created_at: new Date().toISOString() }]);
@@ -13663,10 +13651,12 @@
           checkoutCommitted = true;
           try { await window.fetchUserWallet?.(); } catch (refreshError) { console.warn('[PrintDekD] Wallet refresh failed after checkout commit:', refreshError); }
           try { await window.fetchQueues?.(); } catch (refreshError) { console.warn('[PrintDekD] Queue refresh failed after checkout commit:', refreshError); }
-          const paymentStatus = payMethod === 'promptpay'
-            ? `ยอดรวม ${money(total)} บาท\nแนบสลิปแล้ว — รอผู้ดูแลตรวจสอบการชำระเงิน`
-            : `ยอดรวม ${money(total)} Coins\nหัก Coins และบันทึกคิวเรียบร้อยแล้ว`;
-          notifyV12('ส่งคำสั่งพิมพ์สำเร็จ', `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด\n${paymentStatus}`, 'check-circle-2');
+          const orderSuccessMessage = payMethod === 'promptpay'
+            ? (paymentSlipVerification?.ok
+              ? `คิว #${order.queue_number ?? order.id} • ตรวจสลิปผ่านแล้ว แต่ยอดชำระยังรอแอดมินยืนยันก่อนปิดรายการ`
+              : `คิว #${order.queue_number ?? order.id} • ส่งสลิปเข้าคิวตรวจด้วยตนเอง เนื่องจาก API ตรวจสลิปยังไม่พร้อม`)
+            : `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด • ${money(total)} Coins`;
+          notifyV12('สร้างรายการสำเร็จ', orderSuccessMessage, 'check-circle-2');
           $('print-form')?.reset(); window.selectedFileObj = null;
           $('upload-placeholder')?.classList.remove('hidden'); $('file-details')?.classList.add('hidden'); $('preview-file-drawer-btn')?.classList.add('hidden');
           if ($('pdf-preview-wrapper')) $('pdf-preview-wrapper').innerHTML = '<p class="text-xs sub-text py-12">อัปโหลดไฟล์ PDF เพื่อแสดงพรีวิวหน้า...</p>';
@@ -13686,7 +13676,18 @@
               if (restored.error || !restored.data) walletRollbackConflict = true;
             } catch (_) { walletRollbackConflict = true; }
           }
-          if (!walletRollbackConflict) {
+          const verifiedPromptPayNeedsReconciliation = payMethod === 'promptpay' && paymentSlipVerification?.ok === true;
+          if (verifiedPromptPayNeedsReconciliation) {
+            // SlipOK logs a passing slip to prevent reuse. Keep any uploaded evidence/partial rows
+            // rather than deleting the only proof after a downstream database failure.
+            try {
+              const key = `pd_verified_payment_recovery_v1_${String(user.id).replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+              const old = JSON.parse(localStorage.getItem(key) || '[]');
+              old.push({ orderId, transRef: paymentSlipVerification.transRef || '', amount: total, slipPath: slipPath || '', savedAt: new Date().toISOString(), reason: String(err?.message || 'checkout write failed').slice(0, 200) });
+              localStorage.setItem(key, JSON.stringify(old.slice(-20)));
+            } catch (_) {}
+            console.error('[PrintDekD] Verified PromptPay payment needs reconciliation; preserving payment evidence.', { orderId, transRef: paymentSlipVerification.transRef, amount: total });
+          } else if (!walletRollbackConflict) {
             if (paymentCreated) try { await client.from('payments').delete().eq('order_id', orderId); } catch (_) { }
             if (deliveryCreated) try { await client.from('deliveries').delete().eq('order_id', orderId); } catch (_) { }
             if (jobCreated) try { await client.from('print_jobs').delete().eq('order_id', orderId); } catch (_) { }
@@ -13698,9 +13699,11 @@
             // Preserve order/payment evidence when a safe balance rollback cannot be proven.
             console.error('[PrintDekD] Wallet rollback conflict; retain order records for admin reconciliation.', { orderId, walletId, total });
           }
-          notifyV12('สร้างรายการไม่สำเร็จ', walletRollbackConflict
-            ? 'ตรวจพบยอด Wallet เปลี่ยนพร้อมกันและไม่สามารถคืนยอดอย่างปลอดภัย ระบบเก็บหลักฐานรายการไว้ให้ผู้ดูแลตรวจสอบแล้ว กรุณาอย่าส่งคำสั่งซื้อซ้ำ'
-            : (err?.message || 'ไม่สามารถบันทึกข้อมูลได้'), 'shield-alert');
+          notifyV12(verifiedPromptPayNeedsReconciliation ? 'ตรวจสลิปผ่าน แต่ต้องให้แอดมินตรวจต่อ' : 'สร้างรายการไม่สำเร็จ', verifiedPromptPayNeedsReconciliation
+            ? `ระบบตรวจสลิปผ่านแล้ว แต่บันทึกคำสั่งซื้อไม่สมบูรณ์ เก็บหลักฐานไว้แล้ว โปรดอย่าส่งสลิปเดิมซ้ำ และแจ้งแอดมินด้วยเลขอ้างอิง ${paymentSlipVerification.transRef || 'ไม่พบเลขอ้างอิง'} (คิวอ้างอิง ${orderId})`
+            : (walletRollbackConflict
+              ? 'ตรวจพบยอด Wallet เปลี่ยนพร้อมกันและไม่สามารถคืนยอดอย่างปลอดภัย ระบบเก็บหลักฐานรายการไว้ให้ผู้ดูแลตรวจสอบแล้ว กรุณาอย่าส่งคำสั่งซื้อซ้ำ'
+              : (err?.message || 'ไม่สามารถบันทึกข้อมูลได้')), 'shield-alert');
         }
       };
 
@@ -13860,8 +13863,15 @@
         const amount = Number($('selected-topup-amount')?.value || 20);
         if (![20, 50, 100, 200, 500].includes(amount)) return notifyV12('แพ็กเกจไม่ถูกต้อง', 'กรุณาเลือกจำนวน Coins จากแพ็กเกจที่ระบบกำหนด', 'shield-alert');
         const file = $('topup-slip-file')?.files?.[0];
-        if (!file || !/^image\/(png|jpe?g|webp)$/i.test(file.type || '') || file.size > 5 * 1024 * 1024)
-          return notifyV12('สลิปไม่ผ่านการตรวจสอบ', 'รองรับ PNG/JPG/WEBP และขนาดไม่เกิน 5 MB', 'image-off');
+        if (!file || !/^image\/(png|jpe?g|webp)$/i.test(file.type || '') || file.size > 4 * 1024 * 1024)
+          return notifyV12('สลิปไม่ผ่านการตรวจสอบ', 'รองรับ PNG/JPG/WEBP และขนาดไม่เกิน 4 MB', 'image-off');
+
+        let verification;
+        try { verification = await window.pdVerifySlipFile?.(file, amount); }
+        catch (err) { verification = { ok: false, manualReview: true, message: err?.message || 'บริการตรวจสลิปยังไม่พร้อม' }; }
+        if (!verification || (!verification.ok && !verification.manualReview)) {
+          return notifyV12('ตรวจสลิปไม่ผ่าน', verification?.message || 'ตรวจไม่ผ่านเรื่องยอดเงิน บัญชีผู้รับ หรือสลิปซ้ำ จึงไม่ส่งคำขอเติม Coins', 'shield-alert');
+        }
 
         let slipPath = '';
         try {
@@ -13869,21 +13879,49 @@
           slipPath = `${user.id}/topup-${crypto.randomUUID()}-${safeName}`;
           await uploadToBucketV12('slips', file, slipPath);
           const { data: pub } = client.storage.from('slips').getPublicUrl(slipPath);
-          const { error } = await client.from('topups').insert([{
-            user_id: user.id,
-            user_name: user.full_name || '',
-            amount,
-            slip_url: pub?.publicUrl || slipPath,
-            status: 'pending',
-            created_at: new Date().toISOString()
-          }]);
-          if (error) throw error;
-          notifyV12('ส่งคำขอสำเร็จ', 'คำขอเติม Coins ถูกบันทึกแล้ว และรอแอดมินตรวจสอบ', 'shield-check');
+          const now = new Date().toISOString();
+          const baseRow = {
+            user_id: user.id, user_name: user.full_name || '', amount,
+            slip_url: pub?.publicUrl || slipPath, status: 'pending', created_at: now
+          };
+          const verifiedRow = {
+            ...baseRow,
+            verification_status: verification.ok ? 'verified' : 'manual_review',
+            verification_ref: verification.transRef || null,
+            verification_message: verification.ok ? 'SlipOK verified amount and registered recipient' : (verification.message || 'Automatic verification unavailable; manual review required'),
+            verified_at: verification.ok ? now : null
+          };
+          let result = await client.from('topups').insert([verifiedRow]);
+          if (result.error && result.error.code !== '23505' && /verification_status|verification_ref|verification_message|verified_at|schema cache|column/i.test(result.error.message || '')) {
+            // Still queue the request safely if the optional metadata migration has not run yet.
+            result = await client.from('topups').insert([baseRow]);
+            if (!result.error) console.warn('[PrintDekD] Top-up inserted without verification metadata; apply database/printdekd-wallet-verification.sql.');
+          }
+          if (result.error) {
+            if (result.error.code === '23505') throw new Error('สลิปนี้เคยถูกใช้กับรายการเติมเงินแล้ว ระบบป้องกันการส่งซ้ำ');
+            throw result.error;
+          }
+          if (verification.ok) {
+            notifyV12('ตรวจสลิปผ่านแล้ว', `ตรวจยอด ${amount.toFixed(2)} บาทและบัญชีผู้รับที่ตั้งไว้ใน SlipOK ผ่านแล้ว คำขอยังรอแอดมินอนุมัติ Coins เพื่อป้องกันการเพิ่มยอดผ่านไคลเอนต์`, 'shield-check');
+          } else {
+            notifyV12('ส่งคำขอเข้าคิวตรวจสอบแล้ว', 'ระบบตรวจสลิปอัตโนมัติยังไม่พร้อมหรือธนาคารยังตอบกลับไม่ได้ คำขอถูกส่งให้แอดมินตรวจด้วยตนเอง และยังไม่มีการเพิ่ม Coins', 'clock-alert');
+          }
           $('topup-slip-file').value = '';
           await window.fetchUserTopups?.();
         } catch (err) {
-          await removeStorageV12('slips', slipPath);
-          notifyV12('ส่งคำขอไม่สำเร็จ', err.message || 'ไม่สามารถบันทึกข้อมูลได้', 'shield-alert');
+          if (verification?.ok === true) {
+            // SlipOK has recorded the successful verification; preserve any uploaded image for support.
+            try {
+              const key = `pd_verified_topup_recovery_v1_${String(user.id).replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+              const old = JSON.parse(localStorage.getItem(key) || '[]');
+              old.push({ transRef: verification.transRef || '', amount, slipPath: slipPath || '', savedAt: new Date().toISOString(), reason: String(err?.message || 'top-up insert failed').slice(0, 200) });
+              localStorage.setItem(key, JSON.stringify(old.slice(-20)));
+            } catch (_) {}
+            notifyV12('ตรวจสลิปผ่าน แต่บันทึกคำขอไม่สำเร็จ', `เก็บหลักฐานไว้แล้ว โปรดอย่าส่งสลิปเดิมซ้ำ และแจ้งแอดมินด้วยเลขอ้างอิง ${verification.transRef || 'ไม่พบเลขอ้างอิง'} ยอด ${amount.toFixed(2)} บาท`, 'shield-alert');
+          } else {
+            await removeStorageV12('slips', slipPath);
+            notifyV12('ส่งคำขอไม่สำเร็จ', err.message || 'ไม่สามารถบันทึกข้อมูลได้', 'shield-alert');
+          }
         }
       };
 
@@ -13904,13 +13942,13 @@
           const tb = $('admin-orders-tbody');
           if (tb) tb.innerHTML = filtered.map(ord => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${safe(ord.queue_number ?? ord.id)}</td>
-        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
+        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" onclick="openStoredPrintFile(${JSON.stringify(ord.file_path)},'documents')" class="mt-1 text-[10px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
         <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[150px]">${safe(ord.recipient_name)} (${safe(ord.recipient_phone)})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
-        <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
-        <td class="py-3 px-3"><select data-pd-admin-action="status" data-order-id="${safe(ord.id)}" aria-label="เปลี่ยนสถานะงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold">
+        <td class="py-3 px-3">${ord.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(ord.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}${ord.payment_verification_status ? `<p class="text-[10px] mt-1 ${ord.payment_verification_status === 'verified' ? 'text-emerald-500' : 'text-amber-500'}">${ord.payment_verification_status === 'verified' ? 'SlipOK: ผ่าน · รอแอดมิน' : 'รอตรวจสลิปด้วยตนเอง'}</p>` : ''}</td>
+        <td class="py-3 px-3"><select onchange="updateOrderStatus(${JSON.stringify(ord.id)},this.value)" class="ui-input rounded-xl p-2 text-xs font-bold">
           <option value="queued" ${ord.status === 'queued' ? 'selected' : ''}>⏳ รอคิว</option><option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option><option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option><option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
         </select></td>
-        <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method === 'delivery' ? `<button type="button" data-pd-admin-action="tracking" data-order-id="${safe(ord.id)}" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold">Tracking</button>` : ''}<button type="button" data-pd-admin-action="detail" data-order-id="${safe(ord.id)}" class="px-3 py-2 ui-card rounded-xl text-sm font-bold">ดูข้อมูล</button><button type="button" data-pd-admin-action="delete-order" data-order-id="${safe(ord.id)}" class="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-sm font-extrabold transition" aria-label="ลบคิว #${safe(ord.queue_number ?? ord.id)}"><span aria-hidden="true">⌫</span> ลบงาน</button></td>
+        <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method === 'delivery' ? `<button type="button" onclick="promptTracking(${JSON.stringify(ord.id)})" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold">Tracking</button>` : ''}<button type="button" onclick="openQueueDetailModal(${JSON.stringify(ord.id)})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">ดูข้อมูล</button></td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
 
           const topupTb = $('admin-topups-tbody');
@@ -13918,13 +13956,13 @@
         <td class="py-3 px-3 sub-text text-[10px]">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
         <td class="py-3 px-3 font-bold titanium-text">${safe(tp.user_name || tp.user_id)}</td>
         <td class="py-3 px-3 font-black text-amber-500">+${money(tp.amount)} Coins</td>
-        <td class="py-3 px-3">${tp.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(tp.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
-        <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${safe(tp.status || 'pending')}</td>
-        <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" data-pd-admin-action="approve-topup" data-topup-id="${safe(tp.id)}" data-user-id="${safe(tp.user_id)}" data-amount="${Number(tp.amount)}" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-sm">อนุมัติ</button><button type="button" data-pd-admin-action="reject-topup" data-topup-id="${safe(tp.id)}" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-sm">ปฏิเสธ</button></div>` : '-'}</td>
+        <td class="py-3 px-3">${tp.slip_url ? `<button type="button" onclick="openSlipModal(${JSON.stringify(tp.slip_url)})" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
+        <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${safe(tp.status || 'pending')}${tp.verification_status ? `<div class="text-[10px] mt-1 ${tp.verification_status === 'verified' ? 'text-emerald-500' : 'text-amber-500'}">${tp.verification_status === 'verified' ? 'SlipOK: ผ่าน · รอแอดมิน' : 'ตรวจด้วยตนเอง'}</div>` : ''}</td>
+        <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" onclick="approveTopup(${JSON.stringify(tp.id)},${JSON.stringify(tp.user_id)},${Number(tp.amount)})" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-[11px]">อนุมัติ</button><button type="button" onclick="rejectTopup(${JSON.stringify(tp.id)})" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-[11px]">ปฏิเสธ</button></div>` : '-'}</td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
 
           const userTb = $('admin-users-tbody');
-          if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${safe(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
+          if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" onclick="changeUserRole(${JSON.stringify(u.id)},${JSON.stringify(u.role === 'admin' ? 'member' : 'admin')})" class="px-3 py-2 ui-card rounded-xl text-[11px] font-bold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
 
           $('pd-admin-orders-count') && ($('pd-admin-orders-count').textContent = String(orders.length));
           $('pd-admin-pending-count') && ($('pd-admin-pending-count').textContent = String(orders.filter(o => o.status === 'queued').length));
@@ -17171,7 +17209,7 @@
         const body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto');
         if (body && window.currentUser?.role === 'admin') {
           let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) }
-          panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safeText(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safeText(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safeText(order.file_bucket || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" data-pd-detail-action="open-file" data-file-path="${safeText(order.file_path)}" data-file-bucket="${safeText(order.file_bucket || 'documents')}" data-file-name="${safeText(order.file_name || 'เอกสาร')}" data-file-mime="${safeText(order.file_mime || '')}">ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" data-pd-detail-action="slip" data-slip-url="${safeText(order.slip_url)}">ดูสลิป</button>` : ''}</div>`;
+          panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safeText(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safeText(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safeText(order.file_bucket || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" onclick="openAdminFileViewer(${JSON.stringify(order.file_path)},${JSON.stringify(order.file_bucket || 'documents')},${JSON.stringify(order.file_name || 'เอกสาร')},${JSON.stringify(order.file_mime || '')})">ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" onclick="openSlipModal(${JSON.stringify(order.slip_url)})">ดูสลิป</button>` : ''}</div>`;
         }
         const modal = $('queue-detail-modal'); if (modal) { modal.classList.remove('hidden'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden' }
         if (window.lucide) window.lucide.createIcons();
@@ -22667,9 +22705,7 @@
       function exactRow(rows, value) { return (rows || []).find(row => sameName(row.name_local, value)); }
       function setEnabled(input, enabled, placeholder) {
         if (!input) return;
-        // Keep a read-only display field; pd-v22 provides a branded searchable menu instead of Chrome datalist UI.
-        input.readOnly = true;
-        input.setAttribute('aria-readonly', 'true');
+        input.readOnly = !enabled;
         input.setAttribute('aria-disabled', String(!enabled));
         input.placeholder = placeholder;
         const label = input.closest('.pd19-address-field');
@@ -22749,7 +22785,7 @@
             state.postalProvinces = matches.provinces;
             state.postalOptions = [zip];
             populateDatalist(ui.provinceList, state.postalProvinces);
-            setEnabled(ui.province, true, 'แตะเพื่อเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์');
+            setEnabled(ui.province, true, 'พิมพ์ค้นหาหรือเลือกจังหวัดที่ตรงกับรหัส…');
             if (ui.postal) ui.postal.setAttribute('aria-invalid', 'false');
             addressMessage(`รหัส ${zip} พบ ${matches.provinces.length} จังหวัดที่เป็นไปได้ • กรุณาเลือกจังหวัดที่ถูกต้อง`, 'success');
             return true;
@@ -22786,7 +22822,7 @@
         const candidates = state.postalDistricts.filter(row => allowedDistrictIds.has(row.id));
         if (!candidates.length) { state.selectedProvince = null; clearFromProvince(); addressMessage('ไม่พบอำเภอที่ตรงกับรหัสไปรษณีย์และจังหวัดที่เลือก กรุณาเลือกจังหวัดอีกครั้ง', 'error'); return; }
         state.filteredDistricts = candidates;
-        populateDatalist(ui.districtList, candidates); setEnabled(ui.district, true, 'แตะเพื่อเลือกอำเภอ/เขต');
+        populateDatalist(ui.districtList, candidates); setEnabled(ui.district, true, 'ค้นหาอำเภอ/เขต…');
         addressMessage(`เลือกจังหวัด ${record.name_local} แล้ว • พบ ${candidates.length} อำเภอ/เขต กรุณาเลือกต่อ`, 'success');
       }
       async function onDistrictInput() {
@@ -22804,7 +22840,7 @@
         const children = state.postalSubdistricts.filter(row => row.parent_id === record.id && postalMatches(row, zip));
         if (!children.length) { state.selectedDistrict = null; clearFromDistrict(); addressMessage('ไม่พบตำบลที่ตรงกับรหัสไปรษณีย์ในอำเภอนี้ กรุณาตรวจสอบจังหวัดหรือรหัสอีกครั้ง', 'error'); return; }
         state.filteredSubdistricts = children;
-        populateDatalist(ui.subdistrictList, children); setEnabled(ui.subdistrict, true, 'แตะเพื่อเลือกตำบล/แขวง');
+        populateDatalist(ui.subdistrictList, children); setEnabled(ui.subdistrict, true, 'ค้นหาตำบล/แขวง…');
         addressMessage(`เลือกอำเภอ/เขต ${record.name_local} แล้ว • พบ ${children.length} ตำบล/แขวงที่เข้ากับรหัสนี้`, 'success');
       }
       function onSubdistrictInput() {
@@ -22905,12 +22941,12 @@
       });
       ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
       ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
-      ui.district?.addEventListener('focus', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้', 'error'); });
-      ui.district?.addEventListener('click', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('กรุณากรอกรหัสไปรษณีย์และเลือกจังหวัดก่อน', 'error'); });
+      ui.district?.addEventListener('focus', () => { if (ui.district.readOnly) addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้', 'error'); });
+      ui.district?.addEventListener('click', () => { if (ui.district.readOnly) addressMessage('กรุณากรอกรหัสไปรษณีย์และเลือกจังหวัดก่อน', 'error'); });
       ui.district?.addEventListener('input', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
       ui.district?.addEventListener('change', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
-      ui.subdistrict?.addEventListener('focus', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('เลือกอำเภอ/เขตให้ครบก่อน จึงจะเลือกตำบล/แขวงได้', 'error'); });
-      ui.subdistrict?.addEventListener('click', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('กรุณาเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตก่อน', 'error'); });
+      ui.subdistrict?.addEventListener('focus', () => { if (ui.subdistrict.readOnly) addressMessage('เลือกอำเภอ/เขตให้ครบก่อน จึงจะเลือกตำบล/แขวงได้', 'error'); });
+      ui.subdistrict?.addEventListener('click', () => { if (ui.subdistrict.readOnly) addressMessage('กรุณาเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตก่อน', 'error'); });
       ui.subdistrict?.addEventListener('input', onSubdistrictInput);
       ui.subdistrict?.addEventListener('change', onSubdistrictInput);
       ['recipient-house-no', 'recipient-moo', 'recipient-village', 'recipient-soi', 'recipient-road', 'recipient-address-extra'].forEach(id => $(id)?.addEventListener('input', updateAddressSummary, { passive: true }));
@@ -23311,1527 +23347,175 @@ main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
 </style>
 
 
-
-<style id="pd-v22-native-free-location-design">
-/* PrintDekD Pro v23 — tap-to-select location menus; no search field or native datalist popup. */
-#pd19-address-card .pd20-select-shell {
-  position: relative;
-  z-index: 2;
-  min-width: 0;
-  width: 100%;
-}
-#pd19-address-card .pd20-select-shell:focus-within,
-#pd19-address-card .pd20-select-shell.is-open { z-index: 70; }
-#pd19-address-card .pd20-select-shell .pd19-address-field { width: 100%; }
-#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"] {
-  cursor: pointer !important;
-  padding-right: 48px !important;
-  opacity: 1 !important;
-  background: linear-gradient(135deg, rgba(27, 42, 61, .96), rgba(17, 25, 37, .98)) !important;
-  border-color: rgba(105, 133, 168, .38) !important;
-  color: #f4f7fb !important;
-  font-weight: 650 !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
-}
-#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"]:hover {
-  border-color: rgba(68, 155, 255, .72) !important;
-  background: linear-gradient(135deg, rgba(31, 50, 73, .98), rgba(18, 30, 45, .99)) !important;
-}
-#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"]:focus {
-  border-color: #2789ff !important;
-  box-shadow: 0 0 0 4px rgba(39, 137, 255, .16), inset 0 1px 0 rgba(255,255,255,.04) !important;
-}
-#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="true"] {
-  cursor: not-allowed !important;
-  opacity: .56 !important;
-}
-#pd19-address-card .pd20-select-shell::after {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  right: 19px;
-  top: 49px;
-  width: 9px;
-  height: 9px;
-  border-right: 2px solid #8da5c3;
-  border-bottom: 2px solid #8da5c3;
-  transform: rotate(45deg);
-  transition: transform .18s ease, border-color .18s ease;
-}
-#pd19-address-card .pd20-select-shell.is-open::after {
-  transform: translateY(4px) rotate(225deg);
-  border-color: #5eaeff;
-}
-#pd19-address-card .pd20-location-menu {
-  position: absolute;
-  inset: calc(100% + 8px) 0 auto 0;
-  z-index: 90;
-  display: grid;
-  gap: 10px;
-  padding: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(101, 157, 222, .37);
-  border-radius: 18px;
-  background: linear-gradient(155deg, #131d2b, #0a1019);
-  color: #edf4fc;
-  box-shadow: 0 22px 52px rgba(0, 0, 0, .48), 0 0 0 1px rgba(255,255,255,.025) inset, 0 0 25px rgba(31, 128, 255, .10);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  transform-origin: top center;
-  animation: pd20-location-in .16s cubic-bezier(.2,.8,.2,1) both;
-}
-#pd19-address-card .pd20-location-menu[hidden] { display: none !important; }
-#pd19-address-card .pd20-location-menu-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-width: 0;
-  padding: 2px 2px 0;
-}
-#pd19-address-card .pd20-location-menu-title {
-  margin: 0;
-  color: #f7faff;
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 850;
-  letter-spacing: -.01em;
-}
-#pd19-address-card .pd20-location-menu-count {
-  flex: 0 0 auto;
-  border: 1px solid rgba(75, 150, 242, .24);
-  border-radius: 999px;
-  padding: 3px 8px;
-  color: #91c6ff;
-  background: rgba(39, 137, 255, .10);
-  font: 700 10px/1.3 "Kanit", sans-serif;
-}
-#pd19-address-card .pd20-location-results {
-  display: grid;
-  gap: 5px;
-  max-height: min(360px, 46dvh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 1px 2px 2px 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(92, 148, 213, .52) rgba(255,255,255,.035);
-}
-#pd19-address-card .pd20-location-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-width: 0;
-  min-height: 51px;
-  padding: 9px 10px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: transparent;
-  color: #edf4fc;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color .14s ease, border-color .14s ease, transform .14s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-#pd19-address-card .pd20-location-option:hover,
-#pd19-address-card .pd20-location-option:focus-visible {
-  outline: none;
-  border-color: rgba(72, 153, 255, .28);
-  background: linear-gradient(100deg, rgba(37, 130, 244, .20), rgba(75, 114, 187, .08));
-}
-#pd19-address-card .pd20-location-option:active { transform: scale(.995); }
-#pd19-address-card .pd20-location-option-main { min-width: 0; flex: 1 1 auto; }
-#pd19-address-card .pd20-location-option-th {
-  display: block;
-  overflow-wrap: anywhere;
-  color: #f5f8fe;
-  font-size: 14px;
-  line-height: 1.45;
-  font-weight: 700;
-}
-#pd19-address-card .pd20-location-option-en {
-  display: block;
-  margin-top: 1px;
-  overflow-wrap: anywhere;
-  color: #9aafc7;
-  font-size: 11px;
-  line-height: 1.4;
-  font-weight: 450;
-}
-#pd19-address-card .pd20-location-option-arrow {
-  flex: 0 0 auto;
-  color: #709ac5;
-  font-size: 20px;
-  line-height: 1;
-  transition: transform .14s ease, color .14s ease;
-}
-#pd19-address-card .pd20-location-option:hover .pd20-location-option-arrow { color: #77baff; transform: translateX(2px); }
-#pd19-address-card .pd20-location-empty {
-  padding: 18px 10px;
-  color: #a9b8ca;
-  font-size: 13px;
-  line-height: 1.6;
-  text-align: center;
-}
-#pd19-address-card .pd20-location-foot {
-  padding: 8px 3px 0;
-  border-top: 1px solid rgba(132, 163, 199, .13);
-  color: #869bb4;
-  font-size: 10px;
-  line-height: 1.5;
-}
-@keyframes pd20-location-in {
-  from { opacity: 0; transform: translateY(-4px) scale(.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-html:not(.dark) #pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"] {
-  background: linear-gradient(135deg, #fff, #f3f7fc) !important;
-  border-color: #cdd9e8 !important;
-  color: #182538 !important;
-}
-html:not(.dark) #pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="true"] {
-  background: #e8edf4 !important;
-  color: #78879b !important;
-}
-html:not(.dark) #pd19-address-card .pd20-location-menu {
-  background: linear-gradient(155deg, #ffffff, #f1f6fc);
-  color: #17283d;
-  border-color: rgba(97, 135, 181, .34);
-  box-shadow: 0 22px 50px rgba(37, 57, 83, .22), 0 0 0 1px rgba(255,255,255,.8) inset;
-}
-html:not(.dark) #pd19-address-card .pd20-location-menu-title,
-html:not(.dark) #pd19-address-card .pd20-location-option-th { color: #17283d; }
-html:not(.dark) #pd19-address-card .pd20-location-option-en,
-html:not(.dark) #pd19-address-card .pd20-location-empty,
-html:not(.dark) #pd19-address-card .pd20-location-foot { color: #657890 !important; }
-html:not(.dark) #pd19-address-card .pd20-location-option:hover,
-html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
-  background: linear-gradient(100deg, rgba(37,130,244,.10), rgba(75,114,187,.04));
-  border-color: rgba(37,130,244,.23);
-}
-@media (max-width: 640px) {
-  #pd19-address-card .pd20-location-menu { padding: 10px; border-radius: 15px; }
-  #pd19-address-card .pd20-location-results { max-height: min(320px, 44dvh); }
-  #pd19-address-card .pd20-location-option { min-height: 52px; padding: 10px 12px; touch-action: manipulation; }
-}
-@media (prefers-reduced-motion: reduce) {
-  #pd19-address-card .pd20-location-menu,
-  #pd19-address-card .pd20-location-option,
-  #pd19-address-card .pd20-select-shell::after { animation: none !important; transition: none !important; }
-}
-</style>
-
-<script id="pd-v23-tap-select-location-runtime">
-(() => {
-  'use strict';
-  const addressCard = document.getElementById('pd19-address-card');
-  if (!addressCard || addressCard.dataset.pd23LocationReady === 'true') return;
-  addressCard.dataset.pd23LocationReady = 'true';
-
-  const configs = [
-    { input: 'recipient-province', list: 'recipient-province-options', label: 'จังหวัด', placeholder: 'แตะเพื่อเลือกจังหวัด', help: 'เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์' },
-    { input: 'recipient-district', list: 'recipient-district-options', label: 'อำเภอ / เขต', placeholder: 'แตะเพื่อเลือกอำเภอ / เขต', help: 'รายการจะแสดงเฉพาะจังหวัดที่เลือก' },
-    { input: 'recipient-subdistrict', list: 'recipient-subdistrict-options', label: 'ตำบล / แขวง', placeholder: 'แตะเพื่อเลือกตำบล / แขวง', help: 'รายการสัมพันธ์กับอำเภอและรหัสไปรษณีย์' }
-  ];
-  const widgets = [];
-  let activeWidget = null;
-
-  function optionData(list) {
-    if (!list) return [];
-    return Array.from(list.options || []).map(option => ({
-      value: String(option.value || '').trim(),
-      secondary: String(option.label || '').trim()
-    })).filter(item => item.value);
-  }
-
-  function setExpanded(widget, expanded) {
-    widget.input.setAttribute('aria-expanded', String(expanded));
-    widget.menu.hidden = !expanded;
-    widget.shell.classList.toggle('is-open', expanded);
-    if (expanded) activeWidget = widget;
-    else if (activeWidget === widget) activeWidget = null;
-  }
-
-  function renderOptions(widget) {
-    const items = optionData(widget.list);
-    widget.count.textContent = `${items.length} รายการ`;
-    widget.results.replaceChildren();
-
-    if (!items.length) {
-      const empty = document.createElement('div');
-      empty.className = 'pd20-location-empty';
-      empty.textContent = 'ยังไม่มีรายการให้เลือก กรุณาตรวจสอบรหัสไปรษณีย์และขั้นตอนก่อนหน้า';
-      widget.results.appendChild(empty);
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-    items.forEach(item => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'pd20-location-option';
-      button.setAttribute('role', 'option');
-      button.setAttribute('aria-selected', String(widget.input.value === item.value));
-      button.setAttribute('data-location-value', item.value);
-
-      const main = document.createElement('span');
-      main.className = 'pd20-location-option-main';
-      const thai = document.createElement('span');
-      thai.className = 'pd20-location-option-th';
-      thai.textContent = item.value;
-      main.appendChild(thai);
-
-      if (item.secondary && item.secondary !== item.value) {
-        const english = document.createElement('span');
-        english.className = 'pd20-location-option-en';
-        english.textContent = item.secondary;
-        main.appendChild(english);
-      }
-
-      const arrow = document.createElement('span');
-      arrow.className = 'pd20-location-option-arrow';
-      arrow.setAttribute('aria-hidden', 'true');
-      arrow.textContent = '›';
-      button.append(main, arrow);
-
-      // Selection runs on click (not pointerdown) so touch browsers have a reliable activation event.
-      // The outside-tap handler already ignores anything inside this shell, so blur cannot auto-close it.
-      button.addEventListener('click', () => selectOption(widget, item.value));
-      button.addEventListener('keydown', event => {
-        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-          event.preventDefault();
-          const options = Array.from(widget.results.querySelectorAll('.pd20-location-option'));
-          const current = options.indexOf(button);
-          const step = event.key === 'ArrowDown' ? 1 : -1;
-          options[(current + step + options.length) % options.length]?.focus();
-        } else if (event.key === 'Escape') {
-          event.preventDefault();
-          closeMenu(widget, true);
-        }
-      });
-      fragment.appendChild(button);
-    });
-    widget.results.appendChild(fragment);
-  }
-
-  function closeMenu(widget, returnFocus = false) {
-    setExpanded(widget, false);
-    if (returnFocus) {
-      widget.skipFocusOpen = true;
-      widget.input.focus({ preventScroll: true });
-    }
-  }
-
-  function selectOption(widget, value) {
-    // Close this menu before firing change; dependent lists are then refreshed by the address runtime.
-    const restoreFocus = document.activeElement !== widget.input;
-    setExpanded(widget, false);
-    widget.input.value = value;
-    widget.input.removeAttribute('aria-invalid');
-    widget.skipFocusOpen = restoreFocus;
-    widget.input.dispatchEvent(new Event('change', { bubbles: true }));
-    if (restoreFocus) widget.input.focus({ preventScroll: true });
-  }
-
-  function openMenu(widget) {
-    if (widget.input.getAttribute('aria-disabled') === 'true') return;
-    if (activeWidget && activeWidget !== widget) setExpanded(activeWidget, false);
-    renderOptions(widget);
-    setExpanded(widget, true);
-    // Do not focus a search box or any other input. This is deliberately tap-to-select,
-    // so a mobile keyboard cannot resize the viewport and collapse the menu.
-  }
-
-  for (const config of configs) {
-    const input = document.getElementById(config.input);
-    const list = document.getElementById(config.list);
-    const field = input?.closest('label.pd19-address-field');
-    if (!input || !list || !field || !field.parentElement) continue;
-
-    // Keep the datalist as a data source only; the browser must never draw its native popup.
-    input.removeAttribute('list');
-    input.readOnly = true;
-    input.setAttribute('aria-readonly', 'true');
-    input.setAttribute('aria-haspopup', 'listbox');
-    input.setAttribute('aria-controls', `${config.input}-custom-options`);
-    input.setAttribute('autocomplete', 'off');
-    input.setAttribute('placeholder', config.placeholder);
-
-    const shell = document.createElement('div');
-    shell.className = 'pd20-select-shell';
-    field.parentElement.insertBefore(shell, field);
-    shell.appendChild(field);
-
-    const menu = document.createElement('div');
-    menu.className = 'pd20-location-menu';
-    menu.hidden = true;
-    menu.id = `${config.input}-custom-menu`;
-    menu.setAttribute('role', 'group');
-    menu.setAttribute('aria-label', `${config.label}: รายการตัวเลือก`);
-
-    const head = document.createElement('div');
-    head.className = 'pd20-location-menu-head';
-    const title = document.createElement('p');
-    title.className = 'pd20-location-menu-title';
-    title.textContent = `เลือก${config.label}`;
-    const count = document.createElement('span');
-    count.className = 'pd20-location-menu-count';
-    count.textContent = '0 รายการ';
-    head.append(title, count);
-
-    const results = document.createElement('div');
-    results.className = 'pd20-location-results';
-    results.id = `${config.input}-custom-options`;
-    results.setAttribute('role', 'listbox');
-
-    const foot = document.createElement('div');
-    foot.className = 'pd20-location-foot';
-    foot.textContent = config.help;
-    menu.append(head, results, foot);
-    shell.appendChild(menu);
-
-    const widget = { ...config, input, list, field, shell, menu, count, results, skipFocusOpen: false };
-    widgets.push(widget);
-
-    input.addEventListener('focus', () => {
-      if (widget.skipFocusOpen) {
-        widget.skipFocusOpen = false;
-        return;
-      }
-      if (input.getAttribute('aria-disabled') !== 'true') openMenu(widget);
-    });
-    input.addEventListener('click', () => {
-      if (input.getAttribute('aria-disabled') !== 'true' && widget.menu.hidden) openMenu(widget);
-    });
-    input.addEventListener('keydown', event => {
-      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-        if (input.getAttribute('aria-disabled') !== 'true') {
-          event.preventDefault();
-          openMenu(widget);
-          widget.results.querySelector('.pd20-location-option')?.focus();
-        }
-      } else if (event.key === 'Escape' && !widget.menu.hidden) {
-        event.preventDefault();
-        closeMenu(widget, false);
-      }
-    });
-
-    const observer = new MutationObserver(() => {
-      renderOptions(widget);
-      if (input.getAttribute('aria-disabled') === 'true' && !menu.hidden) closeMenu(widget, false);
-    });
-    observer.observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['value', 'label'] });
-    renderOptions(widget);
-  }
-
-  // Close only when the user taps outside the open picker. Do not close on viewport resize:
-  // mobile browsers resize viewports for toolbars/orientation changes and this used to collapse the menu.
-  document.addEventListener('pointerdown', event => {
-    if (!activeWidget) return;
-    if (!activeWidget.shell.contains(event.target)) setExpanded(activeWidget, false);
-  }, true);
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && activeWidget) closeMenu(activeWidget, false);
-  });
-})();
-</script>
-
-<style id="pd-v22-apple-inspired-splash">
-/* A lightweight Apple-inspired splash: restrained gradients and transform-only motion. */
-#splash-screen.pd-splash-redesign {
-  isolation: isolate;
-  overflow: hidden;
-  background: #05070b !important;
-  color: #f5f7fb;
-  --pd-splash-blue: #55a5ff;
-}
-#splash-screen.pd-splash-redesign::before {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 43%, rgba(17, 76, 158, .22), transparent 36%),
-    radial-gradient(ellipse at 16% 12%, rgba(35, 83, 160, .12), transparent 34%),
-    radial-gradient(ellipse at 85% 84%, rgba(92, 61, 180, .12), transparent 31%),
-    linear-gradient(145deg, #06080c 0%, #080d15 52%, #05060a 100%);
-}
-#splash-screen.pd-splash-redesign::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: min(78vw, 680px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(93, 161, 255, .10);
-  border-radius: 50%;
-  box-shadow: 0 0 0 58px rgba(93,161,255,.018), 0 0 0 116px rgba(93,161,255,.012);
-  transform: translateY(-3%);
-  pointer-events: none;
-}
-#splash-screen.pd-splash-redesign .pd-splash-ambient {
-  position: absolute;
-  z-index: -1;
-  width: 32vw;
-  min-width: 220px;
-  max-width: 420px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgba(27, 111, 241, .13);
-  filter: blur(70px);
-  pointer-events: none;
-  will-change: transform;
-  animation: pd-splash-float 9s ease-in-out infinite alternate;
-}
-#splash-screen.pd-splash-redesign .pd-splash-ambient-one { left: 3%; top: 10%; }
-#splash-screen.pd-splash-redesign .pd-splash-ambient-two {
-  right: 3%; bottom: 4%;
-  background: rgba(113, 78, 244, .12);
-  animation-delay: -4.5s;
-  animation-duration: 11s;
-}
-#splash-screen.pd-splash-redesign .pd-splash-content {
-  width: min(100%, 760px);
-  gap: clamp(24px, 4vh, 38px) !important;
-  padding: 32px 24px;
-}
-#splash-screen.pd-splash-redesign .pd-splash-mark {
-  position: relative;
-  isolation: isolate;
-  width: clamp(94px, 13vw, 126px) !important;
-  height: clamp(94px, 13vw, 126px) !important;
-  border-radius: 34px !important;
-  border: 1px solid rgba(176, 202, 241, .25) !important;
-  background: linear-gradient(145deg, rgba(30, 44, 64, .84), rgba(9, 13, 20, .92)) !important;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, .38), 0 0 55px rgba(33, 119, 255, .15), inset 0 1px 0 rgba(255,255,255,.09) !important;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-}
-#splash-screen.pd-splash-redesign .pd-splash-mark::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -7px;
-  border-radius: 40px;
-  border: 1px solid rgba(76, 158, 255, .26);
-  transform: rotate(-7deg);
-  animation: pd-splash-frame 7s ease-in-out infinite alternate;
-}
-#splash-screen.pd-splash-redesign .pd-splash-mark::after {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  inset: -22px;
-  border-radius: 45px;
-  background: rgba(30, 117, 255, .16);
-  filter: blur(27px);
-}
-#splash-screen.pd-splash-redesign .pd-splash-mark svg {
-  width: clamp(43px, 5vw, 54px) !important;
-  height: clamp(43px, 5vw, 54px) !important;
-  filter: drop-shadow(0 0 16px rgba(57, 144, 255, .38));
-  stroke-width: 1.7;
-}
-#splash-screen.pd-splash-redesign .pd-splash-content h1 {
-  margin: 0;
-  font-size: clamp(37px, 6vw, 66px) !important;
-  line-height: 1.14 !important;
-  letter-spacing: -.055em !important;
-  font-weight: 850 !important;
-  text-wrap: balance;
-  text-shadow: 0 5px 40px rgba(0,0,0,.25);
-}
-#splash-screen.pd-splash-redesign .pd-splash-content h1 span {
-  background: linear-gradient(112deg, #69bcff 4%, #587dff 47%, #ad7aff 92%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent;
-}
-#splash-screen.pd-splash-redesign .pd-splash-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0 0 14px;
-  color: #8abfff;
-  font-size: 10px;
-  line-height: 1.4;
-  font-weight: 800;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-}
-#splash-screen.pd-splash-redesign .pd-splash-kicker::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: #59a7ff;
-  box-shadow: 0 0 13px rgba(70, 158, 255, .85);
-}
-#splash-screen.pd-splash-redesign .pd-splash-content p:not(.pd-splash-kicker) {
-  margin-top: 13px;
-  color: #8ba1bc !important;
-  font-size: clamp(10px, 1.5vw, 12px) !important;
-  letter-spacing: .26em !important;
-  line-height: 1.8;
-}
-#splash-screen.pd-splash-redesign .pd-splash-progress {
-  width: min(330px, 70vw) !important;
-  padding-top: 3px;
-}
-#splash-screen.pd-splash-redesign #splash-progress-bar {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(90deg, #438fff, #66b9ff 56%, #8a75ff) !important;
-  box-shadow: 0 0 15px rgba(61, 143, 255, .35);
-}
-#splash-screen.pd-splash-redesign #splash-progress-bar::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
-  transform: translateX(-110%);
-  animation: pd-splash-sheen 1.8s ease-in-out infinite;
-}
-#splash-screen.pd-splash-redesign #splash-status-text,
-#splash-screen.pd-splash-redesign #splash-percent-text {
-  color: #8ca2bd !important;
-  font-size: 10px;
-  letter-spacing: .07em;
-}
-#splash-screen.pd-splash-redesign #splash-percent-text { color: #9bcaff !important; }
-@keyframes pd-splash-float {
-  from { transform: translate3d(-10px, -5px, 0) scale(.96); }
-  to { transform: translate3d(17px, 15px, 0) scale(1.04); }
-}
-@keyframes pd-splash-frame {
-  from { transform: rotate(-7deg) scale(.99); opacity: .68; }
-  to { transform: rotate(5deg) scale(1.02); opacity: 1; }
-}
-@keyframes pd-splash-sheen {
-  0%, 30% { transform: translateX(-110%); }
-  80%, 100% { transform: translateX(110%); }
-}
-@media (max-width: 520px) {
-  #splash-screen.pd-splash-redesign .pd-splash-content { gap: 26px !important; padding: 24px 18px; }
-  #splash-screen.pd-splash-redesign .pd-splash-mark { border-radius: 27px !important; }
-  #splash-screen.pd-splash-redesign .pd-splash-content p:not(.pd-splash-kicker) { letter-spacing: .15em !important; }
-}
-@media (prefers-reduced-motion: reduce) {
-  #splash-screen.pd-splash-redesign .pd-splash-ambient,
-  #splash-screen.pd-splash-redesign .pd-splash-mark::before,
-  #splash-screen.pd-splash-redesign #splash-progress-bar::after { animation: none !important; }
-}
-</style>
-
-<style id="pd-v22-select-layout-finishing">
-/* A larger comfortable address workspace and stacking order for the custom dropdowns. */
-#pd19-address-card { padding: clamp(18px, 3vw, 30px) !important; gap: 20px !important; }
-#pd19-address-card .pd19-address-grid { gap: clamp(12px, 1.7vw, 18px) !important; }
-#pd19-address-card .pd19-address-field > span { font-size: 14px !important; line-height: 1.55 !important; }
-#pd19-address-card .pd19-address-field input { min-height: 54px !important; padding: 13px 16px !important; font-size: 16px !important; }
-#pd19-address-card .pd20-select-shell .pd19-address-field input { padding-right: 48px !important; }
-#pd19-address-card .pd19-address-title strong { font-size: 19px !important; }
-#pd19-address-card .pd19-address-title small { font-size: 13px !important; line-height: 1.7 !important; }
-#pd19-address-card .pd19-address-message, #pd19-address-card .pd19-address-summary { font-size: 14px !important; line-height: 1.7 !important; }
-@media (min-width: 1200px) {
-  #pd19-address-card .pd19-address-grid-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  #pd19-address-card .pd19-address-field input { min-height: 56px !important; }
-}
-@media (max-width: 640px) {
-  #pd19-address-card { padding: 16px !important; gap: 16px !important; }
-  #pd19-address-card .pd19-address-field input { min-height: 54px !important; font-size: 16px !important; }
-}
-</style>
-
-
-
-  <!-- PrintDekD Pro v23: Admin reliability, responsive workspace and account-center polish -->
-  <style id="pd-v23-admin-account-design">
-    /* Larger, calmer global confirmation dialog */
-    #custom-modal { z-index: 25000 !important; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)) !important; }
-    #custom-modal > div {
-      width: min(560px, 100%) !important; max-width: 560px !important;
-      padding: clamp(24px, 4vw, 38px) !important; border-radius: 30px !important;
-      box-shadow: 0 28px 100px rgba(0,0,0,.45) !important;
-    }
-    #custom-modal #modal-icon { width: 30px !important; height: 30px !important; }
-    #custom-modal > div > div:first-child {
-      width: 68px !important; height: 68px !important; border-radius: 22px !important; margin-bottom: 20px !important;
-    }
-    #custom-modal #modal-title { font-size: clamp(24px, 3.2vw, 31px) !important; line-height: 1.25 !important; margin-bottom: 10px !important; font-weight: 900 !important; }
-    #custom-modal #modal-message { font-size: clamp(15px, 1.8vw, 17px) !important; line-height: 1.8 !important; margin-bottom: 25px !important; white-space: pre-line; overflow-wrap: anywhere; }
-    #custom-modal #modal-actions { gap: 12px !important; }
-    #custom-modal #modal-actions button { min-height: 54px !important; border-radius: 16px !important; padding: 13px 18px !important; font-size: 15px !important; font-weight: 850 !important; }
-    @media (max-width: 520px) {
-      #custom-modal { align-items: flex-end !important; padding: 12px 10px max(10px, env(safe-area-inset-bottom)) !important; }
-      #custom-modal > div { padding: 25px 20px 20px !important; border-radius: 26px !important; }
-      #custom-modal #modal-actions { flex-direction: column-reverse; }
-      #custom-modal #modal-actions button { width: 100%; flex: auto !important; }
-    }
-
-    /* Leading brand icons for the profile URL/name inputs */
-    .pd-input-icon-wrap { position: relative; width: 100%; min-width: 0; }
-    .pd-input-leading-icon { position: absolute; z-index: 2; left: 16px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; color: #8abfff; pointer-events: none; }
-    .pd-input-leading-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
-    #profile-edit-section .pd-profile-icon-input { width: 100% !important; min-height: 56px !important; padding-left: 50px !important; padding-right: 16px !important; border-radius: 17px !important; margin-bottom: 0 !important; font-size: 16px !important; }
-    .pd-input-icon-wrap:focus-within .pd-input-leading-icon { color: #3b9cff; }
-
-    /* Admin dashboard: information hierarchy, spacing, and touch targets */
-    #view-admin { width: min(1560px, 100%) !important; max-width: 1560px !important; padding: clamp(16px, 2.5vw, 36px) clamp(12px, 2.3vw, 34px) max(44px, env(safe-area-inset-bottom)) !important; }
-    #view-admin > .flex:first-child { align-items: flex-end; margin-bottom: 24px !important; gap: 18px !important; }
-    #view-admin > .flex:first-child h1 { font-size: clamp(25px, 2.5vw, 36px) !important; line-height: 1.35 !important; max-width: 960px; text-wrap: balance; }
-    #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(130px, .8fr)) minmax(260px, 1.6fr) !important; gap: 12px !important; margin-bottom: 18px !important; }
-    #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 90px !important; padding: 18px 20px !important; border-radius: 22px !important; border-color: var(--pd-stroke-strong) !important; background: var(--pd-surface-0) !important; }
-    #view-admin .pd-admin-stat span { font-size: 13px !important; line-height: 1.5 !important; }
-    #view-admin .pd-admin-stat strong { font-size: clamp(27px, 2.4vw, 36px) !important; line-height: 1.15 !important; }
-    #view-admin .pd-admin-search input { font-size: 16px !important; min-height: 48px !important; }
-    #view-admin #admin-tab-orders-btn, #view-admin #admin-tab-topups-btn, #view-admin #admin-tab-users-btn { min-height: 52px !important; padding: 12px 16px !important; font-size: 14px !important; border-radius: 15px !important; line-height: 1.45 !important; }
-    #view-admin .ui-panel { padding: clamp(16px, 2.2vw, 30px) !important; border-radius: 26px !important; }
-    #view-admin .ui-panel h2 { font-size: clamp(20px, 2vw, 26px) !important; line-height: 1.4 !important; }
-    #view-admin .overflow-x-auto { border-radius: 20px !important; border-color: var(--pd-stroke-strong) !important; }
-    #view-admin table { min-width: 1020px !important; border-collapse: separate !important; border-spacing: 0 !important; }
-    #view-admin thead { background: rgba(148,163,184,.08); }
-    #view-admin th { position: sticky; top: 0; z-index: 1; font-size: 13px !important; line-height: 1.5 !important; padding: 16px 15px !important; white-space: nowrap; }
-    #view-admin td { font-size: 14px !important; line-height: 1.65 !important; padding: 15px !important; }
-    #view-admin td button, #view-admin td select { min-height: 44px !important; font-size: 13px !important; white-space: nowrap; }
-    #view-admin td .font-bold, #view-admin td .font-black { line-height: 1.5 !important; }
-    #view-admin td[data-label="การจัดการ"] { min-width: 220px; }
-    #view-admin td[data-label="การจัดการ"] button { margin: 3px 2px; }
-    #view-admin .overflow-x-auto { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,.45) transparent; }
-    #view-admin .overflow-x-auto:focus-within { outline: 2px solid rgba(10,132,255,.20); outline-offset: 3px; }
-    #view-admin button[data-pd-admin-action="delete-order"] { border-width: 1px !important; }
-    #view-admin button[data-pd-admin-action="role"] { min-width: 150px; }
-    .pd-v23-busy { opacity: .62 !important; pointer-events: none !important; }
-
-    @media (max-width: 1100px) {
-      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
-      #view-admin > .flex:first-child { align-items: flex-start; }
-      #view-admin > .flex:first-child button { min-height: 48px !important; }
-    }
-    @media (max-width: 820px) {
-      #view-admin { padding-left: 12px !important; padding-right: 12px !important; }
-      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
-      #view-admin > .flex:first-child { flex-direction: column; align-items: stretch; }
-      #view-admin > .flex:first-child button { align-self: stretch !important; justify-content: center; }
-      #pd-admin-tabs { display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; }
-      #pd-admin-tabs button { width: 100%; }
-      #view-admin .ui-panel { padding: 14px !important; border-radius: 22px !important; }
-      /* Reflow data tables into labeled cards on phone/iPad portrait */
-      #view-admin .overflow-x-auto { overflow: visible !important; border: 0 !important; }
-      #view-admin table { display: block !important; width: 100% !important; min-width: 0 !important; }
-      #view-admin thead { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
-      #view-admin tbody { display: grid !important; gap: 12px !important; width: 100% !important; }
-      #view-admin tr { display: block !important; width: 100% !important; min-width: 0 !important; padding: 8px 14px !important; border: 1px solid var(--pd-stroke-strong) !important; border-radius: 18px !important; background: var(--pd-surface-0) !important; }
-      #view-admin td { display: grid !important; grid-template-columns: minmax(86px, 31%) minmax(0, 1fr) !important; align-items: start; gap: 10px !important; width: 100% !important; min-width: 0 !important; padding: 11px 0 !important; text-align: left !important; border-bottom: 1px solid var(--pd-stroke) !important; overflow-wrap: anywhere; }
-      #view-admin td:last-child { border-bottom: 0 !important; }
-      #view-admin td::before { content: attr(data-label); color: var(--pd-muted); font-size: 12px; font-weight: 850; line-height: 1.6; }
-      #view-admin td[colspan] { display: block !important; text-align: center !important; padding: 22px 8px !important; }
-      #view-admin td[colspan]::before { content: none; }
-      #view-admin td[data-label="การจัดการ"] { display: flex !important; flex-wrap: wrap; gap: 7px; min-width: 0; }
-      #view-admin td[data-label="การจัดการ"]::before { flex: 0 0 100%; }
-      #view-admin td[data-label="การจัดการ"] button { flex: 1 1 auto; margin: 0 !important; }
-      #view-admin td p { max-width: none !important; white-space: normal !important; overflow-wrap: anywhere; }
-      #view-admin td select { width: 100% !important; max-width: 100%; }
-    }
-    @media (max-width: 420px) {
-      #view-admin .pd-admin-commandbar { gap: 8px !important; }
-      #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 78px !important; padding: 13px !important; border-radius: 17px !important; }
-      #view-admin .pd-admin-stat span { font-size: 12px !important; }
-      #view-admin .pd-admin-stat strong { font-size: 25px !important; }
-      #view-admin td { grid-template-columns: 78px minmax(0,1fr) !important; gap: 8px !important; }
-      #view-admin td::before { font-size: 11px !important; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #view-admin *, #custom-modal *, .pd-input-icon-wrap * { animation: none !important; transition: none !important; }
-    }
+  <style id="pd-verification-notification-style">
+    .pd-notification-badge{position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:#ef4444;color:white;border:2px solid var(--nav-bg,#0b1220);font:800 10px/15px "Kanit",sans-serif;text-align:center;box-shadow:0 3px 10px #ef444455}
+    .pd-notification-panel{position:fixed;z-index:120;right:clamp(10px,2vw,28px);top:82px;width:min(440px,calc(100vw - 20px));max-height:min(76vh,680px);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border-color,rgba(148,163,184,.25));border-radius:24px;background:var(--panel-bg,rgba(15,23,42,.97));color:var(--text-color,#f8fafc);box-shadow:0 24px 80px rgba(0,0,0,.34);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);animation:pd-notification-enter .18s ease-out both}
+    .pd-notification-panel.hidden{display:none!important}
+    .pd-notification-head{padding:18px 18px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(148,163,184,.18)}
+    .pd-notification-head h2{font-size:20px;font-weight:900;line-height:1.25;margin:3px 0}.pd-notification-head p{font-size:12px;opacity:.68;margin:0}
+    .pd-notification-head-actions{display:flex;align-items:center;gap:8px}.pd-notification-readall{font:700 11px "Kanit",sans-serif;border:1px solid rgba(148,163,184,.27);border-radius:10px;padding:7px 9px;background:rgba(148,163,184,.09);color:inherit;white-space:nowrap}.pd-notification-close{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(148,163,184,.12)}.pd-notification-close svg{width:16px;height:16px}
+    .pd-notification-list{overflow:auto;padding:8px;min-height:100px}.pd-notification-item{display:flex;gap:11px;width:100%;text-align:left;padding:12px;border-radius:15px;border:1px solid transparent;background:transparent;color:inherit;cursor:pointer}.pd-notification-item:hover{background:rgba(148,163,184,.09);border-color:rgba(148,163,184,.12)}.pd-notification-item.is-unread{background:rgba(59,130,246,.075);border-color:rgba(59,130,246,.2)}.pd-notification-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:13px;background:rgba(59,130,246,.13);color:#60a5fa}.pd-notification-icon.is-coins{background:rgba(245,158,11,.14);color:#fbbf24}.pd-notification-icon.is-alert{background:rgba(239,68,68,.12);color:#fb7185}.pd-notification-icon svg{width:18px;height:18px}.pd-notification-content{min-width:0;flex:1}.pd-notification-content strong{display:block;font-size:13px;line-height:1.35;font-weight:800}.pd-notification-content p{margin:3px 0 0;font-size:11px;line-height:1.5;opacity:.75;overflow-wrap:anywhere}.pd-notification-content time{display:block;margin-top:5px;font-size:10px;opacity:.55}.pd-notification-unread-dot{width:7px;height:7px;flex:0 0 7px;margin-top:5px;border-radius:999px;background:#60a5fa}.pd-notification-empty{padding:28px 14px;text-align:center;font-size:12px;opacity:.65}.pd-notification-foot{padding:10px 15px;border-top:1px solid rgba(148,163,184,.16);font-size:10px;line-height:1.5;opacity:.58}
+    html:not(.dark) .pd-notification-panel{background:rgba(255,255,255,.98);color:#0f172a;box-shadow:0 24px 80px rgba(15,23,42,.2)}html:not(.dark) .pd-notification-item.is-unread{background:rgba(59,130,246,.06)}
+    @keyframes pd-notification-enter{from{opacity:0;transform:translateY(-5px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @media(max-width:520px){.pd-notification-panel{top:72px;right:10px;max-height:calc(100dvh - 90px);border-radius:20px}.pd-notification-head{padding:15px}.pd-notification-head h2{font-size:19px}.pd-notification-readall{padding:7px}.pd-notification-item{padding:10px}}
+    @media(prefers-reduced-motion:reduce){.pd-notification-panel{animation:none}}
   </style>
-  <script id="pd-v23-admin-account-runtime">
+  <script id="pd-slip-verification-and-notifications">
     (() => {
       'use strict';
-      const $ = id => document.getElementById(id);
-      const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
-      const asText = value => String(value ?? '');
+      const $ = (id) => document.getElementById(id);
+      const accountDisplay = '219-3-54005-0';
+      const maxSlipBytes = 4 * 1024 * 1024;
+      const verifiedMessage = 'ตรวจสลิปผ่าน ยอดเงินตรง และ SlipOK ยืนยันว่าผู้รับตรงกับบัญชีหลักที่ตั้งค่าไว้';
 
-      function appNotice(title, message, icon = 'info') {
-        if (typeof window.showCustomModal === 'function') {
-          window.showCustomModal({ title, message, icon });
-          const confirm = $('modal-confirm-btn'); if (confirm) confirm.textContent = 'ตกลง';
-          const cancel = $('modal-cancel-btn'); if (cancel) cancel.textContent = 'ยกเลิก';
-        } else window.alert(`${title}\n\n${message}`);
-      }
-      function appConfirm({ title, message, icon = 'alert-triangle', confirmText = 'ยืนยัน', onConfirm }) {
-        if (typeof window.showCustomModal !== 'function') {
-          if (window.confirm(`${title}\n\n${message}`)) onConfirm?.();
-          return;
-        }
-        window.showCustomModal({ title, message, icon, showCancel: true, onConfirm });
-        const confirm = $('modal-confirm-btn'); if (confirm) confirm.textContent = confirmText;
-        const cancel = $('modal-cancel-btn'); if (cancel) cancel.textContent = 'ยกเลิก';
-      }
-
-      function decorateAdminResponsiveTables() {
-        const labels = {
-          'admin-orders-tbody': ['คิว', 'ไฟล์และยอด', 'การจัดส่งและที่อยู่', 'ชำระเงินและสลิป', 'สถานะงานพิมพ์', 'การจัดการ'],
-          'admin-topups-tbody': ['วันที่', 'ผู้ใช้งาน', 'ยอดเงินและ Coins', 'รูปสลิป', 'สถานะ', 'จัดการคำขอ'],
-          'admin-users-tbody': ['ชื่อ-นามสกุล', 'อีเมล', 'สิทธิ์', 'จัดการสิทธิ์']
+      function verificationErrorMessage(code, providerMessage) {
+        const messages = {
+          1012: 'สลิปนี้เคยถูกใช้แล้ว ระบบปฏิเสธรายการซ้ำ',
+          1013: 'ยอดเงินบนสลิปไม่ตรงกับยอดที่ต้องชำระ กรุณาตรวจสอบจำนวนเงิน',
+          1014: `บัญชีผู้รับไม่ตรงกับบัญชีหลักที่กำหนด (${accountDisplay} · กสิกรไทย) จึงไม่รับรายการนี้`,
+          1005: 'ไฟล์ไม่ใช่รูปภาพสลิปที่รองรับ',
+          1006: 'รูปสลิปไม่ถูกต้องหรืออ่านข้อมูลไม่ได้',
+          1007: 'ไม่พบ QR สำหรับตรวจสอบในสลิป กรุณาแนบสลิปจากแอปธนาคารฉบับเต็ม',
+          1008: 'QR ในภาพไม่ใช่ QR สำหรับตรวจสอบการชำระเงิน',
+          1011: 'ไม่พบรายการโอนเงินจริงหรือ QR หมดอายุ จึงไม่รับรายการนี้'
         };
-        for (const [tbodyId, rowLabels] of Object.entries(labels)) {
-          const tbody = $(tbodyId); if (!tbody) continue;
-          tbody.querySelectorAll('tr').forEach(tr => {
-            const cells = [...tr.querySelectorAll(':scope > td')];
-            if (cells.length === 1 && cells[0].hasAttribute('colspan')) return;
-            cells.forEach((cell, i) => { if (rowLabels[i]) cell.dataset.label = rowLabels[i]; });
+        return messages[Number(code)] || providerMessage || 'ไม่สามารถยืนยันสลิปได้ กรุณาตรวจสอบสลิปอีกครั้ง';
+      }
+
+      window.pdVerifySlipFile = async function(file, amount) {
+        if (!(file instanceof File) || file.size <= 0 || file.size > maxSlipBytes) {
+          return { ok: false, manualReview: false, code: 'invalid_file', message: 'รองรับสลิป PNG/JPG/WEBP ขนาดไม่เกิน 4 MB' };
+        }
+        const cents = Math.round(Number(amount) * 100);
+        if (!Number.isFinite(cents) || cents < 1 || cents > 10000000) {
+          return { ok: false, manualReview: false, code: 'invalid_amount', message: 'ยอดที่ต้องตรวจสอบไม่ถูกต้อง' };
+        }
+        const body = new FormData();
+        body.append('slip', file, file.name || 'slip-image');
+        body.append('amount', (cents / 100).toFixed(2));
+        try {
+          const response = await fetch('/api/verify-slip', { method: 'POST', body, cache: 'no-store', credentials: 'same-origin', headers: { 'Accept': 'application/json', 'X-Requested-With': 'PrintDekD' } });
+          let result;
+          try { result = await response.json(); } catch (_) { result = null; }
+          if (response.ok && result?.ok === true) {
+            return { ok: true, manualReview: false, transRef: String(result.transRef || ''), amount: Number(result.amount), receiver: result.receiver || null, verifiedAt: result.verifiedAt || new Date().toISOString(), message: result.message || verifiedMessage };
+          }
+          if (result?.manualReview === true || response.status === 429 || response.status >= 500 || response.status === 404) {
+            return { ok: false, manualReview: true, code: result?.code || response.status, message: result?.message || 'บริการตรวจสอบอัตโนมัติยังไม่พร้อม ระบบจะส่งคำขอให้แอดมินตรวจด้วยตนเอง' };
+          }
+          return { ok: false, manualReview: false, code: result?.code || response.status, message: verificationErrorMessage(result?.code || result?.errorCode, result?.message) };
+        } catch (err) {
+          return { ok: false, manualReview: true, code: 'network_unavailable', message: 'ติดต่อบริการตรวจสลิปอัตโนมัติไม่ได้ คำขอจะเข้าคิวตรวจด้วยตนเองและจะยังไม่เพิ่ม Coins' };
+        }
+      };
+
+      const panel = $('pd-notification-panel');
+      const list = $('pd-notification-list');
+      const bell = $('pd-notifications-btn');
+      const badge = $('pd-notifications-badge');
+      let items = [];
+      let refreshing = false;
+      let pollingStarted = false;
+      function client() {
+        try { return window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null); } catch (_) { return window.supabaseClient || null; }
+      }
+      function who() { return window.currentUser || null; }
+      function seenStorageKey() { const u = who(); return `pd_notifications_read_v1_${String(u?.id || 'guest').replace(/[^a-zA-Z0-9_-]/g,'_')}`; }
+      function readSeen() { try { const val = JSON.parse(localStorage.getItem(seenStorageKey()) || '[]'); return new Set(Array.isArray(val) ? val : []); } catch (_) { return new Set(); } }
+      function saveSeen(set) { try { localStorage.setItem(seenStorageKey(), JSON.stringify([...set].slice(-250))); } catch (_) {} }
+      function escape(s) { return typeof window.escapeHtml === 'function' ? window.escapeHtml(String(s ?? '')) : String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+      function when(value) { const d = value ? new Date(value) : null; return d && !Number.isNaN(d.getTime()) ? d.toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : 'เวลาไม่ระบุ'; }
+      function buildItems(orders, topups, admin) {
+        const out = [];
+        const statusLabels = { queued: 'รอเข้าคิวพิมพ์', pending: 'รอตรวจสอบ', printing: 'กำลังพิมพ์', completed: 'พิมพ์เสร็จแล้ว', cancelled: 'ยกเลิกงานแล้ว', rejected: 'ปฏิเสธรายการ' };
+        if (admin) {
+          (orders || []).filter(o => ['queued','pending'].includes(String(o.status || '').toLowerCase())).forEach(o => out.push({ id: `admin-order:${o.id}:${o.status}`, type: 'order', title: 'มีงานพิมพ์รอดำเนินการ', body: `คิว #${o.queue_number || o.id} · ${statusLabels[o.status] || o.status || 'รอดำเนินการ'}`, created_at: o.created_at, icon: 'printer', view: 'admin' }));
+          (topups || []).filter(t => String(t.status || 'pending').toLowerCase() === 'pending').forEach(t => out.push({ id: `admin-topup:${t.id || t.created_at}:pending`, type: 'topup', title: 'มีคำขอเติม Coins ใหม่', body: `ยอด ${Number(t.amount || 0).toFixed(2)} Coins · ${t.verification_status === 'verified' ? 'ตรวจสลิปอัตโนมัติผ่าน รออนุมัติ' : 'รอตรวจสลิป'}`, created_at: t.created_at, icon: 'coins', view: 'admin' }));
+        } else {
+          (orders || []).forEach(o => out.push({ id: `order:${o.id}:${o.status}`, type: 'order', title: `สถานะงานพิมพ์: ${statusLabels[o.status] || o.status || 'อัปเดต'}`, body: `คิว #${o.queue_number || o.id}${o.total_amount != null ? ` · ${Number(o.total_amount).toFixed(2)} บาท` : ''}`, created_at: o.created_at, icon: ['cancelled','rejected'].includes(String(o.status).toLowerCase()) ? 'alert-triangle' : 'printer', view: 'dashboard' }));
+          (topups || []).forEach(t => {
+            const status = String(t.status || 'pending').toLowerCase();
+            const statusText = status === 'approved' ? 'ได้รับการอนุมัติ Coins แล้ว' : status === 'rejected' ? 'คำขอเติม Coins ถูกปฏิเสธ' : 'กำลังตรวจสอบคำขอเติม Coins';
+            out.push({ id: `topup:${t.id || t.created_at}:${status}`, type: 'topup', title: statusText, body: `ยอด ${Number(t.amount || 0).toFixed(2)} Coins`, created_at: t.created_at, icon: status === 'rejected' ? 'alert-triangle' : 'coins', view: 'wallet' });
           });
         }
+        return out.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 35);
       }
-
-      function decorateProfileInputs() {
-        const items = [
-          ['edit-avatar-url', 'link-2', 'ลิงก์รูปโปรไฟล์'],
-          ['edit-fullname', 'user-round', 'ชื่อ-นามสกุล']
-        ];
-        let changed = false;
-        for (const [id, icon, label] of items) {
-          const input = $(id);
-          if (!input || input.closest('.pd-input-icon-wrap')) continue;
-          const parent = input.parentElement; if (!parent) continue;
-          const wrap = document.createElement('div'); wrap.className = 'pd-input-icon-wrap';
-          parent.insertBefore(wrap, input); wrap.appendChild(input);
-          const leading = document.createElement('span'); leading.className = 'pd-input-leading-icon'; leading.setAttribute('aria-hidden', 'true');
-          const glyph = document.createElement('i'); glyph.setAttribute('data-lucide', icon); leading.appendChild(glyph); wrap.prepend(leading);
-          input.classList.add('pd-profile-icon-input');
-          if (!input.getAttribute('aria-label')) input.setAttribute('aria-label', label);
-          changed = true;
-        }
-        if (changed) { try { window.lucide?.createIcons(); } catch (_) { } }
+      function draw() {
+        if (!list || !badge) return;
+        const seen = readSeen();
+        const unread = items.filter(n => !seen.has(n.id)).length;
+        badge.textContent = unread > 99 ? '99+' : String(unread);
+        badge.classList.toggle('hidden', unread === 0);
+        if (!items.length) { list.innerHTML = '<div class="pd-notification-empty">ยังไม่มีการแจ้งเตือนใหม่</div>'; return; }
+        list.innerHTML = items.map(n => {
+          const isUnread = !seen.has(n.id);
+          const iconClass = n.type === 'topup' ? 'is-coins' : (n.icon === 'alert-triangle' ? 'is-alert' : '');
+          return `<button type="button" class="pd-notification-item ${isUnread ? 'is-unread' : ''}" data-pd-notification-id="${escape(n.id)}" data-pd-notification-view="${escape(n.view)}"><span class="pd-notification-icon ${iconClass}"><i data-lucide="${escape(n.icon)}"></i></span><span class="pd-notification-content"><strong>${escape(n.title)}</strong><p>${escape(n.body)}</p><time>${escape(when(n.created_at))}</time></span>${isUnread ? '<span class="pd-notification-unread-dot" aria-label="ยังไม่อ่าน"></span>' : ''}</button>`;
+        }).join('');
+        try { window.lucide?.createIcons(); } catch (_) {}
       }
-
-      // Data-action event delegation avoids invalid inline onclick attributes with quoted IDs.
-      document.addEventListener('click', async event => {
-        const detailAction = event.target.closest('[data-pd-detail-action]');
-        if (detailAction) {
-          event.preventDefault();
-          const detailType = detailAction.dataset.pdDetailAction;
-          if (detailType === 'open-file') await window.openAdminFileViewer?.(detailAction.dataset.filePath, detailAction.dataset.fileBucket || 'documents', detailAction.dataset.fileName || 'เอกสาร', detailAction.dataset.fileMime || '');
-          else if (detailType === 'slip') window.openSlipModal?.(detailAction.dataset.slipUrl);
-          else if (detailType === 'close') window.closeQueueDetailModal?.();
-          return;
-        }
-        const queueCard = event.target.closest('[data-pd-order-detail]');
-        if (queueCard) { await window.openQueueDetailModal?.(queueCard.dataset.pdOrderDetail); return; }
-        const button = event.target.closest('[data-pd-admin-action]');
-        if (!button) return;
-        const action = button.dataset.pdAdminAction;
-        if (action === 'status') return;
-        event.preventDefault();
-        const orderId = button.dataset.orderId;
-        switch (action) {
-          case 'role':
-            await window.changeUserRole?.(button.dataset.userId, button.dataset.targetRole);
-            break;
-          case 'delete-order':
-            window.deleteCompletedPrintOrder?.(orderId);
-            break;
-          case 'detail':
-            await window.openQueueDetailModal?.(orderId);
-            break;
-          case 'tracking':
-            await window.promptTracking?.(orderId);
-            break;
-          case 'open-file':
-            await window.openStoredPrintFile?.(button.dataset.filePath, button.dataset.fileBucket || 'documents');
-            break;
-          case 'slip':
-            window.openSlipModal?.(button.dataset.slipUrl);
-            break;
-          case 'approve-topup':
-            await window.approveTopup?.(button.dataset.topupId, button.dataset.userId, Number(button.dataset.amount));
-            break;
-          case 'reject-topup':
-            await window.rejectTopup?.(button.dataset.topupId);
-            break;
-        }
-      });
-      document.addEventListener('keydown', async event => {
-        if (!['Enter', ' '].includes(event.key)) return;
-        const queueCard = event.target.closest('[data-pd-order-detail]');
-        if (!queueCard) return;
-        event.preventDefault();
-        await window.openQueueDetailModal?.(queueCard.dataset.pdOrderDetail);
-      });
-      document.addEventListener('change', async event => {
-        const control = event.target.closest('[data-pd-admin-action="status"]');
-        if (!control) return;
-        const orderId = control.dataset.orderId;
-        const previous = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId))?.status || 'queued';
-        if (control.value === previous) return;
-        control.disabled = true;
-        try { await window.updateOrderStatus?.(orderId, control.value); }
-        finally { if (control.isConnected) control.disabled = false; }
-      });
-
-      // Rebind responsive labels after every data refresh without duplicating listeners.
-      const originalLoadAdminData = window.loadAdminData;
-      if (typeof originalLoadAdminData === 'function' && !originalLoadAdminData.__pdV23Wrapped) {
-        const wrapped = async function (...args) {
-          const result = await originalLoadAdminData.apply(this, args);
-          requestAnimationFrame(() => { decorateAdminResponsiveTables(); decorateProfileInputs(); });
-          return result;
-        };
-        wrapped.__pdV23Wrapped = true;
-        window.loadAdminData = wrapped;
-      }
-
-      window.changeUserRole = async function (userId, newRole) {
-        if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        if (!['admin', 'member'].includes(String(newRole))) return appNotice('สิทธิ์ไม่ถูกต้อง', 'ระบบรองรับเฉพาะ Admin และ Member', 'shield-alert');
-        if (String(window.currentUser?.id) === String(userId)) return appNotice('เปลี่ยนสิทธิ์ไม่ได้', 'ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้ เพื่อป้องกันการล็อกตัวเองออกจากระบบ', 'shield-alert');
-        const button = [...document.querySelectorAll('#admin-users-tbody [data-pd-admin-action="role"]')].find(b => String(b.dataset.userId) === String(userId));
-        const performUpdate = async () => {
-          const client = db();
-          if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่สำเร็จ จึงไม่ได้เปลี่ยนสิทธิ์', 'database-zap');
-          const beforeText = button?.textContent;
-          if (button) { button.disabled = true; button.classList.add('pd-v23-busy'); button.textContent = 'กำลังบันทึก…'; }
-          try {
-            const result = await client.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle();
-            if (result.error) throw result.error;
-            if (!result.data || String(result.data.role) !== String(newRole)) throw new Error('ฐานข้อมูลไม่ยืนยันการเปลี่ยนสิทธิ์ ตรวจสอบ RLS Policy ของ public.users ว่า Admin มีสิทธิ์ UPDATE และ SELECT');
-            appNotice('สลับสิทธิ์สำเร็จ', `เปลี่ยนสิทธิ์สมาชิกเป็น ${String(newRole).toUpperCase()} แล้ว`, 'shield-check');
-            await window.loadAdminData?.();
-          } catch (error) {
-            const raw = error?.message || String(error);
-            const hint = /row.level security|permission denied|not authorized|policy/i.test(raw) ? `${raw}\n\nตรวจสอบ RLS Policy ของตาราง public.users ใน Supabase` : raw;
-            appNotice('เปลี่ยนสิทธิ์ไม่สำเร็จ', hint, 'shield-alert');
-          } finally {
-            if (button?.isConnected) { button.disabled = false; button.classList.remove('pd-v23-busy'); if (beforeText) button.textContent = beforeText; }
-          }
-        };
-        appConfirm({
-          title: 'ยืนยันการเปลี่ยนสิทธิ์',
-          message: `ต้องการเปลี่ยนบัญชีนี้เป็น ${String(newRole).toUpperCase()} ใช่หรือไม่?\n\nระบบจะบันทึกลงฐานข้อมูลจริงเมื่อคุณยืนยัน`,
-          icon: 'shield-check', confirmText: 'ยืนยันเปลี่ยนสิทธิ์', onConfirm: performUpdate
-        });
-      };
-
-      window.deleteCompletedPrintOrder = async function (orderId) {
-        if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        const client = db();
-        if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ไม่สามารถลบรายการได้จนกว่า Supabase จะเชื่อมต่อ', 'database-zap');
-        // Always read the current status from the database before deciding whether deletion is allowed.
-        let order;
+      window.refreshPDNotifications = async function() {
+        if (refreshing) return;
+        const user = who(); const db = client();
+        if (!user || !db) { items = []; if (bell) bell.classList.add('hidden'); if (badge) badge.classList.add('hidden'); if (list) list.innerHTML = '<div class="pd-notification-empty">เข้าสู่ระบบและเชื่อมต่อฐานข้อมูลเพื่อดูสถานะรายการ</div>'; return; }
+        if (bell) bell.classList.remove('hidden');
+        refreshing = true;
         try {
-          const lookup = await client.from('orders').select('id,queue_number,status').eq('id', orderId).maybeSingle();
-          if (lookup.error) throw lookup.error;
-          order = lookup.data;
-          const cached = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId));
-          if (cached && order) { cached.status = order.status; cached.queue_number = order.queue_number ?? cached.queue_number; }
-        } catch (error) { return appNotice('ตรวจสอบคิวไม่สำเร็จ', error?.message || String(error), 'shield-alert'); }
-        if (!order) return appNotice('ไม่พบคิวงาน', 'ไม่พบรายการนี้ในฐานข้อมูล อาจมีผู้จัดการลบไปแล้ว', 'search-x');
-        if (order.status !== 'completed') {
-          const statusLabel = ({ queued: 'รอคิว', pending: 'รอคิว', printing: 'กำลังพิมพ์', cancelled: 'ยกเลิกแล้ว' })[order.status] || String(order.status || 'ไม่ทราบสถานะ');
-          return appNotice('ยังลบงานนี้ไม่ได้', `คิว #${order.queue_number ?? order.id} มีสถานะ “${statusLabel}”\n\nระบบอนุญาตให้ลบได้เฉพาะงานที่มีสถานะ “พิมพ์เสร็จแล้ว” เท่านั้น กรุณาอัปเดตสถานะให้ถูกต้องก่อน`, 'alert-triangle');
-        }
-        appConfirm({
-          title: 'ยืนยันการลบงานพิมพ์',
-          message: `คิว #${order.queue_number ?? order.id} ทำงานเสร็จแล้ว\n\nเมื่อยืนยัน รายการจะถูกลบออกจากฐานข้อมูล หากต้องการเก็บประวัติไว้ กรุณากดยกเลิก`,
-          icon: 'trash-2', confirmText: 'ยืนยันลบงาน',
-          onConfirm: async () => {
-            const rowButton = [...document.querySelectorAll('#admin-orders-tbody [data-pd-admin-action="delete-order"]')].find(b => String(b.dataset.orderId) === String(orderId));
-            if (rowButton) { rowButton.disabled = true; rowButton.classList.add('pd-v23-busy'); rowButton.textContent = 'กำลังลบ…'; }
-            try {
-              // Read related document references before deletion. No child data is removed unless the parent deletion succeeds.
-              const jobsResult = await client.from('print_jobs').select('id,document_id').eq('order_id', orderId);
-              if (jobsResult.error) throw jobsResult.error;
-              const documentIds = [...new Set((jobsResult.data || []).map(job => job.document_id).filter(Boolean).map(String))];
-              let documentRows = [];
-              if (documentIds.length) {
-                const docsResult = await client.from('documents').select('id,file_path').in('id', documentIds);
-                if (docsResult.error) throw docsResult.error;
-                documentRows = docsResult.data || [];
-              }
-              const deleted = await client.from('orders').delete().eq('id', orderId).eq('status', 'completed').select('id').maybeSingle();
-              if (deleted.error) throw deleted.error;
-              if (!deleted.data) throw new Error('ฐานข้อมูลไม่ได้ยืนยันการลบ อาจมีการเปลี่ยนสถานะพร้อมกันหรือ RLS ไม่อนุญาต');
-
-              // After successful parent deletion, clean orphaned document rows/files only when no other print job references them.
-              for (const doc of documentRows) {
-                try {
-                  const references = await client.from('print_jobs').select('id').eq('document_id', doc.id).limit(1);
-                  if (references.error || references.data?.length) continue;
-                  if (doc.file_path && !/^https?:\/\//i.test(doc.file_path)) {
-                    try { await client.storage.from('documents').remove([doc.file_path]); } catch (_) { }
-                  }
-                  await client.from('documents').delete().eq('id', doc.id);
-                } catch (_) { /* Successful order deletion must not be misreported because optional file cleanup failed. */ }
-              }
-              appNotice('ลบงานพิมพ์สำเร็จ', `ลบคิว #${order.queue_number ?? order.id} ออกจากรายการแล้ว`, 'check-circle-2');
-              await window.loadAdminData?.();
-              await window.fetchQueues?.();
-            } catch (error) {
-              const raw = error?.message || String(error);
-              const message = /foreign key|violates.*constraint|constraint/i.test(raw)
-                ? `${raw}\n\nฐานข้อมูลยังมีตารางที่อ้างอิงคิวนี้อยู่ จึงยกเลิกการลบเพื่อป้องกันข้อมูลที่เกี่ยวข้องเสียหาย กรุณาตรวจสอบ Foreign Key ของ orders ใน Supabase`
-                : raw;
-              appNotice('ลบงานไม่สำเร็จ', message, 'shield-alert');
-            } finally {
-              if (rowButton?.isConnected) { rowButton.disabled = false; rowButton.classList.remove('pd-v23-busy'); rowButton.textContent = '⌫ ลบงาน'; }
-            }
+          const isAdmin = user.role === 'admin';
+          let ordersQuery = db.from('orders').select('id,user_id,queue_number,total_amount,status,created_at').order('created_at', { ascending: false }).limit(25);
+          let topupsQuery = db.from('topups').select('id,user_id,amount,status,created_at,verification_status').order('created_at', { ascending: false }).limit(25);
+          if (!isAdmin) { ordersQuery = ordersQuery.eq('user_id', user.id); topupsQuery = topupsQuery.eq('user_id', user.id); }
+          let [or, tr] = await Promise.all([ordersQuery, topupsQuery]);
+          if (tr.error && /verification_status|column|schema cache/i.test(tr.error.message || '')) {
+            // Keep notification center functional before the optional wallet migration is applied.
+            let fallbackTopups = db.from('topups').select('id,user_id,amount,status,created_at').order('created_at', { ascending: false }).limit(25);
+            if (!isAdmin) fallbackTopups = fallbackTopups.eq('user_id', user.id);
+            tr = await fallbackTopups;
           }
-        });
+          const orders = or.error ? [] : (or.data || []);
+          const topups = tr.error ? [] : (tr.data || []);
+          if (or.error) console.warn('[PrintDekD notifications] orders unavailable:', or.error.message);
+          if (tr.error) console.warn('[PrintDekD notifications] topups unavailable:', tr.error.message);
+          items = buildItems(orders, topups, isAdmin);
+          draw();
+        } catch (err) { console.warn('[PrintDekD notifications] refresh failed:', err?.message || err); }
+        finally { refreshing = false; }
       };
-
-      function ready() { decorateAdminResponsiveTables(); decorateProfileInputs(); }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true }); else ready();
-      const profileForm = $('profile-edit-section');
-      if (profileForm && 'MutationObserver' in window) {
-        const observer = new MutationObserver(() => decorateProfileInputs());
-        observer.observe(profileForm, { childList: true, subtree: true });
-      }
+      window.toggleNotificationPanel = async function(force) {
+        if (!panel) return;
+        const show = typeof force === 'boolean' ? force : panel.classList.contains('hidden');
+        panel.classList.toggle('hidden', !show);
+        bell?.setAttribute('aria-expanded', String(show));
+        if (show) {
+          await window.refreshPDNotifications?.();
+          const seen = readSeen(); items.forEach(n => seen.add(n.id)); saveSeen(seen); draw();
+          $('pd-notification-readall')?.focus({ preventScroll: true });
+        }
+      };
+      $('pd-notification-readall')?.addEventListener('click', () => { const seen = readSeen(); items.forEach(n => seen.add(n.id)); saveSeen(seen); draw(); });
+      list?.addEventListener('click', async event => {
+        const target = event.target.closest('[data-pd-notification-id]'); if (!target) return;
+        const id = target.dataset.pdNotificationId; const seen = readSeen(); seen.add(id); saveSeen(seen); draw();
+        const view = target.dataset.pdNotificationView; window.toggleNotificationPanel?.(false);
+        if (view === 'admin' && typeof window.switchView === 'function') window.switchView('admin');
+        else if (view && typeof window.switchView === 'function') window.switchView(view);
+      });
       document.addEventListener('click', event => {
-        if (event.target.closest('[onclick*="toggleProfileEdit(true)"]')) setTimeout(decorateProfileInputs, 80);
-      }, true);
-      const adminBody = $('view-admin');
-      if (adminBody && 'MutationObserver' in window) {
-        const observer = new MutationObserver(() => decorateAdminResponsiveTables());
-        observer.observe(adminBody, { childList: true, subtree: true });
+        if (!panel || panel.classList.contains('hidden')) return;
+        if (panel.contains(event.target) || bell?.contains(event.target)) return;
+        window.toggleNotificationPanel?.(false);
+      });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape' && panel && !panel.classList.contains('hidden')) window.toggleNotificationPanel(false); });
+      function startPolling() {
+        if (pollingStarted) return; pollingStarted = true;
+        window.refreshPDNotifications?.();
+        window.setInterval(() => window.refreshPDNotifications?.(), 45000);
+        window.addEventListener('focus', () => window.refreshPDNotifications?.());
       }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startPolling, { once: true }); else startPolling();
     })();
   </script>
-
-
-<style id="pd-order-result-responsive-style">
-  body.pd-result-modal-open { overflow: hidden !important; }
-  .pd-result-modal {
-    position: fixed; inset: 0; z-index: 32000;
-    display: flex; align-items: center; justify-content: center;
-    padding: max(20px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-    background: rgba(2, 5, 12, .76);
-    -webkit-backdrop-filter: blur(16px) saturate(125%); backdrop-filter: blur(16px) saturate(125%);
-    animation: pd-result-fade .22s ease-out both;
-  }
-  .pd-result-modal[hidden] { display: none !important; }
-  .pd-result-card {
-    box-sizing: border-box; position: relative; isolation: isolate; width: min(100%, 540px); max-height: min(88dvh, 760px); overflow: auto;
-    padding: clamp(25px, 4vw, 42px); border-radius: 32px;
-    color: #f5f7fb; text-align: center;
-    background: radial-gradient(440px 210px at 50% -8%, rgba(10,132,255,.18), transparent 72%), linear-gradient(155deg, rgba(19,24,35,.985), rgba(9,12,19,.99));
-    border: 1px solid rgba(255,255,255,.12);
-    box-shadow: 0 38px 120px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.055);
-    animation: pd-result-enter .34s cubic-bezier(.16,1,.3,1) both;
-    overflow-wrap: anywhere;
-  }
-  .pd-result-card::before { content:""; position:absolute; z-index:-1; inset:0 18% auto; height:1px; margin:auto; background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent); }
-  .pd-result-dismiss { position:absolute; top:13px; right:13px; width:42px; height:42px; min-height:42px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(255,255,255,.055); color:#aab5c5; font-size:25px; line-height:1; transition:background .18s ease,color .18s ease; }
-  .pd-result-dismiss:hover { background:rgba(255,255,255,.12); color:#fff; }
-  .pd-result-mark { width:76px; height:76px; margin:0 auto 19px; display:grid; place-items:center; border-radius:25px; color:#70b7ff; background:linear-gradient(145deg,rgba(10,132,255,.18),rgba(10,132,255,.07)); border:1px solid rgba(83,164,255,.27); box-shadow:0 15px 36px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.10); }
-  .pd-result-mark svg { width:37px; height:37px; stroke-width:1.9; }
-  .pd-result-kicker { margin-bottom:12px; color:#81baff; font-size:11px; font-weight:900; letter-spacing:.16em; }
-  .pd-result-kicker span { color:#63768d; padding:0 4px; }
-  #pd-result-title { margin:0; color:#f8fafc; font-size:clamp(25px,4vw,34px); font-weight:900; letter-spacing:-.035em; line-height:1.25; text-wrap:balance; }
-  #pd-result-message { margin:15px auto 0; max-width:44ch; white-space:pre-line; color:#b5c0d0; font-size:clamp(15px,1.8vw,17px); line-height:1.85; font-weight:500; }
-  .pd-result-footer { display:flex; justify-content:center; align-items:center; gap:9px; margin:22px auto 25px; color:#8190a4; font-size:12px; font-weight:700; }
-  .pd-result-status-dot { display:block; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:#58a6ff; box-shadow:0 0 0 5px rgba(88,166,255,.10); }
-  .pd-result-primary { width:100%; min-height:54px; display:flex; align-items:center; justify-content:center; padding:14px 20px; border:1px solid rgba(78,160,255,.28); border-radius:17px; color:#fff; font-size:15px; font-weight:900; background:linear-gradient(135deg,#168aff,#0868eb); box-shadow:0 12px 28px rgba(0,105,255,.24); transition:transform .18s ease,filter .18s ease,box-shadow .18s ease; }
-  .pd-result-primary:hover { filter:brightness(1.08); box-shadow:0 16px 34px rgba(0,105,255,.32); }
-  .pd-result-primary:active { transform:scale(.985); }
-  .pd-result-card[data-tone="success"] .pd-result-mark { color:#4ce0a0; border-color:rgba(53,208,127,.30); background:linear-gradient(145deg,rgba(53,208,127,.18),rgba(53,208,127,.06)); }
-  .pd-result-card[data-tone="success"] .pd-result-kicker { color:#62e4aa; }
-  .pd-result-card[data-tone="success"] .pd-result-status-dot { background:#35d07f; box-shadow:0 0 0 5px rgba(53,208,127,.11); }
-  .pd-result-card[data-tone="success"] .pd-result-primary { background:linear-gradient(135deg,#16a875,#0b8b61); border-color:rgba(53,208,127,.28); box-shadow:0 12px 28px rgba(10,150,100,.20); }
-  .pd-result-card[data-tone="danger"] .pd-result-mark { color:#ff7888; border-color:rgba(255,95,115,.30); background:linear-gradient(145deg,rgba(255,95,115,.18),rgba(255,95,115,.06)); }
-  .pd-result-card[data-tone="danger"] .pd-result-kicker { color:#ff8897; }
-  .pd-result-card[data-tone="danger"] .pd-result-status-dot { background:#ff6579; box-shadow:0 0 0 5px rgba(255,95,115,.11); }
-  .pd-result-card[data-tone="danger"] .pd-result-primary { background:linear-gradient(135deg,#dc4560,#b92445); border-color:rgba(255,95,115,.28); box-shadow:0 12px 28px rgba(180,30,60,.20); }
-  .pd-result-card[data-tone="warning"] .pd-result-mark { color:#ffd16a; border-color:rgba(245,185,63,.30); background:linear-gradient(145deg,rgba(245,185,63,.17),rgba(245,185,63,.05)); }
-  .pd-result-card[data-tone="warning"] .pd-result-kicker { color:#ffd16a; }
-  .pd-result-card[data-tone="warning"] .pd-result-status-dot { background:#f5b93f; box-shadow:0 0 0 5px rgba(245,185,63,.11); }
-  .pd-result-card[data-tone="warning"] .pd-result-primary { background:linear-gradient(135deg,#c98a14,#a96b08); border-color:rgba(245,185,63,.28); box-shadow:0 12px 28px rgba(180,115,10,.18); }
-  html:not(.dark) .pd-result-card { color:#111827; background:radial-gradient(440px 210px at 50% -8%,rgba(10,132,255,.10),transparent 72%),linear-gradient(155deg,rgba(255,255,255,.99),rgba(246,249,253,.99)); border-color:rgba(15,23,42,.11); box-shadow:0 35px 100px rgba(15,23,42,.24),inset 0 1px 0 #fff; }
-  html:not(.dark) #pd-result-title { color:#111827; }
-  html:not(.dark) #pd-result-message { color:#526174; }
-  html:not(.dark) .pd-result-dismiss { color:#64748b; background:rgba(15,23,42,.04); border-color:rgba(15,23,42,.09); }
-  .pd-order-submitting { opacity:.88; cursor:wait !important; filter:saturate(.8); }
-  .pd-submit-spinner { width:19px; height:19px; display:inline-block; flex:0 0 19px; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:pd-submit-spin .75s linear infinite; }
-  @keyframes pd-submit-spin { to { transform:rotate(360deg); } }
-  @keyframes pd-result-fade { from { opacity:0; } to { opacity:1; } }
-  @keyframes pd-result-enter { from { opacity:0; transform:translateY(12px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
-  @media (max-width:640px) {
-    .pd-result-modal { align-items:flex-end; padding:10px 10px max(10px,env(safe-area-inset-bottom)); }
-    .pd-result-card { width:100%; max-width:none; max-height:min(84dvh,720px); padding:29px 20px max(20px,env(safe-area-inset-bottom)); border-radius:28px 28px 20px 20px; }
-    .pd-result-mark { width:66px; height:66px; margin-bottom:16px; border-radius:22px; }
-    .pd-result-mark svg { width:32px; height:32px; }
-    .pd-result-kicker { font-size:10px; letter-spacing:.13em; }
-    #pd-result-title { font-size:clamp(24px,7vw,30px); }
-    #pd-result-message { margin-top:12px; font-size:15px; line-height:1.75; }
-    .pd-result-footer { margin:18px auto 20px; font-size:11px; }
-    .pd-result-primary { min-height:54px; }
-  }
-  @media (prefers-reduced-motion:reduce) {
-    .pd-result-modal,.pd-result-card,.pd-submit-spinner { animation:none !important; }
-    .pd-result-primary,.pd-result-dismiss { transition:none !important; }
-  }
-</style>
-
-
-<script id="pd-order-submit-feedback-runtime">
-  (() => {
-    'use strict';
-    const form = document.getElementById('print-form');
-    if (!form || typeof window.handleOrderSubmit !== 'function' || window.handleOrderSubmit.__pdOrderFeedbackWrapped) return;
-    const originalSubmit = window.handleOrderSubmit;
-    let submitting = false;
-    window.handleOrderSubmit = async function (event) {
-      event?.preventDefault();
-      if (submitting) return;
-      submitting = true;
-      const button = event?.submitter || form.querySelector('button[type="submit"]');
-      const originalMarkup = button?.innerHTML;
-      if (button) {
-        button.disabled = true;
-        button.setAttribute('aria-busy', 'true');
-        button.classList.add('pd-order-submitting');
-        button.innerHTML = '<span class="pd-submit-spinner" aria-hidden="true"></span><span>กำลังส่งคำสั่งพิมพ์…</span>';
-      }
-      try {
-        return await originalSubmit.apply(this, arguments);
-      } catch (error) {
-        console.error('[PrintDekD] Unexpected checkout error:', error);
-        if (typeof window.notifyV12 === 'function') {
-          window.notifyV12('ส่งคำสั่งพิมพ์ไม่สำเร็จ', error?.message || 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', 'shield-alert');
-        } else if (typeof window.showCustomModal === 'function') {
-          window.showCustomModal({ title: 'ส่งคำสั่งพิมพ์ไม่สำเร็จ', message: error?.message || 'กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', icon: 'shield-alert' });
-        }
-      } finally {
-        submitting = false;
-        if (button?.isConnected) {
-          button.disabled = false;
-          button.removeAttribute('aria-busy');
-          button.classList.remove('pd-order-submitting');
-          button.innerHTML = originalMarkup || '<i data-lucide="send" class="w-5 h-5"></i> ยืนยันการสั่งพิมพ์';
-          try { window.lucide?.createIcons?.(); } catch (_) { }
-        }
-      }
-    };
-    window.handleOrderSubmit.__pdOrderFeedbackWrapped = true;
-  })();
-</script>
-
-
-<!-- PrintDekD Pro v23: responsive payment + motion/performance layer -->
-<style id="pd-v23-renovation-layer">
-  :root {
-    --pd23-ink: #0b1018;
-    --pd23-panel: #111a26;
-    --pd23-panel-raised: #172334;
-    --pd23-line: rgba(148, 163, 184, .22);
-    --pd23-blue: #1685ff;
-    --pd23-blue-soft: rgba(22, 133, 255, .12);
-    --pd23-gold: #ffbd35;
-    --pd23-radius: clamp(16px, 2vw, 26px);
-    --pd23-motion: cubic-bezier(.2, .75, .25, 1);
-  }
-
-  /* Predictable sizing and safe-area support across phone, tablet and desktop. */
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-padding-top: 5rem; }
-  body { min-width: 320px; }
-  img, canvas, video, iframe { max-width: 100%; }
-  button, input, select, textarea { font: inherit; }
-  button, [role="button"], input[type="button"], input[type="submit"] {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
-    outline: 3px solid rgba(56, 156, 255, .9);
-    outline-offset: 3px;
-  }
-
-  /* QR payment card: amount first, QR as the visual anchor, payment details together. */
-  .pd23-payment-card {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
-    grid-template-areas: "amount qr" "details qr";
-    align-items: center;
-    gap: clamp(14px, 2.2vw, 26px) !important;
-    padding: clamp(16px, 2.5vw, 30px) !important;
-    border-radius: var(--pd23-radius) !important;
-    text-align: left;
-    background:
-      radial-gradient(ellipse at 88% 10%, rgba(245, 158, 11, .09), transparent 46%),
-      linear-gradient(145deg, rgba(30, 41, 59, .96), rgba(12, 17, 25, .98)) !important;
-    border: 1px solid rgba(245, 158, 11, .34) !important;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, .16), inset 0 1px rgba(255,255,255,.025);
-    min-width: 0;
-  }
-  .pd23-payment-card > .pd23-amount {
-    grid-area: amount;
-    justify-self: stretch;
-    display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    width: 100%;
-    padding: clamp(14px, 2vw, 20px) !important;
-    border-radius: 18px !important;
-    background: rgba(245, 158, 11, .09) !important;
-    border: 1px solid rgba(245, 158, 11, .24) !important;
-    white-space: normal;
-  }
-  .pd23-payment-card .pd23-amount-label {
-    color: #cbd5e1;
-    font-size: clamp(12px, 1.15vw, 14px);
-    font-weight: 700;
-    letter-spacing: .015em;
-  }
-  .pd23-payment-card #topup-qr-amount {
-    display: inline-block;
-    color: #ffd166 !important;
-    font-size: clamp(28px, 3.2vw, 42px) !important;
-    line-height: 1.05;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -.035em;
-    overflow-wrap: anywhere;
-  }
-  .pd23-payment-card .pd23-qr {
-    grid-area: qr;
-    justify-self: center;
-    align-self: center;
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 260px;
-    min-width: 0;
-    padding: 12px !important;
-    border: 4px solid rgba(255, 255, 255, .92) !important;
-    border-radius: 22px !important;
-    background: #fff !important;
-    box-shadow: 0 10px 32px rgba(0,0,0,.22);
-  }
-  .pd23-payment-card .pd23-qr img {
-    display: block;
-    width: clamp(150px, 18vw, 220px) !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
-    image-rendering: pixelated;
-    border-radius: 8px;
-  }
-  .pd23-payment-card > .pd23-details {
-    grid-area: details;
-    display: flex !important;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    min-width: 0;
-    width: 100%;
-    padding-top: 2px;
-  }
-  .pd23-payment-card .pd23-promptpay-note {
-    width: 100%;
-    margin: 0;
-    padding: 10px 12px;
-    border-radius: 12px;
-    color: #cbd5e1;
-    background: rgba(2, 6, 23, .32);
-    border: 1px solid rgba(148, 163, 184, .16);
-    font-size: 12px;
-    line-height: 1.65;
-  }
-  .pd23-payment-card .pd23-promptpay-note strong { color: #ffd166; }
-  .pd23-payment-card .pd23-details button {
-    min-height: 44px;
-    max-width: 100%;
-    white-space: normal;
-  }
-
-  /* More comfortable form controls and modal sizing without changing application logic. */
-  :where(input:not([type="radio"]):not([type="checkbox"]), select, textarea) {
-    max-width: 100%;
-    min-width: 0;
-  }
-  :where(.modal, [role="dialog"], .fixed.inset-0) {
-    overscroll-behavior: contain;
-  }
-  @media (min-width: 1440px) {
-    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(220px, 260px); }
-  }
-  @media (min-width: 641px) and (max-width: 900px) {
-    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(160px, 190px); gap: 14px !important; }
-    .pd23-payment-card .pd23-qr { padding: 9px !important; border-radius: 18px !important; }
-    .pd23-payment-card .pd23-qr img { width: clamp(140px, 23vw, 180px) !important; }
-  }
-  @media (max-width: 640px) {
-    .pd23-payment-card {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "amount" "qr" "details";
-      gap: 14px !important;
-      padding: 14px !important;
-      border-radius: 20px !important;
-    }
-    .pd23-payment-card > .pd23-amount { align-items: center; text-align: center; padding: 14px !important; }
-    .pd23-payment-card #topup-qr-amount { font-size: clamp(30px, 9vw, 38px) !important; }
-    .pd23-payment-card .pd23-qr { width: min(100%, 246px); padding: 10px !important; }
-    .pd23-payment-card .pd23-qr img { width: min(62vw, 218px) !important; }
-    .pd23-payment-card > .pd23-details { align-items: stretch; }
-    .pd23-payment-card .pd23-details > * { max-width: 100%; overflow-wrap: anywhere; }
-    .pd23-payment-card .pd23-details button { width: 100%; justify-content: center; }
-    input[type="file"] { max-width: 100%; font-size: 12px; }
-  }
-  @media (max-width: 380px) {
-    .pd23-payment-card { padding: 11px !important; }
-    .pd23-payment-card .pd23-qr { max-width: 214px; }
-    .pd23-payment-card .pd23-qr img { width: min(60vw, 190px) !important; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto !important; }
-    *, *::before, *::after { scroll-behavior: auto !important; }
-  }
-  /* Decorative motion pauses only when hidden; active-view animations remain intact. */
-  html.pd23-tab-hidden .pd-ambient-orb,
-  html.pd23-tab-hidden .pd-ai-pulse,
-  html.pd23-tab-hidden .pd-cursor-glow,
-  html.pd23-tab-hidden .pd-live-island,
-  html.pd23-tab-hidden .pd23-ambient-motion {
-    animation-play-state: paused !important;
-  }
-</style>
-<script id="pd-v23-renovation-script">
-(() => {
-  'use strict';
-  const root = document.documentElement;
-  const $ = (selector, scope = document) => scope.querySelector(selector);
-  const paymentCard = $('#topup-qr-amount')?.closest('.bg-gradient-to-b');
-
-  /* Build a semantic layout from the existing payment DOM; keep checkout handlers untouched. */
-  function enhancePaymentCard() {
-    const amount = $('#topup-qr-amount');
-    if (!amount) return;
-    const card = amount.closest('.bg-gradient-to-b');
-    if (!card || card.dataset.pd23Enhanced === 'true') return;
-    card.dataset.pd23Enhanced = 'true';
-    card.classList.add('pd23-payment-card');
-
-    const amountBadge = amount.closest('div');
-    const qrImage = card.querySelector('img[alt*="PromptPay Topup QR"]');
-    const qr = qrImage?.parentElement;
-    const copyButton = card.querySelector('button[onclick*="copyPromptPay"]');
-    const details = copyButton?.parentElement;
-    amountBadge?.classList.add('pd23-amount');
-    qr?.classList.add('pd23-qr');
-    details?.classList.add('pd23-details');
-
-    if (amountBadge && !amountBadge.querySelector('.pd23-amount-label')) {
-      const label = document.createElement('span');
-      label.className = 'pd23-amount-label';
-      label.textContent = 'ยอดโอนที่เลือก';
-      amountBadge.prepend(label);
-    }
-    if (details && !details.querySelector('.pd23-promptpay-note')) {
-      const note = document.createElement('p');
-      note.className = 'pd23-promptpay-note';
-      note.setAttribute('role', 'note');
-      note.textContent = 'QR นี้เป็น PromptPay แบบไม่ระบุยอด กรุณาตรวจสอบยอดที่แสดงและกรอกยอดให้ตรงก่อนยืนยันการโอน';
-      details.append(note);
-    }
-    if (qrImage) {
-      qrImage.width = 220;
-      qrImage.height = 220;
-      qrImage.loading = 'lazy';
-      qrImage.decoding = 'async';
-      qrImage.setAttribute('fetchpriority', 'low');
-    }
-    const amountValue = Number.parseFloat(amount.textContent || '0');
-    if (Number.isFinite(amountValue)) amount.textContent = amountValue.toFixed(2);
-  }
-
-  /* No perpetual JS animation loop: pause only selected decorative CSS while page is hidden. */
-  function syncVisibilityMotion() {
-    root.classList.toggle('pd23-tab-hidden', document.visibilityState === 'hidden');
-  }
-  document.addEventListener('visibilitychange', syncVisibilityMotion, { passive: true });
-
-  /* Lightweight, local-only diagnostics. No user data or file names are transmitted. */
-  window.pdV23Diagnostics = function () {
-    const doc = document.documentElement;
-    const nav = navigator;
-    const result = {
-      viewport: { width: window.innerWidth, height: window.innerHeight },
-      documentWidth: doc.scrollWidth,
-      horizontalOverflow: doc.scrollWidth > doc.clientWidth + 2,
-      deviceMemoryGB: Number.isFinite(nav.deviceMemory) ? nav.deviceMemory : null,
-      hardwareConcurrency: Number.isFinite(nav.hardwareConcurrency) ? nav.hardwareConcurrency : null,
-      reducedMotion: !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
-      paymentCardEnhanced: !!$('.pd23-payment-card'),
-      qrImageLoaded: !!$('#topup-qr-amount')?.closest('.pd23-payment-card')?.querySelector('img')?.complete,
-      secureContext: !!window.isSecureContext,
-      supabaseConfigured: !!window.supabaseClient
-    };
-    console.info('[PrintDekD v23 diagnostics]', result);
-    return result;
-  };
-
-  /* Record browser performance entries locally for DevTools debugging; do not upload telemetry. */
-  if ('PerformanceObserver' in window) {
-    try {
-      const supported = PerformanceObserver.supportedEntryTypes || [];
-      if (supported.includes('longtask')) {
-        const observer = new PerformanceObserver(list => {
-          for (const entry of list.getEntries()) {
-            if (entry.duration >= 100) console.debug('[PrintDekD performance] long task', Math.round(entry.duration) + 'ms');
-          }
-        });
-        observer.observe({ type: 'longtask', buffered: false });
-      }
-    } catch (_) { /* Unsupported browser: diagnostics remain optional. */ }
-  }
-
-  function init() {
-    enhancePaymentCard();
-    syncVisibilityMotion();
-    if (window.lucide?.createIcons) {
-      try { window.lucide.createIcons(); } catch (_) { /* Icon rendering is non-critical. */ }
-    }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
-})();
-</script>
-
-
-<style id="pd-notification-center-v1">
-#pd-notification-trigger{position:relative;flex:0 0 auto;width:46px;height:46px;border-radius:15px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--pd-line,rgba(255,255,255,.12));background:var(--pd-surface,rgba(18,21,29,.92));color:var(--text-main,#f8fafc);box-shadow:0 8px 24px rgba(0,0,0,.10);transition:transform .18s ease,border-color .18s ease}
-#pd-notification-trigger:hover{transform:translateY(-1px);border-color:rgba(10,132,255,.55)}
-#pd-notification-badge{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#e5484d;color:#fff;border:2px solid var(--bg-main,#080a0f);font:800 10px/16px system-ui,sans-serif;text-align:center;box-shadow:0 3px 10px #0003}
-#pd-notification-panel{position:fixed;z-index:10050;top:calc(env(safe-area-inset-top) + 76px);right:max(14px,env(safe-area-inset-right));width:min(410px,calc(100vw - 24px));max-height:min(72dvh,620px);overflow:hidden;border:1px solid var(--pd-line,rgba(255,255,255,.12));border-radius:24px;background:var(--bg-elevated,#11141c);color:var(--text-main,#f8fafc);box-shadow:0 28px 90px #0005;display:flex;flex-direction:column}
-#pd-notification-panel[hidden]{display:none}
-.pd-notif-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--pd-line,rgba(255,255,255,.12))}
-.pd-notif-list{overflow:auto;padding:8px;overscroll-behavior:contain}
-.pd-notif-item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;padding:13px;border-radius:16px}
-.pd-notif-item.unread{background:rgba(10,132,255,.085)}
-.pd-notif-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(10,132,255,.12);color:#3994ff}
-.pd-notif-title{font-size:14px;font-weight:800;line-height:1.4}
-.pd-notif-copy{font-size:12px;line-height:1.55;color:var(--text-sub,#9ba4b2);overflow-wrap:anywhere}
-.pd-notif-time{font-size:10px;color:var(--text-sub,#9ba4b2);margin-top:5px}
-@media(max-width:767px){#pd-notification-trigger{width:42px;height:42px}#pd-notification-panel{top:calc(env(safe-area-inset-top) + 66px);right:8px;width:calc(100vw - 16px);max-height:70dvh;border-radius:21px}}
-@media(prefers-reduced-motion:reduce){#pd-notification-trigger{transition:none}}
-</style>
-<script id="pd-notification-center-v1-script">
-(function(){
-  'use strict';
-  if (window.__pdNotificationCenterV1) return;
-  window.__pdNotificationCenterV1 = true;
-  const $ = (s, root=document) => root.querySelector(s);
-  const esc = s => typeof window.escapeHtml === 'function' ? window.escapeHtml(String(s ?? '')) : String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let notes=[], baseline=false, busy=false, channel=null, timer=null;
-  let priorOrders=new Map(), priorTopups=new Map();
-  const uid=()=>String(window.currentUser?.id || 'guest');
-  const storageKey=()=>`pd_notifications_v1_${uid()}`;
-  const readState=()=>{try{return JSON.parse(localStorage.getItem(storageKey())||'{"readAt":0,"seen":[]}')}catch(_){return {readAt:0,seen:[]}}};
-  const writeState=s=>{try{localStorage.setItem(storageKey(),JSON.stringify(s))}catch(_){}};
-  const stamp=()=>new Date().toISOString();
-  function addNote(id,title,body,icon='bell',created=stamp()){
-    if(notes.some(n=>n.id===id))return;
-    notes.unshift({id,title,body,icon,created,unread:true});
-    if(notes.length>80)notes.length=80;
-    render();
-  }
-  function render(){
-    const badge=$('#pd-notification-badge'), list=$('#pd-notification-list'), count=notes.filter(n=>n.unread).length;
-    if(badge){badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;badge.setAttribute('aria-label',`${count} การแจ้งเตือนที่ยังไม่อ่าน`)}
-    if(!list)return;
-    list.innerHTML=notes.length?notes.slice(0,50).map(n=>`<article class="pd-notif-item ${n.unread?'unread':''}"><span class="pd-notif-icon"><i data-lucide="${esc(n.icon)}"></i></span><div><div class="pd-notif-title">${esc(n.title)}</div><div class="pd-notif-copy">${esc(n.body)}</div><div class="pd-notif-time">${esc(new Date(n.created).toLocaleString('th-TH'))}</div></div></article>`).join(''):'<div style="padding:28px 16px;text-align:center;color:var(--text-sub,#9ba4b2);font-size:13px">ยังไม่มีการแจ้งเตือนใหม่</div>';
-    try{window.lucide?.createIcons()}catch(_){}
-  }
-  function mount(){
-    if($('#pd-notification-trigger'))return;
-    const nav=$('#nav-menu-toggle');
-    if(!nav)return;
-    const btn=document.createElement('button');
-    btn.type='button';btn.id='pd-notification-trigger';btn.title='การแจ้งเตือน';btn.setAttribute('aria-label','เปิดการแจ้งเตือน');btn.setAttribute('aria-expanded','false');btn.innerHTML='<i data-lucide="bell" width="19" height="19"></i><span id="pd-notification-badge" hidden>0</span>';
-    nav.insertAdjacentElement('afterend',btn);
-    const panel=document.createElement('section');panel.id='pd-notification-panel';panel.hidden=true;panel.setAttribute('aria-label','การแจ้งเตือน');
-    panel.innerHTML='<header class="pd-notif-head"><div><div style="font-weight:900;font-size:17px">การแจ้งเตือน</div><div style="font-size:11px;color:var(--text-sub,#9ba4b2)">สถานะคิวงานและ Coins</div></div><div style="display:flex;gap:8px"><button type="button" id="pd-notif-read" style="padding:8px 10px;border-radius:11px;font-size:11px;font-weight:800;background:rgba(10,132,255,.12);color:#3994ff">อ่านทั้งหมด</button><button type="button" id="pd-notif-close" aria-label="ปิดการแจ้งเตือน" style="width:36px;border-radius:11px;background:rgba(128,128,128,.12)">✕</button></div></header><div id="pd-notification-list" class="pd-notif-list" aria-live="polite"></div>';
-    document.body.appendChild(panel);
-    btn.addEventListener('click',()=>{panel.hidden=!panel.hidden;btn.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){notes.forEach(n=>n.unread=false);saveNotes();render()}});
-    $('#pd-notif-close').addEventListener('click',()=>{panel.hidden=true;btn.setAttribute('aria-expanded','false')});
-    $('#pd-notif-read').addEventListener('click',()=>{notes.forEach(n=>n.unread=false);saveNotes();render()});
-    document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!btn.contains(e.target)){panel.hidden=true;btn.setAttribute('aria-expanded','false')}});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;btn.setAttribute('aria-expanded','false')}});
-    try{window.lucide?.createIcons()}catch(_){}
-    loadNotes();
-  }
-  function loadNotes(){
-    const state=readState(), seen=new Set(state.seen||[]);
-    try{const raw=JSON.parse(localStorage.getItem(`pd_notifications_data_v1_${uid()}`)||'[]');notes=raw.map(n=>({...n,unread:!seen.has(n.id)})).slice(0,80)}catch(_){notes=[]}
-    render();
-  }
-  function saveNotes(){
-    const state=readState();state.seen=notes.filter(n=>!n.unread).map(n=>n.id).slice(0,100);
-    writeState(state);
-    try{localStorage.setItem(`pd_notifications_data_v1_${uid()}`,JSON.stringify(notes.map(({id,title,body,icon,created})=>({id,title,body,icon,created})).slice(0,80)))}catch(_){}
-  }
-  async function poll(){
-    const client=window.supabaseClient, user=window.currentUser;
-    if(busy||!client||!user?.id)return;
-    busy=true;
-    try{
-      const admin=user.role==='admin';
-      let oq=client.from('orders').select('id,user_id,status,created_at,queue_number,file_name,total_price').order('created_at',{ascending:false}).limit(40);
-      let tq=client.from('topups').select('id,user_id,amount,status,created_at').order('created_at',{ascending:false}).limit(40);
-      if(!admin){oq=oq.eq('user_id',user.id);tq=tq.eq('user_id',user.id)}
-      const [or,tr]=await Promise.all([oq,tq]);
-      if(or.error)throw or.error;if(tr.error)throw tr.error;
-      const orders=or.data||[], topups=tr.data||[];
-      const nextO=new Map(), nextT=new Map();
-      for(const o of orders){
-        const id=String(o.id), status=String(o.status||'pending');nextO.set(id,status);
-        if(baseline){
-          if(!priorOrders.has(id)&&admin)addNote(`new-order:${id}`,'มีงานพิมพ์ใหม่เข้ามา',`คิว #${o.queue_number??o.id} · ${o.file_name||'งานพิมพ์ใหม่'}`,'printer',o.created_at);
-          else if(priorOrders.has(id)&&priorOrders.get(id)!==status&&!admin)addNote(`order-status:${id}:${status}`,'สถานะคิวงานเปลี่ยนแล้ว',`คิว #${o.queue_number??o.id} · ${statusLabel(status)}`,'package-check',stamp());
-          else if(priorOrders.has(id)&&priorOrders.get(id)!==status&&admin)addNote(`order-status-admin:${id}:${status}`,'มีการเปลี่ยนสถานะงานพิมพ์',`คิว #${o.queue_number??o.id} · ${statusLabel(status)}`,'printer',stamp());
-        }
-      }
-      for(const t of topups){
-        const id=String(t.id), status=String(t.status||'pending');nextT.set(id,status);
-        if(baseline){
-          if(!priorTopups.has(id)&&admin)addNote(`new-topup:${id}`,'มีคำขอเติม Coins ใหม่',`${t.user_id===user.id?'สมาชิก':`ผู้ใช้ ${String(t.user_id).slice(0,8)}`} · ${Number(t.amount||0).toFixed(2)} Coins`,'wallet',t.created_at);
-          else if(priorTopups.has(id)&&priorTopups.get(id)!==status&&!admin)addNote(`topup-status:${id}:${status}`,'ผลการตรวจสอบสลิป',status==='approved'?`เติมสำเร็จ +${Number(t.amount||0).toFixed(2)} Coins`:`สถานะคำขอ: ${statusLabel(status)}`,status==='approved'?'badge-check':'shield-alert',stamp());
-        }
-      }
-      priorOrders=nextO;priorTopups=nextT;baseline=true;saveNotes();render();
-    }catch(err){console.debug('[PrintDekD notifications] ไม่สามารถอัปเดตได้:',err?.message||err)}
-    finally{busy=false}
-  }
-  function statusLabel(s){return ({pending:'รอดำเนินการ',printing:'กำลังพิมพ์',completed:'เสร็จสิ้น',cancelled:'ยกเลิก',approved:'อนุมัติแล้ว',rejected:'ปฏิเสธคำขอ'})[s]||s}
-  function start(){
-    mount();
-    if(!window.currentUser?.id){if(timer){clearInterval(timer);timer=null}notes=[];render();return}
-    if(window.__pdNotifUser!==uid()){window.__pdNotifUser=uid();baseline=false;priorOrders=new Map();priorTopups=new Map();loadNotes()}
-    poll();
-    if(timer)clearInterval(timer);
-    timer=setInterval(poll,25000);
-    // Subscribe to DB changes where permitted; polling remains a fallback.
-    try{
-      if(channel&&window.supabaseClient)window.supabaseClient.removeChannel(channel);
-      if(window.supabaseClient?.channel){
-        channel=window.supabaseClient.channel('pd-notification-watch-'+uid())
-          .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>poll())
-          .on('postgres_changes',{event:'*',schema:'public',table:'topups'},()=>poll())
-          .subscribe();
-      }
-    }catch(_){}
-  }
-  document.addEventListener('DOMContentLoaded',start);
-  window.addEventListener('load',start);
-  window.addEventListener('pd:viewchange',start);
-  window.addEventListener('storage',e=>{if(e.key===`pd_notifications_data_v1_${uid()}`)loadNotes()});
-})();
-</script>
 
 </body>
 
