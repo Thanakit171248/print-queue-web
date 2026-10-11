@@ -5009,6 +5009,45 @@
     }
   </style>
 
+
+<style id="pd-v24-pdf-preview-repair">
+  /* Reliable, readable PDF preview: visible loading/error states, crisp pages, no giant blank area. */
+  #file-preview-drawer > .ui-panel { width: min(1100px, 100%); min-height: 0; }
+  #pdf-preview-wrapper { gap: 22px !important; transform-origin: top center !important; }
+  #pdf-preview-wrapper .pd-v15-preview-page {
+    width: min(100%, 820px) !important; min-height: 220px; padding: 34px 14px 14px !important;
+    overflow: hidden; border-radius: 12px; background: #fff !important;
+  }
+  #pdf-preview-wrapper .pd-v15-preview-page canvas {
+    display: block; width: 100% !important; max-width: 100%; height: auto !important;
+    image-rendering: auto; background: #fff; border-radius: 2px;
+  }
+  .pd-pdf-page-status {
+    display: flex; justify-content: center; align-items: center; min-height: 150px;
+    padding: 22px; text-align: center; color: #64748b; font-size: 14px; line-height: 1.7;
+    width: 100%; background: linear-gradient(180deg,#f8fafc,#eef2f7); border-radius: 8px;
+  }
+  .pd-pdf-page-status[data-state="loading"]::before {
+    content: ""; width: 18px; height: 18px; margin-right: 10px; flex: 0 0 auto;
+    border: 2px solid #cbd5e1; border-top-color: #0a84ff; border-radius: 50%; animation: pdPdfSpin .7s linear infinite;
+  }
+  .pd-pdf-page-status[data-state="error"] { color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; }
+  .pd-page-render-error { display:block; padding:6px; margin-top:4px; color:#b91c1c; font-size:11px; line-height:1.5; }
+  .pd-v15-thumb-card { min-height: 174px !important; }
+  .pd-v15-thumb-card canvas { max-height: 140px !important; }
+  @keyframes pdPdfSpin { to { transform: rotate(360deg); } }
+  @media (max-width: 767px) {
+    #file-preview-drawer { padding: 8px !important; }
+    #file-preview-drawer > .ui-panel { height: calc(100dvh - 16px) !important; max-height: calc(100dvh - 16px); padding: 12px !important; border-radius: 22px !important; }
+    #file-preview-drawer > .ui-panel > .grid { gap: 7px !important; margin: 10px 0 !important; }
+    #file-preview-drawer > .ui-panel > .grid > div { padding: 8px 5px !important; }
+    #file-preview-drawer > .ui-panel > .flex.items-center.justify-between { padding: 8px !important; }
+    #pdf-preview-wrapper .pd-v15-preview-page { padding: 30px 6px 6px !important; min-height: 160px; }
+    .pd-pdf-page-status { min-height: 110px; padding: 14px 8px; font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pd-pdf-page-status[data-state="loading"]::before { animation: none; } }
+</style>
+
 </head>
 
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white relative">
@@ -25248,78 +25287,301 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     if (button) { event.preventDefault(); runBulkAction(button.dataset.pdBulkAction); }
   });
 
-  /* Better small-screen previews: render thumbnails at device pixel ratio, lazily and with a 2-page work queue. */
+  /* PDF PREVIEW REPAIR v24.2
+     The previous last override only populated the page-selection thumbnails and
+     explicitly emptied #pdf-preview-wrapper. This replacement renders both the
+     thumbnail grid and the full-size preview, with lazy rendering and clear status. */
+  let pdPdfPreviewState = null;
+  let pdPdfPreviewGeneration = 0;
   window.renderPdfThumbnails = function (pdf) {
-    const grid = $('pages-grid-container'), drawer = $('pdf-preview-wrapper');
-    if (!grid || !pdf || !Number.isFinite(pdf.numPages)) return;
-    grid.className = 'pd-v10-page-picker ui-input'; grid.innerHTML = '';
-    if (drawer) drawer.innerHTML = '';
-    if (typeof grid.__pdPdfCleanup === 'function') grid.__pdPdfCleanup();
-    let queue = [], active = 0, disposed = false, observer = null;
-    const activeTasks = new Set();
-    const concurrency = 2;
-    const dpr = Math.max(1, Math.min(2, Number(window.devicePixelRatio) || 1));
-    observer = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
-      for (const entry of entries) if (entry.isIntersecting) {
-        const card = entry.target; observer.unobserve(card);
-        const pageNo = Number(card.dataset.page); schedule(card, pageNo);
-      }
-    }, { root: grid, rootMargin: '220px 0px' }) : null;
-    grid.__pdPdfCleanup = () => { disposed = true; queue = []; observer?.disconnect(); activeTasks.forEach(task => { try { task.cancel(); } catch (_) {} }); activeTasks.clear(); };
-    function schedule(card, pageNo) {
-      if (disposed || card.dataset.renderState) return;
-      card.dataset.renderState = 'queued'; queue.push({ card, pageNo }); processQueue();
+    const grid = $('pages-grid-container');
+    const drawer = $('pdf-preview-wrapper');
+    if (!grid || !drawer || !pdf || !Number.isInteger(pdf.numPages) || pdf.numPages < 1) {
+      const msg = $('pdf-preview-wrapper');
+      if (msg) msg.textContent = 'ไม่พบหน้าของเอกสาร PDF ที่สามารถแสดงได้';
+      return;
     }
-    async function processQueue() {
-      if (disposed) return;
-      while (active < concurrency && queue.length) {
-        const job = queue.shift(); active++;
-        renderCard(job.card, job.pageNo).finally(() => { active--; processQueue(); });
+
+    if (grid.__pdPdfCleanup) { try { grid.__pdPdfCleanup(); } catch (_) {} }
+    if (drawer.__pdPdfCleanup) { try { drawer.__pdPdfCleanup(); } catch (_) {} }
+    if (pdPdfPreviewState) {
+      const old = pdPdfPreviewState;
+      old.disposed = true;
+      old.thumbObserver?.disconnect();
+      old.pageObserver?.disconnect();
+      old.tasks.forEach(task => { try { task.cancel(); } catch (_) {} });
+      old.queue.length = 0;
+      if (old.pdf && old.pdf !== pdf && typeof old.pdf.destroy === 'function') {
+        try { Promise.resolve(old.pdf.destroy()).catch(() => {}); } catch (_) {}
       }
     }
-    async function renderCard(card, pageNo) {
-      card.dataset.renderState = 'rendering';
-      const canvas = card.querySelector('canvas'); if (!canvas) { card.dataset.renderState = 'failed'; return; }
+
+    const state = {
+      pdf, generation: ++pdPdfPreviewGeneration, disposed: false,
+      queue: [], active: 0, concurrency: 1, tasks: new Set(),
+      thumbObserver: null, pageObserver: null
+    };
+    pdPdfPreviewState = state;
+    grid.dataset.pdPreviewDensity = (window.devicePixelRatio || 1) >= 1.5 ? 'high' : 'standard';
+    if (typeof currentPdfZoom !== 'undefined') currentPdfZoom = 1;
+    drawer.style.transform = 'scale(1)';
+    if ($('zoom-level-text')) $('zoom-level-text').textContent = '100%';
+    grid.className = 'pd-v15-page-picker ui-input';
+    grid.replaceChildren();
+    drawer.replaceChildren();
+
+    function isCurrent() {
+      return !state.disposed && pdPdfPreviewState === state && state.generation === pdPdfPreviewGeneration;
+    }
+
+    function setPageCount() {
+      const pages = pdf.numPages;
+      if ($('total-pages-display')) $('total-pages-display').textContent = `${pages} หน้า`;
+      if ($('selected-pages-count-display')) $('selected-pages-count-display').textContent = `${pages} หน้า`;
+      if ($('printed-pages-input')) $('printed-pages-input').value = String(pages);
+      if ($('preview-modal-pages')) $('preview-modal-pages').textContent = `${pages} หน้า`;
+      if ($('preview-modal-type')) $('preview-modal-type').textContent = 'PDF';
+      window.detectedPageCount = pages;
+      window.calculatePrice?.();
+    }
+
+    function schedule(canvas, pageNumber, kind, priority = false) {
+      if (!isCurrent() || !canvas || !canvas.isConnected) return;
+      if (['queued', 'rendering', 'ready'].includes(canvas.dataset.renderState)) return;
+      canvas.dataset.renderState = 'queued';
+      const job = { canvas, pageNumber, kind, generation: state.generation };
+      if (priority) state.queue.unshift(job); else state.queue.push(job);
+      void drain();
+    }
+
+    async function drain() {
+      if (!isCurrent() || state.active >= state.concurrency || !state.queue.length) return;
+      const job = state.queue.shift();
+      if (!job || job.generation !== state.generation || !job.canvas?.isConnected) {
+        void drain(); return;
+      }
+      state.active++;
+      job.canvas.dataset.renderState = 'rendering';
+      const pageBox = job.canvas.closest('.pd-v15-preview-page');
+      const status = pageBox?.querySelector('.pd-pdf-page-status');
+      if (status) { status.textContent = 'กำลังสร้างพรีวิวความคมชัดสูง…'; status.dataset.state = 'loading'; }
+      let renderTask = null;
       try {
-        const page = await pdf.getPage(pageNo);
-        if (disposed || !card.isConnected) return;
-        const viewport = page.getViewport({ scale: .65 });
+        const page = await pdf.getPage(job.pageNumber);
+        if (!isCurrent() || !job.canvas.isConnected) return;
+        const base = page.getViewport({ scale: 1 });
+        const parent = job.canvas.parentElement;
+        const boxWidth = parent?.clientWidth || (job.kind === 'thumb' ? 140 : 820);
+        const targetWidth = job.kind === 'thumb'
+          ? Math.min(150, Math.max(100, boxWidth - 18))
+          : Math.min(820, Math.max(280, boxWidth - 24));
+        const scale = Math.min(job.kind === 'thumb' ? 0.35 : 2.0, targetWidth / Math.max(1, base.width));
+        const viewport = page.getViewport({ scale });
+        const requestedDpr = Math.max(1, Math.min(job.kind === 'thumb' ? 1.75 : 2.0, Number(window.devicePixelRatio) || 1));
+        const pixelCount = Math.max(1, viewport.width * viewport.height);
+        const dpr = Math.max(1, Math.min(requestedDpr, Math.sqrt(16000000 / pixelCount)));
+        const canvas = job.canvas;
         const ctx = canvas.getContext('2d', { alpha: false });
         if (!ctx) throw new Error('Canvas 2D is unavailable');
-        canvas.width = Math.ceil(viewport.width * dpr); canvas.height = Math.ceil(viewport.height * dpr);
-        canvas.style.width = '100%'; canvas.style.height = '94px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, viewport.width, viewport.height);
-        const task = page.render({ canvasContext: ctx, viewport });
-        activeTasks.add(task);
-        if (disposed || !card.isConnected) { try { task.cancel(); } catch (_) {} activeTasks.delete(task); return; }
-        try { await task.promise; } finally { activeTasks.delete(task); }
-        if (!disposed && card.isConnected) card.dataset.renderState = 'ready';
+        canvas.width = Math.max(1, Math.ceil(viewport.width * dpr));
+        canvas.height = Math.max(1, Math.ceil(viewport.height * dpr));
+        canvas.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
+        canvas.style.background = '#ffffff';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        renderTask = page.render({
+          canvasContext: ctx,
+          viewport,
+          transform: dpr > 1 ? [dpr, 0, 0, dpr, 0, 0] : null
+        });
+        state.tasks.add(renderTask);
+        await renderTask.promise;
+        if (!isCurrent() || !canvas.isConnected) return;
+        canvas.dataset.renderState = 'ready';
+        if (status) status.remove();
+        page.cleanup?.();
       } catch (error) {
-        if (disposed || !card.isConnected) return;
-        card.dataset.renderState = 'failed';
-        const msg = document.createElement('span'); msg.className = 'pd-page-render-error'; msg.textContent = 'พรีวิวหน้านี้ไม่สำเร็จ';
-        card.appendChild(msg);
-        console.warn('[PrintDekD PDF thumbnail]', pageNo, error?.message || error);
+        if (!isCurrent() || !job.canvas?.isConnected) return;
+        const cancelled = error?.name === 'RenderingCancelledException';
+        job.canvas.dataset.renderState = cancelled ? 'idle' : 'failed';
+        if (!cancelled) {
+          if (status) {
+            status.textContent = 'พรีวิวหน้านี้ไม่สำเร็จ กรุณาลองอัปโหลดไฟล์ PDF ใหม่';
+            status.dataset.state = 'error';
+            status.setAttribute('role', 'alert');
+          } else {
+            const errorLabel = document.createElement('span');
+            errorLabel.className = 'pd-pdf-render-error';
+            errorLabel.textContent = 'แสดงหน้านี้ไม่สำเร็จ';
+            job.canvas.parentElement?.appendChild(errorLabel);
+          }
+          console.warn('[PrintDekD PDF preview]', `page ${job.pageNumber}`, error?.message || error);
+        }
+      } finally {
+        if (renderTask) state.tasks.delete(renderTask);
+        state.active = Math.max(0, state.active - 1);
+        if (isCurrent() && state.queue.length) queueMicrotask(drain);
       }
     }
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const card = document.createElement('label'); card.className = 'pd-v10-page-card is-selected'; card.dataset.page = String(i);
-      card.innerHTML = `<input type="checkbox" checked value="${i}" class="sr-only"><span class="pd-page-check" aria-hidden="true">✓</span><span class="pd-page-number">หน้า ${i}</span>`;
-      const cb = card.querySelector('input');
-      cb.addEventListener('change', () => { card.classList.toggle('is-selected', cb.checked); window.updateGridSelectedCount?.(); });
-      card.addEventListener('click', event => { if (event.target === cb) return; event.preventDefault(); cb.checked = !cb.checked; cb.dispatchEvent(new Event('change', { bubbles: true })); });
-      const canvas = document.createElement('canvas'); canvas.className = 'pd-pdf-hires-thumb'; canvas.setAttribute('aria-label', `ตัวอย่างหน้า ${i}`); canvas.setAttribute('role', 'img');
-      canvas.style.background = '#fff'; card.insertBefore(canvas, card.querySelector('.pd-page-number'));
-      grid.appendChild(card);
-      if (observer) observer.observe(card); else schedule(card, i);
+
+    function createCanvas(kind, pageNumber) {
+      const canvas = document.createElement('canvas');
+      canvas.className = kind === 'thumb' ? 'pd-v15-thumb-canvas pd-pdf-hires-thumb' : 'pd-v15-page-canvas';
+      canvas.dataset.page = String(pageNumber);
+      canvas.dataset.kind = kind;
+      canvas.dataset.renderState = 'idle';
+      canvas.setAttribute('role', 'img');
+      canvas.setAttribute('aria-label', `ตัวอย่างเอกสารหน้า ${pageNumber}`);
+      canvas.style.background = '#ffffff';
+      return canvas;
     }
-    const selected = $('selected-pages-count-display'); if (selected) selected.textContent = `${pdf.numPages} หน้า`;
-    const printed = $('printed-pages-input'); if (printed) printed.value = pdf.numPages;
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      /* Page selection thumbnail */
+      const card = document.createElement('label');
+      card.className = 'pd-v15-thumb-card pd-v10-page-card is-selected';
+      card.dataset.page = String(i);
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.checked = true; cb.value = String(i); cb.className = 'sr-only';
+      cb.setAttribute('aria-label', `เลือกหน้า ${i} เพื่อพิมพ์`);
+      const thumb = createCanvas('thumb', i);
+      const pageLabel = document.createElement('span');
+      pageLabel.className = 'pd-v15-page-num pd-page-number';
+      const check = document.createElement('span'); check.className = 'pd-v15-check pd-page-check'; check.textContent = '✓'; check.setAttribute('aria-hidden', 'true');
+      const pageText = document.createElement('span'); pageText.textContent = `หน้า ${i}`;
+      pageLabel.append(check, pageText);
+      card.append(cb, thumb, pageLabel);
+      grid.appendChild(card);
+      cb.addEventListener('change', () => {
+        card.classList.toggle('is-selected', cb.checked);
+        window.updateGridSelectedCount?.();
+      });
+      card.addEventListener('click', event => {
+        if (event.target === cb || event.target.closest('input')) return;
+        event.preventDefault();
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      /* Full-size page preview. This is the area that the previous override left empty. */
+      const pageBox = document.createElement('section');
+      pageBox.className = 'pd-v15-preview-page';
+      pageBox.dataset.page = String(i);
+      const pageTag = document.createElement('span');
+      pageTag.className = 'pd-v15-preview-label'; pageTag.textContent = `หน้า ${i}`;
+      const pageStatus = document.createElement('span');
+      pageStatus.className = 'pd-pdf-page-status'; pageStatus.textContent = 'รอแสดงตัวอย่าง…';
+      pageStatus.setAttribute('role', 'status');
+      const fullCanvas = createCanvas('preview', i);
+      pageBox.append(pageTag, pageStatus, fullCanvas);
+      drawer.appendChild(pageBox);
+    }
+
+    /* Lazy-load thumbnails and full-size pages; the first full page is rendered immediately. */
+    if ('IntersectionObserver' in window) {
+      state.thumbObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          state.thumbObserver?.unobserve(entry.target);
+          const card = entry.target.closest('.pd-v15-thumb-card');
+          const canvas = card?.querySelector('canvas');
+          schedule(canvas, Number(card?.dataset.page), 'thumb');
+        });
+      }, { root: grid, rootMargin: '180px 0px', threshold: 0.01 });
+      grid.querySelectorAll('.pd-v15-thumb-card').forEach(card => state.thumbObserver.observe(card));
+
+      const scrollRoot = drawer.parentElement;
+      state.pageObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          state.pageObserver?.unobserve(entry.target);
+          const canvas = entry.target;
+          schedule(canvas, Number(canvas.dataset.page), 'preview');
+        });
+      }, { root: scrollRoot, rootMargin: '320px 0px', threshold: 0.01 });
+      drawer.querySelectorAll('.pd-v15-page-canvas').forEach(canvas => state.pageObserver.observe(canvas));
+    } else {
+      grid.querySelectorAll('.pd-v15-thumb-card').forEach((card, index) => {
+        if (index < 8) schedule(card.querySelector('canvas'), Number(card.dataset.page), 'thumb');
+      });
+      drawer.querySelectorAll('.pd-v15-page-canvas').forEach((canvas, index) => {
+        if (index < 2) schedule(canvas, Number(canvas.dataset.page), 'preview', index === 0);
+      });
+    }
+
+    const firstPage = drawer.querySelector('.pd-v15-page-canvas');
+    if (firstPage) schedule(firstPage, 1, 'preview', true);
+    setPageCount();
+
+    function refreshVisible() {
+      if (!isCurrent()) return;
+      const modal = $('file-preview-drawer');
+      const modalOpen = !!modal && !modal.classList.contains('hidden') && modal.getBoundingClientRect().width > 0;
+      if (!modalOpen) return;
+      const scrollRoot = drawer.parentElement;
+      const rootRect = scrollRoot?.getBoundingClientRect();
+      if (rootRect && rootRect.width > 0 && rootRect.height > 0) {
+        drawer.querySelectorAll('.pd-v15-page-canvas').forEach(canvas => {
+          if (['queued', 'rendering', 'ready'].includes(canvas.dataset.renderState)) return;
+          const r = canvas.getBoundingClientRect();
+          if (r.bottom >= rootRect.top - 320 && r.top <= rootRect.bottom + 320) {
+            state.pageObserver?.unobserve(canvas);
+            schedule(canvas, Number(canvas.dataset.page), 'preview', Number(canvas.dataset.page) === 1);
+          }
+        });
+      }
+    }
+    window.__pdV15RefreshPreview = refreshVisible;
+    window.__pdPdfPreviewRefresh = refreshVisible;
+    grid.__pdPdfCleanup = drawer.__pdPdfCleanup = () => {
+      if (state.disposed) return;
+      state.disposed = true;
+      state.thumbObserver?.disconnect(); state.pageObserver?.disconnect();
+      state.queue.length = 0;
+      state.tasks.forEach(task => { try { task.cancel(); } catch (_) {} });
+      state.tasks.clear();
+    };
+
+    /* Render page one before the modal opens, so users never see an empty preview. */
+    if (firstPage) schedule(firstPage, 1, 'preview', true);
+    if (window.lucide) window.lucide.createIcons();
     window.calculatePrice?.();
-    /* The closure's observer is automatically detached when the grid is replaced by the next render. */
-    grid.dataset.pdPreviewDensity = dpr >= 1.5 ? 'high' : 'standard';
+    window.setTimeout?.(refreshVisible, 80);
   };
+
+  /* On opening the preview modal, re-check the viewport after its display transition. */
+  const pdOriginalPreviewToggle = window.toggleFilePreviewDrawer;
+  window.toggleFilePreviewDrawer = function (show = true) {
+    if (typeof pdOriginalPreviewToggle === 'function') pdOriginalPreviewToggle.call(this, show);
+    const modal = $('file-preview-drawer');
+    if (modal) modal.classList.toggle('hidden', !show);
+    if (show) {
+      requestAnimationFrame(() => window.__pdPdfPreviewRefresh?.());
+      setTimeout(() => window.__pdPdfPreviewRefresh?.(), 120);
+    }
+  };
+
+  function disposePdPdfPreview() {
+    const state = pdPdfPreviewState;
+    if (!state) return;
+    state.disposed = true;
+    state.thumbObserver?.disconnect(); state.pageObserver?.disconnect();
+    state.queue.length = 0;
+    state.tasks.forEach(task => { try { task.cancel(); } catch (_) {} });
+    state.tasks.clear();
+    if (state.pdf && typeof state.pdf.destroy === 'function') {
+      try { Promise.resolve(state.pdf.destroy()).catch(() => {}); } catch (_) {}
+    }
+    pdPdfPreviewState = null;
+  }
+  const pdOriginalRemoveSelectedPrintFile = window.removeSelectedPrintFile;
+  if (typeof pdOriginalRemoveSelectedPrintFile === 'function') {
+    window.removeSelectedPrintFile = function (...args) {
+      disposePdPdfPreview();
+      return pdOriginalRemoveSelectedPrintFile.apply(this, args);
+    };
+  }
+  $('print-form')?.addEventListener('reset', () => setTimeout(disposePdPdfPreview, 0));
 
   function ready() {
     enhanceAdminTables();
