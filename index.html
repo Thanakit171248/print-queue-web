@@ -13898,7 +13898,11 @@
           slipPath = `${user.id}/topup-${crypto.randomUUID()}-${safeName}`;
           await uploadToBucketV12('slips', file, slipPath);
           const { data: pub } = client.storage.from('slips').getPublicUrl(slipPath);
+          // Match the existing topups ID convention used by the legacy handler.
+          // The table currently requires an explicit ID (no database default).
+          const topupId = `TP-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
           const { error } = await client.from('topups').insert([{
+            id: topupId,
             user_id: user.id,
             user_name: user.full_name || '',
             amount,
