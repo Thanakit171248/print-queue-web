@@ -71,6 +71,27 @@
           "value": "nosniff"
         }
       ]
+    },
+    {
+      "source": "/api/verify-slip-v2",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -101,6 +122,9 @@
   ],
   "functions": {
     "api/verify-slip.js": {
+      "maxDuration": 30
+    },
+    "api/verify-slip-v2.js": {
       "maxDuration": 30
     }
   }
