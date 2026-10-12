@@ -28,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro v24.1 — Readability, PDF Preview & Admin Tools</title>
+  <title>PrintDekD Pro v26 — Mini Project Aligned · Queue · Coins · Delivery</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -6221,17 +6221,17 @@
 
           <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-6">
             <div>
-              <label class="block text-xs font-bold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, JPG)</label>
+              <label class="block text-xs font-bold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร PDF</label>
               <div
                 class="relative border-2 border-dashed hover:border-blue-500 border-slate-300 dark:border-white/20 rounded-2xl p-6 text-center transition ui-input cursor-pointer group"
                 onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" required onchange="handleFileSelect(event)" class="hidden"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                  accept=".pdf,application/pdf">
                 <div id="upload-placeholder" class="space-y-2">
                   <i data-lucide="file-plus"
                     class="w-10 h-10 text-blue-500 mx-auto group-hover:scale-110 transition"></i>
                   <p class="text-sm font-bold titanium-text">คลิกเลือกไฟล์ หรือ ลากไฟล์มาวางที่นี่</p>
-                  <p class="text-[10px] sub-text">PDF, DOC, DOCX, JPG, PNG • สูงสุด 20 MB • ระบบตรวจสอบไฟล์ก่อนส่ง</p>
+                  <p class="text-[10px] sub-text">PDF เท่านั้น • สูงสุด 20 MB • ตรวจสอบไฟล์ก่อนส่ง</p>
                   <div id="pd-upload-progress" class="hidden mt-3 mx-auto max-w-sm text-left">
                     <div class="flex items-center justify-between text-[10px] font-bold mb-1"><span
                         id="pd-upload-status">กำลังตรวจสอบไฟล์…</span><span id="pd-upload-percent">0%</span></div>
@@ -6359,6 +6359,14 @@
               </div>
             </div>
 
+            <div class="pd-mp-setting-card">
+              <label class="block text-sm font-bold titanium-text mb-2" for="binding-option">เข้าเล่มเอกสาร</label>
+              <select id="binding-option" onchange="calculatePrice()" class="w-full ui-input rounded-xl px-3 py-3 text-sm">
+                <option value="">ไม่เข้าเล่ม (0.00 บาท)</option>
+              </select>
+              <p id="binding-option-note" class="sub-text text-xs mt-2">ราคาค่าเข้าเล่มจะอ้างอิงจากรายการที่เปิดใช้ในฐานข้อมูล</p>
+            </div>
+
             <div class="pt-3 border-t border-slate-200 dark:border-white/10">
               <label class="block text-xs font-bold mb-2.5 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -6379,7 +6387,7 @@
                     <p class="text-xs font-bold flex items-center gap-1 titanium-text">
                       <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> จัดส่งพัสดุถึงบ้าน
                     </p>
-                    <p class="text-[10px] text-blue-500 font-bold">+ค่าส่ง 30.00 ฿</p>
+                    <p id="pd-delivery-radio-price" class="text-[10px] text-blue-500 font-bold">เริ่มต้น 30.00 ฿ • เปลี่ยนได้ตามผู้ให้บริการ</p>
                   </div>
                 </label>
               </div>
@@ -6387,8 +6395,18 @@
               <div id="delivery-address-box"
                 class="hidden space-y-2.5 bg-blue-500/10 p-3.5 rounded-xl border border-blue-500/20">
                 <p class="text-xs font-bold text-blue-500 flex items-center gap-1">
-                  <i data-lucide="map-pin" class="w-4 h-4"></i> กรอกที่อยู่จัดส่งพัสดุ
+                  <i data-lucide="map-pin" class="w-4 h-4"></i> กรอกที่อยู่จัดส่ง
                 </p>
+                <label class="block space-y-1.5">
+                  <span class="text-xs font-bold titanium-text">ผู้ให้บริการจัดส่ง <b class="text-rose-500">*</b></span>
+                  <select id="delivery-provider" class="w-full ui-input rounded-xl px-3 py-3 text-sm" onchange="calculatePrice()">
+                    <option value="parcel">พัสดุทั่วไป (+30.00 บาท)</option>
+                    <option value="messenger" disabled>Messenger (รอตั้งค่าค่าจัดส่ง)</option>
+                    <option value="lineman" disabled>LINE MAN (รอตั้งค่าค่าจัดส่ง)</option>
+                    <option value="thailand_post" disabled>ไปรษณีย์ไทย (รอตั้งค่าค่าจัดส่ง)</option>
+                  </select>
+                  <small id="delivery-provider-note" class="sub-text text-xs">ช่องทางที่ยังไม่ได้กำหนดราคาใน Admin จะไม่สามารถเลือกใช้ได้</small>
+                </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input type="text" id="recipient-name" placeholder="ชื่อ-นามสกุล ผู้รับ"
                     class="w-full px-3 py-2 ui-input rounded-lg text-xs">
@@ -6715,6 +6733,10 @@
           Coins</button>
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')"
           class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">จัดการสมาชิก</button>
+        <button id="admin-tab-pricing-btn" onclick="switchAdminTab('pricing')" class="flex-none px-4 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ราคาและบริการ</button>
+        <button id="admin-tab-printers-btn" onclick="switchAdminTab('printers')" class="flex-none px-4 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">เครื่องพิมพ์</button>
+        <button id="admin-tab-staff-btn" onclick="switchAdminTab('staff')" class="flex-none px-4 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">งานพนักงาน</button>
+        <button id="admin-tab-reports-btn" onclick="switchAdminTab('reports')" class="flex-none px-4 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">รายงาน</button>
       </div>
 
       <div id="admin-tab-orders" class="ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
@@ -6783,6 +6805,39 @@
           </table>
         </div>
       </div>
+
+      <div id="admin-tab-pricing" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-6">
+        <div><h2 class="text-xl font-bold titanium-text">ราคา กระดาษ ค่าเข้าเล่ม และค่าจัดส่ง</h2><p class="sub-text text-sm mt-1">ข้อมูลอ่านจากตาราง pricing, binding_options และ delivery_options</p></div>
+        <div class="pd-mp-table-wrap"><h3 class="pd-mp-subhead">ราคาพิมพ์ตามขนาดกระดาษ</h3><div id="pd-admin-pricing-grid" class="pd-mp-empty">กำลังโหลดราคาจากฐานข้อมูล…</div></div>
+        <div class="pd-mp-table-wrap"><div class="pd-mp-section-title"><h3 class="pd-mp-subhead">ตัวเลือกเข้าเล่ม</h3><button type="button" id="pd-binding-add-btn" class="pd-mp-button">เพิ่มตัวเลือก</button></div><div id="pd-admin-binding-grid" class="pd-mp-empty">กำลังโหลดตัวเลือกเข้าเล่ม…</div><form id="pd-binding-add-form" class="pd-mp-add-form" hidden><input name="name" required maxlength="80" placeholder="ชื่อบริการ เช่น เข้าเล่มสันกาว" class="ui-input"><input name="price" required type="number" min="0" step="0.01" placeholder="ราคา/ชุด" class="ui-input"><button class="pd-mp-button" type="submit">บันทึกตัวเลือก</button></form></div>
+        <div class="pd-mp-table-wrap"><div class="pd-mp-section-title"><h3 class="pd-mp-subhead">วิธีจัดส่งและราคา</h3><span class="pd-mp-badge">ราคา 0 ไม่ได้ถูกสมมติให้เอง</span></div><div id="pd-admin-delivery-grid" class="pd-mp-empty">กำลังโหลดวิธีจัดส่ง…</div></div>
+        <p class="pd-mp-caution"><strong>หมายเหตุด้านความปลอดภัย:</strong> การแก้ราคา/สิทธิ์ผ่านเบราว์เซอร์ยังไม่ปลอดภัยจนกว่าจะย้ายจากระบบล็อกอินแบบกำหนดเองไป Supabase Auth และตั้ง RLS/API ฝั่งเซิร์ฟเวอร์ ห้ามเปิดการแก้ไขสาธารณะใน Production</p>
+      </div>
+
+      <div id="admin-tab-printers" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-5">
+        <div><h2 class="text-xl font-bold titanium-text">ทะเบียนเครื่องพิมพ์</h2><p class="sub-text text-sm mt-1">ตารางนี้จัดการข้อมูลเครื่องพิมพ์ที่ลงทะเบียน ไม่ได้ทดสอบการเชื่อมต่อจริงจากเบราว์เซอร์</p></div>
+        <div id="pd-admin-printers-grid" class="pd-mp-empty">กำลังโหลดเครื่องพิมพ์…</div>
+        <form id="pd-printer-add-form" class="pd-mp-add-form"><input name="name" required maxlength="100" placeholder="ชื่อเครื่องพิมพ์" class="ui-input"><input name="ip_address" maxlength="100" placeholder="IP / Host (ห้ามเปิดให้เบราว์เซอร์ยิงโดยตรง)" class="ui-input"><input name="location" maxlength="100" placeholder="ตำแหน่งติดตั้ง" class="ui-input"><select name="status" class="ui-input"><option value="offline">ออฟไลน์ / ยังไม่ตรวจ</option><option value="online">ออนไลน์ (ยืนยันโดย Print Server เท่านั้น)</option><option value="maintenance">ปิดปรับปรุง</option></select><button class="pd-mp-button" type="submit">เพิ่มข้อมูลเครื่องพิมพ์</button></form>
+        <p class="pd-mp-caution">สถานะออนไลน์ต้องได้รับการยืนยันจาก Print Server/worker เท่านั้น การบันทึกค่า online ในตารางไม่ใช่หลักฐานว่าเครื่องพิมพ์เชื่อมต่อจริง</p>
+      </div>
+
+      <div id="admin-tab-staff" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
+        <div><h2 class="text-xl font-bold titanium-text">งานหลังพิมพ์และส่งมอบ</h2><p class="sub-text text-sm mt-1">ลำดับงาน: พิมพ์เสร็จ → รอจัดเตรียม → พร้อมรับ/จัดส่ง → ส่งมอบแล้ว</p></div>
+        <div id="pd-admin-staff-grid" class="pd-mp-empty">กำลังโหลดงานที่ต้องจัดเตรียม…</div>
+      </div>
+
+      <div id="admin-tab-reports" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-5">
+        <div><h2 class="text-xl font-bold titanium-text">รายงานงานพิมพ์และการเงิน</h2><p class="sub-text text-sm mt-1">รายงานสรุปจาก orders, payments, topups และ wallet_transactions เท่าที่ฐานข้อมูลอนุญาตให้อ่านได้</p></div>
+        <div id="pd-admin-report-grid" class="pd-mp-report-grid"><div class="pd-mp-empty">กดแท็บรายงานเพื่อโหลดข้อมูล</div></div>
+        <button type="button" id="pd-report-export" class="pd-mp-button">ดาวน์โหลดรายงานสรุป CSV</button>
+        <p class="pd-mp-caution">รายงานนี้ใช้ข้อมูลรายการในฐานข้อมูล ไม่ใช่รายงานบัญชีที่ผ่านการกระทบยอดโดยผู้ตรวจสอบ</p>
+      </div>
+    </section>
+
+    <!-- VIEW: STAFF WORKSPACE --><!-- UI layer; backend/RLS must enforce staff role as well. -->
+    <section id="view-staff" class="hidden py-10 px-4 max-w-6xl mx-auto">
+      <header class="ui-panel p-6 sm:p-8 rounded-[32px] mb-6"><span class="pd-eyebrow">STAFF WORKSPACE</span><h1 class="text-2xl sm:text-3xl font-bold titanium-text mt-2">ศูนย์งานพนักงาน</h1><p class="sub-text mt-2">ตรวจงานพิมพ์เสร็จ จัดเตรียมเข้าเล่ม และอัปเดตสถานะรับหน้าร้านหรือจัดส่ง</p><div class="pd-mp-caution mt-4">หน้าจอนี้ยังไม่ใช่ระบบสิทธิ์ที่ปลอดภัยในตัวเอง ต้องกำหนด role และ RLS ฝั่งฐานข้อมูลก่อนเปิดใช้จริง</div></header>
+      <div id="pd-staff-orders-grid" class="pd-mp-empty">กำลังโหลดรายการงาน…</div>
     </section>
 
 
@@ -6959,10 +7014,9 @@
         </div>
         <div class="pd-help-faq-list">
           <details class="pd-help-faq-item" data-help-filter-item data-help-group="print preview"
-            data-help-search="รองรับไฟล์อะไร PDF DOC DOCX JPG JPEG PNG ขนาด 20 MB">
+            data-help-search="รองรับไฟล์อะไร PDF ขนาด 20 MB">
             <summary>รองรับไฟล์ประเภทใดบ้าง?</summary>
-            <p>หน้าสั่งพิมพ์ระบุชนิดไฟล์ PDF, DOC, DOCX, JPG, JPEG และ PNG
-              โดยไฟล์พิมพ์มีขนาดสูงสุดตามค่าที่กำหนดไว้ในแอป ให้ตรวจสอบข้อความใกล้ช่องอัปโหลดก่อนเลือกไฟล์</p>
+            <p>หน้าสั่งพิมพ์รองรับเฉพาะไฟล์ PDF โดยไฟล์มีขนาดสูงสุด 20 MB ให้ตรวจข้อความใกล้ช่องอัปโหลดก่อนเลือกไฟล์</p>
           </details>
           <details class="pd-help-faq-item" data-help-filter-item data-help-group="preview"
             data-help-search="PDF พรีวิวว่างเปล่า ไม่ขึ้น canvas worker error">
@@ -6999,8 +7053,8 @@
 
   <!-- JAVASCRIPT ENGINE & ADVANCED SCROLL FADE OBSERVER -->
   <script>
-    const DEFAULT_SUPABASE_URL = 'https://hghutsekeubqpuxpusub.supabase.co';
-    const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnaHV0c2VrZXVicXB1eHB1c3ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyOTczNzIsImV4cCI6MjEwNjg3MzM3Mn0.AfVAfWomE8pt7misSFOnX1PuXKV5vw8kQFQwWpLZUf8';
+    const DEFAULT_SUPABASE_URL = 'https://gottklflkqnfsjftztst.supabase.co';
+    const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvdHRrbGZsa3FuZnNqZnR6dHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3OTU1ODAsImV4cCI6MjEwNzM3MTU4MH0.9yRTqqD8lvJ9q0UxNWqn5W5cLB-g9Js940WjLgLyLkA';
 
     let supabaseClient = null;
     let currentUser = null;
@@ -7041,7 +7095,7 @@
       const ext = (file.name.split('.').pop() || '').toLowerCase();
       const extOk = extensions.length === 0 || extensions.includes(ext);
       const mimeOk = mimeTypes.length === 0 || mimeTypes.includes(file.type);
-      if (!extOk || (!mimeOk && file.type)) return { ok: false, message: 'ชนิดไฟล์ไม่ตรงกับไฟล์ที่ระบบอนุญาต กรุณาเลือก PDF, DOC, DOCX, JPG, PNG ตามช่องที่กำหนด' };
+      if (!extOk || (!mimeOk && file.type)) return { ok: false, message: 'อนุญาตเฉพาะไฟล์ PDF กรุณาเลือกไฟล์ .pdf ที่เปิดอ่านได้' };
       return { ok: true };
     }
 
@@ -7676,8 +7730,12 @@
     });
 
     function switchView(viewName) {
-      const allowed = ['landing', 'auth', 'dashboard', 'wallet', 'admin', 'help'];
+      const allowed = ['landing', 'auth', 'dashboard', 'wallet', 'admin', 'staff', 'help'];
       if (!allowed.includes(viewName)) viewName = 'landing';
+      if (viewName === 'staff' && (!currentUser || !['staff', 'admin'].includes(currentUser.role) || !supabaseClient)) {
+        showCustomModal({ title: 'จำกัดสิทธิ์พนักงาน', message: 'เฉพาะบัญชี Staff หรือ Admin ที่เชื่อมต่อฐานข้อมูลได้เท่านั้น', icon: 'shield-alert' });
+        return switchView('landing');
+      }
       if (viewName === 'admin' && (!currentUser || currentUser.role !== 'admin' || !supabaseClient)) {
         showCustomModal({ title: 'จำกัดสิทธิ์', message: 'เฉพาะ Admin ที่มีเซสชันและฐานข้อมูลพร้อมเท่านั้นที่เข้าใช้งานได้', icon: 'shield-alert' });
         return switchView('landing');
@@ -7696,6 +7754,7 @@
       if (viewName === 'dashboard') fetchQueues();
       else if (viewName === 'wallet') { fetchUserTopups(); fetchUserWallet(); }
       else if (viewName === 'admin') loadAdminData();
+      else if (viewName === 'staff') window.loadStaffWorkspace?.();
 
       runSecurityAudit(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -7933,7 +7992,7 @@
     function handleFileSelect(e) {
       const file = e.target.files[0];
       if (!file) return;
-      const check = validateUploadFile(file, { maxMB: MAX_PRINT_FILE_MB, extensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'], mimeTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'] });
+      const check = validateUploadFile(file, { maxMB: MAX_PRINT_FILE_MB, extensions: ['pdf'], mimeTypes: ['application/pdf'] });
       if (!check.ok) {
         e.target.value = '';
         return showCustomModal({ title: 'ไฟล์ไม่ผ่านการตรวจสอบ', message: check.message, icon: 'file-warning' });
@@ -8143,7 +8202,7 @@
       if (!payMethod || !deliveryMethod) return showCustomModal({ title: 'ตรวจสอบตัวเลือก', message: 'กรุณาเลือกการชำระเงินและการรับสินค้า', icon: 'alert-triangle' });
 
       if (!selectedFileObj) return showCustomModal({ title: 'ยังไม่ได้เลือกไฟล์', message: 'กรุณาอัปโหลดไฟล์เอกสารก่อนสร้างคิวพิมพ์', icon: 'file-plus-2' });
-      const fileCheck = validateUploadFile(selectedFileObj, { maxMB: MAX_PRINT_FILE_MB, extensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'] });
+      const fileCheck = validateUploadFile(selectedFileObj, { maxMB: MAX_PRINT_FILE_MB, extensions: ['pdf'], mimeTypes: ['application/pdf'] });
       if (!fileCheck.ok) return showCustomModal({ title: 'ไฟล์ไม่ผ่านการตรวจสอบ', message: fileCheck.message, icon: 'file-warning' });
 
       let recipientName = '', recipientPhone = '', recipientAddress = '';
@@ -8526,7 +8585,7 @@
 
     async function updateOrderStatus(orderId, newStatus) {
       if (!assertAdminAccess()) return;
-      const allowedStatuses = ['pending', 'printing', 'completed', 'cancelled'];
+      const allowedStatuses = ['pending', 'queued', 'printing', 'completed', 'preparing', 'ready_for_pickup', 'shipped', 'finished', 'cancelled'];
       if (!allowedStatuses.includes(newStatus)) return showCustomModal({ title: 'สถานะไม่ถูกต้อง', message: 'สถานะงานที่ส่งมาไม่อยู่ในรายการที่ระบบอนุญาต', icon: 'shield-alert' });
       try {
         const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
@@ -8573,7 +8632,7 @@
 
     async function changeUserRole(userId, newRole) {
       if (!assertAdminAccess()) return;
-      if (!['member', 'admin'].includes(newRole)) return showCustomModal({ title: 'สิทธิ์ไม่ถูกต้อง', message: 'ระบบหยุดการเปลี่ยนสิทธิ์เพื่อความปลอดภัย', icon: 'shield-alert' });
+      if (!['member', 'staff', 'admin'].includes(newRole)) return showCustomModal({ title: 'สิทธิ์ไม่ถูกต้อง', message: 'ระบบหยุดการเปลี่ยนสิทธิ์เพื่อความปลอดภัย', icon: 'shield-alert' });
       if (currentUser?.id === userId) return showCustomModal({ title: 'ป้องกันการเปลี่ยนสิทธิ์ตัวเอง', message: 'กรุณาใช้บัญชีผู้ดูแลอื่นเมื่อจำเป็นต้องเปลี่ยนสิทธิ์ของบัญชีนี้', icon: 'shield-alert' });
       try {
         const { error } = await supabaseClient.from('users').update({ role: newRole }).eq('id', userId);
@@ -10049,10 +10108,10 @@
         const f = e?.target?.files?.[0];
         if (!f) return;
         const ext = (f.name.split('.').pop() || '').toLowerCase();
-        const allowed = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+        const allowed = ['pdf'];
         if (!allowed.includes(ext)) {
           e.target.value = '';
-          return showCustomModal({ title: 'รูปแบบไฟล์ไม่รองรับ', message: 'รองรับเฉพาะ PDF, DOC, DOCX, JPG, JPEG และ PNG เท่านั้น', icon: 'file-warning' });
+          return showCustomModal({ title: 'รูปแบบไฟล์ไม่รองรับ', message: 'อนุญาตเฉพาะไฟล์ PDF ที่เปิดอ่านได้', icon: 'file-warning' });
         }
         if (f.size > 20 * 1024 * 1024) { e.target.value = ''; return showCustomModal({ title: 'ไฟล์ใหญ่เกินไป', message: 'ขนาดไฟล์สูงสุด 20 MB', icon: 'file-warning' }); }
         try { oldFileSelect?.call(this, e); } catch (err) { console.error(err); }
@@ -10156,7 +10215,7 @@
       /* Patch role update to detect silent RLS failures. */
       window.changeUserRole = async function (userId, newRole) {
         if (typeof assertAdminAccess === 'function' && !assertAdminAccess()) return;
-        if (!['member', 'admin'].includes(newRole)) return showCustomModal({ title: 'สิทธิ์ไม่ถูกต้อง', message: 'ระบบหยุดการเปลี่ยนสิทธิ์เพื่อความปลอดภัย', icon: 'shield-alert' });
+        if (!['member', 'staff', 'admin'].includes(newRole)) return showCustomModal({ title: 'สิทธิ์ไม่ถูกต้อง', message: 'ระบบหยุดการเปลี่ยนสิทธิ์เพื่อความปลอดภัย', icon: 'shield-alert' });
         if (currentUser?.id === userId) return showCustomModal({ title: 'ป้องกันการเปลี่ยนสิทธิ์ตัวเอง', message: 'กรุณาใช้บัญชีผู้ดูแลอื่นเมื่อจำเป็นต้องเปลี่ยนสิทธิ์ของบัญชีนี้', icon: 'shield-alert' });
         try { const { data, error } = await supabaseClient.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle(); if (error) throw error; if (!data || data.role !== newRole) throw new Error('Supabase ไม่อนุญาตให้แก้ไขสิทธิ์รายการนี้ (ตรวจสอบ RLS Policy ของตาราง users)'); showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `บัญชีนี้ถูกเปลี่ยนเป็น ${newRole.toUpperCase()} แล้ว`, icon: 'shield-check' }); await loadAdminData() } catch (err) { showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: err.message || 'ไม่สามารถอัปเดตสิทธิ์ได้', icon: 'shield-alert' }) }
       };
@@ -10166,7 +10225,7 @@
       function aiAnswer(q) {
         const x = (q || '').toLowerCase(); const u = window.currentUser || currentUser; const orders = window.__pdAdminOrders || [];
         if (/เหรียญ|coins|ยอด/.test(x)) return `ตอนนี้บัญชีของคุณมียอด Coins ${Number(u?.coins || 0).toFixed(2)} Coins\nสามารถไปที่ Wallet เพื่อเติม Coins ได้ทันที`;
-        if (/อัปโหลด|upload|ไฟล์/.test(x)) return 'ไปที่ “สั่งพิมพ์” แล้วอัปโหลด PDF, DOC, DOCX, JPG, JPEG หรือ PNG ได้สูงสุด 20 MB\nถ้าไฟล์ไม่รองรับ ระบบจะแจ้งเตือนทันที และสามารถกด “ลบไฟล์” เพื่อเลือกไฟล์ใหม่ได้';
+        if (/อัปโหลด|upload|ไฟล์/.test(x)) return 'ไปที่ “สั่งพิมพ์” แล้วอัปโหลด PDF ได้สูงสุด 20 MB\nถ้าไฟล์ไม่รองรับ ระบบจะแจ้งเตือนทันที และสามารถกด “ลบไฟล์” เพื่อเลือกไฟล์ใหม่ได้';
         if (/คิว|สถานะ|งานพิมพ์/.test(x)) return u ? `ระบบจะแสดงคิวล่าสุดในหน้า “สั่งพิมพ์”\n${u.role === 'admin' && orders.length ? `แอดมินมีรายการที่โหลดไว้ ${orders.length} รายการ` : 'เปิดรายการคิวเพื่อดูสถานะและรายละเอียดได้เลย'}` : 'กรุณาเข้าสู่ระบบก่อนดูคิวงานพิมพ์';
         if (/แอดมิน|admin|สมาชิก|สิทธิ์/.test(x)) return u?.role === 'admin' ? 'คุณกำลังใช้งานสิทธิ์ Admin สามารถดูรายละเอียดคิว เปิดไฟล์ ตรวจสลิป อัปเดตสถานะ และจัดการสิทธิ์สมาชิกได้' : 'บัญชี Member จะไม่เห็นพื้นที่ Admin';
         if (/โปรไฟล์|รูป|avatar/.test(x)) return 'เปิด Account Center → โปรไฟล์ → แก้ไขโปรไฟล์\nเลือกรูป PNG/JPG/WEBP ไม่เกิน 2 MB แล้ว Profile Studio จะให้ลาก/ซูม/ครอปก่อนบันทึก';
@@ -11034,7 +11093,7 @@
          --------------------------------------------------------------- */
       window.changeUserRole = async function (userId, newRole) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        if (!['member', 'admin'].includes(newRole)) return notify('สิทธิ์ไม่ถูกต้อง', 'ระบบไม่อนุญาตสิทธิ์นี้', 'shield-alert');
+        if (!['member', 'staff', 'admin'].includes(newRole)) return notify('สิทธิ์ไม่ถูกต้อง', 'ระบบไม่อนุญาตสิทธิ์นี้', 'shield-alert');
         if (window.currentUser?.id === userId) return notify('เปลี่ยนสิทธิ์ไม่ได้', 'ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้', 'shield-alert');
         const btn = qa('#admin-users-tbody [data-pd-role-target]').find(x => String(x.dataset.pdRoleTarget) === String(userId));
         if (btn) { btn.classList.add('pd-v11-busy'); btn.disabled = true; btn.dataset.oldText = btn.textContent; btn.textContent = 'กำลังบันทึก…'; }
@@ -11121,7 +11180,7 @@
         if (!payMethod || !deliveryMethod) return notify('ตรวจสอบตัวเลือก', 'กรุณาเลือกการชำระเงินและการรับสินค้า', 'alert-triangle');
         const file = window.selectedFileObj;
         if (!file) return notify('ยังไม่ได้เลือกไฟล์', 'กรุณาอัปโหลดเอกสารก่อนสร้างรายการ', 'file-plus-2');
-        if (typeof window.validateUploadFile === 'function') { const chk = window.validateUploadFile(file, { maxMB: window.MAX_PRINT_FILE_MB || 20, extensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'] }); if (!chk.ok) return notify('ไฟล์ไม่ผ่านการตรวจสอบ', chk.message, 'file-warning'); }
+        if (typeof window.validateUploadFile === 'function') { const chk = window.validateUploadFile(file, { maxMB: window.MAX_PRINT_FILE_MB || 20, extensions: ['pdf'], mimeTypes: ['application/pdf'] }); if (!chk.ok) return notify('ไฟล์ไม่ผ่านการตรวจสอบ', chk.message, 'file-warning'); }
         let rn = '', rp = '', ra = '';
         if (deliveryMethod === 'delivery') {
           rn = val('recipient-name'); rp = val('recipient-phone'); ra = val('recipient-address');
@@ -13674,7 +13733,7 @@
         const file = window.selectedFileObj;
         if (!file) return notifyV12('ยังไม่ได้เลือกไฟล์', 'กรุณาอัปโหลดเอกสารก่อนสร้างรายการ', 'file-plus-2');
         if (typeof window.validateUploadFile === 'function') {
-          const chk = window.validateUploadFile(file, { maxMB: 20, extensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'] });
+          const chk = window.validateUploadFile(file, { maxMB: 20, extensions: ['pdf'], mimeTypes: ['application/pdf'] });
           if (!chk.ok) return notifyV12('ไฟล์ไม่ผ่านการตรวจสอบ', chk.message, 'file-warning');
         }
 
@@ -13686,22 +13745,40 @@
         const pageRange = getSelectedPageRange();
         const payMethod = q('input[name="payment_method"]:checked')?.value;
         const deliveryMethod = q('input[name="delivery_method"]:checked')?.value;
+        const bindingOptionId = v('binding-option') || '';
+        const deliveryProvider = v('delivery-provider') || 'parcel';
         const notes = v('order-notes');
         if (!payMethod || !deliveryMethod) return notifyV12('ตรวจสอบตัวเลือก', 'กรุณาเลือกการชำระเงินและการรับสินค้า', 'alert-triangle');
 
         let recipientName = '', recipientPhone = '', recipientAddress = '';
         if (deliveryMethod === 'delivery') {
           recipientName = v('recipient-name'); recipientPhone = v('recipient-phone'); recipientAddress = v('recipient-address');
+          if (!deliveryProvider) return notifyV12('ยังไม่ได้เลือกผู้ให้บริการจัดส่ง', 'กรุณาเลือกวิธีจัดส่งที่มีการตั้งราคาในระบบก่อนยืนยัน', 'truck');
           if (!recipientName || !/^0[0-9\-\s]{8,14}$/.test(recipientPhone) || !recipientAddress)
             return notifyV12('ข้อมูลจัดส่งไม่ครบ', 'กรุณากรอกชื่อ เบอร์โทร และที่อยู่ให้ครบถ้วน', 'map-pin-x');
         }
 
-        let pricing;
-        try { pricing = await loadPricingV12(paper); } catch (err) { return notifyV12('ยังตั้งค่าราคาไม่ครบ', err.message, 'badge-alert'); }
+        let pricing, bindingOption = null, deliveryOption = null;
+        try {
+          pricing = await loadPricingV12(paper);
+          if (bindingOptionId) {
+            const br = await client.from('binding_options').select('id,name,price,active').eq('id', bindingOptionId).eq('active', true).maybeSingle();
+            if (br.error) throw br.error;
+            if (!br.data) throw new Error('ตัวเลือกเข้าเล่มนี้ไม่เปิดใช้งานแล้ว กรุณาเลือกใหม่');
+            bindingOption = br.data;
+          }
+          if (deliveryMethod === 'delivery') {
+            const dr = await client.from('delivery_options').select('provider_key,name,fee,active').eq('provider_key', deliveryProvider).eq('active', true).maybeSingle();
+            if (dr.error) throw dr.error;
+            if (!dr.data || dr.data.fee === null || !Number.isFinite(Number(dr.data.fee)) || Number(dr.data.fee) < 0) throw new Error('วิธีจัดส่งนี้ยังไม่ได้กำหนดราคา กรุณาเลือกวิธีอื่นหรือติดต่อแอดมิน');
+            deliveryOption = dr.data;
+          }
+        } catch (err) { return notifyV12('ยังตั้งค่าราคาไม่ครบ', err.message, 'badge-alert'); }
         const pageRate = Number(isColor ? pricing.color_price : pricing.black_white_price) + (isDuplex ? Number(pricing.duplex_price) : 0);
         const printCost = pages * pageRate * copies;
-        const deliveryFee = deliveryMethod === 'delivery' ? 30 : 0;
-        const total = Number((printCost + deliveryFee).toFixed(2));
+        const bindingCost = bindingOption ? Number(bindingOption.price || 0) : 0;
+        const deliveryFee = deliveryMethod === 'delivery' ? Number(deliveryOption?.fee || 0) : 0;
+        const total = Number((printCost + (bindingCost * copies) + deliveryFee).toFixed(2));
         if (!Number.isFinite(pageRate) || pageRate < 0 || !Number.isFinite(total) || total <= 0) {
           return notifyV12('ราคายังยืนยันไม่ได้', 'ระบบพบราคาหรือยอดรวมไม่ถูกต้อง จึงหยุดก่อนสร้างคำสั่งซื้อ', 'shield-alert');
         }
@@ -13737,27 +13814,27 @@
           await uploadToBucketV12('documents', file, documentPath);
 
           const { error: docError } = await client.from('documents').insert([{
-            id: docId, user_id: user.id, file_name: file.name, file_path: documentPath, page_count: pages, file_size: file.size, created_at: new Date().toISOString()
+            id: docId, user_id: user.id, file_name: file.name, file_path: documentPath, file_bucket: 'documents', file_mime: 'application/pdf', page_count: pages, file_size: file.size, created_at: new Date().toISOString()
           }]);
           if (docError) throw docError;
           docCreated = true;
 
           const { data: order, error: orderError } = await client.from('orders').insert([{
-            id: orderId, user_id: user.id, total_amount: total, status: 'queued', admin_note: notes || null, created_at: new Date().toISOString()
+            id: orderId, user_id: user.id, total_amount: total, status: 'queued', payment_status: 'completed', binding_cost: Number((bindingCost * copies).toFixed(2)), delivery_fee: deliveryFee, admin_note: notes || null, created_at: new Date().toISOString()
           }]).select('id,queue_number,total_amount,status,created_at').single();
           if (orderError) throw orderError;
           if (!order) throw new Error('Supabase ไม่คืนข้อมูลออเดอร์');
           orderCreated = true;
 
           const { error: jobError } = await client.from('print_jobs').insert([{
-            id: crypto.randomUUID(), order_id: orderId, document_id: docId, copies, color: isColor, paper_size: paper, duplex: isDuplex, status: 'queued', page_range: pageRange
+            id: crypto.randomUUID(), order_id: orderId, document_id: docId, copies, color: isColor, paper_size: paper, duplex: isDuplex, status: 'queued', page_range: pageRange, binding_option_id: bindingOption ? Number(bindingOption.id) : null, binding_cost: Number((bindingCost * copies).toFixed(2))
           }]);
           if (jobError) throw jobError;
           jobCreated = true;
 
           if (deliveryMethod === 'delivery') {
             const { error: deliveryError } = await client.from('deliveries').insert([{
-              order_id: orderId, delivery_method: 'delivery', recipient_name: recipientName, phone_number: recipientPhone, delivery_address: recipientAddress, delivery_provider: null, tracking_number: null
+              order_id: orderId, delivery_method: 'delivery', recipient_name: recipientName, phone_number: recipientPhone, delivery_address: recipientAddress, delivery_provider: deliveryOption?.name || deliveryProvider, tracking_number: null, delivery_fee: deliveryFee, status: 'pending'
             }]);
             if (deliveryError) throw deliveryError;
             deliveryCreated = true;
@@ -13770,7 +13847,7 @@
             await uploadToBucketV12('slips', slipFile, slipPath);
             const { data: pub } = client.storage.from('slips').getPublicUrl(slipPath);
             const paymentSave = await insertVerifiedRecordV12(client, 'payments', {
-              order_id: orderId, amount: total, status: 'pending', payment_method: 'promptpay',
+              order_id: orderId, amount: total, status: 'completed', payment_method: 'promptpay',
               slip_url: pub?.publicUrl || slipPath, created_at: new Date().toISOString()
             }, promptPayVerification);
             verificationMetadataWarning = !paymentSave.metadataStored;
@@ -17356,7 +17433,7 @@
       /* ---------- 4. Admin role switching with visible progress + exact errors ---------- */
       window.changeUserRole = async function (userId, newRole) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        if (!['member', 'admin'].includes(newRole)) return notify('สิทธิ์ไม่ถูกต้อง', 'ระบบไม่อนุญาตสิทธิ์นี้', 'shield-alert');
+        if (!['member', 'staff', 'admin'].includes(newRole)) return notify('สิทธิ์ไม่ถูกต้อง', 'ระบบไม่อนุญาตสิทธิ์นี้', 'shield-alert');
         if (window.currentUser?.id === userId) return notify('เปลี่ยนสิทธิ์ไม่ได้', 'ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้', 'shield-alert');
         const buttons = [...document.querySelectorAll('#admin-users-tbody button')];
         const btn = buttons.find(b => b.getAttribute('onclick')?.includes(String(userId)));
@@ -24362,7 +24439,7 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
 
       window.changeUserRole = async function (userId, newRole) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        if (!['admin', 'member'].includes(String(newRole))) return appNotice('สิทธิ์ไม่ถูกต้อง', 'ระบบรองรับเฉพาะ Admin และ Member', 'shield-alert');
+        if (!['admin', 'staff', 'member'].includes(String(newRole))) return appNotice('สิทธิ์ไม่ถูกต้อง', 'ระบบรองรับเฉพาะ Admin และ Member', 'shield-alert');
         if (String(window.currentUser?.id) === String(userId)) return appNotice('เปลี่ยนสิทธิ์ไม่ได้', 'ไม่สามารถเปลี่ยนสิทธิ์ของบัญชีที่กำลังใช้งานอยู่ได้ เพื่อป้องกันการล็อกตัวเองออกจากระบบ', 'shield-alert');
         const button = [...document.querySelectorAll('#admin-users-tbody [data-pd-admin-action="role"]')].find(b => String(b.dataset.userId) === String(userId));
         const performUpdate = async () => {
@@ -25600,6 +25677,269 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
     });
     observer.observe(admin, { childList: true, subtree: true });
   }
+})();
+</script>
+
+
+<style id="pd-mini-project-aligned-styles">
+  .pd-mp-setting-card{padding:16px;border:1px solid var(--pd-line,rgba(148,163,184,.18));border-radius:18px;background:var(--pd-surface,rgba(20,24,32,.55))}
+  .pd-mp-table-wrap{border:1px solid var(--pd-line,rgba(148,163,184,.18));border-radius:18px;padding:16px;min-width:0}
+  .pd-mp-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .pd-mp-subhead{font-size:15px;font-weight:800;color:var(--pd-white,#eef2f7);margin-bottom:12px}
+  .pd-mp-empty{padding:20px;border:1px dashed var(--pd-line,rgba(148,163,184,.22));border-radius:14px;color:var(--pd-muted,#9ba4b2);font-size:13px;line-height:1.7}
+  .pd-mp-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 14px;border-radius:12px;background:#0a84ff;color:white;font-weight:800;font-size:13px;border:0;cursor:pointer}
+  .pd-mp-button:disabled{opacity:.5;cursor:not-allowed}
+  .pd-mp-badge{display:inline-flex;padding:5px 9px;border:1px solid var(--pd-line,rgba(148,163,184,.2));border-radius:999px;font-size:11px;color:var(--pd-muted,#9ba4b2)}
+  .pd-mp-caution{border:1px solid rgba(245,158,11,.32);background:rgba(245,158,11,.08);color:var(--pd-muted,#b7c0cc);padding:13px 15px;border-radius:14px;font-size:12px;line-height:1.7}
+  .pd-mp-add-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:12px}
+  .pd-mp-table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+  .pd-mp-table th,.pd-mp-table td{padding:10px 9px;border-bottom:1px solid var(--pd-line,rgba(148,163,184,.14));text-align:left;vertical-align:middle}
+  .pd-mp-table th{color:var(--pd-muted,#9ba4b2);font-size:11px;letter-spacing:.02em}
+  .pd-mp-table input,.pd-mp-table select{min-height:40px;width:100%;min-width:90px;padding:7px 9px;border:1px solid var(--pd-line,rgba(148,163,184,.22));border-radius:10px;background:var(--pd-surface,rgba(10,14,20,.6));color:inherit}
+  .pd-mp-table-viewport{width:100%;overflow:auto;border-radius:12px}
+  .pd-mp-report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}
+  .pd-mp-report-card{padding:18px;border:1px solid var(--pd-line,rgba(148,163,184,.18));background:var(--pd-surface,rgba(20,24,32,.55));border-radius:18px;min-width:0}
+  .pd-mp-report-card small{display:block;color:var(--pd-muted,#9ba4b2);font-size:12px}
+  .pd-mp-report-card strong{display:block;margin-top:7px;font-size:clamp(22px,2vw,30px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:var(--pd-white,#f7f9fc)}
+  .pd-mp-staff-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(130px,.6fr) minmax(150px,.7fr);gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--pd-line,rgba(148,163,184,.14))}
+  .pd-mp-staff-row:last-child{border-bottom:0}
+  .pd-mp-staff-row select{min-height:42px;width:100%;padding:8px 10px;border:1px solid var(--pd-line,rgba(148,163,184,.22));border-radius:11px;background:var(--pd-surface,rgba(10,14,20,.6));color:inherit}
+  #pd-staff-nav-shortcut{min-height:42px;border-radius:13px;padding:0 13px;background:rgba(10,132,255,.12);color:#58a6ff;border:1px solid rgba(10,132,255,.28);font-size:12px;font-weight:800;white-space:nowrap}
+  @media(max-width:720px){.pd-mp-staff-row{grid-template-columns:minmax(0,1fr);gap:8px}.pd-mp-table-wrap{padding:12px}#pd-admin-tabs{overflow-x:auto;justify-content:flex-start}#pd-admin-tabs button{white-space:nowrap}.pd-mp-add-form{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+
+<script id="pd-mini-project-aligned-runtime">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const client = () => window.supabaseClient || null;
+  const current = () => window.currentUser || null;
+  const money = value => Number(value || 0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const state = { pricing:new Map(), bindings:[], delivery:[], loaded:false, reportRows:[] };
+  const notice = (title,message,icon='info') => window.notifyV12?.(title,message,icon) ?? window.showCustomModal?.({title,message,icon});
+  const isAdmin = () => current()?.role === 'admin';
+  const isStaff = () => ['admin','staff'].includes(current()?.role);
+  const requireAdmin = () => { if (!isAdmin()) { notice('จำกัดสิทธิ์','การจัดการหลังบ้านส่วนนี้สงวนไว้สำหรับ Admin','shield-alert'); return false;} if (!client()) {notice('ฐานข้อมูลยังไม่พร้อม','ยังเชื่อมต่อ Supabase ไม่ได้','database-zap');return false;} return true; };
+  const input = (name,value,type='text',extra='') => `<input name="${name}" type="${type}" value="${esc(value)}" ${extra}>`;
+  const activeBadge = active => `<span class="pd-mp-badge">${active?'เปิดใช้งาน':'ปิดใช้งาน'}</span>`;
+
+  async function loadPublicPrintOptions() {
+    const db = client(); if (!db) return;
+    try {
+      const pr = await db.from('pricing').select('id,paper_size,black_white_price,color_price,duplex_price');
+      if (!pr.error) { state.pricing = new Map((pr.data||[]).map(row=>[String(row.paper_size),row])); }
+    } catch (_) {}
+    try {
+      const br = await db.from('binding_options').select('id,name,price,active').order('id');
+      if (!br.error) state.bindings = (br.data||[]).filter(x=>x.active && String(x.name||'').trim() !== 'ไม่เข้าเล่ม');
+    } catch (_) {}
+    try {
+      const dr = await db.from('delivery_options').select('provider_key,name,fee,active').order('name');
+      if (!dr.error) state.delivery = dr.data||[];
+    } catch (_) {}
+    const bind = $('binding-option');
+    if (bind) {
+      const selected = bind.value;
+      bind.innerHTML = '<option value="">ไม่เข้าเล่ม (0.00 บาท)</option>' + state.bindings.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} (+${money(x.price)} บาท/ชุด)</option>`).join('');
+      if (state.bindings.some(x=>String(x.id)===selected)) bind.value=selected;
+      if ($('binding-option-note')) $('binding-option-note').textContent = state.bindings.length ? 'เลือกบริการเข้าเล่มที่เปิดใช้ได้ ราคาจะคูณตามจำนวนชุด' : 'ยังไม่มีบริการเข้าเล่มที่เปิดใช้งาน — ค่าเริ่มต้นคือไม่เข้าเล่ม';
+    }
+    const delivery = $('delivery-provider');
+    if (delivery) {
+      const previous = delivery.value || 'parcel';
+      delivery.innerHTML = state.delivery.map(x=>{
+        const active = !!x.active && x.fee !== null && Number.isFinite(Number(x.fee)) && Number(x.fee)>=0;
+        const label = active ? `${x.name} (+${money(x.fee)} บาท)` : `${x.name} (รอตั้งราคา)`;
+        return `<option value="${esc(x.provider_key)}" ${active?'':'disabled'}>${esc(label)}</option>`;
+      }).join('') || '<option value="">ยังไม่มีวิธีจัดส่งที่ตั้งค่าไว้</option>';
+      const usable=state.delivery.filter(x=>x.active&&x.fee!==null&&Number.isFinite(Number(x.fee))&&Number(x.fee)>=0);
+      delivery.value = usable.some(x=>x.provider_key===previous) ? previous : (usable[0]?.provider_key || '');
+      if ($('delivery-provider-note')) $('delivery-provider-note').textContent = usable.length ? 'เลือกเฉพาะบริการที่มีราคายืนยันในฐานข้อมูล' : 'ยังไม่มีช่องทางจัดส่งที่กำหนดราคาและเปิดใช้งาน';
+      const radioPrice=$('pd-delivery-radio-price');
+      if(radioPrice) radioPrice.textContent=usable.length?'เลือกผู้ให้บริการได้ • ราคาอิงฐานข้อมูล':'ยังไม่ได้ตั้งราคาจัดส่ง';
+    }
+    state.loaded = true;
+    window.calculatePrice?.();
+  }
+
+  // Keep the older on-screen estimator responsive while sourcing configured rates from DB when available.
+  const originalCalculate = window.calculatePrice;
+  window.calculatePrice = function () {
+    let fallback = 0;
+    try { fallback = typeof originalCalculate==='function' ? Number(originalCalculate()||0) : 0; } catch (_) {}
+    const paper=$('paper-size')?.value || 'A4', copies=Math.max(1,parseInt($('copies')?.value||'1',10)||1), pages=Math.max(1,parseInt($('printed-pages-input')?.value||'1',10)||1);
+    const isColor=$('color-type')?.value==='color', duplex=$('duplex-type')?.value==='duplex', isDelivery=document.querySelector('input[name="delivery_method"]:checked')?.value==='delivery';
+    const rate=state.pricing.get(paper);
+    const bind=state.bindings.find(x=>String(x.id)===String($('binding-option')?.value||''));
+    const provider=state.delivery.find(x=>String(x.provider_key)===String($('delivery-provider')?.value||''));
+    if(!rate){
+      const out=$('pd-live-total'); if(out) out.textContent=`${money(fallback)} ฿`;
+      const total=$('total-price'); if(total) total.textContent=`${money(fallback)} ฿`;
+      return fallback;
+    }
+    const each=Number(isColor?rate.color_price:rate.black_white_price)+(duplex?Number(rate.duplex_price||0):0);
+    const fee=isDelivery?(provider&&provider.active&&provider.fee!==null?Number(provider.fee):null):0;
+    const total=fee===null?null:Number((pages*each*copies+Number(bind?.price||0)*copies+fee).toFixed(2));
+    const output=total===null?'ตั้งค่าค่าส่งก่อน':`${money(total)} ฿`;
+    if($('total-price')) $('total-price').textContent=output;
+    if($('pd-live-total')) $('pd-live-total').textContent=output;
+    if($('pd-print-qr-amount')) $('pd-print-qr-amount').textContent=total===null?'—':money(total);
+    if($('pd-coin-equivalent')) $('pd-coin-equivalent').textContent=total===null?'กรุณาเลือกบริการจัดส่งที่มีราคา':'≈ '+money(total)+' Coins';
+    if($('price-breakdown')) $('price-breakdown').textContent=total===null?'ต้องกำหนดค่าจัดส่งในฐานข้อมูลก่อนยืนยัน':`พิมพ์ ${money(pages*each*copies)} + เข้าเล่ม ${money(Number(bind?.price||0)*copies)} + จัดส่ง ${money(fee||0)} บาท`;
+    return total===null?NaN:total;
+  };
+
+  function adminPanel(name) { if (!requireAdmin()) return; if(name==='pricing') loadBusinessConfig(); if(name==='printers') loadPrinters(); if(name==='staff') loadStaffBoard(); if(name==='reports') loadReports(); }
+  window.switchAdminTab = function(tab) {
+    const tabs=['orders','topups','users','pricing','printers','staff','reports'];
+    if(!tabs.includes(tab)) return;
+    tabs.forEach(t=>{const panel=$(`admin-tab-${t}`),btn=$(`admin-tab-${t}-btn`);panel?.classList.toggle('hidden',t!==tab);if(btn)btn.className=t===tab?'flex-none px-4 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm':'flex-none px-4 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100';});
+    if(tab==='pricing'||tab==='printers'||tab==='reports'||tab==='staff') adminPanel(tab);
+  };
+
+  async function loadBusinessConfig() {
+    if(!requireAdmin()) return; const db=client();
+    const priceBox=$('pd-admin-pricing-grid'), bindBox=$('pd-admin-binding-grid'), deliveryBox=$('pd-admin-delivery-grid');
+    if(priceBox) priceBox.innerHTML='กำลังโหลดราคาจาก Supabase…';
+    if(bindBox) bindBox.innerHTML='กำลังโหลดบริการเข้าเล่ม…';
+    if(deliveryBox) deliveryBox.innerHTML='กำลังโหลดบริการจัดส่ง…';
+    try {
+      const [pr,br,dr]=await Promise.all([
+        db.from('pricing').select('id,paper_size,black_white_price,color_price,duplex_price').order('paper_size'),
+        db.from('binding_options').select('id,name,price,active').order('id'),
+        db.from('delivery_options').select('provider_key,name,fee,active').order('name')
+      ]);
+      if(pr.error) throw new Error('pricing: '+pr.error.message); if(br.error) throw new Error('binding_options: '+br.error.message); if(dr.error) throw new Error('delivery_options: '+dr.error.message);
+      state.pricing=new Map((pr.data||[]).map(x=>[String(x.paper_size),x]));
+      state.bindings=(br.data||[]).filter(x=>x.active&&x.name!=='ไม่เข้าเล่ม'); state.delivery=dr.data||[];
+      if(priceBox) priceBox.innerHTML=`<div class="pd-mp-table-viewport"><table class="pd-mp-table"><thead><tr><th>ขนาด</th><th>ขาวดำ/หน้า</th><th>สี/หน้า</th><th>เพิ่มหน้า-หลัง</th><th>บันทึก</th></tr></thead><tbody>${(pr.data||[]).map(x=>`<tr><td><strong>${esc(x.paper_size)}</strong><input type="hidden" name="paper_size" value="${esc(x.paper_size)}"></td><td>${input('black_white_price',x.black_white_price,'number','min="0" step="0.01" required')}</td><td>${input('color_price',x.color_price,'number','min="0" step="0.01" required')}</td><td>${input('duplex_price',x.duplex_price,'number','min="0" step="0.01" required')}</td><td><button type="button" class="pd-mp-button" data-pd-config-save="pricing" data-id="${esc(x.id)}">บันทึกราคา</button></td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีราคากำหนด</td></tr>'}</tbody></table></div><form id="pd-price-add-form" class="pd-mp-add-form"><input name="paper_size" required maxlength="12" placeholder="ขนาด เช่น A5" class="ui-input"><input name="black_white_price" type="number" min="0" step="0.01" required placeholder="ขาวดำ/หน้า" class="ui-input"><input name="color_price" type="number" min="0" step="0.01" required placeholder="สี/หน้า" class="ui-input"><input name="duplex_price" type="number" min="0" step="0.01" required placeholder="เพิ่มหน้า-หลัง" class="ui-input"><button class="pd-mp-button" type="submit">เพิ่มขนาดกระดาษ</button></form>`;
+      if(bindBox) bindBox.innerHTML=`<div class="pd-mp-table-viewport"><table class="pd-mp-table"><thead><tr><th>ชื่อบริการ</th><th>ราคา/ชุด</th><th>สถานะ</th><th>บันทึก</th></tr></thead><tbody>${(br.data||[]).map(x=>`<tr><td>${input('name',x.name,'text','maxlength="80" required')}</td><td>${input('price',x.price,'number','min="0" step="0.01" required')}</td><td><select name="active"><option value="true" ${x.active?'selected':''}>เปิดใช้</option><option value="false" ${!x.active?'selected':''}>ปิดใช้</option></select></td><td><button type="button" class="pd-mp-button" data-pd-config-save="binding" data-id="${esc(x.id)}">บันทึก</button></td></tr>`).join('')||'<tr><td colspan="4">ยังไม่มีตัวเลือก</td></tr>'}</tbody></table></div>`;
+      if(deliveryBox) deliveryBox.innerHTML=`<div class="pd-mp-table-viewport"><table class="pd-mp-table"><thead><tr><th>ช่องทาง</th><th>ชื่อแสดงผล</th><th>ค่าจัดส่ง</th><th>สถานะ</th><th>บันทึก</th></tr></thead><tbody>${(dr.data||[]).map(x=>`<tr><td>${esc(x.provider_key)}</td><td>${input('name',x.name,'text','maxlength="80" required')}</td><td>${input('fee',x.fee??'','number','min="0" step="0.01" placeholder="กำหนดราคา"')}</td><td><select name="active"><option value="true" ${x.active?'selected':''}>เปิดใช้</option><option value="false" ${!x.active?'selected':''}>ปิดใช้</option></select></td><td><button type="button" class="pd-mp-button" data-pd-config-save="delivery" data-id="${esc(x.provider_key)}">บันทึก</button></td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีช่องทางจัดส่ง</td></tr>'}</tbody></table></div><p class="sub-text text-xs mt-3">ก่อนเปิดช่องทางให้ลูกค้าใช้ ต้องระบุราคาและตรวจสอบว่าใช้ได้จริง</p>`;
+    } catch(error) {
+      for(const el of [priceBox,bindBox,deliveryBox]) if(el) el.innerHTML=`<p class="text-rose-400">โหลดข้อมูลไม่สำเร็จ: ${esc(error.message||error)}</p>`;
+      console.error('[PrintDekD] business config load:',error);
+    }
+  }
+
+  async function saveSettings(kind,id,row) {
+    if(!requireAdmin()) return; const db=client(); let table,filter,values;
+    if(kind==='pricing'){table='pricing';filter={col:'id',val:id};values={black_white_price:Number(row.black_white_price),color_price:Number(row.color_price),duplex_price:Number(row.duplex_price)};}
+    else if(kind==='binding'){table='binding_options';filter={col:'id',val:id};values={name:String(row.name||'').trim(),price:Number(row.price),active:row.active==='true'};}
+    else if(kind==='delivery'){table='delivery_options';filter={col:'provider_key',val:id};values={name:String(row.name||'').trim(),fee:row.fee===''?null:Number(row.fee),active:row.active==='true'};if(values.active&&(values.fee===null||!Number.isFinite(values.fee)||values.fee<0))throw new Error('ต้องกำหนดค่าจัดส่งที่ไม่ติดลบก่อนเปิดใช้');}
+    else return;
+    for(const [k,val] of Object.entries(values)) if(k!=='active' && k!=='fee' && typeof val==='number' && (!Number.isFinite(val)||val<0)) throw new Error('ราคาต้องเป็นตัวเลขตั้งแต่ 0 ขึ้นไป');
+    const result=await db.from(table).update(values).eq(filter.col,filter.val).select('*').maybeSingle(); if(result.error) throw result.error; if(!result.data) throw new Error('ฐานข้อมูลไม่ยืนยันการบันทึก ตรวจสิทธิ์ RLS/Policy และลองใหม่');
+    notice('บันทึกข้อมูลแล้ว',`อัปเดต ${table} สำเร็จ`,'check-circle-2'); await loadBusinessConfig(); await loadPublicPrintOptions();
+  }
+
+  async function loadPrinters() {
+    if(!requireAdmin()) return; const box=$('pd-admin-printers-grid'); if(!box)return; box.textContent='กำลังโหลดเครื่องพิมพ์…';
+    try{const r=await client().from('printers').select('id,name,ip_address,location,status,created_at').order('id');if(r.error)throw r.error;
+      box.innerHTML=`<div class="pd-mp-table-viewport"><table class="pd-mp-table"><thead><tr><th>ชื่อ</th><th>IP / Host</th><th>ตำแหน่ง</th><th>สถานะข้อมูล</th><th>บันทึก</th></tr></thead><tbody>${(r.data||[]).map(x=>`<tr><td>${input('name',x.name,'text','required maxlength="100"')}</td><td>${input('ip_address',x.ip_address||'','text','maxlength="100"')}</td><td>${input('location',x.location||'','text','maxlength="100"')}</td><td><select name="status"><option value="online" ${x.status==='online'?'selected':''}>online (ตามข้อมูล)</option><option value="offline" ${x.status==='offline'?'selected':''}>offline</option><option value="maintenance" ${x.status==='maintenance'?'selected':''}>maintenance</option></select></td><td><button type="button" class="pd-mp-button" data-pd-printer-save="${esc(x.id)}">บันทึก</button></td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีเครื่องพิมพ์ลงทะเบียน</td></tr>'}</tbody></table></div>`;
+    }catch(e){box.innerHTML=`<p class="text-rose-400">โหลดข้อมูลเครื่องพิมพ์ไม่สำเร็จ: ${esc(e.message||e)}</p>`;}
+  }
+  async function loadReports() {
+    if(!requireAdmin()) return; const box=$('pd-admin-report-grid');if(!box)return;box.innerHTML='<div class="pd-mp-empty">กำลังรวมข้อมูล…</div>';
+    try{
+      const results=await Promise.all([
+        client().from('orders').select('id,total_amount,status,created_at'),
+        client().from('payments').select('id,amount,status,payment_method,created_at'),
+        client().from('topups').select('id,amount,status,created_at'),
+        client().from('wallet_transactions').select('id,transaction_type,amount,transaction_date')
+      ]);
+      for(let i=0;i<results.length;i++)if(results[i].error)throw new Error(['orders','payments','topups','wallet_transactions'][i]+': '+results[i].error.message);
+      const [orders,payments,topups,ledger]=results.map(x=>x.data||[]);
+      const done=orders.filter(x=>['completed','finished','ready_for_pickup','shipped'].includes(String(x.status).toLowerCase()));
+      const paid=payments.filter(x=>String(x.status).toLowerCase()==='completed');
+      const approved=topups.filter(x=>String(x.status).toLowerCase()==='approved');
+      const pending=topups.filter(x=>String(x.status).toLowerCase()==='pending');
+      const cards=[['คำสั่งพิมพ์ทั้งหมด',orders.length+' รายการ'],['งานพิมพ์เสร็จ/ส่งมอบ',done.length+' รายการ'],['ยอดชำระที่สถานะ completed',money(paid.reduce((a,x)=>a+Number(x.amount||0),0))+' บาท'],['เติม Coins ที่อนุมัติแล้ว',money(approved.reduce((a,x)=>a+Number(x.amount||0),0))+' บาท'],['คำขอเติม Coins ที่รอตรวจ',pending.length+' รายการ'],['รายการใน Ledger',ledger.length+' รายการ']];
+      box.innerHTML=cards.map(([l,v])=>`<div class="pd-mp-report-card"><small>${esc(l)}</small><strong>${esc(v)}</strong></div>`).join('');
+      state.reportRows=[['ประเภท','จำนวน/ยอด'],...cards];
+    }catch(e){box.innerHTML=`<p class="text-rose-400">สร้างรายงานไม่สำเร็จ: ${esc(e.message||e)}<br>ตรวจ schema และสิทธิ์ SELECT ของตารางที่ระบุ</p>`;state.reportRows=[];}
+  }
+  function exportReport(){if(!state.reportRows.length){notice('ยังไม่มีรายงาน','โหลดรายงานให้สำเร็จก่อนดาวน์โหลด','alert-triangle');return;}const csv=state.reportRows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`printdekd-report-${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+
+  async function loadStaffBoard(containerId='pd-admin-staff-grid') {
+    if(!isStaff()){notice('จำกัดสิทธิ์','ต้องเป็น Staff หรือ Admin เพื่อดูงานหลังพิมพ์','shield-alert');return;}
+    const box=$(containerId);if(!box)return;const db=client();if(!db){box.textContent='ฐานข้อมูลยังไม่พร้อม';return;}box.textContent='กำลังโหลดงานหลังพิมพ์…';
+    try{
+      const r=await db.from('orders').select('id,queue_number,user_id,total_amount,status,created_at,admin_note').order('created_at',{ascending:false}).limit(150);if(r.error)throw r.error;
+      const rows=r.data||[];const ids=rows.map(x=>x.id);let jobs=[],deliveries=[],docs=[];
+      if(ids.length){const jr=await db.from('print_jobs').select('id,order_id,document_id,copies,color,paper_size,duplex,page_range,binding_cost,status').in('order_id',ids);if(jr.error)throw jr.error;jobs=jr.data||[];const dr=await db.from('deliveries').select('order_id,delivery_method,delivery_provider,recipient_name,phone_number,delivery_address,tracking_number,status').in('order_id',ids);if(dr.error)throw dr.error;deliveries=dr.data||[];const dids=[...new Set(jobs.map(x=>x.document_id).filter(Boolean))];if(dids.length){const docR=await db.from('documents').select('id,file_name,page_count').in('id',dids);if(docR.error)throw docR.error;docs=docR.data||[];}}
+      const jm=new Map(jobs.map(x=>[String(x.order_id),x])),dm=new Map(deliveries.map(x=>[String(x.order_id),x])),fm=new Map(docs.map(x=>[String(x.id),x]));
+      const eligible=rows.filter(x=>['completed','preparing','ready_for_pickup','shipped'].includes(String(x.status||'').toLowerCase()));
+      box.innerHTML=eligible.map(o=>{const j=jm.get(String(o.id))||{},d=dm.get(String(o.id))||{},f=fm.get(String(j.document_id))||{};return `<div class="pd-mp-staff-row"><div><strong class="titanium-text">คิว #${esc(o.queue_number??o.id)}</strong><div class="sub-text text-xs mt-1">${esc(f.file_name||'เอกสาร')} • ${Number(f.page_count||0)} หน้า • ${Number(j.copies||1)} ชุด • ${esc(j.paper_size||'A4')}</div><div class="sub-text text-xs mt-1">${esc(d.recipient_name||'')} ${esc(d.delivery_provider||'')} ${esc(d.tracking_number||'')}</div></div><div><span class="pd-mp-badge">${esc(o.status)}</span><div class="sub-text text-xs mt-1">ยอด ${money(o.total_amount)} บาท</div></div><div><select aria-label="เปลี่ยนสถานะคิว ${esc(o.queue_number??o.id)}" data-pd-staff-status="${esc(o.id)}"><option value="completed" ${o.status==='completed'?'selected':''}>พิมพ์เสร็จแล้ว</option><option value="preparing" ${o.status==='preparing'?'selected':''}>รอจัดเตรียม</option><option value="ready_for_pickup" ${o.status==='ready_for_pickup'?'selected':''}>พร้อมรับ/จัดส่ง</option><option value="shipped" ${o.status==='shipped'?'selected':''}>ส่งออกแล้ว</option><option value="finished" ${o.status==='finished'?'selected':''}>ส่งมอบเสร็จสิ้น</option></select></div></div>`;}).join('')||'<div class="pd-mp-empty">ยังไม่มีงานพิมพ์ที่รอจัดเตรียมหรือส่งมอบ</div>';
+    }catch(e){box.innerHTML=`<div class="pd-mp-empty">โหลดงานพนักงานไม่สำเร็จ: ${esc(e.message||e)}<br>ยังไม่เปลี่ยนสถานะใด ๆ</div>`;}
+  }
+  window.loadStaffWorkspace=()=>loadStaffBoard('pd-staff-orders-grid');
+  async function updateStaffStatus(orderId,newStatus){
+    if(!isStaff())throw new Error('ต้องเป็น Staff หรือ Admin');const allowed=['completed','preparing','ready_for_pickup','shipped','finished'];if(!allowed.includes(newStatus))throw new Error('สถานะไม่ถูกต้อง');const db=client();
+    const check=await db.from('orders').select('id,status').eq('id',orderId).maybeSingle();if(check.error)throw check.error;if(!check.data)throw new Error('ไม่พบคิวนี้');
+    const old=String(check.data.status||'');if(!['completed','preparing','ready_for_pickup','shipped','finished'].includes(old))throw new Error('สถานะงานยังไม่พร้อมสำหรับขั้นตอนหลังพิมพ์');
+    const changed=await db.from('orders').update({status:newStatus}).eq('id',orderId).eq('status',old).select('id,status').maybeSingle();if(changed.error)throw changed.error;if(!changed.data)throw new Error('สถานะคิวถูกเปลี่ยนโดยผู้ใช้คนอื่น กรุณารีเฟรชก่อนทำต่อ');
+    // The child writes are best-effort only; a failure is surfaced as a reconciliation warning.
+    const warnings=[];const jobStatus=['queued','printing','completed'].includes(newStatus)?newStatus:'completed';const jr=await db.from('print_jobs').update({status:jobStatus}).eq('order_id',orderId);if(jr.error)warnings.push('print_jobs: '+jr.error.message);
+    const dr=await db.from('deliveries').update({status:newStatus,...(newStatus==='shipped'?{dispatched_at:new Date().toISOString()}:{}),...(newStatus==='finished'?{delivered_at:new Date().toISOString()}:{})}).eq('order_id',orderId);if(dr.error && !/0 rows|no rows/i.test(dr.error.message||''))warnings.push('deliveries: '+dr.error.message);
+    if(warnings.length)throw new Error('อัปเดต orders แล้ว แต่ตารางย่อยบางส่วนไม่สำเร็จ ต้องกระทบยอด: '+warnings.join(' | '));
+    notice('อัปเดตสถานะแล้ว',`คิวเปลี่ยนเป็น ${newStatus}`,'check-circle-2');await loadStaffBoard('pd-admin-staff-grid');await loadStaffBoard('pd-staff-orders-grid');await window.loadAdminData?.();
+  }
+
+  function rowValues(button){const tr=button.closest('tr');const vals={};tr?.querySelectorAll('input[name],select[name]').forEach(el=>vals[el.name]=el.value);return vals;}
+  document.addEventListener('click',async event=>{
+    const save=event.target.closest('[data-pd-config-save]');if(save){event.preventDefault();save.disabled=true;try{await saveSettings(save.dataset.pdConfigSave,save.dataset.id,rowValues(save));}catch(e){notice('บันทึกไม่สำเร็จ',e.message||String(e),'shield-alert');}finally{save.disabled=false;}return;}
+    const printerSave=event.target.closest('[data-pd-printer-save]');if(printerSave){event.preventDefault();if(!requireAdmin())return;printerSave.disabled=true;try{const vals=rowValues(printerSave);const r=await client().from('printers').update({name:vals.name,ip_address:vals.ip_address||null,location:vals.location||null,status:vals.status}).eq('id',printerSave.dataset.pdPrinterSave).select('id').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('ฐานข้อมูลไม่ยืนยันการบันทึก');notice('บันทึกแล้ว','ปรับปรุงข้อมูลเครื่องพิมพ์แล้ว','check-circle-2');await loadPrinters();}catch(e){notice('บันทึกเครื่องพิมพ์ไม่สำเร็จ',e.message||String(e),'shield-alert');}finally{printerSave.disabled=false;}return;}
+    if(event.target.closest('#pd-binding-add-btn')){const f=$('pd-binding-add-form');if(f)f.hidden=!f.hidden;return;}
+    if(event.target.closest('#pd-report-export')){exportReport();return;}
+  });
+  document.addEventListener('change',async event=>{
+    const status=event.target.closest('[data-pd-staff-status]');if(status){status.disabled=true;try{await updateStaffStatus(status.dataset.pdStaffStatus,status.value);}catch(e){notice('เปลี่ยนสถานะไม่สำเร็จ',e.message||String(e),'shield-alert');await loadStaffBoard(status.closest('#view-staff')?'pd-staff-orders-grid':'pd-admin-staff-grid');}finally{if(status.isConnected)status.disabled=false;}}
+  });
+  document.addEventListener('submit',async event=>{
+    if(event.target.id==='pd-price-add-form'){event.preventDefault();if(!requireAdmin())return;const f=event.target;const v=Object.fromEntries(new FormData(f));const paper=String(v.paper_size||'').trim().toUpperCase();if(!/^[A-Z0-9]{2,12}$/.test(paper))return notice('ขนาดกระดาษไม่ถูกต้อง','ใช้รหัสขนาด เช่น A4, A3 หรือ A5','alert-triangle');try{const r=await client().from('pricing').insert([{paper_size:paper,black_white_price:Number(v.black_white_price),color_price:Number(v.color_price),duplex_price:Number(v.duplex_price)}]).select('id').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('ฐานข้อมูลไม่ยืนยันการเพิ่มราคา');notice('เพิ่มราคาสำเร็จ',`เพิ่ม ${paper} แล้ว`,'check-circle-2');await loadBusinessConfig();await loadPublicPrintOptions();}catch(e){notice('เพิ่มราคาไม่สำเร็จ',e.message||String(e),'shield-alert');}return;}
+    if(event.target.id==='pd-binding-add-form'){event.preventDefault();if(!requireAdmin())return;const f=event.target;const v=Object.fromEntries(new FormData(f));try{const r=await client().from('binding_options').insert([{name:String(v.name||'').trim(),price:Number(v.price),active:true}]).select('id').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('ฐานข้อมูลไม่ยืนยันการเพิ่มบริการ');f.reset();f.hidden=true;notice('เพิ่มบริการเข้าเล่มแล้ว','บันทึกลงฐานข้อมูลเรียบร้อย','check-circle-2');await loadBusinessConfig();await loadPublicPrintOptions();}catch(e){notice('เพิ่มบริการไม่สำเร็จ',e.message||String(e),'shield-alert');}return;}
+    if(event.target.id==='pd-printer-add-form'){event.preventDefault();if(!requireAdmin())return;const f=event.target;const v=Object.fromEntries(new FormData(f));try{const r=await client().from('printers').insert([{name:String(v.name||'').trim(),ip_address:String(v.ip_address||'').trim()||null,location:String(v.location||'').trim()||null,status:v.status||'offline'}]).select('id').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('ฐานข้อมูลไม่ยืนยันการเพิ่มเครื่องพิมพ์');f.reset();notice('เพิ่มทะเบียนเครื่องพิมพ์แล้ว','สถานะการเชื่อมต่อจริงจะต้องให้ Print Server ยืนยัน','check-circle-2');await loadPrinters();}catch(e){notice('เพิ่มเครื่องพิมพ์ไม่สำเร็จ',e.message||String(e),'shield-alert');}return;}
+  });
+
+  // User-facing shortcut: role on the client is display-only until the app uses authenticated JWT/RLS.
+  function updateStaffShortcut(){const nav=document.querySelector('nav.sticky .navbar-inner')||document.querySelector('nav.sticky>div');if(!nav)return;let b=$('pd-staff-nav-shortcut');if(!b){b=document.createElement('button');b.id='pd-staff-nav-shortcut';b.type='button';b.textContent='งานพนักงาน';b.onclick=()=>window.switchView?.('staff');nav.appendChild(b);}b.hidden=!isStaff();}
+  const oldUpdateUI=window.updateUserUI;
+  if(typeof oldUpdateUI==='function'&&!oldUpdateUI.__pdStaffShortcutWrapped){const wrapped=function(...args){const r=oldUpdateUI.apply(this,args);updateStaffShortcut();return r;};wrapped.__pdStaffShortcutWrapped=true;window.updateUserUI=wrapped;}
+  const originalSwitch=window.switchView;
+  if(typeof originalSwitch==='function'&&!originalSwitch.__pdStaffGuardWrapped){const wrapped=function(view,...args){if(view==='staff'&&!isStaff()){notice('จำกัดสิทธิ์พนักงาน','บัญชีนี้ไม่มี role staff หรือ admin','shield-alert');return;}return originalSwitch.call(this,view,...args);};wrapped.__pdStaffGuardWrapped=true;window.switchView=wrapped;}
+
+  // Extend role controls to support staff. This is a UI workflow, not a security boundary.
+  window.changeUserRole=async function(userId,newRole){if(!requireAdmin())return;if(!['member','staff','admin'].includes(newRole))return notice('สิทธิ์ไม่ถูกต้อง','เลือก Member, Staff หรือ Admin เท่านั้น','shield-alert');if(String(current()?.id)===String(userId))return notice('เปลี่ยนสิทธิ์ไม่ได้','ห้ามเปลี่ยน role ของบัญชีที่กำลังใช้งานอยู่','shield-alert');const confirm=window.appConfirm||window.confirmAction;if(typeof confirm==='function'){const run=async()=>{try{const r=await client().from('users').update({role:newRole}).eq('id',userId).select('id,role').maybeSingle();if(r.error)throw r.error;if(!r.data||r.data.role!==newRole)throw new Error('ฐานข้อมูลไม่ยืนยันการเปลี่ยนสิทธิ์; ตรวจสอบ RLS/API ฝั่งเซิร์ฟเวอร์');notice('เปลี่ยนสิทธิ์แล้ว',`กำหนด role เป็น ${newRole}`,'check-circle-2');await window.loadAdminData?.();}catch(e){notice('เปลี่ยนสิทธิ์ไม่สำเร็จ',e.message||String(e),'shield-alert');}};confirm({title:'ยืนยันเปลี่ยนสิทธิ์',message:`กำหนดสิทธิ์เป็น ${newRole} ใช่หรือไม่?`,icon:'shield-check',confirmText:'ยืนยัน',onConfirm:run});}else{if(!window.confirm(`เปลี่ยน role เป็น ${newRole}?`))return;try{const r=await client().from('users').update({role:newRole}).eq('id',userId).select('id,role').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('ฐานข้อมูลไม่ยืนยันการเปลี่ยนสิทธิ์');notice('เปลี่ยนสิทธิ์แล้ว',`กำหนด role เป็น ${newRole}`,'check-circle-2');await window.loadAdminData?.();}catch(e){notice('เปลี่ยนสิทธิ์ไม่สำเร็จ',e.message||String(e),'shield-alert');}}};
+
+  // Update status mapping to include post-print states, retaining legacy statuses.
+  window.updateOrderStatus=async function(orderId,newStatus){if(!requireAdmin())return;const allowed=['queued','pending','printing','completed','preparing','ready_for_pickup','shipped','finished','cancelled'];if(!allowed.includes(newStatus))return notice('สถานะไม่ถูกต้อง','ระบบไม่รู้จักสถานะที่เลือก','shield-alert');try{const check=await client().from('orders').select('id,status').eq('id',orderId).maybeSingle();if(check.error)throw check.error;if(!check.data)throw new Error('ไม่พบคิว');const r=await client().from('orders').update({status:newStatus}).eq('id',orderId).eq('status',check.data.status).select('id,status').maybeSingle();if(r.error)throw r.error;if(!r.data)throw new Error('สถานะเปลี่ยนไปก่อนบันทึก กรุณารีเฟรช');notice('อัปเดตสถานะแล้ว',`คิวเปลี่ยนเป็น ${newStatus}`,'check-circle-2');await window.loadAdminData?.();await window.fetchQueues?.();}catch(e){notice('อัปเดตสถานะไม่สำเร็จ',e.message||String(e),'shield-alert');await window.loadAdminData?.();}};
+
+  // Enhance the existing user role cell with a role selector, without rendering credentials.
+  function addRoleSelectors(){if(!isAdmin())return;document.querySelectorAll('#admin-users-tbody tr').forEach(tr=>{if(tr.dataset.pdRoleSelectReady)return;const cells=tr.querySelectorAll('td');if(cells.length<4)return;const btn=cells[3].querySelector('button');const userId=btn?.dataset.userId||btn?.dataset.pdRoleTarget||btn?.getAttribute('data-user-id');if(!userId)return;const role=String(cells[2].textContent||'member').trim().toLowerCase();tr.dataset.pdRoleSelectReady='1';if(btn)btn.hidden=true;const select=document.createElement('select');select.className='ui-input rounded-xl px-2 py-2 text-xs';select.setAttribute('aria-label','กำหนดสิทธิ์สมาชิก');select.innerHTML=['member','staff','admin'].map(x=>`<option value="${x}" ${x===role?'selected':''}>${x.toUpperCase()}</option>`).join('');const save=document.createElement('button');save.type='button';save.className='pd-mp-button mt-2';save.textContent='บันทึกสิทธิ์';save.onclick=()=>window.changeUserRole?.(userId,select.value);cells[3].append(select,save);});}
+
+  const originalLoader=window.loadAdminData;
+  if(typeof originalLoader==='function'&&!originalLoader.__pdMiniProjectWrapped){const wrapped=async function(...args){const result=await originalLoader.apply(this,args);setTimeout(addRoleSelectors,50);return result;};wrapped.__pdMiniProjectWrapped=true;window.loadAdminData=wrapped;}
+
+  document.addEventListener('DOMContentLoaded',()=>{loadPublicPrintOptions();updateStaffShortcut();});
+  // In case this script executes after DOMContentLoaded or an initial session restore.
+  if(document.readyState!=='loading'){loadPublicPrintOptions();updateStaffShortcut();}
+  window.pdMiniProjectAudit={version:'26.0',loadPublicPrintOptions,loadBusinessConfig,loadPrinters,loadReports,loadStaffWorkspace};
+})();
+</script>
+
+
+<script id="pd-mp-price-consistency-guard">
+// Keep every legacy price refresh path delegated to the latest database-aware calculator.
+(function(){
+  const refresh = () => { try { window.calculatePrice?.(); } catch (e) { console.warn('Price refresh failed', e); } };
+  window.pdV12RefreshPrice = refresh;
+  ['paper-size','copies','color-type','duplex-type','printed-pages-input','page-range-input','binding-option','delivery-provider'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('change', refresh);
+  });
+  document.querySelectorAll('input[name="delivery_method"]').forEach(el=>el.addEventListener('change',refresh));
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refresh,{once:true}); else refresh();
 })();
 </script>
 
