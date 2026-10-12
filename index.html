@@ -7010,6 +7010,8 @@
     let detectedPageCount = 1;
     let currentPdfZoom = 1.0;
     let isPasswordValid = false;
+    // Guard against duplicate Auth calls when users double-click or double-submit.
+    let pdAuthActionInFlight = false;
     let currentOrdersList = [];
     let tempAvatarUrl = '';
 
@@ -7875,6 +7877,57 @@
       return sanitizeUserRecord({ ...profile, email: profile.email || authUser.email });
     }
 
+    function setAuthFormBusy(formId, busy, loadingText = 'กำลังดำเนินการ...') {
+      const form = document.getElementById(formId);
+      const button = form?.querySelector('button[type="submit"]');
+      if (!button) return;
+      if (busy) {
+        if (!button.dataset.pdOriginalHtml) button.dataset.pdOriginalHtml = button.innerHTML;
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.style.opacity = '0.78';
+        button.style.cursor = 'wait';
+        button.innerHTML = `<span>${loadingText}</span><i data-lucide="loader-circle" class="animate-spin" aria-hidden="true"></i>`;
+      } else {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        button.style.opacity = '';
+        button.style.cursor = '';
+        if (button.dataset.pdOriginalHtml) button.innerHTML = button.dataset.pdOriginalHtml;
+        try { if (window.lucide?.createIcons) window.lucide.createIcons(); } catch (_) {}
+      }
+    }
+
+    function friendlySupabaseAuthError(error, action = 'register') {
+      const code = String(error?.code || error?.error_code || '').toLowerCase();
+      const raw = String(error?.message || '').trim();
+      const text = raw.toLowerCase();
+
+      if (code === 'over_email_send_rate_limit' || /email rate limit exceeded|over_email_send_rate_limit/.test(text)) {
+        return 'Supabase จำกัดการส่งอีเมลของโปรเจกต์ชั่วคราว ระบบอีเมลเริ่มต้นมีโควตาต่ำ อย่ากดซ้ำ ให้รอจนโควตาคลายก่อน หรือใช้ Custom SMTP เมื่อพร้อม';
+      }
+      if (code === 'email_address_not_authorized' || /email address.*not authorized/.test(text)) {
+        return 'โปรเจกต์นี้ยังใช้ระบบส่งอีเมลเริ่มต้น ซึ่งส่งได้เฉพาะอีเมลที่ได้รับอนุญาตในองค์กร Supabase เท่านั้น การให้ผู้ใช้ทั่วไปสมัครต้องตั้ง SMTP ที่รองรับ';
+      }
+      if (code === 'email_address_invalid' || /email address .* is invalid/.test(text)) {
+        return 'Supabase ปฏิเสธอีเมลนี้ว่าไม่รองรับหรือไม่ถูกต้อง ไม่ได้หมายความว่ารูปแบบ Gmail ทั้งหมดใช้ไม่ได้ หากเป็นอีเมลจริงที่คุณเข้าถึงได้ ให้ตรวจ Authentication Logs ใน Supabase เพื่อดูรายละเอียดเพิ่มเติม';
+      }
+      if (code === 'over_request_rate_limit' || /request rate limit reached|too many requests/.test(text)) {
+        return 'มีคำขอสมัครหรือเข้าสู่ระบบมากเกินไปจากเครือข่ายนี้ กรุณาหยุดลองซ้ำและรอสักครู่ก่อนดำเนินการต่อ';
+      }
+      if (code === 'user_already_exists' || /user already registered|already been registered/.test(text)) {
+        return 'อีเมลนี้มีบัญชีอยู่แล้ว กรุณาเปลี่ยนไปที่แท็บเข้าสู่ระบบ หรือใช้ขั้นตอนรีเซ็ตรหัสผ่าน';
+      }
+      if (/password.*(weak|short|least)|weak_password/.test(text)) {
+        return 'รหัสผ่านไม่ผ่านข้อกำหนดของ Supabase กรุณาตั้งรหัสผ่านใหม่ตามเงื่อนไขที่หน้าเว็บแจ้ง';
+      }
+      if (/failed to fetch|networkerror|fetch failed/.test(text)) {
+        return 'เชื่อมต่อ Supabase ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตและ Project URL/anon key แล้วลองใหม่ภายหลัง';
+      }
+      if (action === 'login') return 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจอีเมลและรหัสผ่าน หากเพิ่งลองหลายครั้งให้รอสักครู่ก่อนลองใหม่';
+      return 'สมัครสมาชิกไม่สำเร็จ กรุณาตรวจ Authentication Logs ใน Supabase ก่อนสมัครซ้ำ เพื่อป้องกันการส่งคำขอหรืออีเมลเกินโควตา';
+    }
+
     async function handleLogin(e) {
       e.preventDefault();
       if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อม', message: 'กรุณาตรวจ URL และ Publishable/anon key ของ Supabase ก่อนเข้าสู่ระบบ', icon: 'database-zap' });
@@ -7887,6 +7940,9 @@
       const email = document.getElementById('login-email').value.trim().toLowerCase();
       const password = document.getElementById('login-password').value;
       if (!email || password.length === 0) return showCustomModal({ title: 'ตรวจสอบข้อมูล', message: 'กรุณากรอกอีเมลและรหัสผ่านให้ครบถ้วน', icon: 'alert-triangle' });
+      if (pdAuthActionInFlight) return;
+      pdAuthActionInFlight = true;
+      setAuthFormBusy('form-login', true, 'กำลังเข้าสู่ระบบ...');
 
       try {
         const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -7908,7 +7964,10 @@
         switchView('dashboard');
       } catch (err) {
         console.error('Supabase Auth sign-in failed:', err);
-        showCustomModal({ title: 'เชื่อมต่อระบบเข้าสู่ระบบไม่สำเร็จ', message: err.message || 'กรุณาลองใหม่ภายหลัง', icon: 'alert-triangle' });
+        showCustomModal({ title: 'เข้าสู่ระบบไม่สำเร็จ', message: friendlySupabaseAuthError(err, 'login'), icon: 'alert-triangle' });
+      } finally {
+        pdAuthActionInFlight = false;
+        setAuthFormBusy('form-login', false);
       }
     }
 
@@ -7926,6 +7985,9 @@
       const avatarFile = document.getElementById('reg-avatar-file')?.files?.[0] || null;
       if (avatarFile && !isAllowedImage(avatarFile)) return showCustomModal({ title: 'รูปโปรไฟล์ไม่รองรับ', message: 'รองรับ PNG, JPG หรือ WEBP เท่านั้น', icon: 'image-off' });
       if (avatarFile && avatarFile.size > MAX_AVATAR_FILE_MB * 1024 * 1024) return showCustomModal({ title: 'รูปโปรไฟล์ใหญ่เกินไป', message: `ขนาดสูงสุด ${MAX_AVATAR_FILE_MB} MB`, icon: 'image-off' });
+      if (pdAuthActionInFlight) return;
+      pdAuthActionInFlight = true;
+      setAuthFormBusy('form-register', true, 'กำลังสร้างบัญชี...');
 
       try {
         // Password is sent only to Supabase Auth. Never write password_hash to public.users.
@@ -7978,7 +8040,10 @@
         switchView('dashboard');
       } catch (err) {
         console.error('Supabase Auth sign-up failed:', err);
-        showCustomModal({ title: 'ลงทะเบียนล้มเหลว', message: err.message || 'ไม่สามารถสร้างบัญชีได้ กรุณาตรวจ Authentication Logs และ Database Logs ใน Supabase', icon: 'alert-triangle' });
+        showCustomModal({ title: 'ลงทะเบียนไม่สำเร็จ', message: friendlySupabaseAuthError(err, 'register'), icon: 'alert-triangle' });
+      } finally {
+        pdAuthActionInFlight = false;
+        setAuthFormBusy('form-register', false);
       }
     }
 
