@@ -25190,6 +25190,102 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   @media (prefers-reduced-motion: reduce) {
     .pd-admin-bulk-toolbar *, .pd24-print-payment-qr img, .pd23-payment-card .pd23-qr img { transition: none !important; }
   }
+
+
+  /* PrintDekD payment readability refresh (v25): compact QR, clearer hierarchy, responsive layout. */
+  #print-form .pt-3.border-t .grid.grid-cols-2 > label {
+    min-height: 68px !important; padding: 13px 14px !important; gap: 10px !important;
+    border-radius: 16px !important; align-items: center !important;
+  }
+  #print-form .pt-3.border-t .grid.grid-cols-2 > label input[type="radio"] {
+    width: 18px !important; height: 18px !important; flex: 0 0 auto;
+  }
+  #print-form .pt-3.border-t .grid.grid-cols-2 > label > div p:first-child {
+    font-size: 14px !important; line-height: 1.45 !important; margin: 0 0 3px !important;
+  }
+  #print-form .pt-3.border-t .grid.grid-cols-2 > label > div p:last-child {
+    font-size: 12px !important; line-height: 1.5 !important;
+  }
+  .pd24-print-payment {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px) !important;
+    grid-template-areas: "summary qr" "details qr" !important;
+    align-items: start !important; gap: 16px !important;
+    padding: clamp(14px, 2vw, 22px) !important;
+  }
+  .pd24-print-payment-summary { padding: 17px 18px !important; }
+  .pd24-payment-eyebrow { font-size: 14px !important; line-height: 1.55 !important; }
+  .pd24-print-payment-summary p { font-size: 13px !important; line-height: 1.65 !important; }
+  .pd24-print-payment-qr {
+    box-sizing: border-box !important; align-self: center !important; justify-self: center !important;
+    height: fit-content !important; width: min(100%, 340px) !important; min-width: 0 !important;
+    gap: 9px !important; padding: 10px !important;
+    border: 1px solid rgba(148,163,184,.30) !important; border-radius: 20px !important;
+    background: #fff !important; box-shadow: 0 8px 22px rgba(0,0,0,.14) !important;
+  }
+  .pd24-print-payment-qr img {
+    display: block !important; width: min(100%, 300px) !important; max-width: 100% !important;
+    height: auto !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important;
+    border-radius: 4px !important; image-rendering: auto !important;
+  }
+  .pd24-print-payment-qr p { font-size: 14px !important; line-height: 1.5 !important; color: #243244 !important; }
+  .pd24-bank-details, .pd24-slip-field { padding: 15px !important; border-radius: 16px !important; }
+  .pd24-bank-details > span { font-size: 13px !important; }
+  .pd24-bank-details > strong { font-size: 18px !important; line-height: 1.5 !important; }
+  .pd24-bank-details > code { font-size: clamp(18px, 2vw, 22px) !important; line-height: 1.5 !important; letter-spacing: .04em !important; }
+  .pd24-copy-account { min-height: 46px !important; font-size: 14px !important; }
+  .pd24-slip-field label { font-size: 14px !important; line-height: 1.5 !important; }
+  .pd24-slip-field input[type="file"] { font-size: 13px !important; padding: 10px !important; }
+
+  .pd23-payment-card {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px) !important;
+    grid-template-areas: "amount qr" "details qr" !important;
+    align-items: start !important; gap: 16px !important;
+    padding: clamp(14px, 2vw, 22px) !important;
+  }
+  .pd23-payment-card .pd23-qr {
+    align-self: center !important; height: fit-content !important;
+    width: min(100%, 340px) !important; max-width: 340px !important;
+    padding: 10px !important; border: 1px solid rgba(148,163,184,.3) !important;
+    border-radius: 20px !important; background: #fff !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.14) !important;
+  }
+  .pd23-payment-card .pd23-qr img {
+    width: min(100%, 300px) !important; max-width: 100% !important;
+    height: auto !important; aspect-ratio: 1 / 1 !important; object-fit: contain !important;
+    border-radius: 4px !important; image-rendering: auto !important;
+  }
+  .pd23-payment-card .pd23-amount-label { font-size: 14px !important; line-height: 1.5 !important; }
+  .pd23-payment-card .pd23-promptpay-note { font-size: 13px !important; line-height: 1.65 !important; }
+  .pd24-topup-bank-info { font-size: 14px !important; line-height: 1.7 !important; }
+
+  /* Stack at tablet/narrow widths so amount and bank details never get squeezed beside QR. */
+  @media (max-width: 1000px) {
+    .pd24-print-payment {
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-areas: "summary" "qr" "details" !important;
+      gap: 14px !important; padding: clamp(12px, 3vw, 18px) !important;
+    }
+    .pd24-print-payment-summary { text-align: center !important; }
+    .pd24-total-line { justify-content: center !important; }
+    .pd24-print-payment-qr { width: min(100%, 340px) !important; justify-self: center !important; }
+    .pd24-print-payment-qr img { width: min(78vw, 300px) !important; }
+    .pd24-print-payment-details { display: grid !important; grid-template-columns: minmax(0,1fr) !important; gap: 12px !important; }
+    .pd23-payment-card {
+      grid-template-columns: minmax(0, 1fr) !important;
+      grid-template-areas: "amount" "qr" "details" !important;
+      gap: 14px !important; padding: clamp(12px, 3vw, 18px) !important;
+    }
+    .pd23-payment-card > .pd23-amount { align-items: center !important; text-align: center !important; }
+    .pd23-payment-card .pd23-qr { width: min(100%, 340px) !important; justify-self: center !important; }
+    .pd23-payment-card .pd23-qr img { width: min(78vw, 300px) !important; }
+  }
+  @media (max-width: 430px) {
+    #print-form .pt-3.border-t .grid.grid-cols-2 { grid-template-columns: minmax(0,1fr) !important; }
+    #print-form .pt-3.border-t .grid.grid-cols-2 > label { min-height: 60px !important; }
+    .pd24-print-payment-qr img, .pd23-payment-card .pd23-qr img { width: min(76vw, 270px) !important; }
+    .pd24-bank-details > code { font-size: 17px !important; }
+  }
+
 </style>
 
 
