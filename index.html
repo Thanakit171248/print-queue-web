@@ -60,7 +60,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- PDF.js is lazy-loaded only when a PDF is selected (pd-v15-runtime). -->
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Mitr:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
 
@@ -6138,10 +6138,10 @@
                 <img id="reg-avatar-preview"
                   src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
                   alt="ตัวอย่างรูปโปรไฟล์" loading="lazy" decoding="async">
-                <div class="pd-auth-avatar-copy"><strong>เพิ่มรูปของคุณ</strong><span>PNG, JPG, WEBP •
-                    ใช้รูปสี่เหลี่ยมจะดูดีที่สุด</span></div>
-                <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewRegAvatarFile(event)"
+                <div class="pd-auth-avatar-copy"><strong>เพิ่มรูปของคุณ</strong><span>PNG, JPG, WEBP • ครอปและซูมได้เหมือนหน้าแก้ไขโปรไฟล์</span></div>
+                <input type="file" id="reg-avatar-file" accept="image/png,image/jpeg,image/webp" onchange="previewRegAvatarFile(event)"
                   aria-label="เลือกรูปโปรไฟล์">
+                <p id="reg-avatar-crop-status" class="pd-auth-avatar-status" aria-live="polite">เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)</p>
               </div>
             </div>
 
@@ -7983,8 +7983,10 @@
       if (!email) return showCustomModal({ title: 'ตรวจสอบอีเมล', message: 'กรุณากรอกอีเมลให้ถูกต้อง', icon: 'alert-triangle' });
 
       const avatarFile = document.getElementById('reg-avatar-file')?.files?.[0] || null;
+      const croppedRegistrationAvatar = String(window.pdRegistrationAvatarDataUrl || '');
       if (avatarFile && !isAllowedImage(avatarFile)) return showCustomModal({ title: 'รูปโปรไฟล์ไม่รองรับ', message: 'รองรับ PNG, JPG หรือ WEBP เท่านั้น', icon: 'image-off' });
       if (avatarFile && avatarFile.size > MAX_AVATAR_FILE_MB * 1024 * 1024) return showCustomModal({ title: 'รูปโปรไฟล์ใหญ่เกินไป', message: `ขนาดสูงสุด ${MAX_AVATAR_FILE_MB} MB`, icon: 'image-off' });
+      if (avatarFile && !croppedRegistrationAvatar) return showCustomModal({ title: 'กรุณาครอปรูปก่อน', message: 'เลือกรูปแล้วจัดตำแหน่งในหน้าครอปให้เรียบร้อยก่อนสมัครสมาชิก', icon: 'image' });
       if (pdAuthActionInFlight) return;
       pdAuthActionInFlight = true;
       setAuthFormBusy('form-register', true, 'กำลังสร้างบัญชี...');
@@ -8018,8 +8020,8 @@
         // The database trigger creates public.users and wallets on auth.users insert.
         currentUser = await loadSupabaseAuthProfile(authUser);
         if (avatarFile) {
-          // Temporary compatibility for the existing form. A dedicated private Storage avatar flow is preferred.
-          const avatarUrl = await readFileAsDataURL(avatarFile);
+          // Save the normalized square crop produced by Profile Studio, never the original uncropped upload.
+          const avatarUrl = croppedRegistrationAvatar;
           const { data: updated, error: avatarError } = await supabaseClient
             .from('users')
             .update({ avatar_url: avatarUrl })
@@ -8032,6 +8034,11 @@
 
         window.currentUser = currentUser;
         localStorage.setItem('sp_user', JSON.stringify(currentUser));
+        window.pdRegistrationAvatarDataUrl = '';
+        const registeredAvatarInput = document.getElementById('reg-avatar-file');
+        if (registeredAvatarInput) registeredAvatarInput.value = '';
+        const registeredAvatarStatus = document.getElementById('reg-avatar-crop-status');
+        if (registeredAvatarStatus) registeredAvatarStatus.textContent = 'เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)';
         touchSession();
         updateUserUI();
         await fetchUserWallet();
@@ -17263,12 +17270,22 @@
       const notify = (title, message, icon = 'info') => window.showCustomModal?.({ title, message, icon });
 
       /* ---------- 1. Replace the cropper with one stable square implementation ---------- */
+      let cropV10Target = 'profile';
       let cropV10 = { file: null, img: null, nw: 0, nh: 0, baseScale: 1, zoom: 1, x: 0, y: 0, drag: false, pid: null, lx: 0, ly: 0 };
 
-      function closeCropV10() {
-        const m = $('pd-v10-crop-modal'); if (!m) return;
-        m.classList.remove('is-open'); m.setAttribute('aria-hidden', 'true');
+      function closeCropV10(options = {}) {
+        const m = $('pd-v10-crop-modal');
+        if (m) { m.classList.remove('is-open'); m.setAttribute('aria-hidden', 'true'); m.removeAttribute('data-crop-target'); }
+        if (options && options.discard && cropV10Target === 'register') {
+          window.pdRegistrationAvatarDataUrl = '';
+          const input = $('reg-avatar-file'); if (input) input.value = '';
+          const preview = $('reg-avatar-preview');
+          if (preview) preview.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80';
+          const status = $('reg-avatar-crop-status');
+          if (status) status.textContent = 'เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)';
+        }
         cropV10 = { file: null, img: null, nw: 0, nh: 0, baseScale: 1, zoom: 1, x: 0, y: 0, drag: false, pid: null, lx: 0, ly: 0 };
+        cropV10Target = 'profile';
       }
       function cropFrame() { return $('pd-v10-crop-frame')?.getBoundingClientRect() || null }
       function cropStage() { return $('pd-v10-crop-stage')?.getBoundingClientRect() || null }
@@ -17297,7 +17314,7 @@
         m.innerHTML = `
       <div class="pd-v10-crop-shell" role="dialog" aria-modal="true" aria-label="ครอปรูปโปรไฟล์">
         <div class="flex items-start justify-between gap-3">
-          <div><span class="pd-eyebrow">PROFILE STUDIO</span><h3 class="text-xl font-black text-white mt-1">ครอปรูปโปรไฟล์</h3><p class="text-xs text-white/55 mt-1">ครอปเป็นสี่เหลี่ยมจัตุรัส 1:1 มาตรฐาน • ลากเพื่อจัดตำแหน่ง</p></div>
+          <div><span class="pd-eyebrow">PROFILE STUDIO</span><h3 id="pd-v10-crop-title" class="text-xl font-black text-white mt-1">ครอปรูปโปรไฟล์</h3><p id="pd-v10-crop-description" class="text-xs text-white/55 mt-1">ครอปเป็นสี่เหลี่ยมจัตุรัส 1:1 • ลากเพื่อจัดตำแหน่ง</p></div>
           <button type="button" class="pd-v10-crop-close nav-icon-btn ui-card" aria-label="ปิด"><i data-lucide="x"></i></button>
         </div>
         <div id="pd-v10-crop-stage" class="pd-v10-crop-stage">
@@ -17313,9 +17330,10 @@
         </div>
       </div>`;
         document.body.appendChild(m);
-        m.addEventListener('click', e => { if (e.target === m) closeCropV10() });
-        m.querySelector('.pd-v10-crop-close').onclick = closeCropV10;
-        $('pd-v10-crop-cancel').onclick = closeCropV10;
+        m.addEventListener('click', e => { if (e.target === m) closeCropV10({ discard: true }); });
+        m.querySelector('.pd-v10-crop-close').onclick = () => closeCropV10({ discard: true });
+        $('pd-v10-crop-cancel').onclick = () => closeCropV10({ discard: true });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('pd-v10-crop-modal')?.classList.contains('is-open')) closeCropV10({ discard: true }); });
         $('pd-v10-crop-reset').onclick = () => { cropV10.zoom = 1; cropV10.x = 0; cropV10.y = 0; $('pd-v10-crop-zoom').value = '1'; cropRender() };
         $('pd-v10-crop-zoom').oninput = e => { cropV10.zoom = Math.max(1, Number(e.target.value) || 1); cropRender() };
         $('pd-v10-crop-apply').onclick = applyCropV10;
@@ -17336,47 +17354,99 @@
       function applyCropV10() {
         if (!cropV10.img) return;
         const f = cropFrame(); if (!f) return;
+        const targetType = cropV10Target;
         const scale = cropV10.baseScale * cropV10.zoom;
         const sourceSize = f.width / scale;
         const cx = cropV10.nw / 2 - (cropV10.x / scale);
         const cy = cropV10.nh / 2 - (cropV10.y / scale);
         const sx = Math.max(0, Math.min(cropV10.nw - sourceSize, cx - sourceSize / 2));
         const sy = Math.max(0, Math.min(cropV10.nh - sourceSize, cy - sourceSize / 2));
-        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
+        const canvas = document.createElement('canvas'); canvas.width = 384; canvas.height = 384;
         const ctx = canvas.getContext('2d', { alpha: true });
         if (!ctx) return notify('ครอปไม่สำเร็จ', 'เบราว์เซอร์ไม่สามารถสร้างภาพตัวอย่างได้', 'image-off');
         ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(cropV10.img, sx, sy, sourceSize, sourceSize, 0, 0, 512, 512);
-        const out = canvas.toDataURL('image/webp', .9);
+        ctx.drawImage(cropV10.img, sx, sy, sourceSize, sourceSize, 0, 0, 384, 384);
+        let out;
+        try { out = canvas.toDataURL('image/webp', .84); }
+        catch (_) { return notify('บันทึกรูปไม่สำเร็จ', 'เบราว์เซอร์นี้ไม่สามารถแปลงรูปเป็น WEBP ได้ กรุณาลองใช้ Chrome เวอร์ชันปัจจุบัน', 'image-off'); }
+
+        if (targetType === 'register') {
+          window.pdRegistrationAvatarDataUrl = out;
+          const preview = $('reg-avatar-preview'); if (preview) preview.src = out;
+          const status = $('reg-avatar-crop-status');
+          if (status) status.textContent = '✓ ครอปรูปแล้ว • พร้อมใช้ในการสมัครสมาชิก';
+          closeCropV10();
+          notify('ครอปรูปเรียบร้อย', 'รูปโปรไฟล์ถูกครอปเป็นสี่เหลี่ยม 1:1 แล้ว พร้อมใช้ตอนสมัครสมาชิก', 'check-circle-2');
+          return;
+        }
         const url = $('edit-avatar-url'); if (url) url.value = out;
         const pv = $('pd-edit-avatar-preview'); if (pv) pv.src = out;
         window.tempAvatarUrl = out; closeCropV10();
         notify('ครอปรูปเรียบร้อย', 'รูปถูกจัดเป็นสี่เหลี่ยม 1:1 และพร้อมบันทึกแล้ว', 'check-circle');
       }
-      function openCropV10(file) {
+      function openCropV10(file, target = 'profile') {
         if (!file) return;
+        cropV10Target = target === 'register' ? 'register' : 'profile';
+        if (cropV10Target === 'register') {
+          window.pdRegistrationAvatarDataUrl = '';
+          const preview = $('reg-avatar-preview');
+          if (preview) preview.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80';
+          const status = $('reg-avatar-crop-status');
+          if (status) status.textContent = 'กำลังเปิดตัวช่วยครอปรูป…';
+        }
+        const inputId = cropV10Target === 'register' ? 'reg-avatar-file' : 'edit-avatar-file';
         if (!/^image\/(png|jpe?g|webp)$/i.test(file.type || '')) {
-          const input = $('edit-avatar-file'); if (input) input.value = '';
+          const input = $(inputId); if (input) input.value = '';
+          if (cropV10Target === 'register') {
+            window.pdRegistrationAvatarDataUrl = '';
+            const status = $('reg-avatar-crop-status'); if (status) status.textContent = 'เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)';
+          }
           return notify('รูปแบบไฟล์ไม่รองรับ', 'รองรับ PNG, JPG/JPEG และ WEBP เท่านั้น', 'image-off');
         }
         if (file.size > 2 * 1024 * 1024) {
-          const input = $('edit-avatar-file'); if (input) input.value = '';
+          const input = $(inputId); if (input) input.value = '';
+          if (cropV10Target === 'register') {
+            window.pdRegistrationAvatarDataUrl = '';
+            const status = $('reg-avatar-crop-status'); if (status) status.textContent = 'เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)';
+          }
           return notify('รูปภาพใหญ่เกินไป', 'ขนาดสูงสุด 2 MB', 'image-off');
         }
         ensureCropV10();
+        const modal = $('pd-v10-crop-modal');
+        if (modal) modal.dataset.cropTarget = cropV10Target;
+        const title = $('pd-v10-crop-title');
+        const description = $('pd-v10-crop-description');
+        if (title) title.textContent = cropV10Target === 'register' ? 'ครอปรูปก่อนสมัครสมาชิก' : 'ครอปรูปโปรไฟล์';
+        if (description) description.textContent = cropV10Target === 'register'
+          ? 'จัดรูปให้เหมือนกันทั้งตอนสมัครและแก้ไขโปรไฟล์ • ลากเพื่อจัดตำแหน่ง'
+          : 'ครอปเป็นสี่เหลี่ยมจัตุรัส 1:1 • ลากเพื่อจัดตำแหน่ง';
         const reader = new FileReader();
         reader.onload = e => {
           const src = e.target.result, img = new Image();
           img.onload = () => {
             cropV10.file = file; cropV10.nw = img.naturalWidth; cropV10.nh = img.naturalHeight;
-            const target = $('pd-v10-crop-image'); cropV10.img = target; target.src = src;
-            $('pd-v10-crop-modal').classList.add('is-open'); $('pd-v10-crop-modal').setAttribute('aria-hidden', 'false');
+            const targetImg = $('pd-v10-crop-image'); cropV10.img = targetImg; targetImg.src = src;
+            modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false');
             requestAnimationFrame(() => { requestAnimationFrame(cropFit) });
           };
-          img.onerror = () => notify('เปิดรูปไม่สำเร็จ', 'ไม่สามารถอ่านรูปนี้ได้ กรุณาเลือกไฟล์อื่น', 'image-off');
+          img.onerror = () => {
+            const input = $(inputId); if (input) input.value = '';
+            if (cropV10Target === 'register') {
+              window.pdRegistrationAvatarDataUrl = '';
+              const status = $('reg-avatar-crop-status'); if (status) status.textContent = 'เปิดรูปไม่สำเร็จ • กรุณาเลือกรูปอื่น';
+            }
+            notify('เปิดรูปไม่สำเร็จ', 'ไม่สามารถอ่านรูปนี้ได้ กรุณาเลือกไฟล์อื่น', 'image-off');
+          };
           img.src = src;
         };
-        reader.onerror = () => notify('อ่านรูปไม่สำเร็จ', 'เบราว์เซอร์ไม่สามารถอ่านไฟล์นี้ได้', 'image-off');
+        reader.onerror = () => {
+          const input = $(inputId); if (input) input.value = '';
+          if (cropV10Target === 'register') {
+            window.pdRegistrationAvatarDataUrl = '';
+            const status = $('reg-avatar-crop-status'); if (status) status.textContent = 'อ่านรูปไม่สำเร็จ • กรุณาเลือกรูปอื่น';
+          }
+          notify('อ่านรูปไม่สำเร็จ', 'เบราว์เซอร์ไม่สามารถอ่านไฟล์นี้ได้', 'image-off');
+        };
         reader.readAsDataURL(file);
       }
       function installAvatarInput() {
@@ -17387,7 +17457,16 @@
         clone.onchange = e => { const f = e.target.files?.[0]; if (f) openCropV10(f) };
         old.replaceWith(clone);
       }
-      window.previewEditAvatarFile = openCropV10;
+      window.previewEditAvatarFile = eventOrFile => {
+        const file = eventOrFile?.target?.files?.[0] || eventOrFile;
+        if (file instanceof File) openCropV10(file, 'profile');
+      };
+      window.previewRegAvatarFile = function (event) {
+        const file = event?.target?.files?.[0] || null;
+        if (file) { openCropV10(file, 'register'); return; }
+        window.pdRegistrationAvatarDataUrl = '';
+        const status = $('reg-avatar-crop-status'); if (status) status.textContent = 'เลือกรูปเพื่อจัดกรอบก่อนสมัคร (ไม่บังคับ)';
+      };
       window.openSquareCropV10 = openCropV10;
       installAvatarInput();
       const avatarObserver = new MutationObserver(() => installAvatarInput());
@@ -17860,6 +17939,31 @@
       'use strict';
       const $ = id => document.getElementById(id);
       const PDF_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      let pdPdfLibraryPromise = null;
+      function ensurePdPdfLibrary() {
+        if (window.pdfjsLib) {
+          if (window.pdfjsLib.GlobalWorkerOptions) window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
+          return Promise.resolve(window.pdfjsLib);
+        }
+        if (pdPdfLibraryPromise) return pdPdfLibraryPromise;
+        pdPdfLibraryPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          script.async = true;
+          script.onload = () => {
+            if (!window.pdfjsLib) return reject(new Error('PDF.js loaded but pdfjsLib is unavailable'));
+            if (window.pdfjsLib.GlobalWorkerOptions) window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
+            resolve(window.pdfjsLib);
+          };
+          script.onerror = () => reject(new Error('Unable to load PDF.js'));
+          document.head.appendChild(script);
+        }).catch(error => {
+          pdPdfLibraryPromise = null;
+          throw error;
+        });
+        return pdPdfLibraryPromise;
+      }
+      window.ensurePdPdfLibrary = ensurePdPdfLibrary;
       if (window.pdfjsLib?.GlobalWorkerOptions && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
       }
@@ -18095,28 +18199,47 @@
       }
       window.__pdV15RenderNonPdfPreview = renderNonPdf;
 
-      /* Wrap the existing validator/upload-state handler; keep the original business logic. */
+      /* Wrap the existing validator/upload-state handler. Defer PDF.js until a PDF is chosen. */
       const originalHandleFileSelect = window.handleFileSelect;
       if (typeof originalHandleFileSelect === 'function') {
         window.handleFileSelect = function (event) {
-          const file = event?.target?.files?.[0];
-          const result = originalHandleFileSelect.call(this, event);
-          if (!file) return result;
-          /* The original handler clears input on rejected files. */
-          if (event.target.value === '' || window.selectedFileObj !== file) return result;
+          const input = event?.target;
+          const file = input?.files?.[0];
+          if (!file) return originalHandleFileSelect.call(this, event);
           const ext = (file.name.split('.').pop() || '').toLowerCase();
           const isPdf = file.type === 'application/pdf' || ext === 'pdf';
+
+          if (isPdf && !window.pdfjsLib) {
+            const drawer = $('pdf-preview-wrapper'), grid = $('pages-grid-container');
+            if (drawer) drawer.replaceChildren(previewMessage('file-text', 'กำลังโหลดตัวอ่าน PDF', 'โหลดเฉพาะตอนเลือก PDF เพื่อลดภาระตอนเปิดเว็บไซต์…'));
+            if (grid) { grid.className = 'pd-v15-page-picker ui-input'; grid.replaceChildren(previewMessage('file-text', 'กำลังเตรียมตัวอ่าน PDF', 'กรุณารอสักครู่…')); }
+            ensurePdPdfLibrary().then(() => {
+              /* Use the input's current FileList in case the user chose another file meanwhile. */
+              if (input?.files?.length) window.handleFileSelect.call(this, { target: input });
+            }).catch(error => {
+              if (input) input.value = '';
+              window.selectedFileObj = null;
+              try { if (typeof selectedFileObj !== 'undefined') selectedFileObj = null; } catch (_) { }
+              window.__pdV15ShowPdfFailure?.(error);
+              window.showCustomModal?.({ title: 'โหลดตัวอ่าน PDF ไม่สำเร็จ', message: 'ตรวจสอบอินเทอร์เน็ตแล้วเลือกไฟล์ PDF อีกครั้ง หรือแปลงไฟล์เป็น PDF ใหม่', icon: 'file-warning' });
+              console.warn('PDF.js lazy-load error:', error);
+            });
+            return;
+          }
+
+          const result = originalHandleFileSelect.call(this, event);
+          /* The original handler clears input on rejected files. */
+          if (input?.value === '' || window.selectedFileObj !== file) return result;
           if (!isPdf) {
             renderNonPdf(file);
           } else {
-            /* PDF.js worker policy / MIME fallbacks; original file read remains intact. */
+            /* Worker policy / MIME fallbacks; original file read remains intact. */
             clearRenderState();
             if (window.pdfjsLib?.GlobalWorkerOptions) window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
             const drawer = $('pdf-preview-wrapper'), grid = $('pages-grid-container');
             if (drawer) drawer.replaceChildren(previewMessage('file-text', 'กำลังเตรียมพรีวิว PDF', 'กำลังอ่านจำนวนหน้าและสร้างตัวอย่างแบบประหยัดทรัพยากร…'));
             if (grid) { grid.className = 'pd-v15-page-picker ui-input'; grid.replaceChildren(previewMessage('file-text', 'กำลังอ่าน PDF', 'กำลังเตรียมรายการหน้า…')); }
             if ($('preview-modal-type')) $('preview-modal-type').textContent = 'PDF';
-            if (!window.pdfjsLib) window.__pdV15ShowPdfFailure?.(new Error('PDF.js library not loaded'));
           }
           return result;
         };
@@ -22246,6 +22369,8 @@
       document.addEventListener('click', event => {
         const apply = event.target.closest('#pd-v10-crop-apply,#pd-crop-apply,#pd-crop-apply-v8');
         if (!apply) return;
+        // Registration crops write into #reg-avatar-preview; do not let the legacy profile-draft listener touch them.
+        if (apply.closest('#pd-v10-crop-modal')?.dataset.cropTarget === 'register') return;
         setTimeout(() => {
           const input = $('edit-avatar-url');
           if (input && safeDataImage(input.value)) {
@@ -25834,6 +25959,29 @@ html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
   }
 })();
 </script>
+
+
+<!-- PrintDekD stability pass: registration cropper + low-cost motion defaults -->
+<style id="pd-stability-cropper-performance">
+  #view-auth .pd-auth-avatar-upload { min-width: 0; flex-wrap: wrap; gap: 12px; }
+  #view-auth .pd-auth-avatar-upload img { flex: 0 0 auto; width: 64px; height: 64px; object-fit: cover; border-radius: 18px; }
+  #view-auth .pd-auth-avatar-copy { min-width: 150px; flex: 1 1 170px; }
+  #view-auth .pd-auth-avatar-status { flex: 1 0 100%; margin: 2px 0 0; color: var(--text-sub); font-size: 12px; line-height: 1.55; }
+  #view-auth .pd-auth-avatar-status::first-letter { color: #19a66a; }
+  #pd-v10-crop-modal .pd-v10-crop-shell { width: min(560px, calc(100vw - 24px)); max-height: min(880px, calc(100dvh - 24px)); overflow: auto; }
+  #pd-v10-crop-stage { touch-action: none; }
+  #pd-v10-crop-image { max-width: none; max-height: none; user-select: none; -webkit-user-drag: none; }
+  /* Prefer transform/opacity animation; avoid animating large blurred layers on every scroll. */
+  .apple-reveal, .pd-reveal-card, .pd-final-cta { filter: none !important; }
+  .ui-card, .ui-panel { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  #apple-tab-menu, #pd-ai-panel, .pd-account-popover, #pd-command-palette .pd-command-sheet, #pd-v10-crop-modal { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  @media (max-width: 900px) {
+    #apple-tab-menu, #pd-ai-panel, .pd-account-popover, #pd-command-palette .pd-command-sheet, #pd-v10-crop-modal { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .apple-reveal, .pd-reveal-card, .pd-final-cta { opacity: 1 !important; transform: none !important; filter: none !important; }
+  }
+</style>
 
 </body>
 
