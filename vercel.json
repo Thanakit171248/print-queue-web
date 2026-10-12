@@ -121,10 +121,7 @@
     }
   ],
   "functions": {
-    "api/verify-slip.js": {
-      "maxDuration": 30
-    },
-    "api/verify-slip-v2.js": {
+    "api/*.js": {
       "maxDuration": 30
     }
   }
