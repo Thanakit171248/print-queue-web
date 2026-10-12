@@ -1,0 +1,36 @@
+
+  /* Reliable, readable PDF preview: visible loading/error states, crisp pages, no giant blank area. */
+  #file-preview-drawer > .ui-panel { width: min(1100px, 100%); min-height: 0; }
+  #pdf-preview-wrapper { gap: 22px !important; transform-origin: top center !important; }
+  #pdf-preview-wrapper .pd-v15-preview-page {
+    width: min(100%, 820px) !important; min-height: 220px; padding: 34px 14px 14px !important;
+    overflow: hidden; border-radius: 12px; background: #fff !important;
+  }
+  #pdf-preview-wrapper .pd-v15-preview-page canvas {
+    display: block; width: 100% !important; max-width: 100%; height: auto !important;
+    image-rendering: auto; background: #fff; border-radius: 2px;
+  }
+  .pd-pdf-page-status {
+    display: flex; justify-content: center; align-items: center; min-height: 150px;
+    padding: 22px; text-align: center; color: #64748b; font-size: 14px; line-height: 1.7;
+    width: 100%; background: linear-gradient(180deg,#f8fafc,#eef2f7); border-radius: 8px;
+  }
+  .pd-pdf-page-status[data-state="loading"]::before {
+    content: ""; width: 18px; height: 18px; margin-right: 10px; flex: 0 0 auto;
+    border: 2px solid #cbd5e1; border-top-color: #0a84ff; border-radius: 50%; animation: pdPdfSpin .7s linear infinite;
+  }
+  .pd-pdf-page-status[data-state="error"] { color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; }
+  .pd-page-render-error { display:block; padding:6px; margin-top:4px; color:#b91c1c; font-size:11px; line-height:1.5; }
+  .pd-v15-thumb-card { min-height: 174px !important; }
+  .pd-v15-thumb-card canvas { max-height: 140px !important; }
+  @keyframes pdPdfSpin { to { transform: rotate(360deg); } }
+  @media (max-width: 767px) {
+    #file-preview-drawer { padding: 8px !important; }
+    #file-preview-drawer > .ui-panel { height: calc(100dvh - 16px) !important; max-height: calc(100dvh - 16px); padding: 12px !important; border-radius: 22px !important; }
+    #file-preview-drawer > .ui-panel > .grid { gap: 7px !important; margin: 10px 0 !important; }
+    #file-preview-drawer > .ui-panel > .grid > div { padding: 8px 5px !important; }
+    #file-preview-drawer > .ui-panel > .flex.items-center.justify-between { padding: 8px !important; }
+    #pdf-preview-wrapper .pd-v15-preview-page { padding: 30px 6px 6px !important; min-height: 160px; }
+    .pd-pdf-page-status { min-height: 110px; padding: 14px 8px; font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pd-pdf-page-status[data-state="loading"]::before { animation: none; } }

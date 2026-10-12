@@ -1,0 +1,607 @@
+
+    /* ==========================================================
+   PRINTDEKD PRO v9 — Responsive Typography + Visual QA Pass
+   Goals: readable Thai, zero text collisions, device-adaptive
+   layouts, stable square cropper, premium but lightweight motion.
+   ========================================================== */
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --pd-font-ui: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --pd-font-display: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --pd-v9-body: clamp(14px, .28vw + 12px, 16px);
+      --pd-v9-leading: 1.68;
+    }
+
+    html,
+    body,
+    button,
+    input,
+    textarea,
+    select {
+      font-family: var(--pd-font-ui) !important
+    }
+
+    body {
+      font-size: var(--pd-v9-body);
+      line-height: var(--pd-v9-leading);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased
+    }
+
+    /* Display text: less oversized than the previous pass, more room for Thai glyphs. */
+    .pd-section-heading h2,
+    .pd-final-cta h2 {
+      font-family: var(--pd-font-display) !important;
+      font-size: clamp(36px, 4.6vw, 64px) !important;
+      line-height: 1.08 !important;
+      letter-spacing: -.035em !important;
+      font-weight: 800 !important;
+      max-width: 13ch
+    }
+
+    .pd-section-heading p,
+    .pd-final-cta p {
+      font-size: clamp(14px, .35vw + 12px, 17px) !important;
+      line-height: 1.75 !important;
+      max-width: 48ch !important
+    }
+
+    .pd-eyebrow {
+      font-size: 12px !important;
+      line-height: 1.3 !important;
+      letter-spacing: .06em !important;
+      font-weight: 700 !important
+    }
+
+    /* ---------- Story rail: every text block owns its space ---------- */
+    .pd-story-grid {
+      align-items: stretch !important
+    }
+
+    .pd-story-card {
+      min-height: 430px !important;
+      padding: clamp(24px, 2.5vw, 34px) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      transform: none !important;
+    }
+
+    .pd-story-card .pd-story-top {
+      flex: none !important
+    }
+
+    .pd-story-copy {
+      margin-top: 46px !important;
+      max-width: 100% !important
+    }
+
+    .pd-story-copy h3,
+    .pd-story-card h3 {
+      font-family: var(--pd-font-display) !important;
+      font-size: clamp(30px, 2.7vw, 46px) !important;
+      line-height: 1.12 !important;
+      letter-spacing: -.035em !important;
+      font-weight: 600 !important;
+      max-width: 15ch !important;
+      text-wrap: balance !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    .pd-story-copy h3 strong,
+    .pd-story-card h3 strong {
+      font-weight: 800 !important
+    }
+
+    .pd-story-copy p,
+    .pd-story-card>p {
+      font-size: clamp(14px, .2vw + 13px, 16px) !important;
+      line-height: 1.72 !important;
+      max-width: 46ch !important;
+      margin-top: 14px !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    .pd-story-icon {
+      margin-top: 38px !important;
+      flex: none !important
+    }
+
+    .pd-story-card>.pd-story-icon+h3 {
+      margin-top: 18px !important
+    }
+
+    .pd-story-card:not(.pd-span-7) h3 {
+      max-width: 13ch !important
+    }
+
+    /* Bottom controls are normal-flow blocks. No absolute overlap. */
+    .pd-flow-visual,
+    .pd-mini-progress,
+    .pd-balance-preview,
+    .pd-security-preview,
+    .pd-inline-action {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      margin-top: auto !important;
+      flex: none !important
+    }
+
+    .pd-flow-visual {
+      min-height: 56px !important;
+      padding: 10px 12px !important
+    }
+
+    .pd-flow-visual span {
+      font-size: 12px !important;
+      line-height: 1.3 !important;
+      white-space: nowrap
+    }
+
+    .pd-flow-visual b {
+      min-width: 16px
+    }
+
+    .pd-mini-progress {
+      padding-top: 20px !important
+    }
+
+    .pd-balance-preview,
+    .pd-security-preview,
+    .pd-inline-action {
+      margin-top: 20px !important
+    }
+
+    .pd-balance-preview b {
+      font-size: 25px !important
+    }
+
+    .pd-inline-action {
+      min-height: 48px !important;
+      font-size: 13px !important
+    }
+
+    /* Theme-safe text colors. */
+    .pd-story-dark,
+    .pd-story-blue,
+    .pd-story-gold,
+    .pd-story-violet {
+      color: #fff !important
+    }
+
+    .pd-story-dark p,
+    .pd-story-blue p,
+    .pd-story-gold p,
+    .pd-story-violet p {
+      color: rgba(255, 255, 255, .76) !important
+    }
+
+    .pd-story-glass {
+      color: #101828 !important
+    }
+
+    .pd-story-glass p {
+      color: rgba(15, 23, 42, .68) !important
+    }
+
+    /* ---------- Landing hero image: readable text panel instead of text on a photo ---------- */
+    #view-landing .pd-hero-media,
+    #view-landing .group {
+      isolation: isolate
+    }
+
+    #view-landing .group img {
+      filter: saturate(.92) contrast(.98) !important
+    }
+
+    #view-landing .group>div.absolute.bottom-6 {
+      left: 20px !important;
+      right: 20px !important;
+      bottom: 18px !important;
+      padding: 18px 20px !important;
+      border-radius: 22px !important;
+      background: linear-gradient(180deg, rgba(5, 10, 20, .08), rgba(5, 10, 20, .86)) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+    }
+
+    #view-landing .group>div.absolute.bottom-6 p.text-2xl {
+      font-size: clamp(20px, 2.1vw, 30px) !important;
+      line-height: 1.2 !important;
+      max-width: 17ch !important;
+      color: #fff !important;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, .35)
+    }
+
+    #view-landing .group>div.absolute.bottom-6 p.text-xs {
+      font-size: 14px !important;
+      line-height: 1.55 !important;
+      max-width: 42ch !important;
+      color: rgba(255, 255, 255, .86) !important
+    }
+
+    /* Landing metric cards: consistent hierarchy. */
+    #view-landing .grid.grid-cols-3>div.ui-card {
+      min-height: 124px !important;
+      padding: 18px 20px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      gap: 5px !important
+    }
+
+    #view-landing .grid.grid-cols-3>div.ui-card p:first-child {
+      font-size: clamp(22px, 2vw, 28px) !important;
+      line-height: 1.15 !important;
+      font-weight: 800 !important
+    }
+
+    #view-landing .grid.grid-cols-3>div.ui-card p:last-child {
+      font-size: 14px !important;
+      line-height: 1.5 !important
+    }
+
+    /* ---------- Profile preview ---------- */
+    .profile-hero {
+      align-items: center !important
+    }
+
+    .profile-hero h4 {
+      font-size: clamp(24px, 2.6vw, 34px) !important;
+      line-height: 1.15 !important;
+      letter-spacing: -.025em !important
+    }
+
+    .profile-hero #prof-email {
+      font-size: 15px !important;
+      line-height: 1.5 !important;
+      overflow-wrap: anywhere
+    }
+
+    .profile-avatar-xl {
+      width: 136px !important;
+      height: 136px !important;
+      object-fit: cover !important;
+      border-radius: 32px !important;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, .16) !important
+    }
+
+    /* ---------- Account Center / top tabs ---------- */
+    #pd-account-popover {
+      font-size: 14px !important
+    }
+
+    .pd-account-popover-title strong {
+      font-size: clamp(22px, 2vw, 28px) !important
+    }
+
+    .pd-account-action {
+      min-height: 96px !important;
+      padding: 16px !important
+    }
+
+    .pd-account-action b {
+      font-size: 15px !important;
+      line-height: 1.3 !important
+    }
+
+    .pd-account-action small {
+      font-size: 12px !important;
+      line-height: 1.45 !important
+    }
+
+    .pd-account-balance strong {
+      font-size: 27px !important
+    }
+
+    /* Common nav/tab controls — never squeeze Thai labels. */
+    #main-nav button,
+    #main-nav a,
+    .nav-tab,
+    .tab-button,
+    [role="tab"] {
+      min-height: 52px !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      line-height: 1.25 !important;
+      white-space: nowrap
+    }
+
+    /* ---------- Stable square cropper ---------- */
+    #pd-crop-modal {
+      padding: 18px !important;
+      background: rgba(2, 6, 23, .72) !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important
+    }
+
+    .pd-crop-shell {
+      width: min(860px, calc(100vw - 28px)) !important;
+      padding: 22px !important;
+      border-radius: 28px !important
+    }
+
+    .pd-crop-stage {
+      position: relative !important;
+      height: min(60vh, 560px) !important;
+      min-height: 320px !important;
+      overflow: hidden !important;
+      touch-action: none !important;
+      user-select: none !important;
+      display: grid !important;
+      place-items: center !important;
+    }
+
+    .pd-crop-stage img {
+      position: absolute !important;
+      left: 50% !important;
+      top: 50% !important;
+      max-width: none !important;
+      max-height: none !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      transform-origin: center center !important;
+      will-change: transform !important;
+      transition: none !important;
+      cursor: grab !important;
+      user-select: none !important;
+      -webkit-user-drag: none !important;
+    }
+
+    .pd-crop-stage img.is-dragging {
+      cursor: grabbing !important
+    }
+
+    .pd-crop-frame {
+      position: absolute !important;
+      left: 50% !important;
+      top: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: min(320px, 68vw) !important;
+      height: min(320px, 68vw) !important;
+      border-radius: 18px !important;
+      border: 2px solid rgba(255, 255, 255, .96) !important;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, .48), 0 0 0 1px rgba(10, 132, 255, .72), 0 18px 60px rgba(0, 0, 0, .24) !important;
+      pointer-events: none !important;
+      z-index: 5 !important;
+    }
+
+    .pd-crop-frame::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px dashed rgba(255, 255, 255, .24);
+      border-radius: 10px
+    }
+
+    .pd-crop-shell h3 {
+      font-size: clamp(20px, 2vw, 26px) !important;
+      line-height: 1.25 !important
+    }
+
+    .pd-crop-shell p {
+      font-size: 14px !important;
+      line-height: 1.6 !important
+    }
+
+    .pd-crop-controls {
+      gap: 12px !important;
+      align-items: center !important
+    }
+
+    .pd-crop-controls input {
+      height: 44px !important
+    }
+
+    .pd-crop-controls button {
+      min-height: 48px !important;
+      font-size: 14px !important;
+      font-weight: 700 !important
+    }
+
+    /* ---------- Upload card ---------- */
+    #file-details {
+      min-height: 78px !important
+    }
+
+    #file-details .pd-file-remove {
+      min-height: 44px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important
+    }
+
+    /* ---------- Responsive device modes ---------- */
+    @media (min-width:1280px) {
+      .pd-story-card {
+        min-height: 440px !important
+      }
+
+      .pd-story-copy h3,
+      .pd-story-card h3 {
+        font-size: clamp(34px, 2.45vw, 48px) !important
+      }
+    }
+
+    @media (min-width:768px) and (max-width:1199px) {
+      .pd-story-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important
+      }
+
+      .pd-span-7,
+      .pd-span-5 {
+        grid-column: span 6 !important
+      }
+
+      .pd-span-4 {
+        grid-column: span 3 !important
+      }
+
+      .pd-story-card {
+        min-height: 390px !important
+      }
+
+      .pd-story-copy h3,
+      .pd-story-card h3 {
+        font-size: clamp(30px, 4vw, 42px) !important
+      }
+    }
+
+    @media (max-width:767px) {
+      .pd-story-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important
+      }
+
+      .pd-span-7,
+      .pd-span-5,
+      .pd-span-4 {
+        grid-column: 1 !important
+      }
+
+      .pd-story-card {
+        min-height: 360px !important;
+        padding: 22px !important;
+        border-radius: 24px !important
+      }
+
+      .pd-story-copy {
+        margin-top: 34px !important
+      }
+
+      .pd-story-copy h3,
+      .pd-story-card h3 {
+        font-size: 32px !important;
+        line-height: 1.14 !important;
+        max-width: 14ch !important
+      }
+
+      .pd-story-copy p,
+      .pd-story-card>p {
+        font-size: 14px !important;
+        line-height: 1.68 !important
+      }
+
+      .pd-story-icon {
+        margin-top: 28px !important;
+        width: 52px !important;
+        height: 52px !important
+      }
+
+      .pd-flow-visual span {
+        font-size: 10px !important
+      }
+
+      .pd-flow-visual {
+        gap: 6px !important
+      }
+
+      .pd-section-heading h2,
+      .pd-final-cta h2 {
+        font-size: 38px !important;
+        max-width: 12ch !important
+      }
+
+      #view-landing .grid.grid-cols-3 {
+        grid-template-columns: 1fr !important
+      }
+
+      #view-landing .group>div.absolute.bottom-6 {
+        left: 12px !important;
+        right: 12px !important;
+        bottom: 12px !important;
+        padding: 14px !important
+      }
+
+      #view-landing .group>div.absolute.bottom-6 p.text-2xl {
+        font-size: 21px !important
+      }
+
+      .profile-hero {
+        grid-template-columns: 1fr !important
+      }
+
+      .profile-avatar-xl {
+        width: 112px !important;
+        height: 112px !important
+      }
+
+      .pd-account-action {
+        min-height: 88px !important
+      }
+
+      .pd-crop-shell {
+        padding: 14px !important;
+        width: calc(100vw - 18px) !important
+      }
+
+      .pd-crop-stage {
+        height: 52vh !important;
+        min-height: 300px !important
+      }
+
+      .pd-crop-frame {
+        width: min(240px, 70vw) !important;
+        height: min(240px, 70vw) !important
+      }
+
+      .pd-crop-controls {
+        grid-template-columns: 1fr 1fr !important
+      }
+
+      .pd-crop-controls input {
+        grid-column: 1/-1
+      }
+    }
+
+    /* Lightweight motion: opacity/transform only; no continuous heavy filters. */
+    .pd-story-card,
+    .ui-card,
+    .profile-hero,
+    .pd-account-action {
+      transition: transform .32s cubic-bezier(.22, .61, .36, 1), box-shadow .32s ease, border-color .32s ease !important
+    }
+
+    .pd-story-card:hover {
+      transform: translateY(-4px) !important
+    }
+
+    .pd-story-card:active {
+      transform: translateY(-1px) scale(.995) !important
+    }
+
+    .pd-story-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, .08) 48%, transparent 76%);
+      transform: translateX(-120%);
+      transition: transform .7s ease, opacity .25s ease;
+      z-index: 0
+    }
+
+    .pd-story-card:hover::before {
+      opacity: 1;
+      transform: translateX(120%)
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important
+      }
+
+      .pd-story-card:hover {
+        transform: none !important
+      }
+    }
+  

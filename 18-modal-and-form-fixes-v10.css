@@ -1,0 +1,319 @@
+
+    /* ==========================================================
+   PrintDekD Pro v10 — Functional UX Repair Pass
+   1) one simple square avatar cropper
+   2) high-contrast security story
+   3) readable page-selection cards
+   4) admin action feedback + order detail stability
+   5) Supabase print bucket defaults to existing "documents"
+   ========================================================== */
+    html.dark .pd-story-glass {
+      color: #f7f9fc !important;
+      background: linear-gradient(145deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .025)) !important;
+    }
+
+    html.dark .pd-story-glass h3,
+    html.dark .pd-story-glass strong,
+    html.dark .pd-story-glass .pd-eyebrow,
+    html.dark .pd-story-glass .pd-story-number,
+    html.dark .pd-story-glass .pd-story-chip {
+      color: #f7f9fc !important
+    }
+
+    html.dark .pd-story-glass p {
+      color: rgba(247, 249, 252, .76) !important
+    }
+
+    html:not(.dark) .pd-story-glass {
+      color: #111827 !important
+    }
+
+    html:not(.dark) .pd-story-glass h3,
+    html:not(.dark) .pd-story-glass strong {
+      color: #111827 !important
+    }
+
+    html:not(.dark) .pd-story-glass p {
+      color: rgba(15, 23, 42, .72) !important
+    }
+
+    .pd-v10-page-picker {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)) !important;
+      gap: 12px !important;
+      max-height: 360px !important;
+      padding: 14px !important;
+      overflow: auto !important;
+      border-radius: 20px !important;
+    }
+
+    .pd-v10-page-card {
+      position: relative !important;
+      min-height: 132px !important;
+      padding: 8px !important;
+      border: 1px solid var(--pd-stroke-strong) !important;
+      border-radius: 18px !important;
+      background: rgba(255, 255, 255, .035) !important;
+      cursor: pointer !important;
+      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease !important;
+    }
+
+    .pd-v10-page-card:hover {
+      transform: translateY(-2px) !important;
+      border-color: rgba(10, 132, 255, .45) !important
+    }
+
+    .pd-v10-page-card.is-selected {
+      border-color: #0a84ff !important;
+      background: rgba(10, 132, 255, .10) !important;
+      box-shadow: 0 10px 28px rgba(10, 132, 255, .14), inset 0 0 0 1px rgba(10, 132, 255, .18) !important;
+    }
+
+    .pd-v10-page-card canvas {
+      display: block !important;
+      width: 100% !important;
+      height: 94px !important;
+      object-fit: contain !important;
+      border-radius: 11px !important;
+      background: #fff !important;
+    }
+
+    .pd-v10-page-card .pd-page-check {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(8, 10, 15, .78);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .22);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .pd-v10-page-card.is-selected .pd-page-check {
+      background: #0a84ff;
+      border-color: #5eb0ff
+    }
+
+    .pd-v10-page-card .pd-page-number {
+      display: block;
+      margin-top: 7px;
+      text-align: center;
+      color: var(--pd-white);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    html:not(.dark) .pd-v10-page-card {
+      background: rgba(15, 23, 42, .025) !important;
+      border-color: rgba(15, 23, 42, .12) !important
+    }
+
+    html:not(.dark) .pd-v10-page-card .pd-page-number {
+      color: #111827 !important
+    }
+
+    .pd-v10-page-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pd-v10-page-summary {
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(10, 132, 255, .06);
+    }
+
+    #pd-v10-crop-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(0, 0, 0, .76);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    #pd-v10-crop-modal.is-open {
+      display: flex
+    }
+
+    .pd-v10-crop-shell {
+      width: min(620px, calc(100vw - 24px));
+      max-height: calc(100dvh - 24px);
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 28px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(20, 23, 31, .98), rgba(9, 11, 16, .98));
+      box-shadow: 0 40px 130px rgba(0, 0, 0, .55);
+    }
+
+    .pd-v10-crop-stage {
+      position: relative;
+      width: min(420px, 82vw);
+      height: min(420px, 82vw);
+      margin: 18px auto;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #0a0c10;
+      touch-action: none;
+      user-select: none;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .10);
+    }
+
+    .pd-v10-crop-image {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: none;
+      max-height: none;
+      width: auto;
+      height: auto;
+      transform-origin: center center;
+      will-change: transform;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .pd-v10-crop-frame {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(320px, 70vw);
+      height: min(320px, 70vw);
+      transform: translate(-50%, -50%);
+      border: 2px solid #fff;
+      border-radius: 18px;
+      pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, .48), 0 0 0 1px rgba(10, 132, 255, .75), 0 18px 50px rgba(0, 0, 0, .25);
+    }
+
+    .pd-v10-crop-frame:after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(255, 255, 255, .25);
+      border-radius: 10px
+    }
+
+    .pd-v10-crop-hint {
+      text-align: center;
+      color: rgba(255, 255, 255, .62);
+      font-size: 12px;
+      line-height: 1.6
+    }
+
+    .pd-v10-crop-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.25fr;
+      gap: 9px;
+      margin-top: 12px
+    }
+
+    .pd-v10-crop-actions button {
+      min-height: 48px;
+      border-radius: 15px;
+      font-weight: 800
+    }
+
+    .pd-v10-crop-close {
+      width: 44px !important;
+      min-height: 44px !important
+    }
+
+    .pd-v10-crop-range {
+      width: 100%
+    }
+
+    .pd-v10-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid rgba(10, 132, 255, .20);
+      background: rgba(10, 132, 255, .08);
+      color: #5eb0ff;
+    }
+
+    .pd-v10-admin-busy {
+      opacity: .62 !important;
+      pointer-events: none !important
+    }
+
+    .pd-v10-admin-view-btn {
+      min-width: 92px !important
+    }
+
+    #queue-detail-modal {
+      z-index: 18000 !important
+    }
+
+    #queue-detail-modal>div {
+      max-height: 92dvh !important
+    }
+
+    @media(max-width:767px) {
+      .pd-v10-page-picker {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        max-height: 330px !important;
+        gap: 9px !important
+      }
+
+      .pd-v10-page-card {
+        min-height: 116px !important
+      }
+
+      .pd-v10-page-card canvas {
+        height: 78px !important
+      }
+
+      .pd-v10-crop-stage {
+        width: min(320px, 86vw);
+        height: min(320px, 86vw)
+      }
+
+      .pd-v10-crop-frame {
+        width: min(250px, 70vw);
+        height: min(250px, 70vw)
+      }
+
+      .pd-v10-crop-actions {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .pd-v10-crop-actions .primary {
+        grid-column: 1/-1
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      .pd-v10-page-card {
+        transition: none !important
+      }
+    }
+  

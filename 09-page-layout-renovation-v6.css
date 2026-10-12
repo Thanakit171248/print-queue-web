@@ -1,0 +1,624 @@
+
+    /* ==========================================================
+   DESIGNER ADVANCED v6 — ACCOUNT / ORDER / ADMIN RENOVATION
+   ========================================================== */
+    .pd-account-wrap {
+      position: relative
+    }
+
+    .pd-account-trigger {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 5px 9px 5px 5px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .035));
+      color: var(--pd-white);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 10px 28px rgba(0, 0, 0, .12);
+      transition: .35s var(--pd-ease);
+      cursor: pointer
+    }
+
+    .pd-account-trigger:hover {
+      transform: translateY(-2px);
+      border-color: rgba(10, 132, 255, .35);
+      box-shadow: 0 16px 40px rgba(10, 132, 255, .12), inset 0 1px 0 rgba(255, 255, 255, .12)
+    }
+
+    .pd-account-trigger.is-open {
+      border-color: rgba(10, 132, 255, .48);
+      box-shadow: 0 18px 55px rgba(10, 132, 255, .16)
+    }
+
+    .pd-account-avatar-wrap {
+      position: relative;
+      display: inline-flex
+    }
+
+    .pd-account-avatar-wrap .nav-profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      border: 2px solid rgba(255, 255, 255, .20)
+    }
+
+    .pd-account-online {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #32d583;
+      border: 2px solid #10131a;
+      box-shadow: 0 0 12px rgba(50, 213, 131, .7)
+    }
+
+    .pd-account-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.08;
+      min-width: 70px
+    }
+
+    .pd-account-kicker {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: var(--pd-dim)
+    }
+
+    .pd-account-name {
+      max-width: 110px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--pd-white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 3px
+    }
+
+    .pd-account-role-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #35d07f;
+      box-shadow: 0 0 12px rgba(53, 208, 127, .6)
+    }
+
+    .pd-account-role-dot.admin {
+      background: #a855f7;
+      box-shadow: 0 0 12px rgba(168, 85, 247, .65)
+    }
+
+    .pd-account-chevron {
+      color: var(--pd-muted);
+      transition: transform .35s var(--pd-ease)
+    }
+
+    .pd-account-trigger.is-open .pd-account-chevron {
+      transform: rotate(180deg)
+    }
+
+    .pd-account-popover {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      width: min(370px, calc(100vw - 24px));
+      padding: 10px;
+      border: 1px solid var(--pd-stroke-strong);
+      border-radius: 26px;
+      background: rgba(14, 17, 23, .88);
+      backdrop-filter: blur(35px) saturate(155%);
+      -webkit-backdrop-filter: blur(35px) saturate(155%);
+      box-shadow: 0 35px 100px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 255, 255, .09);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(.97);
+      transform-origin: top right;
+      transition: .38s var(--pd-ease);
+      z-index: 100
+    }
+
+    .pd-account-popover.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: none
+    }
+
+    .pd-account-popover::before {
+      content: "";
+      position: absolute;
+      right: 24px;
+      top: -5px;
+      width: 10px;
+      height: 10px;
+      transform: rotate(45deg);
+      background: #11141b;
+      border-left: 1px solid rgba(255, 255, 255, .10);
+      border-top: 1px solid rgba(255, 255, 255, .10)
+    }
+
+    html:not(.dark) .pd-account-popover {
+      background: rgba(255, 255, 255, .90);
+      box-shadow: 0 35px 90px rgba(15, 23, 42, .16), inset 0 1px 0 #fff
+    }
+
+    .pd-account-popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 8px 10px
+    }
+
+    .pd-account-popover-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .pd-account-popover-title strong {
+      font-size: 19px;
+      letter-spacing: -.03em
+    }
+
+    .pd-account-role-badge {
+      font-size: 9px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(53, 208, 127, .10);
+      color: #35d07f;
+      border: 1px solid rgba(53, 208, 127, .18)
+    }
+
+    .pd-account-role-badge.admin {
+      background: rgba(168, 85, 247, .11);
+      color: #c084fc;
+      border-color: rgba(168, 85, 247, .22)
+    }
+
+    .pd-account-balance {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(245, 185, 63, .13), rgba(255, 255, 255, .035));
+      border: 1px solid rgba(245, 185, 63, .18);
+      cursor: pointer;
+      transition: .28s ease
+    }
+
+    .pd-account-balance:hover {
+      transform: translateY(-1px);
+      border-color: rgba(245, 185, 63, .36)
+    }
+
+    .pd-balance-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f5b93f;
+      background: rgba(245, 185, 63, .12)
+    }
+
+    .pd-account-balance span:nth-child(2) {
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .pd-account-balance small {
+      font-size: 9px;
+      color: var(--pd-muted);
+      font-weight: 800
+    }
+
+    .pd-account-balance strong {
+      font-size: 18px;
+      color: #f5b93f;
+      line-height: 1
+    }
+
+    .pd-balance-arrow {
+      margin-left: auto;
+      color: #f5b93f
+    }
+
+    .pd-account-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .pd-account-action {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-align: left;
+      padding: 9px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .035);
+      color: var(--pd-white);
+      transition: .28s var(--pd-ease);
+      cursor: pointer
+    }
+
+    .pd-account-action:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, .07);
+      border-color: rgba(10, 132, 255, .28)
+    }
+
+    .pd-account-action.danger:hover {
+      border-color: rgba(255, 95, 115, .30);
+      background: rgba(255, 95, 115, .06)
+    }
+
+    .pd-account-action-icon {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex: 0 0 auto
+    }
+
+    .pd-account-action-icon.blue {
+      color: #5ba7ff;
+      background: rgba(10, 132, 255, .12)
+    }
+
+    .pd-account-action-icon.green {
+      color: #35d07f;
+      background: rgba(53, 208, 127, .11)
+    }
+
+    .pd-account-action-icon.purple {
+      color: #c084fc;
+      background: rgba(168, 85, 247, .11)
+    }
+
+    .pd-account-action-icon.red {
+      color: #ff7182;
+      background: rgba(255, 95, 115, .10)
+    }
+
+    .pd-account-action span:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0
+    }
+
+    .pd-account-action b {
+      font-size: 11px;
+      font-weight: 900
+    }
+
+    .pd-account-action small {
+      font-size: 9px;
+      color: var(--pd-muted);
+      white-space: nowrap
+    }
+
+    .pd-account-popover-foot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 8px 2px;
+      color: var(--pd-dim);
+      font-size: 9px;
+      font-weight: 800
+    }
+
+    .pd-order-hero {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+      padding: 30px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 34px;
+      background: radial-gradient(550px 220px at 5% 0%, rgba(10, 132, 255, .15), transparent 72%), radial-gradient(420px 200px at 100% 100%, rgba(139, 92, 246, .10), transparent 72%), var(--pd-surface-0);
+      box-shadow: var(--pd-shadow)
+    }
+
+    .pd-order-hero-main h1 {
+      max-width: 780px;
+      margin: 9px 0 8px;
+      font-size: clamp(30px, 4.2vw, 58px);
+      line-height: 1.03;
+      letter-spacing: -.045em;
+      font-weight: 950
+    }
+
+    .pd-order-hero-main p {
+      max-width: 760px;
+      color: var(--pd-muted);
+      font-size: 14px;
+      line-height: 1.7
+    }
+
+    .pd-order-stepper {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 24px
+    }
+
+    .pd-order-stepper span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--pd-dim);
+      font-size: 10px;
+      font-weight: 900
+    }
+
+    .pd-order-stepper b {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--pd-stroke);
+      font-size: 9px
+    }
+
+    .pd-order-stepper span.is-current {
+      color: #5ba7ff
+    }
+
+    .pd-order-stepper span.is-current b {
+      background: rgba(10, 132, 255, .15);
+      border-color: rgba(10, 132, 255, .32);
+      box-shadow: 0 0 25px rgba(10, 132, 255, .15)
+    }
+
+    .pd-order-stepper i {
+      width: 34px;
+      height: 1px;
+      background: var(--pd-stroke)
+    }
+
+    .pd-order-shortcuts {
+      position: absolute;
+      right: 22px;
+      bottom: 22px;
+      display: flex;
+      gap: 7px
+    }
+
+    .pd-order-shortcuts button {
+      min-height: 38px;
+      padding: 0 11px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, .055);
+      color: var(--pd-muted);
+      font-size: 10px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: .25s ease
+    }
+
+    .pd-order-shortcuts button:hover {
+      color: var(--pd-white);
+      border-color: rgba(10, 132, 255, .35);
+      transform: translateY(-2px)
+    }
+
+    .pd-live-order-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 10px 14px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .035);
+      box-shadow: var(--pd-shadow)
+    }
+
+    .pd-live-order-strip>div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0
+    }
+
+    .pd-live-order-strip small {
+      display: block;
+      color: var(--pd-muted);
+      font-size: 9px;
+      margin-top: 2px
+    }
+
+    .pd-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #35d07f;
+      box-shadow: 0 0 0 5px rgba(53, 208, 127, .10), 0 0 14px rgba(53, 208, 127, .55);
+      animation: pdPulse 2s infinite
+    }
+
+    .pd-live-price {
+      text-align: right
+    }
+
+    .pd-live-price strong {
+      display: block;
+      color: #f5b93f;
+      font-size: 17px
+    }
+
+    .pd-live-price small {
+      font-size: 8px
+    }
+
+    .pd-admin-commandbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(260px, 1.6fr);
+      gap: 9px;
+      margin-bottom: 12px
+    }
+
+    .pd-admin-stat,
+    .pd-admin-search {
+      min-height: 68px;
+      padding: 12px 14px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .035);
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .pd-admin-stat span {
+      font-size: 9px;
+      color: var(--pd-muted);
+      font-weight: 850
+    }
+
+    .pd-admin-stat strong {
+      font-size: 20px;
+      letter-spacing: -.03em;
+      margin-top: 3px
+    }
+
+    .pd-admin-search {
+      flex-direction: row;
+      align-items: center;
+      gap: 8px
+    }
+
+    .pd-admin-search i {
+      color: var(--pd-muted);
+      flex: 0 0 auto
+    }
+
+    .pd-admin-search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--pd-white);
+      font-size: 12px
+    }
+
+    .pd-admin-search input::placeholder {
+      color: var(--pd-dim)
+    }
+
+    #file-input:focus-visible+#upload-placeholder {
+      outline: 2px solid rgba(10, 132, 255, .35)
+    }
+
+    .pd-click-flash {
+      box-shadow: 0 0 0 4px rgba(10, 132, 255, .12) !important
+    }
+
+    .pd-upload-drag {
+      border-color: rgba(10, 132, 255, .65) !important;
+      background: rgba(10, 132, 255, .08) !important;
+      transform: scale(1.01)
+    }
+
+    @keyframes pdPulse {
+      50% {
+        transform: scale(1.18);
+        opacity: .7
+      }
+    }
+
+    @media(max-width:900px) {
+      .pd-order-hero {
+        padding: 22px
+      }
+
+      .pd-order-shortcuts {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        margin-top: 18px
+      }
+
+      .pd-order-shortcuts button {
+        justify-content: center
+      }
+
+      .pd-admin-commandbar {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .pd-admin-search {
+        grid-column: 1/-1
+      }
+
+      .pd-account-copy {
+        display: none
+      }
+
+      .pd-account-trigger {
+        padding-right: 7px
+      }
+
+      .pd-account-role-dot {
+        display: none
+      }
+    }
+
+    @media(max-width:520px) {
+      .pd-account-popover {
+        right: -5px
+      }
+
+      .pd-account-grid {
+        grid-template-columns: 1fr
+      }
+
+      .pd-order-stepper {
+        gap: 5px
+      }
+
+      .pd-order-stepper i {
+        width: 16px
+      }
+
+      .pd-order-stepper span small {
+        display: none
+      }
+
+      .pd-order-hero-main p {
+        font-size: 12px
+      }
+
+      .pd-live-order-strip {
+        padding: 9px 11px
+      }
+
+      .pd-live-price strong {
+        font-size: 15px
+      }
+    }
+  

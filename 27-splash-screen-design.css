@@ -1,0 +1,186 @@
+
+/* A lightweight Apple-inspired splash: restrained gradients and transform-only motion. */
+#splash-screen.pd-splash-redesign {
+  isolation: isolate;
+  overflow: hidden;
+  background: #05070b !important;
+  color: #f5f7fb;
+  --pd-splash-blue: #55a5ff;
+}
+#splash-screen.pd-splash-redesign::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 43%, rgba(17, 76, 158, .22), transparent 36%),
+    radial-gradient(ellipse at 16% 12%, rgba(35, 83, 160, .12), transparent 34%),
+    radial-gradient(ellipse at 85% 84%, rgba(92, 61, 180, .12), transparent 31%),
+    linear-gradient(145deg, #06080c 0%, #080d15 52%, #05060a 100%);
+}
+#splash-screen.pd-splash-redesign::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: min(78vw, 680px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(93, 161, 255, .10);
+  border-radius: 50%;
+  box-shadow: 0 0 0 58px rgba(93,161,255,.018), 0 0 0 116px rgba(93,161,255,.012);
+  transform: translateY(-3%);
+  pointer-events: none;
+}
+#splash-screen.pd-splash-redesign .pd-splash-ambient {
+  position: absolute;
+  z-index: -1;
+  width: 32vw;
+  min-width: 220px;
+  max-width: 420px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(27, 111, 241, .13);
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+  animation: pd-splash-float 9s ease-in-out infinite alternate;
+}
+#splash-screen.pd-splash-redesign .pd-splash-ambient-one { left: 3%; top: 10%; }
+#splash-screen.pd-splash-redesign .pd-splash-ambient-two {
+  right: 3%; bottom: 4%;
+  background: rgba(113, 78, 244, .12);
+  animation-delay: -4.5s;
+  animation-duration: 11s;
+}
+#splash-screen.pd-splash-redesign .pd-splash-content {
+  width: min(100%, 760px);
+  gap: clamp(24px, 4vh, 38px) !important;
+  padding: 32px 24px;
+}
+#splash-screen.pd-splash-redesign .pd-splash-mark {
+  position: relative;
+  isolation: isolate;
+  width: clamp(94px, 13vw, 126px) !important;
+  height: clamp(94px, 13vw, 126px) !important;
+  border-radius: 34px !important;
+  border: 1px solid rgba(176, 202, 241, .25) !important;
+  background: linear-gradient(145deg, rgba(30, 44, 64, .84), rgba(9, 13, 20, .92)) !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .38), 0 0 55px rgba(33, 119, 255, .15), inset 0 1px 0 rgba(255,255,255,.09) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+#splash-screen.pd-splash-redesign .pd-splash-mark::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -7px;
+  border-radius: 40px;
+  border: 1px solid rgba(76, 158, 255, .26);
+  transform: rotate(-7deg);
+  animation: pd-splash-frame 7s ease-in-out infinite alternate;
+}
+#splash-screen.pd-splash-redesign .pd-splash-mark::after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: -22px;
+  border-radius: 45px;
+  background: rgba(30, 117, 255, .16);
+  filter: blur(27px);
+}
+#splash-screen.pd-splash-redesign .pd-splash-mark svg {
+  width: clamp(43px, 5vw, 54px) !important;
+  height: clamp(43px, 5vw, 54px) !important;
+  filter: drop-shadow(0 0 16px rgba(57, 144, 255, .38));
+  stroke-width: 1.7;
+}
+#splash-screen.pd-splash-redesign .pd-splash-content h1 {
+  margin: 0;
+  font-size: clamp(37px, 6vw, 66px) !important;
+  line-height: 1.14 !important;
+  letter-spacing: -.055em !important;
+  font-weight: 850 !important;
+  text-wrap: balance;
+  text-shadow: 0 5px 40px rgba(0,0,0,.25);
+}
+#splash-screen.pd-splash-redesign .pd-splash-content h1 span {
+  background: linear-gradient(112deg, #69bcff 4%, #587dff 47%, #ad7aff 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent;
+}
+#splash-screen.pd-splash-redesign .pd-splash-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 14px;
+  color: #8abfff;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+#splash-screen.pd-splash-redesign .pd-splash-kicker::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #59a7ff;
+  box-shadow: 0 0 13px rgba(70, 158, 255, .85);
+}
+#splash-screen.pd-splash-redesign .pd-splash-content p:not(.pd-splash-kicker) {
+  margin-top: 13px;
+  color: #8ba1bc !important;
+  font-size: clamp(10px, 1.5vw, 12px) !important;
+  letter-spacing: .26em !important;
+  line-height: 1.8;
+}
+#splash-screen.pd-splash-redesign .pd-splash-progress {
+  width: min(330px, 70vw) !important;
+  padding-top: 3px;
+}
+#splash-screen.pd-splash-redesign #splash-progress-bar {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #438fff, #66b9ff 56%, #8a75ff) !important;
+  box-shadow: 0 0 15px rgba(61, 143, 255, .35);
+}
+#splash-screen.pd-splash-redesign #splash-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: translateX(-110%);
+  animation: pd-splash-sheen 1.8s ease-in-out infinite;
+}
+#splash-screen.pd-splash-redesign #splash-status-text,
+#splash-screen.pd-splash-redesign #splash-percent-text {
+  color: #8ca2bd !important;
+  font-size: 10px;
+  letter-spacing: .07em;
+}
+#splash-screen.pd-splash-redesign #splash-percent-text { color: #9bcaff !important; }
+@keyframes pd-splash-float {
+  from { transform: translate3d(-10px, -5px, 0) scale(.96); }
+  to { transform: translate3d(17px, 15px, 0) scale(1.04); }
+}
+@keyframes pd-splash-frame {
+  from { transform: rotate(-7deg) scale(.99); opacity: .68; }
+  to { transform: rotate(5deg) scale(1.02); opacity: 1; }
+}
+@keyframes pd-splash-sheen {
+  0%, 30% { transform: translateX(-110%); }
+  80%, 100% { transform: translateX(110%); }
+}
+@media (max-width: 520px) {
+  #splash-screen.pd-splash-redesign .pd-splash-content { gap: 26px !important; padding: 24px 18px; }
+  #splash-screen.pd-splash-redesign .pd-splash-mark { border-radius: 27px !important; }
+  #splash-screen.pd-splash-redesign .pd-splash-content p:not(.pd-splash-kicker) { letter-spacing: .15em !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #splash-screen.pd-splash-redesign .pd-splash-ambient,
+  #splash-screen.pd-splash-redesign .pd-splash-mark::before,
+  #splash-screen.pd-splash-redesign #splash-progress-bar::after { animation: none !important; }
+}

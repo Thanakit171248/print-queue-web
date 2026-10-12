@@ -1,0 +1,441 @@
+    /* Advanced view transitions */
+    main>section:not(.hidden) {
+      animation: pd-view-in .72s var(--pd-ease) both !important;
+    }
+
+    @keyframes pd-view-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(.992);
+        filter: blur(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    .view-enter-once {
+      animation: pd-view-in .72s var(--pd-ease) both !important;
+    }
+
+    .apple-reveal {
+      opacity: 0;
+      transform: translateY(46px) scale(.985);
+      filter: blur(5px);
+      transition:
+        opacity 1s var(--pd-ease),
+        transform 1s var(--pd-ease),
+        filter 1s var(--pd-ease);
+    }
+
+    .apple-reveal.is-visible {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .pd-reveal-card {
+      opacity: 0;
+      transform: translateY(24px) scale(.985);
+      transition: opacity .8s var(--pd-ease), transform .8s var(--pd-ease);
+    }
+
+    .pd-reveal-card.is-in {
+      opacity: 1;
+      transform: none;
+    }
+
+    .pd-reveal-card:nth-child(2) {
+      transition-delay: .05s;
+    }
+
+    .pd-reveal-card:nth-child(3) {
+      transition-delay: .10s;
+    }
+
+    .pd-reveal-card:nth-child(4) {
+      transition-delay: .15s;
+    }
+
+    .pd-reveal-card:nth-child(5) {
+      transition-delay: .20s;
+    }
+
+    /* Command center */
+    .pd-command-overlay,
+    .pd-theme-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: clamp(80px, 12vh, 150px) 18px 24px;
+      background: rgba(0, 0, 0, .58);
+      backdrop-filter: blur(28px) saturate(125%);
+      -webkit-backdrop-filter: blur(28px) saturate(125%);
+    }
+
+    .pd-command-overlay.hidden,
+    .pd-theme-overlay.hidden {
+      display: none;
+    }
+
+    .pd-command-backdrop,
+    .pd-theme-backdrop {
+      position: absolute;
+      inset: 0;
+    }
+
+    .pd-command-sheet {
+      position: relative;
+      z-index: 1;
+      width: min(760px, 100%);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 30px;
+      background: rgba(18, 20, 26, .92);
+      box-shadow: 0 50px 160px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .08);
+      overflow: hidden;
+      transform: translateY(14px) scale(.97);
+      animation: pd-command-in .55s var(--pd-ease) forwards;
+    }
+
+    html:not(.dark) .pd-command-sheet {
+      background: rgba(255, 255, 255, .93);
+      border-color: rgba(0, 0, 0, .10);
+    }
+
+    @keyframes pd-command-in {
+      to {
+        transform: none;
+      }
+    }
+
+    .pd-command-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 24px 18px;
+    }
+
+    .pd-command-brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .pd-command-icon {
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      color: #72b7ff;
+      background: rgba(10, 132, 255, .12);
+      border: 1px solid rgba(10, 132, 255, .16);
+    }
+
+    .pd-command-icon svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .pd-command-head h2,
+    .pd-theme-head h2 {
+      margin-top: 6px;
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      font-weight: 900;
+    }
+
+    .pd-round-close {
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 50%;
+      color: var(--pd-muted);
+      background: var(--pd-surface-0);
+      cursor: pointer;
+      transition: transform .3s var(--pd-ease), color .2s ease, background .2s ease;
+    }
+
+    .pd-round-close:hover {
+      transform: rotate(5deg) scale(1.04);
+      color: var(--pd-white);
+      background: var(--pd-surface-1);
+    }
+
+    .pd-command-search {
+      margin: 0 18px;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 15px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 17px;
+      background: var(--pd-surface-0);
+    }
+
+    .pd-command-search svg {
+      width: 19px;
+      height: 19px;
+      color: var(--pd-muted);
+    }
+
+    .pd-command-search input {
+      flex: 1;
+      min-width: 0;
+      height: 54px;
+      border: 0 !important;
+      outline: 0 !important;
+      background: transparent !important;
+      color: var(--pd-white) !important;
+      box-shadow: none !important;
+      font-size: 14px;
+    }
+
+    .pd-command-search kbd,
+    .pd-command-foot kbd {
+      padding: 4px 7px;
+      border: 1px solid var(--pd-stroke);
+      border-bottom-color: var(--pd-stroke-strong);
+      border-radius: 6px;
+      color: var(--pd-muted);
+      background: rgba(255, 255, 255, .035);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .pd-command-results {
+      max-height: 430px;
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .pd-command-item {
+      width: 100%;
+      min-height: 68px;
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 10px;
+      border: 1px solid transparent;
+      border-radius: 17px;
+      color: var(--pd-white);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .25s var(--pd-ease);
+    }
+
+    .pd-command-item:hover,
+    .pd-command-item.is-selected {
+      border-color: rgba(10, 132, 255, .18);
+      background: rgba(10, 132, 255, .08);
+      transform: translateX(2px);
+    }
+
+    .pd-command-item .pd-command-item-icon {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .055);
+      color: #73baff;
+    }
+
+    .pd-command-item b {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .pd-command-item small {
+      display: block;
+      margin-top: 3px;
+      color: var(--pd-muted);
+      font-size: 10px;
+    }
+
+    .pd-command-item>span:last-child {
+      color: var(--pd-dim);
+      font-size: 10px;
+    }
+
+    .pd-command-empty {
+      padding: 34px 18px;
+      text-align: center;
+      color: var(--pd-muted);
+      font-size: 12px;
+    }
+
+    .pd-command-foot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-top: 1px solid var(--pd-stroke);
+      color: var(--pd-muted);
+      font-size: 10px;
+    }
+
+    .pd-command-foot span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pd-command-foot span+span {
+      margin-left: auto;
+    }
+
+    /* Theme sheet */
+    .pd-theme-overlay {
+      align-items: flex-end;
+      padding: 18px;
+    }
+
+    .pd-theme-sheet {
+      position: relative;
+      z-index: 1;
+      width: min(620px, 100%);
+      padding: 25px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 32px;
+      background: rgba(18, 20, 26, .92);
+      box-shadow: 0 50px 150px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .07);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      animation: pd-sheet-up .55s var(--pd-ease) both;
+    }
+
+    html:not(.dark) .pd-theme-sheet {
+      background: rgba(255, 255, 255, .94);
+    }
+
+    @keyframes pd-sheet-up {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .pd-theme-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .pd-theme-head p {
+      margin-top: 8px;
+      color: var(--pd-muted);
+      font-size: 12px;
+      line-height: 1.65;
+      max-width: 460px;
+    }
+
+    .pd-theme-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .pd-theme-option {
+      position: relative;
+      min-height: 154px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--pd-stroke);
+      border-radius: 20px;
+      background: var(--pd-surface-0);
+      color: var(--pd-white);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .35s var(--pd-ease), border-color .25s ease, background .25s ease;
+    }
+
+    .pd-theme-option:hover {
+      transform: translateY(-3px);
+      border-color: rgba(10, 132, 255, .32);
+    }
+
+    .pd-theme-option.is-active {
+      border-color: rgba(10, 132, 255, .48);
+      background: rgba(10, 132, 255, .09);
+    }
+
+    .pd-theme-preview {
+      width: 100%;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 1px solid var(--pd-stroke);
+    }
+
+    .pd-preview-dark {
+      color: #fff;
+      background: linear-gradient(145deg, #0b0d12, #1a1d25);
+    }
+
+    .pd-preview-light {
+      color: #222;
+      background: linear-gradient(145deg, #f4f5f7, #fff);
+    }
+
+    .pd-preview-system {
+      color: #fff;
+      background: linear-gradient(135deg, #111 0 50%, #f7f7f7 50%);
+    }
+
+    .pd-theme-option b {
+      display: block;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .pd-theme-option small {
+      display: block;
+      margin-top: 3px;
+      color: var(--pd-muted);
+      font-size: 9px;
+    }
+
+    .pd-theme-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 15px;
+      height: 15px;
+      opacity: 0;
+      color: #4da7ff;
+    }
+
+    .pd-theme-option.is-active .pd-theme-check {
+      opacity: 1;
+    }
+

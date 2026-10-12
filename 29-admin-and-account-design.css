@@ -1,0 +1,101 @@
+
+    /* Larger, calmer global confirmation dialog */
+    #custom-modal { z-index: 25000 !important; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)) !important; }
+    #custom-modal > div {
+      width: min(560px, 100%) !important; max-width: 560px !important;
+      padding: clamp(24px, 4vw, 38px) !important; border-radius: 30px !important;
+      box-shadow: 0 28px 100px rgba(0,0,0,.45) !important;
+    }
+    #custom-modal #modal-icon { width: 30px !important; height: 30px !important; }
+    #custom-modal > div > div:first-child {
+      width: 68px !important; height: 68px !important; border-radius: 22px !important; margin-bottom: 20px !important;
+    }
+    #custom-modal #modal-title { font-size: clamp(24px, 3.2vw, 31px) !important; line-height: 1.25 !important; margin-bottom: 10px !important; font-weight: 900 !important; }
+    #custom-modal #modal-message { font-size: clamp(15px, 1.8vw, 17px) !important; line-height: 1.8 !important; margin-bottom: 25px !important; white-space: pre-line; overflow-wrap: anywhere; }
+    #custom-modal #modal-actions { gap: 12px !important; }
+    #custom-modal #modal-actions button { min-height: 54px !important; border-radius: 16px !important; padding: 13px 18px !important; font-size: 15px !important; font-weight: 850 !important; }
+    @media (max-width: 520px) {
+      #custom-modal { align-items: flex-end !important; padding: 12px 10px max(10px, env(safe-area-inset-bottom)) !important; }
+      #custom-modal > div { padding: 25px 20px 20px !important; border-radius: 26px !important; }
+      #custom-modal #modal-actions { flex-direction: column-reverse; }
+      #custom-modal #modal-actions button { width: 100%; flex: auto !important; }
+    }
+
+    /* Leading brand icons for the profile URL/name inputs */
+    .pd-input-icon-wrap { position: relative; width: 100%; min-width: 0; }
+    .pd-input-leading-icon { position: absolute; z-index: 2; left: 16px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; color: #8abfff; pointer-events: none; }
+    .pd-input-leading-icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+    #profile-edit-section .pd-profile-icon-input { width: 100% !important; min-height: 56px !important; padding-left: 50px !important; padding-right: 16px !important; border-radius: 17px !important; margin-bottom: 0 !important; font-size: 16px !important; }
+    .pd-input-icon-wrap:focus-within .pd-input-leading-icon { color: #3b9cff; }
+
+    /* Admin dashboard: information hierarchy, spacing, and touch targets */
+    #view-admin { width: min(1560px, 100%) !important; max-width: 1560px !important; padding: clamp(16px, 2.5vw, 36px) clamp(12px, 2.3vw, 34px) max(44px, env(safe-area-inset-bottom)) !important; }
+    #view-admin > .flex:first-child { align-items: flex-end; margin-bottom: 24px !important; gap: 18px !important; }
+    #view-admin > .flex:first-child h1 { font-size: clamp(25px, 2.5vw, 36px) !important; line-height: 1.35 !important; max-width: 960px; text-wrap: balance; }
+    #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(130px, .8fr)) minmax(260px, 1.6fr) !important; gap: 12px !important; margin-bottom: 18px !important; }
+    #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 90px !important; padding: 18px 20px !important; border-radius: 22px !important; border-color: var(--pd-stroke-strong) !important; background: var(--pd-surface-0) !important; }
+    #view-admin .pd-admin-stat span { font-size: 13px !important; line-height: 1.5 !important; }
+    #view-admin .pd-admin-stat strong { font-size: clamp(27px, 2.4vw, 36px) !important; line-height: 1.15 !important; }
+    #view-admin .pd-admin-search input { font-size: 16px !important; min-height: 48px !important; }
+    #view-admin #admin-tab-orders-btn, #view-admin #admin-tab-topups-btn, #view-admin #admin-tab-users-btn { min-height: 52px !important; padding: 12px 16px !important; font-size: 14px !important; border-radius: 15px !important; line-height: 1.45 !important; }
+    #view-admin .ui-panel { padding: clamp(16px, 2.2vw, 30px) !important; border-radius: 26px !important; }
+    #view-admin .ui-panel h2 { font-size: clamp(20px, 2vw, 26px) !important; line-height: 1.4 !important; }
+    #view-admin .overflow-x-auto { border-radius: 20px !important; border-color: var(--pd-stroke-strong) !important; }
+    #view-admin table { min-width: 1020px !important; border-collapse: separate !important; border-spacing: 0 !important; }
+    #view-admin thead { background: rgba(148,163,184,.08); }
+    #view-admin th { position: sticky; top: 0; z-index: 1; font-size: 13px !important; line-height: 1.5 !important; padding: 16px 15px !important; white-space: nowrap; }
+    #view-admin td { font-size: 14px !important; line-height: 1.65 !important; padding: 15px !important; }
+    #view-admin td button, #view-admin td select { min-height: 44px !important; font-size: 13px !important; white-space: nowrap; }
+    #view-admin td .font-bold, #view-admin td .font-black { line-height: 1.5 !important; }
+    #view-admin td[data-label="การจัดการ"] { min-width: 220px; }
+    #view-admin td[data-label="การจัดการ"] button { margin: 3px 2px; }
+    #view-admin .overflow-x-auto { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,.45) transparent; }
+    #view-admin .overflow-x-auto:focus-within { outline: 2px solid rgba(10,132,255,.20); outline-offset: 3px; }
+    #view-admin button[data-pd-admin-action="delete-order"] { border-width: 1px !important; }
+    #view-admin button[data-pd-admin-action="role"] { min-width: 150px; }
+    .pd-v23-busy { opacity: .62 !important; pointer-events: none !important; }
+
+    @media (max-width: 1100px) {
+      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
+      #view-admin > .flex:first-child { align-items: flex-start; }
+      #view-admin > .flex:first-child button { min-height: 48px !important; }
+    }
+    @media (max-width: 820px) {
+      #view-admin { padding-left: 12px !important; padding-right: 12px !important; }
+      #view-admin .pd-admin-commandbar { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      #view-admin .pd-admin-search { grid-column: 1 / -1 !important; }
+      #view-admin > .flex:first-child { flex-direction: column; align-items: stretch; }
+      #view-admin > .flex:first-child button { align-self: stretch !important; justify-content: center; }
+      #pd-admin-tabs { display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; }
+      #pd-admin-tabs button { width: 100%; }
+      #view-admin .ui-panel { padding: 14px !important; border-radius: 22px !important; }
+      /* Reflow data tables into labeled cards on phone/iPad portrait */
+      #view-admin .overflow-x-auto { overflow: visible !important; border: 0 !important; }
+      #view-admin table { display: block !important; width: 100% !important; min-width: 0 !important; }
+      #view-admin thead { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
+      #view-admin tbody { display: grid !important; gap: 12px !important; width: 100% !important; }
+      #view-admin tr { display: block !important; width: 100% !important; min-width: 0 !important; padding: 8px 14px !important; border: 1px solid var(--pd-stroke-strong) !important; border-radius: 18px !important; background: var(--pd-surface-0) !important; }
+      #view-admin td { display: grid !important; grid-template-columns: minmax(86px, 31%) minmax(0, 1fr) !important; align-items: start; gap: 10px !important; width: 100% !important; min-width: 0 !important; padding: 11px 0 !important; text-align: left !important; border-bottom: 1px solid var(--pd-stroke) !important; overflow-wrap: anywhere; }
+      #view-admin td:last-child { border-bottom: 0 !important; }
+      #view-admin td::before { content: attr(data-label); color: var(--pd-muted); font-size: 12px; font-weight: 850; line-height: 1.6; }
+      #view-admin td[colspan] { display: block !important; text-align: center !important; padding: 22px 8px !important; }
+      #view-admin td[colspan]::before { content: none; }
+      #view-admin td[data-label="การจัดการ"] { display: flex !important; flex-wrap: wrap; gap: 7px; min-width: 0; }
+      #view-admin td[data-label="การจัดการ"]::before { flex: 0 0 100%; }
+      #view-admin td[data-label="การจัดการ"] button { flex: 1 1 auto; margin: 0 !important; }
+      #view-admin td p { max-width: none !important; white-space: normal !important; overflow-wrap: anywhere; }
+      #view-admin td select { width: 100% !important; max-width: 100%; }
+    }
+    @media (max-width: 420px) {
+      #view-admin .pd-admin-commandbar { gap: 8px !important; }
+      #view-admin .pd-admin-stat, #view-admin .pd-admin-search { min-height: 78px !important; padding: 13px !important; border-radius: 17px !important; }
+      #view-admin .pd-admin-stat span { font-size: 12px !important; }
+      #view-admin .pd-admin-stat strong { font-size: 25px !important; }
+      #view-admin td { grid-template-columns: 78px minmax(0,1fr) !important; gap: 8px !important; }
+      #view-admin td::before { font-size: 11px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #view-admin *, #custom-modal *, .pd-input-icon-wrap * { animation: none !important; transition: none !important; }
+    }
+  

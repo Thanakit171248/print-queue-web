@@ -1,0 +1,726 @@
+    /* DESIGNER ADVANCED — reusable motion utilities */
+    .pd-surface {
+      background: var(--pd-surface-0);
+      border: 1px solid var(--pd-stroke);
+      box-shadow: var(--pd-shadow);
+    }
+
+    .pd-surface-strong {
+      background: var(--pd-surface-1);
+      border: 1px solid var(--pd-stroke-strong);
+      box-shadow: var(--pd-shadow);
+    }
+
+    .pd-glass {
+      backdrop-filter: blur(28px) saturate(145%);
+      -webkit-backdrop-filter: blur(28px) saturate(145%);
+    }
+
+    .pd-divider {
+      height: 1px;
+      width: 100%;
+      background: var(--pd-stroke);
+    }
+
+    .pd-muted {
+      color: var(--pd-muted) !important;
+    }
+
+    .pd-dim {
+      color: var(--pd-dim) !important;
+    }
+
+    .pd-number {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    .pd-delay-0 {
+      transition-delay: 0ms;
+      animation-delay: 0ms;
+    }
+
+    .pd-delay-1 {
+      transition-delay: 40ms;
+      animation-delay: 40ms;
+    }
+
+    .pd-delay-2 {
+      transition-delay: 80ms;
+      animation-delay: 80ms;
+    }
+
+    .pd-delay-3 {
+      transition-delay: 120ms;
+      animation-delay: 120ms;
+    }
+
+    .pd-delay-4 {
+      transition-delay: 160ms;
+      animation-delay: 160ms;
+    }
+
+    .pd-delay-5 {
+      transition-delay: 200ms;
+      animation-delay: 200ms;
+    }
+
+    .pd-delay-6 {
+      transition-delay: 240ms;
+      animation-delay: 240ms;
+    }
+
+    .pd-delay-7 {
+      transition-delay: 280ms;
+      animation-delay: 280ms;
+    }
+
+    .pd-delay-8 {
+      transition-delay: 320ms;
+      animation-delay: 320ms;
+    }
+
+    .pd-delay-9 {
+      transition-delay: 360ms;
+      animation-delay: 360ms;
+    }
+
+    .pd-delay-10 {
+      transition-delay: 400ms;
+      animation-delay: 400ms;
+    }
+
+    .pd-delay-11 {
+      transition-delay: 440ms;
+      animation-delay: 440ms;
+    }
+
+    .pd-delay-12 {
+      transition-delay: 480ms;
+      animation-delay: 480ms;
+    }
+
+    .pd-delay-13 {
+      transition-delay: 520ms;
+      animation-delay: 520ms;
+    }
+
+    .pd-delay-14 {
+      transition-delay: 560ms;
+      animation-delay: 560ms;
+    }
+
+    .pd-delay-15 {
+      transition-delay: 600ms;
+      animation-delay: 600ms;
+    }
+
+    .pd-delay-16 {
+      transition-delay: 640ms;
+      animation-delay: 640ms;
+    }
+
+    .pd-delay-17 {
+      transition-delay: 680ms;
+      animation-delay: 680ms;
+    }
+
+    .pd-delay-18 {
+      transition-delay: 720ms;
+      animation-delay: 720ms;
+    }
+
+    .pd-delay-19 {
+      transition-delay: 760ms;
+      animation-delay: 760ms;
+    }
+
+    .pd-delay-20 {
+      transition-delay: 800ms;
+      animation-delay: 800ms;
+    }
+
+    .pd-delay-21 {
+      transition-delay: 840ms;
+      animation-delay: 840ms;
+    }
+
+    .pd-delay-22 {
+      transition-delay: 880ms;
+      animation-delay: 880ms;
+    }
+
+    .pd-delay-23 {
+      transition-delay: 920ms;
+      animation-delay: 920ms;
+    }
+
+    .pd-delay-24 {
+      transition-delay: 960ms;
+      animation-delay: 960ms;
+    }
+
+    .pd-scale-1 {
+      --pd-scale: 0.965;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-2 {
+      --pd-scale: 0.970;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-3 {
+      --pd-scale: 0.975;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-4 {
+      --pd-scale: 0.980;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-5 {
+      --pd-scale: 0.985;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-6 {
+      --pd-scale: 0.990;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-7 {
+      --pd-scale: 0.995;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-8 {
+      --pd-scale: 1.000;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-9 {
+      --pd-scale: 1.005;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-scale-10 {
+      --pd-scale: 1.010;
+      transform: scale(var(--pd-scale));
+    }
+
+    .pd-radius-1 {
+      border-radius: 10px;
+    }
+
+    .pd-radius-2 {
+      border-radius: 12px;
+    }
+
+    .pd-radius-3 {
+      border-radius: 14px;
+    }
+
+    .pd-radius-4 {
+      border-radius: 16px;
+    }
+
+    .pd-radius-5 {
+      border-radius: 18px;
+    }
+
+    .pd-radius-6 {
+      border-radius: 20px;
+    }
+
+    .pd-radius-7 {
+      border-radius: 22px;
+    }
+
+    .pd-radius-8 {
+      border-radius: 24px;
+    }
+
+    .pd-radius-9 {
+      border-radius: 26px;
+    }
+
+    .pd-radius-10 {
+      border-radius: 28px;
+    }
+
+    .pd-radius-11 {
+      border-radius: 30px;
+    }
+
+    .pd-radius-12 {
+      border-radius: 32px;
+    }
+
+    .pd-radius-13 {
+      border-radius: 34px;
+    }
+
+    .pd-radius-14 {
+      border-radius: 36px;
+    }
+
+    .pd-radius-15 {
+      border-radius: 38px;
+    }
+
+    .pd-radius-16 {
+      border-radius: 40px;
+    }
+
+    .pd-radius-17 {
+      border-radius: 42px;
+    }
+
+    .pd-radius-18 {
+      border-radius: 44px;
+    }
+
+    .pd-radius-19 {
+      border-radius: 46px;
+    }
+
+    .pd-radius-20 {
+      border-radius: 48px;
+    }
+
+    .pd-blur-1 {
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .pd-blur-2 {
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .pd-blur-3 {
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .pd-blur-4 {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .pd-blur-5 {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .pd-blur-6 {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .pd-blur-7 {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .pd-blur-8 {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .pd-blur-9 {
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .pd-blur-10 {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .pd-blur-11 {
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .pd-blur-12 {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .pd-blur-13 {
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+    }
+
+    .pd-blur-14 {
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+    }
+
+    .pd-blur-15 {
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+    }
+
+    .pd-blur-16 {
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+    }
+
+    .pd-blur-17 {
+      backdrop-filter: blur(34px);
+      -webkit-backdrop-filter: blur(34px);
+    }
+
+    .pd-blur-18 {
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+    }
+
+    .pd-blur-19 {
+      backdrop-filter: blur(38px);
+      -webkit-backdrop-filter: blur(38px);
+    }
+
+    .pd-blur-20 {
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+    }
+
+    .pd-fade-up {
+      animation: pd-fade-up .7s var(--pd-ease) both;
+    }
+
+    .pd-fade-down {
+      animation: pd-fade-down .7s var(--pd-ease) both;
+    }
+
+    .pd-fade-scale {
+      animation: pd-fade-scale .7s var(--pd-ease) both;
+    }
+
+    .pd-slide-right {
+      animation: pd-slide-right .7s var(--pd-ease) both;
+    }
+
+    .pd-slide-left {
+      animation: pd-slide-left .7s var(--pd-ease) both;
+    }
+
+    .pd-pop {
+      animation: pd-pop .6s var(--pd-ease) both;
+    }
+
+    .pd-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pd-shimmer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-120%);
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .12), transparent);
+      animation: pd-shimmer 2.6s infinite;
+      pointer-events: none;
+    }
+
+    .pd-float {
+      animation: pd-float 5s ease-in-out infinite;
+    }
+
+    .pd-breathe {
+      animation: pd-breathe 3.2s ease-in-out infinite;
+    }
+
+    .pd-spin-slow {
+      animation: pd-spin-slow 14s linear infinite;
+    }
+
+    .pd-gradient-flow {
+      background-size: 220% 220%;
+      animation: pd-gradient-flow 7s ease infinite;
+    }
+
+    @keyframes pd-fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pd-fade-down {
+      from {
+        opacity: 0;
+        transform: translateY(-20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pd-fade-scale {
+      from {
+        opacity: 0;
+        transform: scale(.95)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pd-slide-right {
+      from {
+        opacity: 0;
+        transform: translateX(-24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pd-slide-left {
+      from {
+        opacity: 0;
+        transform: translateX(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes pd-pop {
+      0% {
+        opacity: 0;
+        transform: scale(.82)
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1.035)
+      }
+
+      100% {
+        transform: scale(1)
+      }
+    }
+
+    @keyframes pd-shimmer {
+
+      55%,
+      100% {
+        transform: translateX(120%)
+      }
+    }
+
+    @keyframes pd-float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-8px)
+      }
+    }
+
+    @keyframes pd-breathe {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .8
+      }
+
+      50% {
+        transform: scale(1.03);
+        opacity: 1
+      }
+    }
+
+    @keyframes pd-spin-slow {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes pd-gradient-flow {
+
+      0%,
+      100% {
+        background-position: 0% 50%
+      }
+
+      50% {
+        background-position: 100% 50%
+      }
+    }
+
+    /* DESIGNER TOKEN GROUP 01 — typography */
+    .pd-token-01 {
+      --pd-token-index: 1;
+    }
+
+    /* DESIGNER TOKEN GROUP 02 — spacing */
+    .pd-token-02 {
+      --pd-token-index: 2;
+    }
+
+    /* DESIGNER TOKEN GROUP 03 — motion */
+    .pd-token-03 {
+      --pd-token-index: 3;
+    }
+
+    /* DESIGNER TOKEN GROUP 04 — navigation */
+    .pd-token-04 {
+      --pd-token-index: 4;
+    }
+
+    /* DESIGNER TOKEN GROUP 05 — cards */
+    .pd-token-05 {
+      --pd-token-index: 5;
+    }
+
+    /* DESIGNER TOKEN GROUP 06 — forms */
+    .pd-token-06 {
+      --pd-token-index: 6;
+    }
+
+    /* DESIGNER TOKEN GROUP 07 — wallet */
+    .pd-token-07 {
+      --pd-token-index: 7;
+    }
+
+    /* DESIGNER TOKEN GROUP 08 — profile */
+    .pd-token-08 {
+      --pd-token-index: 8;
+    }
+
+    /* DESIGNER TOKEN GROUP 09 — admin */
+    .pd-token-09 {
+      --pd-token-index: 9;
+    }
+
+    /* DESIGNER TOKEN GROUP 10 — surfaces */
+    .pd-token-10 {
+      --pd-token-index: 10;
+    }
+
+    /* DESIGNER TOKEN GROUP 11 — typography */
+    .pd-token-11 {
+      --pd-token-index: 11;
+    }
+
+    /* DESIGNER TOKEN GROUP 12 — spacing */
+    .pd-token-12 {
+      --pd-token-index: 12;
+    }
+
+    /* DESIGNER TOKEN GROUP 13 — motion */
+    .pd-token-13 {
+      --pd-token-index: 13;
+    }
+
+    /* DESIGNER TOKEN GROUP 14 — navigation */
+    .pd-token-14 {
+      --pd-token-index: 14;
+    }
+
+    /* DESIGNER TOKEN GROUP 15 — cards */
+    .pd-token-15 {
+      --pd-token-index: 15;
+    }
+
+    /* DESIGNER TOKEN GROUP 16 — forms */
+    .pd-token-16 {
+      --pd-token-index: 16;
+    }
+
+    /* DESIGNER TOKEN GROUP 17 — wallet */
+    .pd-token-17 {
+      --pd-token-index: 17;
+    }
+
+    /* DESIGNER TOKEN GROUP 18 — profile */
+    .pd-token-18 {
+      --pd-token-index: 18;
+    }
+
+    /* DESIGNER TOKEN GROUP 19 — admin */
+    .pd-token-19 {
+      --pd-token-index: 19;
+    }
+
+    /* DESIGNER TOKEN GROUP 20 — surfaces */
+    .pd-token-20 {
+      --pd-token-index: 20;
+    }
+
+    /* DESIGNER TOKEN GROUP 21 — typography */
+    .pd-token-21 {
+      --pd-token-index: 21;
+    }
+
+    /* DESIGNER TOKEN GROUP 22 — spacing */
+    .pd-token-22 {
+      --pd-token-index: 22;
+    }
+
+    /* DESIGNER TOKEN GROUP 23 — motion */
+    .pd-token-23 {
+      --pd-token-index: 23;
+    }
+
+    /* DESIGNER TOKEN GROUP 24 — navigation */
+    .pd-token-24 {
+      --pd-token-index: 24;
+    }
+
+    /* DESIGNER TOKEN GROUP 25 — cards */
+    .pd-token-25 {
+      --pd-token-index: 25;
+    }
+
+    /* DESIGNER TOKEN GROUP 26 — forms */
+    .pd-token-26 {
+      --pd-token-index: 26;
+    }
+
+    /* DESIGNER TOKEN GROUP 27 — wallet */
+    .pd-token-27 {
+      --pd-token-index: 27;
+    }
+
+    /* DESIGNER TOKEN GROUP 28 — profile */
+    .pd-token-28 {
+      --pd-token-index: 28;
+    }
+
+    /* DESIGNER TOKEN GROUP 29 — admin */
+    .pd-token-29 {
+      --pd-token-index: 29;
+    }
+
+    /* DESIGNER TOKEN GROUP 30 — surfaces */
+    .pd-token-30 {
+      --pd-token-index: 30;
+    }
+  

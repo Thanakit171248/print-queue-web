@@ -1,0 +1,78 @@
+
+/* PrintDekD v21: the active view is exclusive. This must override the earlier #view-landing display:flex!important. */
+main > section[id^="view-"].hidden,
+main > section[id^="view-"][hidden],
+#view-landing.hidden, #view-auth.hidden, #view-dashboard.hidden,
+#view-wallet.hidden, #view-admin.hidden, #view-help.hidden,
+#view-landing[hidden], #view-auth[hidden], #view-dashboard[hidden],
+#view-wallet[hidden], #view-admin[hidden], #view-help[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+main > section[id^="view-"]:not(.hidden):not([hidden]) {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto;
+  animation: pd-v21-view-enter .24s cubic-bezier(.2,.8,.2,1) both;
+}
+#view-landing:not(.hidden):not([hidden]) {
+  display: flex !important;
+  flex-direction: column !important;
+}
+@keyframes pd-v21-view-enter {
+  from { opacity: .0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Friendly Thai typography: Mitr adds rounded character to headings; Kanit stays for compact, readable UI copy. */
+html, body, button, input, select, textarea {
+  font-family: "Kanit", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4,
+.pd17-hero-copy h1, .pd17-hero-copy h2,
+#pd19-home-order-title,
+.profile-shell h1, .profile-shell h2,
+.pd-help-hero h1, .pd-help-section h2 {
+  font-family: "Mitr", "Kanit", "Noto Sans Thai", sans-serif !important;
+  letter-spacing: -.018em;
+  line-height: 1.28;
+  font-synthesis: none;
+  text-wrap: balance;
+}
+#view-dashboard h1, #view-wallet h1, #view-admin h1 { line-height: 1.28 !important; }
+#view-dashboard label, #view-wallet label, #view-admin label { line-height: 1.55; }
+#view-dashboard small, #view-wallet small, #view-admin small { line-height: 1.5; }
+
+/* Single destination navigation and scroll position. */
+main > section[id^="view-"] { width: 100%; min-width: 0; }
+main > section[id^="view-"] :focus-visible { scroll-margin-top: 90px; }
+.pd-dock-button, .nav-link, .apple-menu-item { -webkit-tap-highlight-color: transparent; }
+.pd-dock-button:active, .nav-link:active { transform: scale(.98); }
+
+/* Readable touch targets and predictable layout across mobile, iPad, notebook and desktop. */
+@media (max-width: 767px) {
+  main > section[id^="view-"]:not(.hidden):not([hidden]) { animation-duration: .18s; }
+  #view-dashboard, #view-wallet, #view-help { padding-top: 20px !important; }
+  #view-dashboard h1, #view-wallet h1, #view-help h1 { font-size: clamp(26px, 7vw, 36px) !important; }
+  #view-dashboard h2, #view-wallet h2, #view-help h2 { font-size: clamp(21px, 5.8vw, 29px) !important; }
+  #view-dashboard label, #view-wallet label { font-size: 14px !important; }
+  #view-dashboard .ui-input, #view-wallet .ui-input,
+  #view-dashboard input, #view-dashboard select, #view-dashboard textarea,
+  #view-wallet input, #view-wallet select, #view-wallet textarea { font-size: 16px !important; }
+  #pd19-address-card .pd19-address-grid-two { grid-template-columns: minmax(0,1fr) !important; }
+  #apple-tab-menu .apple-menu-item { grid-template-columns: 42px minmax(0,1fr) !important; }
+  #apple-tab-menu .apple-menu-item .menu-title { line-height: 1.35 !important; }
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  #view-dashboard, #view-wallet { padding-left: 22px !important; padding-right: 22px !important; }
+}
+@media (min-width: 1101px) {
+  #view-dashboard, #view-wallet, #view-admin { margin-inline: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main > section[id^="view-"]:not(.hidden):not([hidden]) { animation: none !important; }
+}

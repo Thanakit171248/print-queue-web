@@ -1,0 +1,207 @@
+
+/* PrintDekD Pro v23 — tap-to-select location menus; no search field or native datalist popup. */
+#pd19-address-card .pd20-select-shell {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  width: 100%;
+}
+#pd19-address-card .pd20-select-shell:focus-within,
+#pd19-address-card .pd20-select-shell.is-open { z-index: 70; }
+#pd19-address-card .pd20-select-shell .pd19-address-field { width: 100%; }
+#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"] {
+  cursor: pointer !important;
+  padding-right: 48px !important;
+  opacity: 1 !important;
+  background: linear-gradient(135deg, rgba(27, 42, 61, .96), rgba(17, 25, 37, .98)) !important;
+  border-color: rgba(105, 133, 168, .38) !important;
+  color: #f4f7fb !important;
+  font-weight: 650 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"]:hover {
+  border-color: rgba(68, 155, 255, .72) !important;
+  background: linear-gradient(135deg, rgba(31, 50, 73, .98), rgba(18, 30, 45, .99)) !important;
+}
+#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"]:focus {
+  border-color: #2789ff !important;
+  box-shadow: 0 0 0 4px rgba(39, 137, 255, .16), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+#pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="true"] {
+  cursor: not-allowed !important;
+  opacity: .56 !important;
+}
+#pd19-address-card .pd20-select-shell::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  right: 19px;
+  top: 49px;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid #8da5c3;
+  border-bottom: 2px solid #8da5c3;
+  transform: rotate(45deg);
+  transition: transform .18s ease, border-color .18s ease;
+}
+#pd19-address-card .pd20-select-shell.is-open::after {
+  transform: translateY(4px) rotate(225deg);
+  border-color: #5eaeff;
+}
+#pd19-address-card .pd20-location-menu {
+  position: absolute;
+  inset: calc(100% + 8px) 0 auto 0;
+  z-index: 90;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(101, 157, 222, .37);
+  border-radius: 18px;
+  background: linear-gradient(155deg, #131d2b, #0a1019);
+  color: #edf4fc;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, .48), 0 0 0 1px rgba(255,255,255,.025) inset, 0 0 25px rgba(31, 128, 255, .10);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transform-origin: top center;
+  animation: pd20-location-in .16s cubic-bezier(.2,.8,.2,1) both;
+}
+#pd19-address-card .pd20-location-menu[hidden] { display: none !important; }
+#pd19-address-card .pd20-location-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 2px 2px 0;
+}
+#pd19-address-card .pd20-location-menu-title {
+  margin: 0;
+  color: #f7faff;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 850;
+  letter-spacing: -.01em;
+}
+#pd19-address-card .pd20-location-menu-count {
+  flex: 0 0 auto;
+  border: 1px solid rgba(75, 150, 242, .24);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #91c6ff;
+  background: rgba(39, 137, 255, .10);
+  font: 700 10px/1.3 "Kanit", sans-serif;
+}
+#pd19-address-card .pd20-location-results {
+  display: grid;
+  gap: 5px;
+  max-height: min(360px, 46dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1px 2px 2px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(92, 148, 213, .52) rgba(255,255,255,.035);
+}
+#pd19-address-card .pd20-location-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 51px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #edf4fc;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .14s ease, border-color .14s ease, transform .14s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+#pd19-address-card .pd20-location-option:hover,
+#pd19-address-card .pd20-location-option:focus-visible {
+  outline: none;
+  border-color: rgba(72, 153, 255, .28);
+  background: linear-gradient(100deg, rgba(37, 130, 244, .20), rgba(75, 114, 187, .08));
+}
+#pd19-address-card .pd20-location-option:active { transform: scale(.995); }
+#pd19-address-card .pd20-location-option-main { min-width: 0; flex: 1 1 auto; }
+#pd19-address-card .pd20-location-option-th {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #f5f8fe;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+#pd19-address-card .pd20-location-option-en {
+  display: block;
+  margin-top: 1px;
+  overflow-wrap: anywhere;
+  color: #9aafc7;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 450;
+}
+#pd19-address-card .pd20-location-option-arrow {
+  flex: 0 0 auto;
+  color: #709ac5;
+  font-size: 20px;
+  line-height: 1;
+  transition: transform .14s ease, color .14s ease;
+}
+#pd19-address-card .pd20-location-option:hover .pd20-location-option-arrow { color: #77baff; transform: translateX(2px); }
+#pd19-address-card .pd20-location-empty {
+  padding: 18px 10px;
+  color: #a9b8ca;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+#pd19-address-card .pd20-location-foot {
+  padding: 8px 3px 0;
+  border-top: 1px solid rgba(132, 163, 199, .13);
+  color: #869bb4;
+  font-size: 10px;
+  line-height: 1.5;
+}
+@keyframes pd20-location-in {
+  from { opacity: 0; transform: translateY(-4px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+html:not(.dark) #pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="false"] {
+  background: linear-gradient(135deg, #fff, #f3f7fc) !important;
+  border-color: #cdd9e8 !important;
+  color: #182538 !important;
+}
+html:not(.dark) #pd19-address-card .pd20-select-shell .pd19-address-field input[readonly][aria-disabled="true"] {
+  background: #e8edf4 !important;
+  color: #78879b !important;
+}
+html:not(.dark) #pd19-address-card .pd20-location-menu {
+  background: linear-gradient(155deg, #ffffff, #f1f6fc);
+  color: #17283d;
+  border-color: rgba(97, 135, 181, .34);
+  box-shadow: 0 22px 50px rgba(37, 57, 83, .22), 0 0 0 1px rgba(255,255,255,.8) inset;
+}
+html:not(.dark) #pd19-address-card .pd20-location-menu-title,
+html:not(.dark) #pd19-address-card .pd20-location-option-th { color: #17283d; }
+html:not(.dark) #pd19-address-card .pd20-location-option-en,
+html:not(.dark) #pd19-address-card .pd20-location-empty,
+html:not(.dark) #pd19-address-card .pd20-location-foot { color: #657890 !important; }
+html:not(.dark) #pd19-address-card .pd20-location-option:hover,
+html:not(.dark) #pd19-address-card .pd20-location-option:focus-visible {
+  background: linear-gradient(100deg, rgba(37,130,244,.10), rgba(75,114,187,.04));
+  border-color: rgba(37,130,244,.23);
+}
+@media (max-width: 640px) {
+  #pd19-address-card .pd20-location-menu { padding: 10px; border-radius: 15px; }
+  #pd19-address-card .pd20-location-results { max-height: min(320px, 44dvh); }
+  #pd19-address-card .pd20-location-option { min-height: 52px; padding: 10px 12px; touch-action: manipulation; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pd19-address-card .pd20-location-menu,
+  #pd19-address-card .pd20-location-option,
+  #pd19-address-card .pd20-select-shell::after { animation: none !important; transition: none !important; }
+}

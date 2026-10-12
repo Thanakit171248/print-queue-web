@@ -1,0 +1,202 @@
+    /* Wallet / profile / admin premium surfaces */
+    #view-wallet,
+    #view-dashboard,
+    #view-admin {
+      width: min(var(--pd-max), 100%) !important;
+      padding-left: clamp(18px, 4vw, 60px) !important;
+      padding-right: clamp(18px, 4vw, 60px) !important;
+      padding-top: clamp(38px, 6vw, 78px) !important;
+    }
+
+    #view-wallet .ui-panel,
+    #view-dashboard .ui-panel,
+    #view-admin .ui-panel {
+      border-radius: 30px !important;
+      border-color: var(--pd-stroke) !important;
+      background: var(--pd-surface-0) !important;
+      box-shadow: var(--pd-shadow) !important;
+    }
+
+    #view-wallet h1,
+    #view-wallet h2,
+    #view-dashboard h1,
+    #view-dashboard h2,
+    #view-admin h1,
+    #view-admin h2 {
+      font-size: clamp(32px, 4.2vw, 62px);
+      letter-spacing: -.055em;
+      line-height: .98;
+    }
+
+    #view-wallet .topup-pkg-btn {
+      min-height: 100px !important;
+      border-radius: 22px !important;
+      border-color: var(--pd-stroke) !important;
+      background: var(--pd-surface-0) !important;
+      transition: transform .35s var(--pd-ease), border-color .25s ease, background .25s ease, box-shadow .35s ease !important;
+    }
+
+    #view-wallet .topup-pkg-btn:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .22) !important;
+    }
+
+    #view-wallet .topup-pkg-btn:has(input:checked) {
+      border-color: rgba(10, 132, 255, .42) !important;
+      background: rgba(10, 132, 255, .10) !important;
+      box-shadow: inset 0 0 0 1px rgba(10, 132, 255, .12), 0 22px 70px rgba(10, 132, 255, .10) !important;
+    }
+
+    .profile-shell {
+      width: min(980px, 100%) !important;
+      padding: clamp(18px, 3vw, 32px) !important;
+      border-radius: 34px !important;
+      border: 1px solid var(--pd-stroke) !important;
+      background: rgba(14, 16, 21, .92) !important;
+      box-shadow: var(--pd-shadow-deep) !important;
+      backdrop-filter: blur(34px) saturate(135%);
+      -webkit-backdrop-filter: blur(34px) saturate(135%);
+    }
+
+    html:not(.dark) .profile-shell {
+      background: rgba(255, 255, 255, .94) !important;
+    }
+
+    .profile-hero {
+      min-height: 190px;
+      padding: 24px !important;
+      border-radius: 28px !important;
+      border-color: var(--pd-stroke) !important;
+      background:
+        radial-gradient(420px 200px at 10% 0%, rgba(10, 132, 255, .14), transparent 70%),
+        rgba(255, 255, 255, .035) !important;
+    }
+
+    html:not(.dark) .profile-hero {
+      background: radial-gradient(420px 200px at 10% 0%, rgba(10, 132, 255, .10), transparent 70%), rgba(0, 0, 0, .025) !important;
+    }
+
+    .profile-avatar-xl {
+      width: 126px !important;
+      height: 126px !important;
+      border-radius: 36px !important;
+      border: 4px solid rgba(255, 255, 255, .12) !important;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, .24) !important;
+    }
+
+    .security-card {
+      border-color: rgba(10, 132, 255, .15) !important;
+      border-radius: 24px !important;
+      background: linear-gradient(145deg, rgba(10, 132, 255, .075), rgba(139, 92, 246, .025)) !important;
+    }
+
+    /* Forms: larger, calmer, easier to scan */
+    #view-auth {
+      width: min(720px, 100%) !important;
+      padding-top: clamp(60px, 10vw, 130px) !important;
+      padding-bottom: 100px !important;
+    }
+
+    #view-auth>.ui-panel {
+      padding: clamp(24px, 5vw, 52px) !important;
+      border-radius: 34px !important;
+      background: var(--pd-surface-0) !important;
+    }
+
+    #view-auth label {
+      font-size: 12px !important;
+      font-weight: 850 !important;
+      margin-bottom: 8px !important;
+    }
+
+    #view-auth .ui-input {
+      min-height: 56px !important;
+      border-radius: 17px !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      font-size: 14px !important;
+    }
+
+    #view-auth form button[type="submit"] {
+      min-height: 56px !important;
+      border-radius: 17px !important;
+      font-size: 14px !important;
+    }
+
+    /* Modal language */
+    #custom-modal>div,
+    #queue-detail-modal>div,
+    #slip-preview-modal>div {
+      border-radius: 30px !important;
+      border: 1px solid var(--pd-stroke) !important;
+      background: rgba(15, 17, 22, .94) !important;
+      box-shadow: 0 45px 140px rgba(0, 0, 0, .52) !important;
+      backdrop-filter: blur(30px) saturate(135%);
+    }
+
+    html:not(.dark) #custom-modal>div,
+    html:not(.dark) #queue-detail-modal>div,
+    html:not(.dark) #slip-preview-modal>div {
+      background: rgba(255, 255, 255, .95) !important;
+    }
+
+    /* Tables / admin */
+    #view-admin .overflow-x-auto {
+      border-color: var(--pd-stroke) !important;
+      border-radius: 22px !important;
+      background: var(--pd-surface-0);
+    }
+
+    #view-admin table {
+      min-width: 980px !important;
+    }
+
+    #view-admin th {
+      padding: 14px 16px !important;
+      color: var(--pd-muted) !important;
+      background: rgba(255, 255, 255, .025);
+      font-size: 10px !important;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    #view-admin td {
+      padding: 15px 16px !important;
+      font-size: 12px !important;
+      border-color: var(--pd-stroke) !important;
+    }
+
+    /* Buttons globally */
+    button,
+    a,
+    input,
+    select,
+    textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      transition-property: transform, background, border-color, color, box-shadow, opacity;
+    }
+
+    button:active:not(:disabled) {
+      transition-duration: .08s;
+    }
+
+    .bg-blue-600 {
+      background-color: #0a84ff !important;
+      box-shadow: 0 10px 30px rgba(10, 132, 255, .18);
+    }
+
+    .bg-blue-600:hover {
+      background-color: #1b91ff !important;
+    }
+
+    .rounded-xl {
+      border-radius: 15px !important;
+    }
+
+    .rounded-2xl {
+      border-radius: 18px !important;
+    }
+

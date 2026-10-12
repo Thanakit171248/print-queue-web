@@ -1,0 +1,497 @@
+
+    /* PrintDekD Pro v19 — accessible delivery hierarchy and consistent package selection. */
+    :root {
+      --pd19-gap: clamp(12px, 2vw, 20px)
+    }
+
+    #view-dashboard #delivery-address-box {
+      padding: clamp(14px, 2.5vw, 22px) !important;
+      border-radius: 24px !important;
+    }
+
+    #view-dashboard #delivery-address-box>p:first-child {
+      font-size: 16px !important;
+      line-height: 1.5 !important;
+      margin-bottom: 14px !important;
+    }
+
+    .pd19-address-card {
+      display: grid;
+      gap: 16px;
+      padding: clamp(14px, 2.5vw, 22px);
+      border: 1px solid var(--pd18-border, rgba(148, 163, 184, .24));
+      border-radius: 22px;
+      background: var(--pd18-surface, rgba(255, 255, 255, .04));
+      color: var(--pd18-ink, var(--text-main));
+      min-width: 0;
+    }
+
+    .pd19-address-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .pd19-address-title-icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 14px;
+      color: #1682ff;
+      background: rgba(8, 124, 255, .12);
+      border: 1px solid rgba(8, 124, 255, .18);
+    }
+
+    .pd19-address-title-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .pd19-address-title strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 900;
+    }
+
+    .pd19-address-title small {
+      display: block;
+      margin-top: 3px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--pd18-muted, var(--text-sub));
+    }
+
+    .pd19-address-grid {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .pd19-address-grid-two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pd19-address-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+      color: var(--pd18-ink, var(--text-main));
+    }
+
+    .pd19-address-field>span {
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .pd19-address-field>span b {
+      color: #ff627e;
+      font-weight: 900;
+    }
+
+    .pd19-address-field input {
+      display: block;
+      min-width: 0;
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 14px !important;
+      border: 1px solid var(--pd18-border, #334155) !important;
+      border-radius: 14px !important;
+      background: var(--pd18-surface-soft, #111822) !important;
+      color: var(--pd18-ink, var(--input-text)) !important;
+      font-size: 15px !important;
+      line-height: 1.45 !important;
+      box-shadow: none;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+    .pd19-address-field input::placeholder {
+      color: var(--pd18-muted, #98a5b7) !important;
+      opacity: 1;
+    }
+
+    .pd19-address-field input:focus {
+      outline: none;
+      border-color: #0a84ff !important;
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, .15) !important;
+    }
+
+    .pd19-address-field input[readonly] {
+      cursor: pointer;
+      opacity: .86;
+    }
+
+    .pd19-address-field input[aria-invalid="true"] {
+      border-color: #ef476f !important;
+      box-shadow: 0 0 0 3px rgba(239, 71, 111, .12) !important;
+    }
+
+    .pd19-field-full {
+      grid-column: 1/-1;
+    }
+
+    .pd19-address-divider {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      padding-top: 4px;
+      border-top: 1px solid var(--pd18-border, rgba(148, 163, 184, .2));
+    }
+
+    .pd19-address-divider span {
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 900;
+    }
+
+    .pd19-address-divider small {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--pd18-muted, var(--text-sub));
+    }
+
+    .pd19-address-extra {
+      padding-top: 2px;
+    }
+
+    .pd19-address-message {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 12px 13px;
+      border: 1px solid rgba(8, 124, 255, .18);
+      border-radius: 14px;
+      background: rgba(8, 124, 255, .07);
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--pd18-ink, var(--text-main));
+      overflow-wrap: anywhere;
+    }
+
+    .pd19-address-message svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+      color: #2687f9;
+    }
+
+    .pd19-address-message[data-state="loading"] {
+      border-color: rgba(217, 154, 19, .3);
+      background: rgba(245, 158, 11, .08);
+    }
+
+    .pd19-address-message[data-state="error"] {
+      border-color: rgba(239, 71, 111, .28);
+      background: rgba(239, 71, 111, .08);
+    }
+
+    .pd19-address-message[data-state="success"] {
+      border-color: rgba(19, 138, 91, .28);
+      background: rgba(19, 138, 91, .08);
+    }
+
+    .pd19-address-summary {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: rgba(19, 138, 91, .08);
+      border: 1px solid rgba(19, 138, 91, .2);
+      color: var(--pd18-ink, var(--text-main));
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .pd19-address-summary[hidden] {
+      display: none !important;
+    }
+
+    .pd19-address-summary svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 2px;
+      color: #22a06b;
+    }
+
+    .pd19-address-source {
+      margin: 0;
+      color: var(--pd18-muted, var(--text-sub));
+      font-size: 11px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .pd19-address-source a {
+      color: #1682ff;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 800;
+    }
+
+    /* Stable selected-state styling: all top-up amounts get identical text rules. */
+    #view-wallet .topup-pkg-btn {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      outline-offset: 3px;
+    }
+
+    #view-wallet .topup-pkg-btn.is-selected,
+    #view-wallet .topup-pkg-btn[aria-pressed="true"] {
+      border: 2px solid #e9b949 !important;
+      background: rgba(245, 158, 11, .14) !important;
+      box-shadow: inset 0 0 0 1px rgba(245, 158, 11, .12), 0 10px 26px rgba(245, 158, 11, .09) !important;
+    }
+
+    html:not(.dark) #view-wallet .topup-pkg-btn.is-selected,
+    html:not(.dark) #view-wallet .topup-pkg-btn[aria-pressed="true"] {
+      background: #fff5dc !important;
+      border-color: #c98c00 !important;
+    }
+
+    #view-wallet .topup-pkg-btn:not(.is-selected):not([aria-pressed="true"]) {
+      border: 1px solid var(--pd18-border, rgba(148, 163, 184, .23)) !important;
+      background: var(--pd18-surface-soft, rgba(148, 163, 184, .06)) !important;
+      box-shadow: none !important;
+    }
+
+    #view-wallet .topup-pkg-btn:not(.is-selected):not([aria-pressed="true"]):hover {
+      border-color: rgba(233, 185, 73, .66) !important;
+      background: rgba(245, 158, 11, .055) !important;
+    }
+
+    #view-wallet .topup-pkg-btn.is-selected span:first-child,
+    #view-wallet .topup-pkg-btn[aria-pressed="true"] span:first-child {
+      color: #ffd36a !important;
+    }
+
+    #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),
+    #view-wallet .topup-pkg-btn[aria-pressed="true"] span:nth-child(2) {
+      color: #f4c86e !important;
+      opacity: 1 !important;
+    }
+
+    html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:first-child,
+    html:not(.dark) #view-wallet .topup-pkg-btn[aria-pressed="true"] span:first-child {
+      color: #805400 !important;
+    }
+
+    html:not(.dark) #view-wallet .topup-pkg-btn.is-selected span:nth-child(2),
+    html:not(.dark) #view-wallet .topup-pkg-btn[aria-pressed="true"] span:nth-child(2) {
+      color: #916719 !important;
+    }
+
+    #view-wallet .topup-pkg-btn:not(.is-selected):not([aria-pressed="true"]) span:first-child {
+      color: var(--pd18-ink, var(--text-main)) !important;
+    }
+
+    #view-wallet .topup-pkg-btn:not(.is-selected):not([aria-pressed="true"]) span:nth-child(2) {
+      color: var(--pd18-muted, var(--text-sub)) !important;
+      opacity: 1 !important;
+    }
+
+    #view-wallet .topup-pkg-btn .pd19-selected-check {
+      position: absolute;
+      top: 9px;
+      right: 10px;
+      width: 19px;
+      height: 19px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e9b949;
+      color: #1a1a1a;
+    }
+
+    #view-wallet .topup-pkg-btn .pd19-selected-check svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 3;
+    }
+
+    #view-wallet .topup-pkg-btn:not(.is-selected) .pd19-selected-check {
+      display: none;
+    }
+
+    /* The lower landing CTA becomes a scan-friendly order flow summary. */
+    .pd19-home-order {
+      padding: clamp(28px, 5vw, 64px) !important;
+    }
+
+    .pd19-home-order h1,
+    .pd19-home-order h2 {
+      line-height: 1.18 !important;
+      max-width: 100% !important;
+      text-wrap: balance;
+    }
+
+    .pd19-home-order>p {
+      max-width: 66ch !important;
+    }
+
+    .pd19-home-order-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      width: min(100%, 1060px);
+      margin: clamp(22px, 3vw, 34px) auto 0;
+      text-align: left;
+    }
+
+    .pd19-home-order-steps>div {
+      position: relative;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      align-content: start;
+      align-items: center;
+      gap: 5px 9px;
+      min-width: 0;
+      min-height: 94px;
+      padding: 14px;
+      border: 1px solid rgba(148, 163, 184, .22);
+      border-radius: 17px;
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .pd19-home-order-steps>div>span {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(10, 132, 255, .32);
+      border-radius: 10px;
+      background: rgba(10, 132, 255, .1);
+      color: #78baff;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .pd19-home-order-steps>div>svg {
+      width: 20px;
+      height: 20px;
+      color: #8fc4ff;
+    }
+
+    .pd19-home-order-steps>div>strong {
+      grid-column: 1/-1;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--pd-white, #f8fafc);
+      font-weight: 900;
+    }
+
+    .pd19-home-order-steps>div>small {
+      grid-column: 1/-1;
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--pd-muted, #a8b1be);
+    }
+
+    .pd19-home-order .pd-final-actions {
+      margin-top: 24px;
+    }
+
+    .pd19-home-order .pd-primary-cta {
+      min-height: 52px;
+    }
+
+    @media(max-width:760px) {
+      #view-dashboard #delivery-address-box {
+        padding: 10px !important;
+      }
+
+      .pd19-address-grid-two {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 11px;
+      }
+
+      .pd19-field-full {
+        grid-column: auto;
+      }
+
+      .pd19-address-field input {
+        min-height: 52px;
+        font-size: 16px !important;
+      }
+
+      .pd19-address-title strong {
+        font-size: 16px;
+      }
+
+      .pd19-address-title small {
+        font-size: 12px;
+      }
+
+      .pd19-address-divider {
+        display: grid;
+      }
+
+      .pd19-address-message,
+      .pd19-address-summary {
+        font-size: 13px;
+      }
+
+      .pd19-home-order-steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .pd19-home-order-steps>div {
+        min-height: 100px;
+        padding: 12px;
+      }
+
+      #view-wallet .topup-pkg-btn {
+        min-height: 92px !important;
+        padding: 12px 7px !important;
+      }
+
+      #view-wallet .topup-pkg-btn span:first-child {
+        font-size: 18px !important;
+      }
+
+      #view-wallet .topup-pkg-btn span:nth-child(2) {
+        font-size: 11px !important;
+      }
+    }
+
+    @media(max-width:390px) {
+      .pd19-home-order-steps {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .pd19-home-order-steps>div {
+        grid-template-columns: 34px minmax(0, 1fr);
+        min-height: 72px;
+      }
+
+      .pd19-home-order-steps>div>strong,
+      .pd19-home-order-steps>div>small {
+        grid-column: 2;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      #view-wallet .topup-pkg-btn,
+      .pd19-address-field input {
+        transition: none !important;
+      }
+
+      .pd19-home-order-steps>div {
+        animation: none !important;
+      }
+    }
+  

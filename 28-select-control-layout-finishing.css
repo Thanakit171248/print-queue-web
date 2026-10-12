@@ -1,0 +1,18 @@
+
+/* A larger comfortable address workspace and stacking order for the custom dropdowns. */
+#pd19-address-card { padding: clamp(18px, 3vw, 30px) !important; gap: 20px !important; }
+#pd19-address-card .pd19-address-grid { gap: clamp(12px, 1.7vw, 18px) !important; }
+#pd19-address-card .pd19-address-field > span { font-size: 14px !important; line-height: 1.55 !important; }
+#pd19-address-card .pd19-address-field input { min-height: 54px !important; padding: 13px 16px !important; font-size: 16px !important; }
+#pd19-address-card .pd20-select-shell .pd19-address-field input { padding-right: 48px !important; }
+#pd19-address-card .pd19-address-title strong { font-size: 19px !important; }
+#pd19-address-card .pd19-address-title small { font-size: 13px !important; line-height: 1.7 !important; }
+#pd19-address-card .pd19-address-message, #pd19-address-card .pd19-address-summary { font-size: 14px !important; line-height: 1.7 !important; }
+@media (min-width: 1200px) {
+  #pd19-address-card .pd19-address-grid-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #pd19-address-card .pd19-address-field input { min-height: 56px !important; }
+}
+@media (max-width: 640px) {
+  #pd19-address-card { padding: 16px !important; gap: 16px !important; }
+  #pd19-address-card .pd19-address-field input { min-height: 54px !important; font-size: 16px !important; }
+}

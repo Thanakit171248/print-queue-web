@@ -1,0 +1,215 @@
+
+  :root {
+    --pd23-ink: #0b1018;
+    --pd23-panel: #111a26;
+    --pd23-panel-raised: #172334;
+    --pd23-line: rgba(148, 163, 184, .22);
+    --pd23-blue: #1685ff;
+    --pd23-blue-soft: rgba(22, 133, 255, .12);
+    --pd23-gold: #ffbd35;
+    --pd23-radius: clamp(16px, 2vw, 26px);
+    --pd23-motion: cubic-bezier(.2, .75, .25, 1);
+  }
+
+  /* Predictable sizing and safe-area support across phone, tablet and desktop. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: 5rem; }
+  body { min-width: 320px; }
+  img, canvas, video, iframe { max-width: 100%; }
+  button, input, select, textarea { font: inherit; }
+  button, [role="button"], input[type="button"], input[type="submit"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid rgba(56, 156, 255, .9);
+    outline-offset: 3px;
+  }
+
+  /* QR payment card: amount first, QR as the visual anchor, payment details together. */
+  .pd23-payment-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
+    grid-template-areas: "amount qr" "details qr";
+    align-items: center;
+    gap: clamp(14px, 2.2vw, 26px) !important;
+    padding: clamp(16px, 2.5vw, 30px) !important;
+    border-radius: var(--pd23-radius) !important;
+    text-align: left;
+    background:
+      radial-gradient(ellipse at 88% 10%, rgba(245, 158, 11, .09), transparent 46%),
+      linear-gradient(145deg, rgba(30, 41, 59, .96), rgba(12, 17, 25, .98)) !important;
+    border: 1px solid rgba(245, 158, 11, .34) !important;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .16), inset 0 1px rgba(255,255,255,.025);
+    min-width: 0;
+  }
+  .pd23-payment-card > .pd23-amount {
+    grid-area: amount;
+    justify-self: stretch;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+    padding: clamp(14px, 2vw, 20px) !important;
+    border-radius: 18px !important;
+    background: rgba(245, 158, 11, .09) !important;
+    border: 1px solid rgba(245, 158, 11, .24) !important;
+    white-space: normal;
+  }
+  .pd23-payment-card .pd23-amount-label {
+    color: #cbd5e1;
+    font-size: clamp(12px, 1.15vw, 14px);
+    font-weight: 700;
+    letter-spacing: .015em;
+  }
+  .pd23-payment-card #topup-qr-amount {
+    display: inline-block;
+    color: #ffd166 !important;
+    font-size: clamp(28px, 3.2vw, 42px) !important;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+  }
+  .pd23-payment-card .pd23-qr {
+    grid-area: qr;
+    justify-self: center;
+    align-self: center;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 260px;
+    min-width: 0;
+    padding: 12px !important;
+    border: 4px solid rgba(255, 255, 255, .92) !important;
+    border-radius: 22px !important;
+    background: #fff !important;
+    box-shadow: 0 10px 32px rgba(0,0,0,.22);
+  }
+  .pd23-payment-card .pd23-qr img {
+    display: block;
+    width: clamp(150px, 18vw, 220px) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    image-rendering: pixelated;
+    border-radius: 8px;
+  }
+  .pd23-payment-card > .pd23-details {
+    grid-area: details;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    width: 100%;
+    padding-top: 2px;
+  }
+  .pd23-payment-card .pd23-promptpay-note {
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: #cbd5e1;
+    background: rgba(2, 6, 23, .32);
+    border: 1px solid rgba(148, 163, 184, .16);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .pd23-payment-card .pd23-promptpay-note strong { color: #ffd166; }
+  .pd23-payment-card .pd23-details button {
+    min-height: 44px;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  /* More comfortable form controls and modal sizing without changing application logic. */
+  :where(input:not([type="radio"]):not([type="checkbox"]), select, textarea) {
+    max-width: 100%;
+    min-width: 0;
+  }
+  :where(.modal, [role="dialog"], .fixed.inset-0) {
+    overscroll-behavior: contain;
+  }
+  @media (min-width: 1440px) {
+    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(220px, 260px); }
+  }
+  @media (min-width: 641px) and (max-width: 900px) {
+    .pd23-payment-card { grid-template-columns: minmax(0, 1fr) minmax(160px, 190px); gap: 14px !important; }
+    .pd23-payment-card .pd23-qr { padding: 9px !important; border-radius: 18px !important; }
+    .pd23-payment-card .pd23-qr img { width: clamp(140px, 23vw, 180px) !important; }
+  }
+  @media (max-width: 640px) {
+    .pd23-payment-card {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "amount" "qr" "details";
+      gap: 14px !important;
+      padding: 14px !important;
+      border-radius: 20px !important;
+    }
+    .pd23-payment-card > .pd23-amount { align-items: center; text-align: center; padding: 14px !important; }
+    .pd23-payment-card #topup-qr-amount { font-size: clamp(30px, 9vw, 38px) !important; }
+    .pd23-payment-card .pd23-qr { width: min(100%, 246px); padding: 10px !important; }
+    .pd23-payment-card .pd23-qr img { width: min(62vw, 218px) !important; }
+    .pd23-payment-card > .pd23-details { align-items: stretch; }
+    .pd23-payment-card .pd23-details > * { max-width: 100%; overflow-wrap: anywhere; }
+    .pd23-payment-card .pd23-details button { width: 100%; justify-content: center; }
+    input[type="file"] { max-width: 100%; font-size: 12px; }
+  }
+  @media (max-width: 380px) {
+    .pd23-payment-card { padding: 11px !important; }
+    .pd23-payment-card .pd23-qr { max-width: 214px; }
+    .pd23-payment-card .pd23-qr img { width: min(60vw, 190px) !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto !important; }
+    *, *::before, *::after { scroll-behavior: auto !important; }
+  }
+  /* Payment QR redesign v24: large, scannable QR with amount/account grouped nearby. */
+  .pd24-print-payment { grid-template-columns:minmax(0,1fr) minmax(230px,300px); grid-template-areas:"summary qr" "details qr"; align-items:stretch; gap:clamp(14px,2vw,24px); padding:clamp(16px,2.4vw,26px); border:1px solid rgba(22,133,255,.24); border-radius:24px; background:linear-gradient(145deg,rgba(22,133,255,.09),rgba(245,158,11,.055)); box-shadow:inset 0 1px rgba(255,255,255,.045); min-width:0; }
+  .pd24-print-payment.hidden { display:none !important; }
+  .pd24-print-payment:not(.hidden) { display:grid; }
+  .pd24-print-payment-summary { grid-area:summary; padding:17px 18px; border-radius:18px; background:rgba(245,158,11,.10); border:1px solid rgba(245,158,11,.26); }
+  .pd24-payment-eyebrow { display:block; color:var(--text-sub); font-weight:800; font-size:13px; line-height:1.55; }
+  .pd24-total-line { display:flex; align-items:baseline; gap:9px; margin-top:5px; color:#fbbf24; }
+  .pd24-total-line strong { font-size:clamp(32px,3.8vw,46px); font-variant-numeric:tabular-nums; letter-spacing:-.045em; line-height:1.1; overflow-wrap:anywhere; }
+  .pd24-total-line span { font-weight:900; font-size:17px; }
+  .pd24-print-payment-summary p { margin-top:8px; color:var(--text-sub); font-size:12px; line-height:1.65; }
+  .pd24-print-payment-qr { grid-area:qr; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:13px; background:#fff; border:4px solid rgba(255,255,255,.96); border-radius:23px; box-shadow:0 12px 34px rgba(0,0,0,.20); min-width:0; }
+  .pd24-print-payment-qr img { display:block; width:clamp(220px,23vw,280px) !important; max-width:100%; height:auto !important; aspect-ratio:1/1; object-fit:contain; image-rendering:pixelated; border-radius:8px; }
+  .pd24-print-payment-qr p { color:#334155; margin:0; font-size:13px; font-weight:800; text-align:center; }
+  .pd24-print-payment-details { grid-area:details; display:flex; flex-direction:column; gap:14px; min-width:0; }
+  .pd24-bank-details { display:flex; flex-direction:column; align-items:flex-start; gap:5px; padding:15px 16px; border:1px solid var(--card-border); border-radius:17px; background:var(--bg-card); }
+  .pd24-bank-details > span { color:var(--text-sub); font-size:12px; font-weight:800; }
+  .pd24-bank-details > strong { color:var(--text-main); font-size:17px; font-weight:900; }
+  .pd24-bank-details > code { color:#fbbf24; font-size:clamp(18px,2vw,23px); font-weight:900; letter-spacing:.06em; overflow-wrap:anywhere; }
+  .pd24-copy-account { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; margin-top:5px; padding:0 14px; border:1px solid rgba(245,158,11,.35); border-radius:13px; color:#fbbf24; background:rgba(245,158,11,.11); font-size:13px; font-weight:900; }
+  .pd24-slip-field { min-width:0; padding:15px; border:1px solid var(--card-border); border-radius:17px; background:var(--bg-card); }
+  .pd24-slip-field input[type="file"] { width:100%; max-width:100%; font-size:13px !important; }
+  .pd24-topup-bank-info { text-align:center; line-height:1.7; }
+  .pd23-payment-card .pd23-qr { max-width:320px; padding:13px !important; }
+  .pd23-payment-card .pd23-qr img { width:clamp(225px,24vw,285px) !important; max-width:100%; height:auto !important; aspect-ratio:1/1; }
+  @media (min-width:1440px) { .pd24-print-payment { grid-template-columns:minmax(0,1fr) minmax(250px,320px); } .pd24-print-payment-qr img { width:300px !important; } .pd23-payment-card .pd23-qr img { width:290px !important; } }
+  @media (max-width:760px) {
+    .pd24-print-payment { grid-template-columns:minmax(0,1fr); grid-template-areas:"summary" "qr" "details"; padding:14px; border-radius:20px; }
+    .pd24-print-payment-summary { text-align:center; padding:14px; } .pd24-total-line { justify-content:center; }
+    .pd24-print-payment-qr { width:min(100%,322px); justify-self:center; padding:10px; }
+    .pd24-print-payment-qr img { width:min(74vw,286px) !important; }
+    .pd24-bank-details { align-items:center; text-align:center; } .pd24-copy-account { width:100%; }
+    .pd23-payment-card { grid-template-columns:minmax(0,1fr); grid-template-areas:"amount" "qr" "details"; }
+    .pd23-payment-card .pd23-qr { width:min(100%,320px); max-width:320px; justify-self:center; }
+    .pd23-payment-card .pd23-qr img { width:min(74vw,286px) !important; } .pd24-topup-bank-info { width:100%; }
+  }
+  @media (max-width:380px) { .pd24-print-payment-qr img,.pd23-payment-card .pd23-qr img { width:min(70vw,250px) !important; } .pd24-bank-details > code { font-size:17px; } }
+
+  /* Decorative motion pauses only when hidden; active-view animations remain intact. */
+  html.pd23-tab-hidden .pd-ambient-orb,
+  html.pd23-tab-hidden .pd-ai-pulse,
+  html.pd23-tab-hidden .pd-cursor-glow,
+  html.pd23-tab-hidden .pd-live-island,
+  html.pd23-tab-hidden .pd23-ambient-motion {
+    animation-play-state: paused !important;
+  }

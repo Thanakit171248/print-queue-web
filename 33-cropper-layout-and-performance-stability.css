@@ -1,0 +1,49 @@
+
+  /* Registration avatar upload uses CSS Grid in the base layer.
+     Put the status line across both columns; flex-wrap has no effect on a grid container. */
+  #view-auth .pd-auth-avatar-upload {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    align-items: center;
+    min-width: 0;
+    gap: 12px;
+  }
+  #view-auth .pd-auth-avatar-upload img {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  #view-auth .pd-auth-avatar-copy {
+    min-width: 0;
+    width: 100%;
+  }
+  #view-auth .pd-auth-avatar-status {
+    grid-column: 1 / -1;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 2px 0 0;
+    color: var(--text-sub);
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  #view-auth .pd-auth-avatar-status::first-letter { color: #19a66a; }
+  #pd-v10-crop-modal .pd-v10-crop-shell { width: min(560px, calc(100vw - 24px)); max-height: min(880px, calc(100dvh - 24px)); overflow: auto; }
+  #pd-v10-crop-stage { touch-action: none; }
+  #pd-v10-crop-image { max-width: none; max-height: none; user-select: none; -webkit-user-drag: none; }
+  /* Prefer transform/opacity animation; avoid animating large blurred layers on every scroll. */
+  .apple-reveal, .pd-reveal-card, .pd-final-cta { filter: none !important; }
+  .ui-card, .ui-panel { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  #apple-tab-menu, #pd-ai-panel, .pd-account-popover, #pd-command-palette .pd-command-sheet, #pd-v10-crop-modal { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  @media (max-width: 900px) {
+    #apple-tab-menu, #pd-ai-panel, .pd-account-popover, #pd-command-palette .pd-command-sheet, #pd-v10-crop-modal { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .apple-reveal, .pd-reveal-card, .pd-final-cta { opacity: 1 !important; transform: none !important; filter: none !important; }
+  }
