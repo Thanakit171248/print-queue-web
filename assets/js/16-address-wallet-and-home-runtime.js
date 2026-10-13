@@ -217,14 +217,16 @@
             state.postalOptions = [zip];
             populateDatalist(ui.provinceList, state.postalProvinces);
             setEnabled(ui.province, true, 'แตะเพื่อเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์');
+            ui.province?.dispatchEvent(new Event('pd-address-options-ready'));
             if (ui.postal) ui.postal.setAttribute('aria-invalid', 'false');
             addressMessage(`รหัส ${zip} พบ ${matches.provinces.length} จังหวัดที่เป็นไปได้ • กรุณาเลือกจังหวัดที่ถูกต้อง`, 'success');
             return true;
           } catch (err) {
             if (generation !== state.postalGeneration) return false;
             state.pendingPostal = ''; state.activePostal = ''; resetAreaSelections(true);
+            if (ui.province) delete ui.province.dataset.pdOpenWhenReady;
             if (ui.postal) ui.postal.setAttribute('aria-invalid', 'true');
-            addressMessage(`${window.pdCustomerFacingMessage?.(err, 'ค้นหาที่อยู่ไม่สำเร็จ กรุณาตรวจสอบรหัสไปรษณีย์และอินเทอร์เน็ตแล้วลองใหม่') || 'ค้นหาที่อยู่ไม่สำเร็จ'} หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ`, 'error');
+            addressMessage(`${err.message || 'ค้นหาที่อยู่ไม่สำเร็จ'} • ตรวจสอบรหัสไปรษณีย์หรือเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่`, 'error');
             return false;
           } finally {
             if (generation === state.postalGeneration) state.pendingPostal = '';
@@ -326,35 +328,6 @@
           if (!ok || state.activePostal !== zip) throw new Error('postal lookup failed');
         }
       }
-
-      // Public validator used by the last-loaded secure RPC bridge. The legacy
-      // submit wrapper below was replaced by the RPC bridge, so expose only the
-      // closure-backed address validation (not the whole internal state object).
-      window.pdEnsureValidatedDeliveryAddress = async function () {
-        if (state.submitBusy) throw new Error('กำลังตรวจสอบที่อยู่/ส่งคำสั่งซื้ออยู่ กรุณารอสักครู่');
-        state.submitBusy = true;
-        try {
-          await ensureAddressReady();
-          const name = normalize($('recipient-name')?.value);
-          const phone = normalize($('recipient-phone')?.value).replace(/\D/g, '');
-          const house = normalize($('recipient-house-no')?.value);
-          const zip = normalize(ui.postal?.value);
-          if (!name) { addressMessage('กรุณากรอกชื่อ-นามสกุลผู้รับ', 'error'); $('recipient-name')?.focus(); throw new Error('กรุณากรอกชื่อ-นามสกุลผู้รับ'); }
-          if (!/^0\d{8,9}$/.test(phone)) { addressMessage('กรุณากรอกเบอร์โทรศัพท์ไทย 9–10 หลัก และขึ้นต้นด้วย 0', 'error'); $('recipient-phone')?.focus(); throw new Error('เบอร์โทรศัพท์จัดส่งไม่ถูกต้อง'); }
-          if (!house) { addressMessage('กรุณากรอกบ้านเลขที่ก่อนยืนยันจัดส่ง', 'error'); $('recipient-house-no')?.setAttribute('aria-invalid', 'true'); $('recipient-house-no')?.focus(); throw new Error('กรุณากรอกบ้านเลขที่'); }
-          $('recipient-house-no')?.removeAttribute('aria-invalid');
-          if (!/^\d{5}$/.test(zip) || state.activePostal !== zip || !state.postalSubdistricts.length) { addressMessage('กรุณากรอกรหัสไปรษณีย์ที่ตรวจสอบแล้วก่อน', 'error'); ui.postal?.focus(); throw new Error('กรุณาตรวจสอบรหัสไปรษณีย์ก่อน'); }
-          if (!state.selectedProvince || !state.postalProvinces.some(x => x.id === state.selectedProvince.id)) { addressMessage('เลือกจังหวัดจากรายการที่สัมพันธ์กับรหัสไปรษณีย์ก่อน', 'error'); ui.province?.focus(); throw new Error('กรุณาเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์'); }
-          if (!state.selectedDistrict || !state.filteredDistricts.some(x => x.id === state.selectedDistrict.id) || state.selectedDistrict.parent_id !== state.selectedProvince.id) { addressMessage('เลือกอำเภอ/เขตที่อยู่ภายในจังหวัดที่เลือกก่อน', 'error'); ui.district?.focus(); throw new Error('กรุณาเลือกอำเภอ/เขตที่อยู่ในจังหวัดที่เลือก'); }
-          if (!state.selectedSubdistrict || !state.filteredSubdistricts.some(x => x.id === state.selectedSubdistrict.id) || state.selectedSubdistrict.parent_id !== state.selectedDistrict.id || !postalMatches(state.selectedSubdistrict, zip)) { addressMessage('เลือกตำบล/แขวงที่ตรงกับอำเภอและรหัสไปรษณีย์ก่อน', 'error'); ui.subdistrict?.focus(); throw new Error('กรุณาเลือกตำบล/แขวงที่ตรงกับอำเภอและรหัสไปรษณีย์'); }
-          const address = composeAddress();
-          if (!address) { addressMessage('ที่อยู่จัดส่งยังไม่ครบ', 'error'); $('recipient-house-no')?.focus(); throw new Error('ที่อยู่จัดส่งยังไม่ครบ'); }
-          if (ui.hidden) ui.hidden.value = address;
-          updateAddressSummary();
-          addressMessage('ตรวจสอบที่อยู่ครบแล้ว กำลังส่งรายการไปยังระบบ…', 'success');
-          return { recipientName: name, phone, address };
-        } finally { state.submitBusy = false; }
-      };
       function resetAddressFields() {
         state.postalGeneration++; state.pendingPostal = '';
         resetAreaSelections(false);
@@ -384,11 +357,11 @@
         const digits = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
         if (ui.postal.value !== digits) ui.postal.value = digits;
         if (digits.length < 5) {
-          lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
+          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
           return;
         }
         postalInputTimer = setTimeout(() => {
-          lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
+          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
         }, 180);
       });
       ui.postal?.addEventListener('change', () => {
@@ -397,14 +370,35 @@
         const zip = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
         if (zip === state.activePostal && state.postalSubdistricts.length) return;
         if (zip.length === 5 && state.pendingPostal === zip && postalLookupPromise) return;
-        lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
+        lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
       });
-      ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
-      ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
+      ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
+      ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
+      ui.province?.addEventListener('click', () => {
+        if (ui.province.getAttribute('aria-disabled') !== 'true') return;
+        const zip = normalize(ui.postal?.value).replace(/\D/g, '').slice(0, 5);
+        if (!/^\d{5}$/.test(zip)) {
+          addressMessage('กรอกรหัสไปรษณีย์ 5 หลักก่อน จึงจะเลือกจังหวัดได้', 'info');
+          ui.postal?.focus();
+          return;
+        }
+        // Remember the user's intent so the branded dropdown opens as soon as data is ready.
+        ui.province.dataset.pdOpenWhenReady = 'true';
+        if (state.activePostal === zip && state.postalProvinces.length) {
+          populateDatalist(ui.provinceList, state.postalProvinces);
+          setEnabled(ui.province, true, 'แตะเพื่อเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์');
+          ui.province.dispatchEvent(new Event('pd-address-options-ready'));
+          return;
+        }
+        lookupPostal().catch(err => {
+          delete ui.province.dataset.pdOpenWhenReady;
+          addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error');
+        });
+      });
       ui.district?.addEventListener('focus', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้', 'error'); });
       ui.district?.addEventListener('click', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('กรุณากรอกรหัสไปรษณีย์และเลือกจังหวัดก่อน', 'error'); });
-      ui.district?.addEventListener('input', () => onDistrictInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
-      ui.district?.addEventListener('change', () => onDistrictInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
+      ui.district?.addEventListener('input', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
+      ui.district?.addEventListener('change', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
       ui.subdistrict?.addEventListener('focus', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('เลือกอำเภอ/เขตให้ครบก่อน จึงจะเลือกตำบล/แขวงได้', 'error'); });
       ui.subdistrict?.addEventListener('click', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('กรุณาเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตก่อน', 'error'); });
       ui.subdistrict?.addEventListener('input', onSubdistrictInput);
@@ -517,12 +511,12 @@
           const rows = unwrapRecords(payload, 'province');
           const result = { ok: rows.length >= 77, mode: 'same-origin (browser CORS not required)', path: url, httpStatus: response.status, provinceCount: rows.length, note: rows.length >= 70 ? 'proxy answered with a valid province dataset' : 'expected at least 77 provinces' };
           console.info('[PrintDekD API/CORS check]', result);
-          if (ui.message) addressMessage(result.ok ? 'ตรวจสอบข้อมูลที่อยู่เรียบร้อยแล้ว' : 'ข้อมูลพื้นที่ยังไม่ครบถ้วน กรุณาลองใหม่ภายหลัง', result.ok ? 'success' : 'error');
+          if (ui.message) addressMessage(result.ok ? `ทดสอบเส้นทางข้อมูลสำเร็จ (${rows.length} จังหวัด) · same-origin` : 'เส้นทาง API ตอบกลับ แต่จำนวนจังหวัดไม่ครบ', result.ok ? 'success' : 'error');
           return result;
         } catch (err) {
           const result = { ok: false, mode: 'same-origin (browser CORS not required)', path: url, error: err?.name === 'AbortError' ? 'หมดเวลารอ proxy' : (err?.message || String(err)) };
           console.error('[PrintDekD API/CORS check]', result);
-          if (ui.message) addressMessage('ไม่สามารถโหลดข้อมูลที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error');
+          if (ui.message) addressMessage('ทดสอบ API proxy ไม่ผ่าน: ตรวจ Vercel rewrites/Deployment ก่อน', 'error');
           return result;
         } finally { clearTimeout(timer); }
       };
