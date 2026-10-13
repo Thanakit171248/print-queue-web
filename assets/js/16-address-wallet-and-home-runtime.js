@@ -326,6 +326,35 @@
           if (!ok || state.activePostal !== zip) throw new Error('postal lookup failed');
         }
       }
+
+      // Public validator used by the last-loaded secure RPC bridge. The legacy
+      // submit wrapper below was replaced by the RPC bridge, so expose only the
+      // closure-backed address validation (not the whole internal state object).
+      window.pdEnsureValidatedDeliveryAddress = async function () {
+        if (state.submitBusy) throw new Error('กำลังตรวจสอบที่อยู่/ส่งคำสั่งซื้ออยู่ กรุณารอสักครู่');
+        state.submitBusy = true;
+        try {
+          await ensureAddressReady();
+          const name = normalize($('recipient-name')?.value);
+          const phone = normalize($('recipient-phone')?.value).replace(/\D/g, '');
+          const house = normalize($('recipient-house-no')?.value);
+          const zip = normalize(ui.postal?.value);
+          if (!name) { addressMessage('กรุณากรอกชื่อ-นามสกุลผู้รับ', 'error'); $('recipient-name')?.focus(); throw new Error('กรุณากรอกชื่อ-นามสกุลผู้รับ'); }
+          if (!/^0\d{8,9}$/.test(phone)) { addressMessage('กรุณากรอกเบอร์โทรศัพท์ไทย 9–10 หลัก และขึ้นต้นด้วย 0', 'error'); $('recipient-phone')?.focus(); throw new Error('เบอร์โทรศัพท์จัดส่งไม่ถูกต้อง'); }
+          if (!house) { addressMessage('กรุณากรอกบ้านเลขที่ก่อนยืนยันจัดส่ง', 'error'); $('recipient-house-no')?.setAttribute('aria-invalid', 'true'); $('recipient-house-no')?.focus(); throw new Error('กรุณากรอกบ้านเลขที่'); }
+          $('recipient-house-no')?.removeAttribute('aria-invalid');
+          if (!/^\d{5}$/.test(zip) || state.activePostal !== zip || !state.postalSubdistricts.length) { addressMessage('กรุณากรอกรหัสไปรษณีย์ที่ตรวจสอบแล้วก่อน', 'error'); ui.postal?.focus(); throw new Error('กรุณาตรวจสอบรหัสไปรษณีย์ก่อน'); }
+          if (!state.selectedProvince || !state.postalProvinces.some(x => x.id === state.selectedProvince.id)) { addressMessage('เลือกจังหวัดจากรายการที่สัมพันธ์กับรหัสไปรษณีย์ก่อน', 'error'); ui.province?.focus(); throw new Error('กรุณาเลือกจังหวัดที่ตรงกับรหัสไปรษณีย์'); }
+          if (!state.selectedDistrict || !state.filteredDistricts.some(x => x.id === state.selectedDistrict.id) || state.selectedDistrict.parent_id !== state.selectedProvince.id) { addressMessage('เลือกอำเภอ/เขตที่อยู่ภายในจังหวัดที่เลือกก่อน', 'error'); ui.district?.focus(); throw new Error('กรุณาเลือกอำเภอ/เขตที่อยู่ในจังหวัดที่เลือก'); }
+          if (!state.selectedSubdistrict || !state.filteredSubdistricts.some(x => x.id === state.selectedSubdistrict.id) || state.selectedSubdistrict.parent_id !== state.selectedDistrict.id || !postalMatches(state.selectedSubdistrict, zip)) { addressMessage('เลือกตำบล/แขวงที่ตรงกับอำเภอและรหัสไปรษณีย์ก่อน', 'error'); ui.subdistrict?.focus(); throw new Error('กรุณาเลือกตำบล/แขวงที่ตรงกับอำเภอและรหัสไปรษณีย์'); }
+          const address = composeAddress();
+          if (!address) { addressMessage('ที่อยู่จัดส่งยังไม่ครบ', 'error'); $('recipient-house-no')?.focus(); throw new Error('ที่อยู่จัดส่งยังไม่ครบ'); }
+          if (ui.hidden) ui.hidden.value = address;
+          updateAddressSummary();
+          addressMessage('ตรวจสอบที่อยู่ครบแล้ว กำลังส่งรายการไปยังระบบ…', 'success');
+          return { recipientName: name, phone, address };
+        } finally { state.submitBusy = false; }
+      };
       function resetAddressFields() {
         state.postalGeneration++; state.pendingPostal = '';
         resetAreaSelections(false);
