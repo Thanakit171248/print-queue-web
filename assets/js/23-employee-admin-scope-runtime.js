@@ -28,6 +28,7 @@
   let activeDeliveries = [];
   let configLoadPromise = null;
   let employeeOrdersCache = [];
+  let selectedEmployeeOrderId = null;
   let adminReportCache = null;
 
   function selectedDeliveryMethod() {
@@ -369,9 +370,49 @@
 
   function renderEmployeeOrders() {
     const box=$('pd-employee-orders');if(!box)return;
-    const term=currentText('pd-employee-search').toLowerCase();
-    const rows=employeeOrdersCache.filter(o=>!term||[o.id,o.queue_number,o.file_name,o.customer_name,o.tracking_number,o.recipient_name,o.phone_number].some(v=>String(v||'').toLowerCase().includes(term)));
-    if(!rows.length){box.innerHTML='<div class="pd-employee-empty-state"><span class="pd-employee-empty-icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></span><strong>ไม่พบคิวงานที่ตรงกับการค้นหา</strong><p>ลองค้นหาด้วยหมายเลขคิว ชื่อไฟล์ ชื่อลูกค้า หรือ Tracking อีกครั้ง</p></div>';window.lucide?.createIcons?.();return;}
+    const title=$('pd-employee-queue-view-title');
+    const description=$('pd-employee-queue-view-description');
+    const back=$('pd-employee-queue-back');
+    let selected = selectedEmployeeOrderId === null
+      ? null
+      : employeeOrdersCache.find(o => String(o.id) === String(selectedEmployeeOrderId)) || null;
+    if(selectedEmployeeOrderId !== null && !selected){ selectedEmployeeOrderId = null; }
+    const activeSelected = selectedEmployeeOrderId !== null && !!selected;
+    if(back) back.hidden = !activeSelected;
+    if(title) title.textContent = activeSelected ? `รายละเอียดคิว #${selected.queue_number ?? selected.id}` : 'รายการคิวงานทั้งหมด';
+    if(description) description.textContent = activeSelected
+      ? 'ตรวจสอบข้อมูลคิวและดำเนินการเฉพาะรายการนี้ เมื่อเสร็จแล้วกลับไปเลือกคิวอื่นได้'
+      : 'เลือกคิวจากตารางเพื่อเปิดรายละเอียดและดำเนินงานทีละคิว โดยไม่ต้องแสดงรายละเอียดทุกคิวพร้อมกัน';
+
+    if(!activeSelected){
+      if(!employeeOrdersCache.length){box.innerHTML='<div class="pd-employee-empty-state"><span class="pd-employee-empty-icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></span><strong>ยังไม่มีคิวงาน</strong><p>เมื่อมีคำสั่งพิมพ์ใหม่ รายการคิวจะแสดงที่นี่</p></div>';window.lucide?.createIcons?.();return;}
+      const statusClass = status => {
+        const known = ['queued','printing','completed','preparing','ready_for_pickup','shipped','finished','failed','cancelled','pending'];
+        return known.includes(String(status||'').toLowerCase()) ? String(status||'').toLowerCase() : 'unknown';
+      };
+      const fmtDate = value => {
+        if(!value)return {date:'ไม่ระบุวันที่',time:'—'};
+        const d=new Date(value);if(Number.isNaN(d.getTime()))return {date:'ไม่ระบุวันที่',time:'—'};
+        return {date:d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}),time:d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})};
+      };
+      box.innerHTML=`<div class="pd-employee-queue-index-wrap"><table class="pd-employee-queue-index"><thead><tr><th scope="col">คิว</th><th scope="col">รายการ / ลูกค้า</th><th scope="col">วันที่สั่งพิมพ์</th><th scope="col">สถานะปัจจุบัน</th><th scope="col">วิธีรับสินค้า</th><th scope="col"><span class="sr-only">เปิดรายละเอียด</span></th></tr></thead><tbody>${employeeOrdersCache.map(o=>{
+        const queue=o.queue_number??o.id;
+        const shipping=o.delivery_method==='delivery';
+        const date=fmtDate(o.created_at);
+        const status=String(o.status||'queued').toLowerCase();
+        const fileName=o.file_name||'เอกสาร PDF';
+        return `<tr class="pd-employee-queue-index-row">
+          <td data-label="คิว"><button type="button" class="pd-employee-queue-open" data-emp-open-queue="${esc(o.id)}" aria-label="เปิดรายละเอียดคิว #${esc(queue)}"><span class="pd-employee-queue-open-icon"><i data-lucide="arrow-up-right" aria-hidden="true"></i></span><span class="pd-employee-queue-number">#${esc(queue)}</span></button></td>
+          <td data-label="รายการ / ลูกค้า"><div class="pd-employee-queue-file"><span class="pd-employee-queue-file-icon"><i data-lucide="file-text" aria-hidden="true"></i></span><span><strong>${esc(fileName)}</strong><small>${esc(o.customer_name||'สมาชิก')}</small></span></div></td>
+          <td data-label="วันที่สั่งพิมพ์"><span class="pd-employee-queue-date">${esc(date.date)}</span><small class="pd-employee-queue-time">${esc(date.time)} น.</small></td>
+          <td data-label="สถานะปัจจุบัน"><span class="pd-employee-index-status pd-index-status-${statusClass(status)}">${esc(humanStatus(status))}</span></td>
+          <td data-label="วิธีรับสินค้า"><span class="pd-employee-index-fulfillment ${shipping?'is-delivery':'is-pickup'}"><i data-lucide="${shipping?'truck':'store'}" aria-hidden="true"></i>${shipping?'จัดส่งถึงบ้าน':'รับที่ร้าน'}</span></td>
+          <td data-label="เปิดรายละเอียด"><button type="button" class="pd-employee-index-view" data-emp-open-queue="${esc(o.id)}"><span>ดูคิว</span><i data-lucide="chevron-right" aria-hidden="true"></i></button></td>
+        </tr>`;
+      }).join('')}</tbody></table></div><p class="pd-employee-queue-index-foot"><i data-lucide="mouse-pointer-click" aria-hidden="true"></i><span>เลือก “ดูคิว” หรือหมายเลขคิวเพื่อดูรายละเอียดและจัดการงานทีละรายการ · เรียงจากรายการล่าสุด</span></p>`;
+      window.lucide?.createIcons?.();return;
+    }
+    const rows=[selected];
     box.innerHTML=rows.map(o=>{
       const shipping=o.delivery_method==='delivery';
       const picked=o.page_range?`ช่วงหน้าที่เลือก: ${o.page_range}`:`ทั้งหมด ${o.page_count} หน้า`;
@@ -515,6 +556,8 @@
       if(target.hasAttribute('data-pd-save-delivery')) return saveDelivery(target);
       if(target.hasAttribute('data-pd-save-printer')) return savePrinter(target);
       if(target.hasAttribute('data-pd-role-save')) {const id=target.dataset.userId,sel=document.querySelector(`[data-pd-role-select][data-user-id="${CSS.escape(String(target.dataset.userId||''))}"]`);const next=sel?.value;if(!id||!next)return notice('บันทึกสิทธิ์ไม่ได้','ไม่พบรหัสผู้ใช้หรือไม่ได้เลือกบทบาท กรุณารีเฟรชหน้าแล้วลองใหม่','alert-triangle');if(typeof window.changeUserRole!=='function')return notice('ระบบบันทึกสิทธิ์ยังไม่พร้อม','ไม่พบฟังก์ชันบันทึกสิทธิ์ กรุณาตรวจว่าติดตั้งไฟล์ assets/js/22-secure-rpc-bridge.js และ assets/js/23-employee-admin-scope-runtime.js ครบหรือไม่','shield-alert');return window.changeUserRole(id,next,target);}
+      if(target.hasAttribute('data-emp-open-queue')) { selectedEmployeeOrderId=String(target.dataset.empOpenQueue||''); renderEmployeeOrders(); window.lucide?.createIcons?.(); $('pd-employee-queue-panel')?.scrollIntoView?.({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}); return; }
+      if(target.id==='pd-employee-queue-back') { selectedEmployeeOrderId=null; renderEmployeeOrders(); window.lucide?.createIcons?.(); $('pd-employee-queue-panel')?.scrollIntoView?.({behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}); return; }
       if(target.hasAttribute('data-emp-status')) return employeeChangeStatus(target);
       if(target.hasAttribute('data-emp-binding')) return setBindingComplete(target);
       if(target.hasAttribute('data-emp-edit-delivery')) return editDeliveryDetails(target.dataset.empEditDelivery);
@@ -546,7 +589,6 @@
       catch(e){notice('เพิ่มช่องทางจัดส่งไม่สำเร็จ',e.message,'shield-alert');}
     });
     $('pd-printer-add-form')?.addEventListener('submit',saveNewPrinter);
-    $('pd-employee-search')?.addEventListener('input',()=>{renderEmployeeOrders();window.lucide?.createIcons?.();});
     $('pd-employee-topups-refresh')?.addEventListener('click',loadEmployeeTopupHistory);
   }
 
