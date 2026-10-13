@@ -743,8 +743,9 @@
 
   window.promptTracking = async function promptTrackingThroughRpc(orderId) {
     if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-    const tracking = window.prompt('กรุณากรอกหมายเลข Tracking พัสดุ:')?.trim();
-    if (!tracking) return;
+    const trackingInput = await window.pdAskTracking?.();
+    if (!trackingInput) return;
+    const tracking = trackingInput.tracking;
     if (tracking.length > 100) return notify('Tracking ไม่ถูกต้อง', 'หมายเลข Tracking ยาวเกิน 100 ตัวอักษร', 'alert-triangle');
     try {
       const client = db();
@@ -760,7 +761,7 @@
       if (!delivery) throw new Error('ไม่พบข้อมูลจัดส่งของคิวนี้');
       const result = await rpc('pd_update_delivery_v2', {
         p_order_id: String(orderId),
-        p_provider: delivery.delivery_provider || 'Kerry Express',
+        p_provider: trackingInput.provider || delivery.delivery_provider || 'Kerry Express',
         p_recipient_name: delivery.recipient_name,
         p_phone_number: delivery.phone_number,
         p_delivery_address: delivery.delivery_address,
