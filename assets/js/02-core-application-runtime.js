@@ -99,22 +99,22 @@
       const sessionReady = !!(currentUser && currentUser.id);
       const dbConfigReady = validSupabaseConfig(localStorage.getItem('sp_url') || DEFAULT_SUPABASE_URL, localStorage.getItem('sp_key') || DEFAULT_SUPABASE_KEY);
 
-      setSecurityBadge('security-transport-status', transportSecure ? 'good' : 'bad', transportSecure ? 'HTTPS / Secure Context' : 'ไม่ใช่ Secure Context');
-      setSecurityBadge('security-db-status', dbReady ? 'good' : (dbConfigReady ? 'warn' : 'bad'), dbReady ? 'Supabase เชื่อมต่อแล้ว' : (dbConfigReady ? 'กำลังเชื่อมต่อ' : 'ยังไม่พร้อม'));
-      setSecurityBadge('security-session-status', sessionReady ? 'good' : 'warn', sessionReady ? 'เซสชันใช้งานอยู่' : 'ยังไม่ได้ล็อกอิน');
+      setSecurityBadge('security-transport-status', transportSecure ? 'good' : 'bad', transportSecure ? 'การเชื่อมต่อปลอดภัย' : 'การเชื่อมต่อไม่ปลอดภัย');
+      setSecurityBadge('security-db-status', dbReady ? 'good' : (dbConfigReady ? 'warn' : 'bad'), dbReady ? 'ระบบออนไลน์แล้ว' : (dbConfigReady ? 'กำลังเชื่อมต่อ' : 'ยังไม่พร้อมให้บริการ'));
+      setSecurityBadge('security-session-status', sessionReady ? 'good' : 'warn', sessionReady ? 'เข้าสู่ระบบแล้ว' : 'ยังไม่ได้เข้าสู่ระบบ');
 
       let stripState = 'warn';
-      let title = 'การเชื่อมต่อพร้อม — ต้องตรวจสอบ Policy';
-      let copy = 'ตรวจ HTTPS และการเชื่อมต่อเบื้องต้นแล้ว แต่หน้าเว็บไม่สามารถยืนยัน RLS / Storage policies แทนฝั่ง Supabase ได้';
+      let title = 'กำลังตรวจสอบความพร้อมของระบบ';
+      let copy = 'ระบบกำลังตรวจสอบความพร้อมก่อนให้บริการ หากพบปัญหาในการทำรายการ โปรดติดต่อผู้ดูแลระบบ';
       if (!transportSecure) {
         stripState = 'bad'; title = 'ควรหยุดก่อน: การเชื่อมต่อไม่ปลอดภัย'; copy = 'เปิดเว็บผ่าน HTTPS เพื่อป้องกันข้อมูลระหว่างทาง';
       } else if (!dbReady) {
-        stripState = 'warn'; title = 'ต้องตรวจสอบ: ฐานข้อมูลยังไม่พร้อม'; copy = 'ยังไม่ควรทำรายการที่ต้องบันทึกข้อมูลหรือชำระเงิน';
+        stripState = 'warn'; title = 'ระบบยังไม่พร้อมให้บริการ'; copy = 'กรุณารอสักครู่แล้วลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
       } else if (!sessionReady) {
-        stripState = 'warn'; title = 'พร้อมใช้งานแบบสาธารณะ'; copy = 'ต้องเข้าสู่ระบบก่อนสร้างคิวพิมพ์หรือจัดการ Coins';
+        stripState = 'warn'; title = 'กรุณาเข้าสู่ระบบ'; copy = 'เข้าสู่ระบบก่อนสั่งพิมพ์ ติดตามคิว หรือจัดการ Coins';
       } else {
-        stripState = 'warn'; title = 'เชื่อมต่อพร้อม — ยังไม่ยืนยันความปลอดภัยฐานข้อมูล';
-        copy = 'ตรวจการเชื่อมต่อแล้วเท่านั้น ต้องตรวจ Supabase Auth, RLS และ Storage policies ใน Dashboard ก่อนใช้งานจริง';
+        stripState = 'good'; title = 'ระบบพร้อมใช้งาน';
+        copy = 'ระบบตรวจสอบการเชื่อมต่อเบื้องต้นแล้ว หากพบความผิดปกติในการใช้งาน โปรดติดต่อผู้ดูแลระบบ';
       }
       setSecurityStatus(stripState, title, copy);
 
@@ -123,11 +123,11 @@
 
       if (notify) {
         const detail = !transportSecure
-          ? 'การเชื่อมต่อไม่อยู่ใน Secure Context — อย่าทำรายการสำคัญจนกว่าจะเปิดผ่าน HTTPS'
+          ? 'การเชื่อมต่อเว็บไซต์ยังไม่ปลอดภัย กรุณาเปิดเว็บไซต์ผ่านลิงก์ทางการที่ขึ้นต้นด้วย https://'
           : !dbReady
-            ? 'Supabase ยังไม่พร้อม ระบบจะไม่อนุญาตให้ส่งรายการสำคัญไปยังฐานข้อมูล'
-            : 'เชื่อมต่อ HTTPS / Supabase ได้ แต่ฟังก์ชันนี้ไม่ได้ตรวจยืนยัน RLS หรือ Storage Policy โปรดตรวจ Security Advisor และ Policies ที่ฝั่ง Supabase';
-        showCustomModal({ title: 'ผลตรวจการเชื่อมต่อ', message: detail, icon: 'shield-alert' });
+            ? 'ระบบยังไม่พร้อมรับรายการสำคัญ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'
+            : 'ตรวจสอบการเชื่อมต่อเบื้องต้นแล้ว หากทำรายการไม่ได้หรือพบความผิดปกติ โปรดติดต่อผู้ดูแลระบบ';
+        showCustomModal({ title: 'ผลตรวจความพร้อมของระบบ', message: detail, icon: 'shield-alert' });
       }
       return { transportSecure, dbReady, sessionReady, dbConfigReady };
     }
@@ -151,7 +151,7 @@
 
     function assertAdminAccess() {
       if (!currentUser || currentUser.role !== 'admin' || !supabaseClient) {
-        showCustomModal({ title: 'จำกัดสิทธิ์', message: 'เซสชันผู้ดูแลหรือการเชื่อมต่อฐานข้อมูลไม่พร้อมสำหรับการทำรายการนี้', icon: 'shield-alert' });
+        showCustomModal({ title: 'ไม่สามารถดำเนินการได้', message: 'ไม่สามารถยืนยันสิทธิ์ผู้ดูแลสำหรับรายการนี้ได้ กรุณาเข้าสู่ระบบใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' });
         return false;
       }
       touchSession();
@@ -263,7 +263,7 @@
         } else {
           const configPanel = document.getElementById('config-panel');
           if (configPanel) configPanel.classList.remove('hidden');
-          setSecurityStatus('warn', 'รอตั้งค่าฐานข้อมูลใหม่', 'กรอก Project URL และ Publishable/anon key จาก Supabase โปรเจกต์ใหม่ แล้วกดบันทึก');
+          setSecurityStatus('warn', 'ระบบยังไม่พร้อมให้บริการ', 'กรุณาติดต่อผู้ดูแลระบบเพื่อช่วยตรวจสอบและเปิดใช้งานระบบ');
         }
       } catch (err) {
         console.warn('Database boot skipped:', err);
@@ -403,7 +403,7 @@
 
     async function saveProfileChanges(e) {
       e.preventDefault();
-      if (!currentUser || !supabaseClient) return showCustomModal({ title: 'เชื่อมต่อฐานข้อมูลไม่พร้อม', message: 'ระบบไม่บันทึกการเปลี่ยนแปลงเพื่อป้องกันข้อมูลค้างหรือผิดพลาด', icon: 'database-zap' });
+      if (!currentUser || !supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อมให้บริการ', message: 'ยังไม่สามารถบันทึกการเปลี่ยนแปลงได้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'database-zap' });
 
       const newName = document.getElementById('edit-fullname').value.trim();
       const rawAvatar = document.getElementById('edit-avatar-url').value.trim() || tempAvatarUrl;
@@ -436,7 +436,7 @@
         openUserProfileModal();
         showCustomModal({ title: 'อัปเดตสำเร็จ', message: 'ข้อมูลโปรไฟล์ถูกตรวจสอบและบันทึกเรียบร้อยแล้ว', icon: 'shield-check' });
       } catch (err) {
-        showCustomModal({ title: 'บันทึกโปรไฟล์ไม่สำเร็จ', message: err.message || 'เกิดข้อผิดพลาด', icon: 'alert-circle' });
+        showCustomModal({ title: 'บันทึกโปรไฟล์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถบันทึกข้อมูลโปรไฟล์ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถบันทึกข้อมูลโปรไฟล์ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'alert-circle' });
       }
     }
 
@@ -742,12 +742,12 @@
     async function saveAndInitSupabase() {
       const url = document.getElementById('supabase-url').value.trim();
       const key = document.getElementById('supabase-key').value.trim();
-      if (!url || !key) return showCustomModal({ title: 'กรอกข้อมูลไม่ครบ', message: 'กรุณากรอก URL และ Key', icon: 'alert-triangle' });
-      if (!validSupabaseConfig(url, key)) return showCustomModal({ title: 'ตรวจสอบการเชื่อมต่อ', message: 'กรุณาใช้ Project URL ของ Supabase และ Publishable key (sb_publishable_...) หรือ legacy anon JWT เท่านั้น ห้ามใส่ sb_secret หรือ service_role key ในเว็บไซต์ เพราะเป็นกุญแจสิทธิ์สูง', icon: 'shield-alert' });
+      if (!url || !key) return showCustomModal({ title: 'กรอกข้อมูลไม่ครบ', message: 'กรุณากรอกข้อมูลให้ครบถ้วนก่อนดำเนินการต่อ', icon: 'alert-triangle' });
+      if (!validSupabaseConfig(url, key)) return showCustomModal({ title: 'ข้อมูลการเชื่อมต่อไม่ถูกต้อง', message: 'ไม่สามารถเปิดใช้งานระบบได้ กรุณาตรวจสอบข้อมูลอีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' });
       localStorage.setItem('sp_url', url); localStorage.setItem('sp_key', key);
       const ok = await initSupabase(url, key);
       if (!ok) return;
-      showCustomModal({ title: 'เชื่อมต่อสำเร็จ', message: 'เชื่อมต่อฐานข้อมูลแล้ว และเปิดโหมดตรวจสอบความปลอดภัยไว้', icon: 'shield-check' });
+      showCustomModal({ title: 'เปิดใช้งานระบบสำเร็จ', message: 'ระบบพร้อมใช้งานแล้ว', icon: 'shield-check' });
     }
 
     async function initSupabase(url, key) {
@@ -755,13 +755,13 @@
         if (!window.supabase) throw new Error('ไม่พบ Supabase client');
         if (!validSupabaseConfig(url, key)) throw new Error('Supabase configuration ไม่ถูกต้อง');
         supabaseClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-        setSecurityStatus('warn', 'กำลังเชื่อมต่อ Supabase', 'ตรวจสอบเซสชันและการเข้าถึงข้อมูลของบัญชี');
+        setSecurityStatus('warn', 'กำลังตรวจสอบระบบ', 'กำลังตรวจสอบสถานะการเข้าสู่ระบบและความพร้อมก่อนทำรายการ');
         await checkSession();
         await runSecurityAudit(false);
         return true;
       } catch (err) {
         supabaseClient = null;
-        setSecurityStatus('bad', 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 'ระบบจะหยุดรายการสำคัญไว้ก่อนจนกว่าจะตรวจสอบการเชื่อมต่อ');
+        setSecurityStatus('bad', 'ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถทำรายการสำคัญได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
         console.error('Supabase Init Error:', err);
         return false;
       }
@@ -866,14 +866,14 @@
     }
 
     async function loadSupabaseAuthProfile(authUser) {
-      if (!authUser?.id) throw new Error('Supabase Auth ไม่ได้ส่ง User ID กลับมา');
+      if (!authUser?.id) throw new Error('ไม่สามารถยืนยันบัญชีของคุณได้ กรุณาเข้าสู่ระบบอีกครั้ง');
       const { data: profile, error } = await supabaseClient
         .from('users')
         .select('id,full_name,email,role,avatar_url')
         .eq('id', authUser.id)
         .maybeSingle();
       if (error) throw error;
-      if (!profile) throw new Error('ยืนยันตัวตนสำเร็จ แต่ไม่พบโปรไฟล์ public.users ตรวจว่าได้รัน schema ใหม่ครบและมี trigger pd_auth_user_created แล้ว');
+      if (!profile) throw new Error('ไม่พบข้อมูลโปรไฟล์ของบัญชีนี้ กรุณาติดต่อผู้ดูแลระบบเพื่อให้ตรวจสอบบัญชีของคุณ');
       return sanitizeUserRecord({ ...profile, email: profile.email || authUser.email });
     }
 
@@ -904,13 +904,13 @@
       const text = raw.toLowerCase();
 
       if (code === 'over_email_send_rate_limit' || /email rate limit exceeded|over_email_send_rate_limit/.test(text)) {
-        return 'Supabase จำกัดการส่งอีเมลของโปรเจกต์ชั่วคราว ระบบอีเมลเริ่มต้นมีโควตาต่ำ อย่ากดซ้ำ ให้รอจนโควตาคลายก่อน หรือใช้ Custom SMTP เมื่อพร้อม';
+        return 'ระบบส่งอีเมลกำลังใช้งานเต็มจำนวนชั่วคราว กรุณารอสักครู่ก่อนลองใหม่ อย่ากดสมัครซ้ำหลายครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
       }
       if (code === 'email_address_not_authorized' || /email address.*not authorized/.test(text)) {
-        return 'โปรเจกต์นี้ยังใช้ระบบส่งอีเมลเริ่มต้น ซึ่งส่งได้เฉพาะอีเมลที่ได้รับอนุญาตในองค์กร Supabase เท่านั้น การให้ผู้ใช้ทั่วไปสมัครต้องตั้ง SMTP ที่รองรับ';
+        return 'ขณะนี้ระบบยังไม่สามารถส่งอีเมลยืนยันไปยังที่อยู่นี้ได้ กรุณาตรวจสอบอีเมลแล้วลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
       }
       if (code === 'email_address_invalid' || /email address .* is invalid/.test(text)) {
-        return 'Supabase ปฏิเสธอีเมลนี้ว่าไม่รองรับหรือไม่ถูกต้อง ไม่ได้หมายความว่ารูปแบบ Gmail ทั้งหมดใช้ไม่ได้ หากเป็นอีเมลจริงที่คุณเข้าถึงได้ ให้ตรวจ Authentication Logs ใน Supabase เพื่อดูรายละเอียดเพิ่มเติม';
+        return 'ไม่สามารถใช้ที่อยู่อีเมลนี้สมัครสมาชิกได้ กรุณาตรวจสอบว่าอีเมลถูกต้องและคุณสามารถรับข้อความได้ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
       }
       if (code === 'over_request_rate_limit' || /request rate limit reached|too many requests/.test(text)) {
         return 'มีคำขอสมัครหรือเข้าสู่ระบบมากเกินไปจากเครือข่ายนี้ กรุณาหยุดลองซ้ำและรอสักครู่ก่อนดำเนินการต่อ';
@@ -919,18 +919,18 @@
         return 'อีเมลนี้มีบัญชีอยู่แล้ว กรุณาเปลี่ยนไปที่แท็บเข้าสู่ระบบ หรือใช้ขั้นตอนรีเซ็ตรหัสผ่าน';
       }
       if (/password.*(weak|short|least)|weak_password/.test(text)) {
-        return 'รหัสผ่านไม่ผ่านข้อกำหนดของ Supabase กรุณาตั้งรหัสผ่านใหม่ตามเงื่อนไขที่หน้าเว็บแจ้ง';
+        return 'รหัสผ่านยังไม่ตรงตามเงื่อนไขความปลอดภัย กรุณาตรวจสอบคำแนะนำแล้วลองใหม่อีกครั้ง';
       }
       if (/failed to fetch|networkerror|fetch failed/.test(text)) {
-        return 'เชื่อมต่อ Supabase ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตและ Project URL/anon key แล้วลองใหม่ภายหลัง';
+        return 'ไม่สามารถเชื่อมต่อระบบได้ในขณะนี้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
       }
       if (action === 'login') return 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจอีเมลและรหัสผ่าน หากเพิ่งลองหลายครั้งให้รอสักครู่ก่อนลองใหม่';
-      return 'สมัครสมาชิกไม่สำเร็จ กรุณาตรวจ Authentication Logs ใน Supabase ก่อนสมัครซ้ำ เพื่อป้องกันการส่งคำขอหรืออีเมลเกินโควตา';
+      return 'สมัครสมาชิกไม่สำเร็จ กรุณาตรวจสอบอีเมลและลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อม', message: 'กรุณาตรวจ URL และ Publishable/anon key ของ Supabase ก่อนเข้าสู่ระบบ', icon: 'database-zap' });
+      if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อมให้บริการ', message: 'ยังไม่สามารถเข้าสู่ระบบได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'database-zap' });
 
       const attemptState = getLoginAttemptState();
       if (attemptState.count >= LOGIN_MAX_ATTEMPTS) {
@@ -974,7 +974,7 @@
     async function handleRegister(e) {
       e.preventDefault();
       if (!isPasswordValid) return showCustomModal({ title: 'รหัสผ่านไม่ผ่านเงื่อนไข', message: 'กรุณาตั้งรหัสผ่านให้ตรงตามเงื่อนไขความปลอดภัย', icon: 'shield-alert' });
-      if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อม', message: 'กรุณาตรวจ URL และ Publishable/anon key ของ Supabase ก่อนสมัครสมาชิก', icon: 'database-zap' });
+      if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อมให้บริการ', message: 'ยังไม่สามารถสมัครสมาชิกได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'database-zap' });
 
       const name = document.getElementById('reg-fullname').value.trim();
       const email = document.getElementById('reg-email').value.trim().toLowerCase();
@@ -1043,7 +1043,7 @@
         updateUserUI();
         await fetchUserWallet();
         await runSecurityAudit(false);
-        showCustomModal({ title: 'สมัครสมาชิกสำเร็จ', message: `สร้างบัญชีผ่าน Supabase Auth แล้ว: ${currentUser.full_name || name}`, icon: 'shield-check' });
+        showCustomModal({ title: 'สมัครสมาชิกสำเร็จ', message: `ยินดีต้อนรับ ${currentUser.full_name || name} สมัครสมาชิกเรียบร้อยแล้ว`, icon: 'shield-check' });
         switchView('dashboard');
       } catch (err) {
         console.error('Supabase Auth sign-up failed:', err);
@@ -1070,7 +1070,7 @@
       resetLoginAttempts();
       updateUserUI();
       switchView('landing');
-      showCustomModal({ title: 'ออกจากระบบแล้ว', message: 'ออกจาก Supabase Auth และล้างสถานะผู้ใช้ในหน้านี้แล้ว', icon: 'log-out' });
+      showCustomModal({ title: 'ออกจากระบบแล้ว', message: 'คุณออกจากระบบเรียบร้อยแล้ว ขอบคุณที่ใช้บริการ PrintDekD', icon: 'log-out' });
     }
 
     function handleFileSelect(e) {
@@ -1254,25 +1254,26 @@
           errors.push(`${bucket}: ${err.message || err}`);
         }
       }
-      throw new Error(`อัปโหลดไม่สำเร็จ\n${errors.join('\\n')}\n\nตรวจสอบ Storage > Buckets และ Storage Policies สำหรับการ INSERT ใน bucket ที่เลือก`);
+      console.error('[PrintDekD] Upload failed in all available locations:', errors);
+      throw new Error('อัปโหลดไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
     }
 
     async function openStoredPrintFile(filePath) {
       if (!assertAdminAccess() && !currentUser) return;
-      if (!filePath) return showCustomModal({ title: 'ยังไม่มีไฟล์ออนไลน์', message: 'รายการนี้ไม่มีตำแหน่งไฟล์ที่เก็บใน Storage', icon: 'file-warning' });
+      if (!filePath) return showCustomModal({ title: 'ยังไม่มีไฟล์ออนไลน์', message: 'ไม่พบไฟล์ออนไลน์สำหรับรายการนี้ กรุณาติดต่อผู้ดูแลระบบหากต้องการให้ช่วยตรวจสอบ', icon: 'file-warning' });
       try {
         const { data, error } = await supabaseClient.storage.from(PRINT_STORAGE_BUCKET).createSignedUrl(filePath, 900);
         if (error || !data?.signedUrl) throw error || new Error('สร้างลิงก์ไฟล์ชั่วคราวไม่สำเร็จ');
         window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
       } catch (err) {
-        showCustomModal({ title: 'เปิดไฟล์ไม่สำเร็จ', message: err.message || 'ตรวจสอบ Storage Policy ของ Supabase', icon: 'file-warning' });
+        showCustomModal({ title: 'เปิดไฟล์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ไม่สามารถเปิดไฟล์นี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถเปิดไฟล์นี้ได้ในขณะนี้', icon: 'file-warning' });
       }
     }
 
     async function handleOrderSubmit(e) {
       e.preventDefault();
       if (!currentUser) return showCustomModal({ title: 'กรุณาล็อกอิน', message: 'กรุณาล็อกอินก่อนทำการสั่งพิมพ์', icon: 'lock' });
-      if (!supabaseClient) return showCustomModal({ title: 'ฐานข้อมูลยังไม่พร้อม', message: 'ระบบจะหยุดรายการสำคัญไว้ก่อนจนกว่าจะเชื่อมต่อ Supabase สำเร็จ', icon: 'database-zap' });
+      if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อมให้บริการ', message: 'ยังไม่สามารถทำรายการสำคัญได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'database-zap' });
       touchSession();
 
       const pages = Math.max(1, parseInt(document.getElementById('printed-pages-input').value) || 1);
@@ -1325,7 +1326,7 @@
       try {
         uploadedPrintFile = await uploadPrintFile(selectedFileObj, orderId);
       } catch (uploadError) {
-        return showCustomModal({ title: 'อัปโหลดเอกสารไม่สำเร็จ', message: `${uploadError.message || 'ไม่สามารถเก็บไฟล์บนระบบออนไลน์ได้'} กรุณาตรวจสอบ Storage bucket "${PRINT_STORAGE_BUCKET}" และ Policy ของ Supabase`, icon: 'cloud-off' });
+        return showCustomModal({ title: 'อัปโหลดเอกสารไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(uploadError, 'ไม่สามารถอัปโหลดเอกสารได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถอัปโหลดเอกสารได้ในขณะนี้ กรุณาลองใหม่', icon: 'cloud-off' });
       }
 
       const orderObj = {
@@ -1378,7 +1379,7 @@
         await fetchUserWallet();
       } catch (err) {
         try { if (uploadedPrintFile?.path && !orderCreated) await supabaseClient.storage.from(PRINT_STORAGE_BUCKET).remove([uploadedPrintFile.path]); } catch (_) { }
-        showCustomModal({ title: 'สร้างรายการไม่สำเร็จ', message: err.message || 'ไม่สามารถบันทึกข้อมูลได้ ระบบยังไม่ถือว่ารายการสำเร็จ', icon: 'shield-alert' });
+        showCustomModal({ title: 'สร้างรายการไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถบันทึกคำสั่งพิมพ์ได้ กรุณาลองใหม่ และตรวจสอบคิวก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถบันทึกคำสั่งพิมพ์ได้ กรุณาลองใหม่ และตรวจสอบคิวก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' });
       }
     }
 
@@ -1640,7 +1641,7 @@
             </tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
         }
       } catch (err) {
-        showCustomModal({ title: 'โหลดข้อมูล Admin ไม่สำเร็จ', message: err.message || 'ไม่สามารถดึงข้อมูลได้', icon: 'shield-alert' });
+        showCustomModal({ title: 'โหลดข้อมูลผู้ดูแลไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดข้อมูลได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถโหลดข้อมูลได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' });
       }
     }
 
@@ -1654,7 +1655,7 @@
         if (error) throw error;
         showCustomModal({ title: 'บันทึก Tracking สำเร็จ', message: `บันทึกหมายเลข Tracking สำหรับออเดอร์ #${orderId} แล้ว`, icon: 'shield-check' });
         loadAdminData();
-      } catch (err) { showCustomModal({ title: 'บันทึก Tracking ไม่สำเร็จ', message: err.message || 'เกิดข้อผิดพลาด', icon: 'shield-alert' }); }
+      } catch (err) { showCustomModal({ title: 'บันทึกข้อมูลจัดส่งไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' }); }
     }
 
     function switchAdminTab(tab) {
@@ -1676,7 +1677,7 @@
         if (error) throw error;
         showCustomModal({ title: 'อัปเดตสถานะสำเร็จ', message: `เปลี่ยนสถานะออเดอร์ #${orderId} เป็น ${newStatus} แล้ว`, icon: 'shield-check' });
         fetchQueues();
-      } catch (err) { showCustomModal({ title: 'อัปเดตสถานะไม่สำเร็จ', message: err.message || 'เกิดข้อผิดพลาด', icon: 'shield-alert' }); loadAdminData(); }
+      } catch (err) { showCustomModal({ title: 'อัปเดตสถานะไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถอัปเดตสถานะได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถอัปเดตสถานะได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' }); loadAdminData(); }
     }
 
     async function approveTopup(topupId, userId, amount) {
@@ -1700,7 +1701,7 @@
         }
         showCustomModal({ title: 'อนุมัติเรียบร้อย', message: `เพิ่ม ${numericAmount.toFixed(2)} Coins ให้ผู้ใช้แล้ว`, icon: 'shield-check' });
         loadAdminData();
-      } catch (err) { showCustomModal({ title: 'อนุมัติไม่สำเร็จ', message: err.message || 'ระบบยกเลิกรายการเพื่อความปลอดภัย', icon: 'shield-alert' }); loadAdminData(); }
+      } catch (err) { showCustomModal({ title: 'อนุมัติไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถอนุมัติรายการนี้ได้ กรุณาตรวจสอบสถานะก่อนลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถอนุมัติรายการนี้ได้ กรุณาตรวจสอบสถานะก่อนลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' }); loadAdminData(); }
     }
 
     async function rejectTopup(topupId) {
@@ -1711,7 +1712,7 @@
         if (!data) return showCustomModal({ title: 'รายการถูกจัดการแล้ว', message: 'คำขอนี้ไม่อยู่ในสถานะรออนุมัติแล้ว', icon: 'shield-check' });
         showCustomModal({ title: 'ปฏิเสธคำขอแล้ว', message: 'ระบบเปลี่ยนสถานะคำขอเติม Coins เรียบร้อยแล้ว', icon: 'x-circle' });
         loadAdminData();
-      } catch (err) { showCustomModal({ title: 'ปฏิเสธรายการไม่สำเร็จ', message: err.message || 'เกิดข้อผิดพลาด', icon: 'shield-alert' }); }
+      } catch (err) { showCustomModal({ title: 'ปฏิเสธรายการไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถจัดการรายการนี้ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถจัดการรายการนี้ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' }); }
     }
 
     async function changeUserRole(userId, newRole) {
@@ -1723,7 +1724,7 @@
         if (error) throw error;
         showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `อัปเดตสิทธิ์ผู้ใช้เป็น ${newRole} เรียบร้อยแล้ว`, icon: 'shield-check' });
         loadAdminData();
-      } catch (err) { showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: err.message || 'เกิดข้อผิดพลาด', icon: 'shield-alert' }); }
+      } catch (err) { showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'shield-alert' }); }
     }
     /* ==========================================================
        DESIGNER ADVANCED v5 — INTERACTION ENGINE
