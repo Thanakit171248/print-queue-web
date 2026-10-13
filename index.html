@@ -1753,11 +1753,9 @@
     <section id="view-admin" class="hidden py-10 px-4 max-w-6xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <span
-            class="text-xs bg-purple-500/20 border border-purple-500/30 text-purple-600 dark:text-purple-300 px-3 py-1 rounded-full font-bold">Admin
-            Backoffice</span>
-          <h1 class="text-2xl sm:text-3xl font-extrabold titanium-text mt-1">จัดการออเดอร์ การจัดส่ง สลิปโอนเงิน & เติม
-            Coins</h1>
+          <span class="pd-admin-role-eyebrow"><i data-lucide="shield-check" aria-hidden="true"></i> ADMIN CONTROL CENTER · ROLE ADMIN</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold titanium-text mt-2">ศูนย์ควบคุมระบบ PrintDekD</h1>
+          <p class="sub-text text-sm mt-2 max-w-3xl">ผู้ดูแลระบบจัดการสมาชิกและพนักงาน บริการและราคา เครื่องพิมพ์ ประวัติคำสั่งพิมพ์ ธุรกรรม Coins/การชำระเงิน และรายงานทั้งหมดจากพื้นที่นี้</p>
         </div>
         <button id="refresh-admin-btn" onclick="animateRefresh('refresh-admin-btn', loadAdminData)"
           class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition self-start sm:self-auto">
@@ -1772,6 +1770,12 @@
         <div class="pd-admin-search"><i data-lucide="search" class="w-4 h-4"></i><input id="pd-admin-search"
             type="search" placeholder="ค้นหาออเดอร์ / สมาชิก / ไฟล์…" oninput="filterAdminWorkspace(this.value)"></div>
       </div>
+      <div class="pd-admin-module-strip" aria-label="ขอบเขตงานผู้ดูแลระบบ">
+        <article><span class="pd-admin-module-icon operations"><i data-lucide="clipboard-list"></i></span><div><strong>ปฏิบัติการ</strong><small>คิวงานพิมพ์ · เติม Coins · ชำระเงิน</small></div></article>
+        <article><span class="pd-admin-module-icon management"><i data-lucide="users-round"></i></span><div><strong>จัดการระบบ</strong><small>สมาชิก · Employee · บริการและราคา</small></div></article>
+        <article><span class="pd-admin-module-icon insights"><i data-lucide="chart-no-axes-combined"></i></span><div><strong>ตรวจสอบและวิเคราะห์</strong><small>เครื่องพิมพ์ · ประวัติ · รายงาน</small></div></article>
+      </div>
+      <div class="pd-admin-tabs-heading"><strong>เมนูจัดการระบบ</strong><span>เลือกหัวข้อด้านล่างเพื่อเปิดรายละเอียด</span></div>
       <div id="pd-admin-tabs" class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')"
           class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
@@ -1889,10 +1893,12 @@
 
     <!-- VIEW 6: EMPLOYEE WORKSPACE -->
     <section id="view-employee" class="hidden py-8 px-4 max-w-6xl mx-auto" aria-labelledby="pd-employee-title">
-      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"><div><span class="text-xs bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 px-3 py-1 rounded-full font-bold">EMPLOYEE WORKSPACE</span><h1 id="pd-employee-title" class="text-2xl sm:text-3xl font-extrabold titanium-text mt-2">จัดเตรียมและส่งมอบงานพิมพ์</h1><p class="sub-text text-sm mt-2">ตรวจงานพิมพ์เสร็จ ตรวจรายละเอียดการเข้าเล่ม จัดเตรียมสินค้า และส่งมอบให้ลูกค้าตามวิธีรับที่เลือก</p></div><button type="button" id="pd-employee-refresh" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> รีเฟรชงาน</button></header>
+      <header class="pd-employee-hero"><div class="pd-employee-hero-copy"><span class="pd-employee-eyebrow"><i data-lucide="briefcase-business" aria-hidden="true"></i> EMPLOYEE OPERATIONS</span><h1 id="pd-employee-title">ศูนย์ปฏิบัติงานพนักงาน</h1><p>จัดการเฉพาะคิวงานหลังพิมพ์ ติดตามสถานะ เข้าเล่ม เตรียมรับที่ร้านหรือจัดส่ง และตรวจดูประวัติเติม Coins แบบอ่านอย่างเดียว การตั้งค่าระบบ ราคา และการอนุมัติรายการเป็นหน้าที่ของ Admin</p></div><button type="button" id="pd-employee-refresh" class="pd-employee-refresh"><i data-lucide="refresh-cw" class="w-4 h-4"></i> รีเฟรชข้อมูล</button></header>
       <div id="pd-employee-metrics" class="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-5"></div>
-      <div class="ui-panel rounded-[28px] p-4 sm:p-6 space-y-4"><div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between"><h2 class="text-lg font-bold titanium-text">งานที่ต้องดำเนินการ</h2><input id="pd-employee-search" type="search" class="ui-input rounded-xl p-3 text-xs w-full sm:max-w-sm" placeholder="ค้นหาคิว / ชื่อไฟล์ / Tracking"></div><div id="pd-employee-orders" class="space-y-3"><p class="text-sm sub-text text-center py-8">กำลังโหลดคิวงาน…</p></div></div>
-      <p class="text-xs sub-text mt-4 border-l-2 border-amber-500 pl-3">โหมด Mini Project: หากยังไม่มี Print Server ให้พนักงานยืนยัน “พิมพ์เสร็จ” ด้วยตนเองตามผลตรวจเอกสารจริง สถานะนี้ไม่ใช่การยืนยันจากเครื่องพิมพ์อัตโนมัติ</p>
+      <div class="pd-employee-section-head"><div><span>01 · FULFILLMENT QUEUE</span><h2>จัดเตรียมและส่งมอบงานพิมพ์</h2><p>แต่ละการ์ดระบุคิว ลูกค้า รายละเอียดงาน สถานะ และวิธีรับสินค้าไว้อย่างชัดเจน</p></div><div class="pd-employee-readonly-note"><i data-lucide="user-round-check"></i> งานที่พนักงานรับผิดชอบ</div></div>
+      <div class="pd-employee-queue-panel"><div class="pd-employee-queue-toolbar"><div><strong>คิวงานที่ต้องดำเนินการ</strong><small>เรียงตามรายการล่าสุด · เปิดการ์ดเพื่อดำเนินการตามสถานะ</small></div><label class="pd-employee-search-wrap"><i data-lucide="search" aria-hidden="true"></i><input id="pd-employee-search" type="search" class="ui-input" placeholder="ค้นหาคิว / ชื่อไฟล์ / Tracking" aria-label="ค้นหางานพิมพ์"></label></div><div id="pd-employee-orders" class="pd-employee-orders-list"><p class="text-sm sub-text text-center py-8">กำลังโหลดคิวงาน…</p></div></div>
+      <section class="pd-employee-topup-section" aria-labelledby="pd-employee-topup-title"><div class="pd-employee-section-head"><div><span>02 · COINS HISTORY</span><h2 id="pd-employee-topup-title">ประวัติเติม Coins</h2><p>พนักงานตรวจสอบวันที่ ยอด Coins และสถานะได้ แต่ไม่สามารถอนุมัติ/ปฏิเสธหรือแก้ไขยอดเงินได้</p></div><div class="pd-employee-topup-count"><strong id="pd-employee-topup-count">—</strong><small>รายการล่าสุด</small></div></div><div class="pd-employee-history-card"><div class="pd-employee-history-heading"><strong>รายการเติม Coins ล่าสุด</strong><span id="pd-employee-topup-updated">กำลังโหลด…</span><button type="button" id="pd-employee-topups-refresh" class="pd-employee-history-refresh">รีเฟรชประวัติ</button></div><div class="overflow-x-auto"><table class="pd-employee-history-table"><thead><tr><th>วันที่</th><th>สมาชิก</th><th>ยอดเติม</th><th>สถานะ</th></tr></thead><tbody id="pd-employee-topup-history"><tr><td colspan="4" class="pd-history-empty">กำลังโหลดประวัติเติม Coins…</td></tr></tbody></table></div></div></section>
+      <p class="pd-employee-disclaimer"><i data-lucide="info" aria-hidden="true"></i><span>หากยังไม่มี Print Server พนักงานเป็นผู้ยืนยัน “พิมพ์เสร็จแล้ว” หลังตรวจเอกสารจริง สถานะดังกล่าวยังไม่ใช่การยืนยันจากเครื่องพิมพ์อัตโนมัติ</span></p>
     </section>
 
 
