@@ -142,26 +142,25 @@
         const button = [...document.querySelectorAll('#admin-users-tbody [data-pd-admin-action="role"]')].find(b => String(b.dataset.userId) === String(userId));
         const performUpdate = async () => {
           const client = db();
-          if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่สำเร็จ จึงไม่ได้เปลี่ยนสิทธิ์', 'database-zap');
+          if (!client) return appNotice('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
           const beforeText = button?.textContent;
           if (button) { button.disabled = true; button.classList.add('pd-v23-busy'); button.textContent = 'กำลังบันทึก…'; }
           try {
             const result = await client.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle();
             if (result.error) throw result.error;
-            if (!result.data || String(result.data.role) !== String(newRole)) throw new Error('ฐานข้อมูลไม่ยืนยันการเปลี่ยนสิทธิ์ ตรวจสอบ RLS Policy ของ public.users ว่า Admin มีสิทธิ์ UPDATE และ SELECT');
+            if (!result.data || String(result.data.role) !== String(newRole)) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ');
             appNotice('สลับสิทธิ์สำเร็จ', `เปลี่ยนสิทธิ์สมาชิกเป็น ${String(newRole).toUpperCase()} แล้ว`, 'shield-check');
             await window.loadAdminData?.();
           } catch (error) {
-            const raw = error?.message || String(error);
-            const hint = /row.level security|permission denied|not authorized|policy/i.test(raw) ? `${raw}\n\nตรวจสอบ RLS Policy ของตาราง public.users ใน Supabase` : raw;
-            appNotice('เปลี่ยนสิทธิ์ไม่สำเร็จ', hint, 'shield-alert');
+            console.error('[PrintDekD] Change role failed:', error);
+            appNotice('เปลี่ยนสิทธิ์ไม่สำเร็จ', window.pdCustomerFacingMessage?.(error, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
           } finally {
             if (button?.isConnected) { button.disabled = false; button.classList.remove('pd-v23-busy'); if (beforeText) button.textContent = beforeText; }
           }
         };
         appConfirm({
           title: 'ยืนยันการเปลี่ยนสิทธิ์',
-          message: `ต้องการเปลี่ยนบัญชีนี้เป็น ${String(newRole).toUpperCase()} ใช่หรือไม่?\n\nระบบจะบันทึกลงฐานข้อมูลจริงเมื่อคุณยืนยัน`,
+          message: `ต้องการเปลี่ยนบัญชีนี้เป็น ${String(newRole).toUpperCase()} ใช่หรือไม่?\n\nการเปลี่ยนสิทธิ์จะมีผลหลังจากคุณกดยืนยัน`,
           icon: 'shield-check', confirmText: 'ยืนยันเปลี่ยนสิทธิ์', onConfirm: performUpdate
         });
       };
@@ -169,7 +168,7 @@
       window.deleteCompletedPrintOrder = async function (orderId) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
         const client = db();
-        if (!client) return appNotice('ฐานข้อมูลยังไม่พร้อม', 'ไม่สามารถลบรายการได้จนกว่า Supabase จะเชื่อมต่อ', 'database-zap');
+        if (!client) return appNotice('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถลบรายการได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
         // Always read the current status from the database before deciding whether deletion is allowed.
         let order;
         try {
@@ -178,10 +177,10 @@
           order = lookup.data;
           const cached = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId));
           if (cached && order) { cached.status = order.status; cached.queue_number = order.queue_number ?? cached.queue_number; }
-        } catch (error) { return appNotice('ตรวจสอบคิวไม่สำเร็จ', error?.message || String(error), 'shield-alert'); }
-        if (!order) return appNotice('ไม่พบคิวงาน', 'ไม่พบรายการนี้ในฐานข้อมูล อาจมีผู้จัดการลบไปแล้ว', 'search-x');
+        } catch (error) { console.error('[PrintDekD] Queue status check failed:', error); return appNotice('ตรวจสอบคิวไม่สำเร็จ', window.pdCustomerFacingMessage?.(error, 'ไม่สามารถตรวจสอบคิวนี้ได้ในขณะนี้ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ'), 'shield-alert'); }
+        if (!order) return appNotice('ไม่พบคิวงาน', 'ไม่พบรายการนี้ อาจถูกลบหรือเปลี่ยนแปลงไปแล้ว กรุณารีเฟรชรายการอีกครั้ง', 'search-x');
         if (order.status !== 'completed') {
-          const statusLabel = ({ queued: 'รอคิว', pending: 'รอคิว', printing: 'กำลังพิมพ์', cancelled: 'ยกเลิกแล้ว' })[order.status] || String(order.status || 'ไม่ทราบสถานะ');
+          const statusLabel = ({ queued: 'รอคิว', pending: 'รอคิว', printing: 'กำลังพิมพ์', cancelled: 'ยกเลิกแล้ว' })[order.status] || 'ไม่ทราบสถานะ';
           return appNotice('ยังลบงานนี้ไม่ได้', `คิว #${order.queue_number ?? order.id} มีสถานะ “${statusLabel}”\n\nระบบอนุญาตให้ลบได้เฉพาะงานที่มีสถานะ “พิมพ์เสร็จแล้ว” เท่านั้น กรุณาอัปเดตสถานะให้ถูกต้องก่อน`, 'alert-triangle');
         }
         appConfirm({
@@ -204,7 +203,7 @@
               }
               const deleted = await client.from('orders').delete().eq('id', orderId).eq('status', 'completed').select('id').maybeSingle();
               if (deleted.error) throw deleted.error;
-              if (!deleted.data) throw new Error('ฐานข้อมูลไม่ได้ยืนยันการลบ อาจมีการเปลี่ยนสถานะพร้อมกันหรือ RLS ไม่อนุญาต');
+              if (!deleted.data) throw new Error('ระบบยังยืนยันการลบไม่สำเร็จ รายการอาจมีการเปลี่ยนแปลง กรุณารีเฟรชแล้วลองใหม่');
 
               // After successful parent deletion, clean orphaned document rows/files only when no other print job references them.
               for (const doc of documentRows) {
@@ -221,11 +220,8 @@
               await window.loadAdminData?.();
               await window.fetchQueues?.();
             } catch (error) {
-              const raw = error?.message || String(error);
-              const message = /foreign key|violates.*constraint|constraint/i.test(raw)
-                ? `${raw}\n\nฐานข้อมูลยังมีตารางที่อ้างอิงคิวนี้อยู่ จึงยกเลิกการลบเพื่อป้องกันข้อมูลที่เกี่ยวข้องเสียหาย กรุณาตรวจสอบ Foreign Key ของ orders ใน Supabase`
-                : raw;
-              appNotice('ลบงานไม่สำเร็จ', message, 'shield-alert');
+              console.error('[PrintDekD] Delete completed order failed:', error);
+              appNotice('ลบงานไม่สำเร็จ', window.pdCustomerFacingMessage?.(error, 'ยังไม่สามารถลบงานนี้ได้ กรุณาตรวจสอบสถานะแล้วลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
             } finally {
               if (rowButton?.isConnected) { rowButton.disabled = false; rowButton.classList.remove('pd-v23-busy'); rowButton.textContent = '⌫ ลบงาน'; }
             }
