@@ -92,6 +92,41 @@
         }
       }
       window.notifyV12 = notifyV12;
+
+      // Customer-friendly styled input dialog, matching the PrintDekD logout/result modal.
+      window.pdAskTracking = function (initial = '') {
+        return new Promise(resolve => {
+          let root = document.getElementById('pd-tracking-input-modal');
+          if (!root) {
+            root = document.createElement('div'); root.id = 'pd-tracking-input-modal';
+            root.className = 'pd-result-modal'; root.hidden = true;
+            root.innerHTML = `<section class="pd-result-card pd-tracking-card" role="dialog" aria-modal="true" aria-labelledby="pd-tracking-title">
+              <button type="button" class="pd-result-dismiss" data-track-cancel aria-label="ปิด">×</button>
+              <div class="pd-result-mark"><i data-lucide="package-check"></i></div>
+              <div class="pd-result-kicker">PRINTDEKD PRO <span>•</span> DELIVERY</div>
+              <h2 id="pd-tracking-title">เพิ่มเลขพัสดุ</h2>
+              <p>กรอกหมายเลขติดตามพัสดุที่ได้รับจากบริษัทขนส่ง ลูกค้าจะใช้หมายเลขนี้ติดตามการจัดส่ง</p>
+              <label for="pd-tracking-provider" class="pd-tracking-label">บริษัทขนส่ง</label>
+              <select id="pd-tracking-provider" class="pd-tracking-input"><option value="Kerry Express">Kerry Express</option><option value="ไปรษณีย์ไทย">ไปรษณีย์ไทย</option><option value="Flash Express">Flash Express</option><option value="J&T Express">J&amp;T Express</option><option value="บริษัทขนส่งอื่น">บริษัทขนส่งอื่น</option></select>
+              <label for="pd-tracking-number" class="pd-tracking-label">หมายเลข Tracking</label>
+              <input id="pd-tracking-number" class="pd-tracking-input" type="text" maxlength="100" autocomplete="off" placeholder="เช่น TH123456789" />
+              <p class="pd-tracking-hint">ตรวจสอบตัวอักษรและตัวเลขให้ถูกต้องก่อนบันทึก</p>
+              <div class="pd-tracking-actions"><button type="button" class="pd-tracking-cancel" data-track-cancel>ยกเลิก</button><button type="button" class="pd-result-primary" data-track-save>บันทึกเลขพัสดุ</button></div>
+            </section>`;
+            document.body.appendChild(root);
+            root.addEventListener('click', e => { if (e.target === root || e.target.closest('[data-track-cancel]')) { root.hidden=true; resolve(null); } });
+            root.querySelector('[data-track-save]').addEventListener('click', () => {
+              const value=root.querySelector('#pd-tracking-number').value.trim();
+              if (!value) { root.querySelector('#pd-tracking-number').focus(); notifyV12('กรุณากรอกหมายเลข Tracking','กรอกหมายเลขพัสดุก่อนบันทึก เพื่อให้ลูกค้าติดตามการจัดส่งได้','alert-triangle'); return; }
+              const provider=root.querySelector('#pd-tracking-provider').value;
+              root.hidden=true; resolve({tracking:value, provider});
+            });
+            root.addEventListener('keydown', e => { if(e.key==='Escape'){root.hidden=true;resolve(null)} if(e.key==='Enter' && e.target.id==='pd-tracking-number'){e.preventDefault();root.querySelector('[data-track-save]').click()} });
+          }
+          root.querySelector('#pd-tracking-number').value=initial;
+          root.hidden=false; window.lucide?.createIcons?.(); requestAnimationFrame(()=>root.querySelector('#pd-tracking-number').focus());
+        });
+      };
       window.closeV12Notice = closeV12Notice;
       document.addEventListener('keydown', event => {
         if (event.key === 'Escape') closeV12Notice();
@@ -237,7 +272,7 @@
         const status = `<span class="pd-order-status-badge px-3 py-1 rounded-full text-xs font-bold border ${statusColorClass}">${safe(statusMeta[0])}</span>`;
           return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${safe(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
         <div class="flex items-center justify-between"><span class="text-xs font-bold font-mono text-blue-500">คิว #${safe(ord.queue_label)}</span>${status}</div>
-        <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${ord.page_count || 1} หน้า | ${ord.copies || 1} ชุด | ${ord.delivery_method === 'delivery' ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
+        <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${(ord.page_range ? `หน้าที่เลือก ${safe(ord.page_range)}` : `${ord.page_count || 1} หน้า`)} | ${ord.copies || 1} ชุด | ${ord.delivery_method === 'delivery' ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
         ${ord.tracking_number ? `<div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-xs font-bold text-emerald-500">🚚 Tracking: ${safe(ord.tracking_number)} ${ord.delivery_provider ? `(${safe(ord.delivery_provider)})` : ''}</div>` : ''}
       </div>`;
         }).join('');
@@ -596,11 +631,12 @@
 
       window.promptTracking = async function (orderId) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        const tracking = prompt('กรุณากรอกหมายเลข Tracking พัสดุ:')?.trim();
-        if (!tracking) return;
+        const trackingInput = await window.pdAskTracking?.();
+        if (!trackingInput) return;
+        const tracking = trackingInput.tracking;
         if (tracking.length > 100) return notifyV12('Tracking ไม่ถูกต้อง', 'หมายเลข Tracking ยาวเกินกำหนด', 'alert-triangle');
         try {
-          const r = await db().from('deliveries').update({ tracking_number: tracking, delivery_provider: 'Kerry Express' }).eq('order_id', orderId).select('id,tracking_number,delivery_provider').maybeSingle();
+          const r = await db().from('deliveries').update({ tracking_number: tracking, delivery_provider: trackingInput.provider }).eq('order_id', orderId).select('id,tracking_number,delivery_provider').maybeSingle();
           if (r.error) throw r.error;
           if (!r.data) throw new Error('ไม่พบรายการจัดส่งของออเดอร์นี้');
           notifyV12('บันทึก Tracking สำเร็จ', 'ข้อมูลถูกบันทึกในตาราง deliveries แล้ว', 'shield-check');
@@ -806,7 +842,7 @@
           if (tb && orderDataError) tb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดข้อมูลคิวไม่สำเร็จ: ${safe(orderDataError.message || String(orderDataError))}</td></tr>`;
           else if (tb) tb.innerHTML = filtered.map(ord => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${safe(ord.queue_number ?? ord.id)}</td>
-        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
+        <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_range ? `หน้าที่เลือก ${safe(ord.page_range)}` : `ทั้งหมด ${ord.page_count || 1} หน้า`}</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
         <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[150px]">${safe(ord.recipient_name)} (${safe(ord.recipient_phone)})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
         <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
         <td class="py-3 px-3">${renderAdminStatusSelectV12(ord)}</td>
