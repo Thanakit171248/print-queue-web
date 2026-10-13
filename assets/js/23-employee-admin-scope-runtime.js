@@ -22,7 +22,7 @@
     preparing:'กำลังจัดเตรียม / เข้าเล่ม', ready_for_pickup:'พร้อมรับ / พร้อมจัดส่ง',
     shipped:'จัดส่งแล้ว', finished:'ส่งมอบเรียบร้อย', cancelled:'ยกเลิกแล้ว', failed:'ต้องตรวจสอบแก้ไข', pending:'รอจัดการงานพิมพ์'
   })[String(status || '').toLowerCase()] || String(status || 'ไม่ทราบสถานะ');
-  const roleLabel = (v) => ({admin:'Admin',employee:'Employee',staff:'Staff (เดิม)',member:'Member'})[v] || v;
+  const roleLabel = (v) => ({admin:'Admin · ผู้ดูแลระบบ',employee:'Employee · พนักงาน',staff:'Employee · บทบาท Staff เดิม',member:'Member · ลูกค้า'})[v] || v;
   let activePricing = [];
   let activeBindings = [];
   let activeDeliveries = [];
@@ -321,6 +321,41 @@
     if(st==='failed') return `<button data-emp-status="queued" data-order-id="${esc(o.id)}" class="pd-emp-action secondary">ส่งกลับเข้าคิว</button>`;
     return '<span class="text-xs sub-text">ไม่มีการดำเนินการถัดไป</span>';
   }
+  async function loadEmployeeTopupHistory() {
+    const body = $('pd-employee-topup-history');
+    if (!body || !isStaff()) return;
+    body.innerHTML = '<tr><td colspan="4" class="pd-history-empty">กำลังโหลดประวัติเติม Coins…</td></tr>';
+    const client = db();
+    if (!client) {
+      body.innerHTML = '<tr><td colspan="4" class="pd-history-error">ยังเชื่อมต่อฐานข้อมูลไม่ได้</td></tr>';
+      return notice('โหลดประวัติเติม Coins ไม่สำเร็จ', 'ยังเชื่อมต่อ Supabase ไม่ได้ กรุณาลองใหม่', 'database-zap');
+    }
+    try {
+      const { data, error } = await client.rpc('pd_employee_topup_history_v1');
+      if (error) throw error;
+      const rows = Array.isArray(data) ? data : [];
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="4" class="pd-history-empty">ยังไม่มีประวัติเติม Coins</td></tr>';
+      } else {
+        body.innerHTML = rows.map(row => {
+          const status = String(row.status || 'pending').toLowerCase();
+          const statusLabel = status === 'approved' ? 'อนุมัติแล้ว' : status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ';
+          const statusClass = status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : 'pending';
+          return `<tr><td data-label="วันที่">${esc(new Date(row.created_at).toLocaleString('th-TH'))}</td><td data-label="สมาชิก">${esc(row.customer_name || 'สมาชิก')}</td><td data-label="ยอดเติม">${money(row.amount)} Coins</td><td data-label="สถานะ"><span class="pd-topup-status ${statusClass}">${statusLabel}</span></td></tr>`;
+        }).join('');
+      }
+      const count = $('pd-employee-topup-count');
+      if (count) count.textContent = String(rows.length);
+      const updated = $('pd-employee-topup-updated');
+      if (updated) updated.textContent = `แสดงประวัติล่าสุดไม่เกิน 250 รายการ · อัปเดต ${new Date().toLocaleTimeString('th-TH')}`;
+    } catch (error) {
+      console.error('[PrintDekD] employee top-up history failed:', error);
+      body.innerHTML = '<tr><td colspan="4" class="pd-history-error">โหลดประวัติไม่ได้ กรุณาตรวจสอบ Migration ล่าสุดและสิทธิ์ของบัญชี Employee</td></tr>';
+      notice('โหลดประวัติเติม Coins ไม่สำเร็จ', /function .* does not exist|could not find the function/i.test(error?.message || '') ? 'ยังไม่ได้ติดตั้ง Migration 20261015_admin_employee_role_and_feedback.sql หรือยังไม่รีเฟรช Schema Cache' : 'ระบบไม่สามารถอ่านประวัติเติม Coins ได้ กรุณาตรวจสอบสิทธิ์ฐานข้อมูลแล้วลองใหม่', 'shield-alert');
+    }
+  }
+  window.loadEmployeeTopupHistory = loadEmployeeTopupHistory;
+
   function renderEmployeeOrders() {
     const box=$('pd-employee-orders');if(!box)return;
     const term=currentText('pd-employee-search').toLowerCase();
@@ -330,8 +365,9 @@
       const shipping=o.delivery_method==='delivery';
       const picked=o.page_range?`ช่วงหน้าที่เลือก: ${o.page_range}`:`ทั้งหมด ${o.page_count} หน้า`;
       const binding=Number(o.binding_cost||0)>0?`เข้าเล่ม · ${money(o.binding_cost)} บาท (รวมตามคำสั่งซื้อ)`:'ไม่ได้ระบุค่าบริการเข้าเล่มในยอดสั่งซื้อ';
+      const payLabel=/coins|wallet/i.test(String(o.payment_method||''))?'Coins / กระเป๋าเงิน':(o.payment_method||'ไม่ระบุช่องทาง');
       return `<article class="pd-employee-order" data-employee-order="${esc(o.id)}">
-        <div class="pd-employee-order-head"><div><span class="pd-employee-queue">คิว #${esc(o.queue_number??o.id)}</span><h3 class="font-bold titanium-text mt-1">${esc(o.file_name)}</h3><p class="text-[11px] sub-text mt-1">ลูกค้า: ${esc(o.customer_name||'สมาชิก')} · ${esc(new Date(o.created_at).toLocaleString('th-TH'))} · ${esc(o.payment_method||'')} · ${money(o.total_amount)} ฿</p></div><span class="pd-employee-status pd-status-${esc(o.status)}">${esc(humanStatus(o.status))}</span></div>
+        <div class="pd-employee-order-head"><div><div class="pd-employee-card-context"><span class="pd-employee-queue">คิว #${esc(o.queue_number??o.id)}</span><span class="pd-employee-work-badge"><i data-lucide="user-round-check" aria-hidden="true"></i> งานที่พนักงานดูแล</span><span class="pd-employee-method-badge ${shipping?'delivery':'pickup'}"><i data-lucide="${shipping?'truck':'store'}" aria-hidden="true"></i>${shipping?'จัดส่ง':'รับที่ร้าน'}</span></div><h3 class="font-bold titanium-text mt-2">${esc(o.file_name)}</h3><p class="text-[11px] sub-text mt-1">ลูกค้า: ${esc(o.customer_name||'สมาชิก')} · ${esc(new Date(o.created_at).toLocaleString('th-TH'))}</p><p class="pd-employee-payment-line"><span>ชำระผ่าน ${esc(payLabel)}</span><strong>${money(o.total_amount)} ฿</strong></p></div><span class="pd-employee-status pd-status-${esc(o.status)}">${esc(humanStatus(o.status))}</span></div>
         <div class="pd-employee-specs"><span><b>ช่วงหน้า</b>${esc(picked)}</span><span><b>งานพิมพ์</b>${esc(o.paper_size)} · ${o.color?'สี':'ขาว-ดำ'} · ${o.duplex?'หน้า-หลัง':'หน้าเดียว'}</span><span><b>จำนวน</b>${esc(o.copies)} ชุด</span><span><b>เข้าเล่ม</b>${esc(binding)}</span><span><b>วิธีรับ</b>${shipping?'จัดส่ง':'รับที่ร้าน'}</span><span><b>ค่าจัดส่ง</b>${shipping?money(o.delivery_fee)+' ฿':'0.00 ฿'}</span></div>
         ${shipping?`<div class="pd-employee-delivery"><strong>ข้อมูลจัดส่ง</strong><p>${esc(o.recipient_name)} · ${esc(o.phone_number)}</p><p>${esc(o.delivery_address)}</p><p>ผู้ให้บริการ: ${esc(o.delivery_provider||'ยังไม่บันทึก')} · Tracking: ${esc(o.tracking_number||'ยังไม่บันทึก')}</p><p>ค่าจัดส่งที่ลูกค้าชำระ: ${money(o.delivery_fee)} ฿ · ต้นทุนจัดส่งจริง: ${o.actual_delivery_cost===null?'ยังไม่บันทึก':money(o.actual_delivery_cost)+' ฿'}</p><button type="button" data-emp-edit-delivery="${esc(o.id)}" class="pd-emp-action secondary mt-2">บันทึก/แก้ไขข้อมูลจัดส่ง</button></div>`:'<p class="pd-employee-delivery"><strong>รับที่หน้าร้าน</strong> · กรุณาตรวจคิวและจำนวนชุดก่อนส่งมอบ</p>'}
         ${o.last_error?`<p class="text-xs text-rose-400 mt-2">หมายเหตุงานพิมพ์: ${esc(o.last_error)}</p>`:''}
@@ -419,7 +455,7 @@
       if(target.hasAttribute('data-pd-save-binding')) return saveBinding(target);
       if(target.hasAttribute('data-pd-save-delivery')) return saveDelivery(target);
       if(target.hasAttribute('data-pd-save-printer')) return savePrinter(target);
-      if(target.hasAttribute('data-pd-role-save')) {const id=target.dataset.userId,sel=document.querySelector(`[data-pd-role-select][data-user-id="${CSS.escape(id)}"]`);const next=sel?.value;if(!id||!next)return;return window.changeUserRole?.(id,next);}
+      if(target.hasAttribute('data-pd-role-save')) {const id=target.dataset.userId,sel=document.querySelector(`[data-pd-role-select][data-user-id="${CSS.escape(String(target.dataset.userId||''))}"]`);const next=sel?.value;if(!id||!next)return notice('บันทึกสิทธิ์ไม่ได้','ไม่พบรหัสผู้ใช้หรือไม่ได้เลือกบทบาท กรุณารีเฟรชหน้าแล้วลองใหม่','alert-triangle');if(typeof window.changeUserRole!=='function')return notice('ระบบบันทึกสิทธิ์ยังไม่พร้อม','ไม่พบฟังก์ชันบันทึกสิทธิ์ กรุณาตรวจว่าติดตั้งไฟล์ assets/js/22-secure-rpc-bridge.js และ assets/js/23-employee-admin-scope-runtime.js ครบหรือไม่','shield-alert');return window.changeUserRole(id,next,target);}
       if(target.hasAttribute('data-emp-status')) return employeeChangeStatus(target);
       if(target.hasAttribute('data-emp-binding')) return setBindingComplete(target);
       if(target.hasAttribute('data-emp-edit-delivery')) return editDeliveryDetails(target.dataset.empEditDelivery);
@@ -451,14 +487,14 @@
       catch(e){notice('เพิ่มช่องทางจัดส่งไม่สำเร็จ',e.message,'shield-alert');}
     });
     $('pd-printer-add-form')?.addEventListener('submit',saveNewPrinter);
-    $('pd-employee-search')?.addEventListener('input',renderEmployeeOrders);
-    document.querySelectorAll('#admin-users-tbody [data-pd-role-select]').forEach(el=>el.addEventListener('change',()=>{}));
+    $('pd-employee-search')?.addEventListener('input',()=>{renderEmployeeOrders();window.lucide?.createIcons?.();});
+    $('pd-employee-topups-refresh')?.addEventListener('click',loadEmployeeTopupHistory);
   }
 
   // Keep Admin/Employee authorization separate: Admin loaders remain Admin-only; the RPCs enforce staff/admin status.
   window.addEventListener('pd:viewchange', event => {
     const name=event.detail?.viewName;
-    if(name==='employee') loadEmployeeOrders();
+    if(name==='employee') { loadEmployeeOrders(); loadEmployeeTopupHistory(); }
     if(name==='admin' && isAdmin()) { loadServiceOptions(true); }
     if(name==='dashboard' || name==='admin') loadServiceOptions();
   });
@@ -473,6 +509,45 @@
     const badge=$('pd-account-role-badge');if(badge)badge.textContent=roleLabel(r).toUpperCase();
     document.body.dataset.pdRole = r || 'guest';
   }
+
+  // Authoritative role-save handler loaded after legacy role handlers. No silent optional call;
+  // saving returns an explicit success/failure notification and verifies the committed value.
+  window.changeUserRole = async function changeUserRoleWithFeedback(userId, newRole, button = null) {
+    if (!isAdmin()) return notice('จำกัดสิทธิ์', 'การเปลี่ยนบทบาททำได้เฉพาะบัญชี Admin เท่านั้น', 'shield-alert');
+    const targetRole = String(newRole || '').toLowerCase();
+    if (!['member','employee','admin'].includes(targetRole)) return notice('บทบาทไม่ถูกต้อง', 'เลือกได้เฉพาะ Member, Employee หรือ Admin', 'alert-triangle');
+    if (!userId) return notice('ไม่พบผู้ใช้', 'ไม่พบรหัสบัญชีที่ต้องการเปลี่ยนสิทธิ์ กรุณารีเฟรชรายชื่อสมาชิก', 'alert-triangle');
+    if (String(window.currentUser?.id || '') === String(userId)) return notice('ป้องกันการล็อกบัญชีตัวเอง', 'ไม่อนุญาตให้เปลี่ยนบทบาทของบัญชี Admin ที่กำลังใช้งานอยู่ ให้ใช้บัญชี Admin อีกบัญชีแทน', 'shield-alert');
+    const client = db();
+    if (!client) return notice('ฐานข้อมูลไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่ได้ จึงไม่มีการเปลี่ยนสิทธิ์', 'database-zap');
+    if (button?.disabled) return;
+    const oldText = button?.textContent || 'บันทึกสิทธิ์';
+    if (button) { button.disabled = true; button.dataset.savingRole = 'true'; button.textContent = 'กำลังบันทึก…'; }
+    try {
+      const { error } = await client.rpc('pd_admin_set_user_role_v2', { p_user_id: String(userId), p_new_role: targetRole });
+      if (error) throw error;
+      const verify = await client.from('users').select('id,role').eq('id', String(userId)).maybeSingle();
+      if (verify.error) throw verify.error;
+      if (!verify.data || String(verify.data.role || '').toLowerCase() !== targetRole) throw new Error('บันทึกแล้วแต่ระบบยืนยันบทบาทใหม่ไม่ได้ กรุณารีเฟรชหน้าและตรวจสอบฐานข้อมูล');
+      notice('บันทึกสิทธิ์สำเร็จ', `เปลี่ยนบทบาทเป็น ${roleLabel(targetRole)} เรียบร้อยแล้ว`, 'shield-check');
+      await window.loadAdminData?.();
+    } catch (error) {
+      const raw = String(error?.message || error || '');
+      let friendly = raw;
+      if (/function .*pd_admin_set_user_role_v2.*does not exist|could not find the function|schema cache/i.test(raw)) {
+        friendly = 'ฐานข้อมูลยังไม่มี RPC สำหรับบันทึกสิทธิ์ กรุณารัน Migration 20261015_admin_employee_role_and_feedback.sql ใน Supabase แล้วลองใหม่';
+      } else if (/ไม่มีสิทธิ์จัดการบทบาท|permission denied|row.level security|not authorized|policy/i.test(raw)) {
+        friendly = 'ฐานข้อมูลปฏิเสธการเปลี่ยนสิทธิ์ ตรวจว่าบัญชีที่ล็อกอินเป็น Admin จริง และ Migration/สิทธิ์ RPC ติดตั้งครบแล้ว';
+      } else if (/check constraint|users_role_scope_check|role.*check/i.test(raw)) {
+        friendly = 'ข้อกำหนด role ในฐานข้อมูลยังเป็นชุดเดิม กรุณารัน Migration 20261015_admin_employee_role_and_feedback.sql เพื่อรองรับ Member, Employee และ Admin';
+      } else if (!raw) {
+        friendly = 'ไม่ทราบสาเหตุ กรุณารีเฟรชหน้า แล้วตรวจ Supabase Logs';
+      }
+      notice('บันทึกสิทธิ์ไม่สำเร็จ', friendly, 'shield-alert');
+    } finally {
+      if (button?.isConnected) { button.disabled = false; delete button.dataset.savingRole; button.textContent = oldText; }
+    }
+  };
 
   function init() {
     wrapPriceCalculator();
