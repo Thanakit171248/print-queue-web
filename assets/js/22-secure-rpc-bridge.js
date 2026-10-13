@@ -695,58 +695,49 @@
     ['ready_for_pickup', 'พร้อมรับเอกสาร'],
     ['shipped', 'จัดส่งแล้ว'],
     ['finished', 'ส่งมอบเรียบร้อย'],
-    ['failed', 'งานล้มเหลว'],
-    ['cancelled', 'ยกเลิกคิว']
+    ['failed', 'ต้องตรวจสอบแก้ไข'],
+    ['cancelled', 'ยกเลิกแล้ว']
   ];
   function decorateStatusSelects(root = document) {
-    // Important: MutationObserver watches this tbody. Do not replace <option>s
-    // unless the option list actually differs, or each replacement will trigger
-    // the observer again and can lock the browser in an endless mutation loop.
+    // The Admin renderer owns option values and their selected state. This function
+    // only decorates controls; it never replaces options or resets the selected value.
     const selector = 'select[data-pd-admin-action="status"]';
     const selects = root?.matches?.(selector)
       ? [root]
       : [...(root?.querySelectorAll?.(selector) || [])];
-
-    selects.forEach((select) => {
-      const current = select.value;
-      const options = [...RPC_TARGET_STATUSES];
-      if (current && !options.some(([value]) => value === current)) {
-        const legacyLabel = ({ printing: 'กำลังดำเนินการ', completed: 'ดำเนินการแล้ว' })[current] || 'สถานะเดิม';
-        options.unshift([current, `${legacyLabel}`]);
-      }
-
-      const unchanged = select.options.length === options.length && options.every(([value, label], index) => {
-        const existing = select.options[index];
-        return existing && existing.value === value && existing.textContent === label;
-      });
-      if (unchanged) return;
-
-      select.replaceChildren(...options.map(([value, label]) => {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = label;
-        return option;
-      }));
-      select.value = current;
+    selects.forEach(select => {
+      select.classList.add('pd-admin-status-select');
+      if (!select.dataset.currentStatus) select.dataset.currentStatus = select.value || 'queued';
     });
   }
 
   window.updateOrderStatus = async function updateOrderStatusThroughRpc(orderId, newStatus) {
-    if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
+    if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return false;
     if (!RPC_TARGET_STATUSES.some(([status]) => status === newStatus)) {
-      return notify('ยังเปลี่ยนสถานะนี้ไม่ได้', 'สถานะนี้ต้องได้รับการยืนยันจากขั้นตอนการทำงานของเจ้าหน้าที่ กรุณาติดต่อผู้ดูแลระบบหากต้องการความช่วยเหลือ', 'shield-alert');
+      notify('ยังเปลี่ยนสถานะนี้ไม่ได้', 'สถานะที่เลือกไม่ถูกต้อง กรุณาเลือกสถานะจากรายการที่กำหนด', 'shield-alert');
+      return false;
     }
     try {
       const result = await rpc('pd_update_order_status_v2', {
         p_order_id: String(orderId), p_new_status: String(newStatus), p_admin_note: null
       });
+      if (result?.status && String(result.status) !== String(newStatus)) {
+        throw new Error('ระบบยังยืนยันสถานะใหม่ไม่ได้ กรุณารีเฟรชหน้าแล้วลองอีกครั้ง');
+      }
       const statusLabel = ({ queued: 'รอแอดมินตรวจสอบ', preparing: 'กำลังตรวจสอบ / จัดเตรียม', ready_for_pickup: 'พร้อมรับเอกสาร', shipped: 'จัดส่งแล้ว', finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
-      notify('อัปเดตสถานะคิวสำเร็จ', `คิว #${result?.queue_number ?? orderId} → ${statusLabel}`, 'shield-check');
+      // Update the admin-scoped cache for other Admin interactions before refreshing.
+      const order = (window.__pdAdminOrders || []).find(item => String(item.id) === String(orderId));
+      if (order) order.status = newStatus;
+      notify('อัปเดตสถานะสำเร็จ', `คิว #${result?.queue_number ?? orderId} · ${statusLabel}`, 'shield-check');
       await window.loadAdminData?.();
-      await window.fetchQueues?.();
+      // Refresh the customer's visible queue only if that view is actually open.
+      const queueView = $('view-dashboard');
+      if (queueView && !queueView.classList.contains('hidden')) await window.fetchQueues?.();
+      return true;
     } catch (error) {
-      notify('อัปเดตสถานะไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกสถานะคิวได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
+      notify('อัปเดตสถานะไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกสถานะคิวได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
       await window.loadAdminData?.();
+      return false;
     }
   };
 
