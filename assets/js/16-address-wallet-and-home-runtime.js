@@ -224,7 +224,7 @@
             if (generation !== state.postalGeneration) return false;
             state.pendingPostal = ''; state.activePostal = ''; resetAreaSelections(true);
             if (ui.postal) ui.postal.setAttribute('aria-invalid', 'true');
-            addressMessage(`${err.message || 'ค้นหาที่อยู่ไม่สำเร็จ'} • ตรวจสอบรหัสไปรษณีย์หรือเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่`, 'error');
+            addressMessage(`${window.pdCustomerFacingMessage?.(err, 'ค้นหาที่อยู่ไม่สำเร็จ กรุณาตรวจสอบรหัสไปรษณีย์และอินเทอร์เน็ตแล้วลองใหม่') || 'ค้นหาที่อยู่ไม่สำเร็จ'} หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ`, 'error');
             return false;
           } finally {
             if (generation === state.postalGeneration) state.pendingPostal = '';
@@ -384,11 +384,11 @@
         const digits = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
         if (ui.postal.value !== digits) ui.postal.value = digits;
         if (digits.length < 5) {
-          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+          lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
           return;
         }
         postalInputTimer = setTimeout(() => {
-          lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+          lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
         }, 180);
       });
       ui.postal?.addEventListener('change', () => {
@@ -397,14 +397,14 @@
         const zip = normalize(ui.postal.value).replace(/\D/g, '').slice(0, 5);
         if (zip === state.activePostal && state.postalSubdistricts.length) return;
         if (zip.length === 5 && state.pendingPostal === zip && postalLookupPromise) return;
-        lookupPostal().catch(err => addressMessage(err.message || 'ค้นหาพื้นที่ไม่สำเร็จ', 'error'));
+        lookupPostal().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาพื้นที่ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error'));
       });
-      ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
-      ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(err.message || 'ค้นหาจังหวัดไม่สำเร็จ', 'error')));
+      ui.province?.addEventListener('input', () => onProvinceInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
+      ui.province?.addEventListener('change', () => onProvinceInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาจังหวัดไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
       ui.district?.addEventListener('focus', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('เลือกจังหวัดที่ตรงกับรหัสไปรษณีย์ก่อน จึงจะเลือกอำเภอ/เขตได้', 'error'); });
       ui.district?.addEventListener('click', () => { if (ui.district.getAttribute('aria-disabled') === 'true') addressMessage('กรุณากรอกรหัสไปรษณีย์และเลือกจังหวัดก่อน', 'error'); });
-      ui.district?.addEventListener('input', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
-      ui.district?.addEventListener('change', () => onDistrictInput().catch(err => addressMessage(err.message || 'ค้นหาอำเภอไม่สำเร็จ', 'error')));
+      ui.district?.addEventListener('input', () => onDistrictInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
+      ui.district?.addEventListener('change', () => onDistrictInput().catch(err => addressMessage(window.pdCustomerFacingMessage?.(err, 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ค้นหาอำเภอไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error')));
       ui.subdistrict?.addEventListener('focus', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('เลือกอำเภอ/เขตให้ครบก่อน จึงจะเลือกตำบล/แขวงได้', 'error'); });
       ui.subdistrict?.addEventListener('click', () => { if (ui.subdistrict.getAttribute('aria-disabled') === 'true') addressMessage('กรุณาเลือกรหัสไปรษณีย์ จังหวัด และอำเภอ/เขตก่อน', 'error'); });
       ui.subdistrict?.addEventListener('input', onSubdistrictInput);
@@ -517,12 +517,12 @@
           const rows = unwrapRecords(payload, 'province');
           const result = { ok: rows.length >= 77, mode: 'same-origin (browser CORS not required)', path: url, httpStatus: response.status, provinceCount: rows.length, note: rows.length >= 70 ? 'proxy answered with a valid province dataset' : 'expected at least 77 provinces' };
           console.info('[PrintDekD API/CORS check]', result);
-          if (ui.message) addressMessage(result.ok ? `ทดสอบเส้นทางข้อมูลสำเร็จ (${rows.length} จังหวัด) · same-origin` : 'เส้นทาง API ตอบกลับ แต่จำนวนจังหวัดไม่ครบ', result.ok ? 'success' : 'error');
+          if (ui.message) addressMessage(result.ok ? 'ตรวจสอบข้อมูลที่อยู่เรียบร้อยแล้ว' : 'ข้อมูลพื้นที่ยังไม่ครบถ้วน กรุณาลองใหม่ภายหลัง', result.ok ? 'success' : 'error');
           return result;
         } catch (err) {
           const result = { ok: false, mode: 'same-origin (browser CORS not required)', path: url, error: err?.name === 'AbortError' ? 'หมดเวลารอ proxy' : (err?.message || String(err)) };
           console.error('[PrintDekD API/CORS check]', result);
-          if (ui.message) addressMessage('ทดสอบ API proxy ไม่ผ่าน: ตรวจ Vercel rewrites/Deployment ก่อน', 'error');
+          if (ui.message) addressMessage('ไม่สามารถโหลดข้อมูลที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'error');
           return result;
         } finally { clearTimeout(timer); }
       };
