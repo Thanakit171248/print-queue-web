@@ -66,3 +66,15 @@ select.pd-admin-status-select.pd-status-saving {
 @media (prefers-reduced-motion: reduce) {
   select.pd-admin-status-select { transition: none; }
 }
+
+/* Styled Tracking dialog: calm, readable, and consistent with PrintDekD result/logout dialogs. */
+.pd-tracking-card { text-align:left; }
+.pd-tracking-card #pd-tracking-title, .pd-tracking-card > p { text-align:center; }
+.pd-tracking-label { display:block; margin:16px 0 7px; font-size:13px; font-weight:800; color:var(--titanium-text, #334155); }
+.pd-tracking-input { box-sizing:border-box; width:100%; min-height:46px; padding:11px 13px; border:1px solid rgba(100,116,139,.35); border-radius:13px; background:var(--input-bg, rgba(148,163,184,.08)); color:var(--titanium-text, inherit); font:inherit; outline:none; }
+.pd-tracking-input:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+.pd-tracking-hint { font-size:12px; opacity:.72; margin:8px 0 0; }
+.pd-tracking-actions { display:flex; gap:10px; margin-top:20px; }
+.pd-tracking-actions button { flex:1; min-height:44px; border-radius:13px; font-weight:800; cursor:pointer; }
+.pd-tracking-cancel { border:1px solid rgba(100,116,139,.3); background:rgba(148,163,184,.10); color:inherit; }
+@media(max-width:480px){ .pd-tracking-card{padding:22px 18px;} .pd-tracking-actions{flex-direction:column-reverse;} }
