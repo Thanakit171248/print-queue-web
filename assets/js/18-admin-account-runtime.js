@@ -116,11 +116,24 @@
         const control = event.target.closest('[data-pd-admin-action="status"]');
         if (!control) return;
         const orderId = control.dataset.orderId;
-        const previous = (window.__pdAdminOrders || []).find(o => String(o.id) === String(orderId))?.status || 'queued';
-        if (control.value === previous) return;
+        // The selected value has already changed when a `change` event fires. Keep a
+        // canonical previous value on the control itself instead of consulting the
+        // shared queue cache, which can contain only the logged-in user's orders.
+        const previous = control.dataset.currentStatus || control.value || 'queued';
+        const requested = control.value;
+        if (requested === previous) return;
         control.disabled = true;
-        try { await window.updateOrderStatus?.(orderId, control.value); }
-        finally { if (control.isConnected) control.disabled = false; }
+        control.classList.add('pd-status-saving');
+        try {
+          const saved = await window.updateOrderStatus?.(orderId, requested);
+          if (saved === true) control.dataset.currentStatus = requested;
+          else if (control.isConnected) control.value = previous;
+        } finally {
+          if (control.isConnected) {
+            control.disabled = false;
+            control.classList.remove('pd-status-saving');
+          }
+        }
       });
 
       // Rebind responsive labels after every data refresh without duplicating listeners.
