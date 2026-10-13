@@ -308,18 +308,29 @@
 
   function nextActions(o) {
     const st=String(o.status||'queued');
-    if(['finished','cancelled'].includes(st)) return '<span class="text-xs sub-text">ปิดงานแล้ว</span>';
-    if(st==='queued'||st==='printing') return `<button data-emp-status="completed" data-order-id="${esc(o.id)}" class="pd-emp-action primary">ยืนยันพิมพ์เสร็จ</button><p class="text-[10px] sub-text mt-1">ต้องตรวจเอกสารที่พิมพ์ออกจริงก่อนกด</p>`;
-    if(st==='completed') return `<button data-emp-status="preparing" data-order-id="${esc(o.id)}" class="pd-emp-action primary">เริ่มจัดเตรียม / เข้าเล่ม</button>`;
+    const actionButton=(label,icon,attrs,kind='primary')=>`<button ${attrs} class="pd-emp-action ${kind}"><i data-lucide="${icon}" aria-hidden="true"></i><span>${label}</span></button>`;
+    const stack=(button,help='')=>`<div class="pd-employee-action-stack">${button}${help?`<p class="pd-employee-action-hint"><i data-lucide="info" aria-hidden="true"></i><span>${help}</span></p>`:''}</div>`;
+    if(['finished','cancelled'].includes(st)) return '<span class="pd-employee-work-closed"><i data-lucide="check-circle-2" aria-hidden="true"></i> ปิดงานแล้ว</span>';
+    if(st==='queued'||st==='printing') return stack(
+      actionButton('ยืนยันพิมพ์เสร็จ','printer-check',`data-emp-status="completed" data-order-id="${esc(o.id)}"`),
+      'ตรวจจำนวนหน้า จำนวนชุด และคุณภาพเอกสารจริงก่อนยืนยัน'
+    );
+    if(st==='completed') return stack(
+      actionButton('เริ่มจัดเตรียมและเข้าเล่ม','package-check',`data-emp-status="preparing" data-order-id="${esc(o.id)}"`),
+      'เริ่มขั้นตอนเตรียมงานหลังตรวจงานพิมพ์ครบแล้ว'
+    );
     if(st==='preparing') {
-      if(Number(o.binding_cost||0)>0 && !o.binding_completed) return `<button data-emp-binding="complete" data-order-id="${esc(o.id)}" class="pd-emp-action secondary">ยืนยันเข้าเล่มเสร็จ</button><p class="text-[10px] sub-text mt-1">ต้องตรวจการเข้าเล่มก่อนพร้อมรับ/จัดส่ง</p>`;
-      return `<button data-emp-status="ready_for_pickup" data-order-id="${esc(o.id)}" class="pd-emp-action primary">ยืนยันเตรียมเสร็จ</button>`;
+      if(Number(o.binding_cost||0)>0 && !o.binding_completed) return stack(
+        actionButton('ยืนยันเข้าเล่มเสร็จ','book-open-check',`data-emp-binding="complete" data-order-id="${esc(o.id)}"`),
+        'ตรวจรูปแบบเข้าเล่มและความเรียบร้อยก่อนยืนยัน'
+      );
+      return stack(actionButton('ยืนยันเตรียมงานเสร็จ','check-circle-2',`data-emp-status="ready_for_pickup" data-order-id="${esc(o.id)}"`));
     }
-    if(st==='ready_for_pickup' && o.delivery_method==='delivery') return `<button data-emp-track="${esc(o.id)}" class="pd-emp-action secondary">บันทึก Tracking</button><button data-emp-status="shipped" data-order-id="${esc(o.id)}" class="pd-emp-action primary">ยืนยันส่งออก</button>`;
-    if(st==='ready_for_pickup') return `<button data-emp-status="finished" data-order-id="${esc(o.id)}" class="pd-emp-action primary">ยืนยันส่งมอบหน้าร้าน</button>`;
-    if(st==='shipped') return `<button data-emp-status="finished" data-order-id="${esc(o.id)}" class="pd-emp-action primary">ยืนยันส่งมอบสำเร็จ</button>`;
-    if(st==='failed') return `<button data-emp-status="queued" data-order-id="${esc(o.id)}" class="pd-emp-action secondary">ส่งกลับเข้าคิว</button>`;
-    return '<span class="text-xs sub-text">ไม่มีการดำเนินการถัดไป</span>';
+    if(st==='ready_for_pickup' && o.delivery_method==='delivery') return `<div class="pd-employee-action-stack"><div class="pd-employee-action-row">${actionButton('บันทึก Tracking','barcode',`type="button" data-emp-track="${esc(o.id)}"`,'secondary')}${actionButton('ยืนยันส่งพัสดุ','truck',`data-emp-status="shipped" data-order-id="${esc(o.id)}"`)}</div><p class="pd-employee-action-hint"><i data-lucide="info" aria-hidden="true"></i><span>บันทึกเลข Tracking และตรวจผู้ให้บริการก่อนกดยืนยันส่งพัสดุ</span></p></div>`;
+    if(st==='ready_for_pickup') return stack(actionButton('ยืนยันส่งมอบที่ร้าน','store',`data-emp-status="finished" data-order-id="${esc(o.id)}"`));
+    if(st==='shipped') return stack(actionButton('ยืนยันส่งมอบสำเร็จ','check-check',`data-emp-status="finished" data-order-id="${esc(o.id)}"`,'success'));
+    if(st==='failed') return stack(actionButton('ส่งกลับเข้าคิว','rotate-ccw',`data-emp-status="queued" data-order-id="${esc(o.id)}"`));
+    return '<span class="pd-employee-work-closed">ไม่มีขั้นตอนถัดไป</span>';
   }
   async function loadEmployeeTopupHistory() {
     const body = $('pd-employee-topup-history');
