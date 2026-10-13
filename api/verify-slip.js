@@ -15,7 +15,7 @@ module.exports = function retiredSlipVerifier(req, res) {
   return res.end(JSON.stringify({
     ok: false,
     code: 'legacy_endpoint_retired',
-    message: 'API รุ่นเก่าถูกปิดแล้ว กรุณาใช้ /api/verify-slip-v2 ผ่านหน้า PrintDekD ที่ล็อกอินอยู่'
+    message: 'ไม่สามารถดำเนินการตรวจสลิปจากช่องทางนี้ได้ กรุณากลับไปยังหน้า PrintDekD แล้วทำรายการอีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'
   }));
 };
 
