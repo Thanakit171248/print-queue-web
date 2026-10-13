@@ -265,7 +265,7 @@
           try {
             const { data, error } = await (typeof supabaseClient !== 'undefined' ? supabaseClient : null).from('orders').select('*').eq('id', orderId).maybeSingle();
             if (error) throw error; order = data;
-          } catch (err) { return notify('เปิดข้อมูลไม่สำเร็จ', err?.message || 'ไม่สามารถโหลดออเดอร์นี้ได้', 'database-zap') }
+          } catch (err) { console.error('[PrintDekD] Load order detail failed:', err); return notify('เปิดข้อมูลไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดรายละเอียดรายการนี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถโหลดรายละเอียดรายการนี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap') }
         }
         if (!order) return notify('ไม่พบข้อมูล', 'ไม่พบรายละเอียดของรายการสั่งพิมพ์นี้', 'search-x');
         const set = (id, v) => { const e = $(id); if (e) e.textContent = v ?? '-' };
@@ -313,17 +313,16 @@
         const btn = buttons.find(b => b.getAttribute('onclick')?.includes(String(userId)));
         if (btn) { btn.classList.add('pd-v10-admin-busy'); btn.textContent = 'กำลังบันทึก…'; }
         try {
-          if (!(typeof supabaseClient !== 'undefined' ? supabaseClient : null)) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+          if (!(typeof supabaseClient !== 'undefined' ? supabaseClient : null)) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
           const { data, error } = await (typeof supabaseClient !== 'undefined' ? supabaseClient : null).from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle();
           if (error) throw error;
-          if (!data || data.role !== newRole) throw new Error('Supabase ไม่คืนข้อมูลการเปลี่ยนสิทธิ์ — ตรวจสอบ RLS Policy ของตาราง users ว่า Admin ที่ใช้ระบบนี้มีสิทธิ์ UPDATE role');
+          if (!data || data.role !== newRole) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ');
           notify('สลับสิทธิ์สำเร็จ', `เปลี่ยนบัญชีนี้เป็น ${newRole.toUpperCase()} แล้ว`, 'shield-check');
           await window.loadAdminData?.();
         } catch (err) {
-          const raw = err?.message || String(err);
-          const hint = /row-level security|permission denied|not authorized|JWT|policy/i.test(raw)
-            ? `${raw}\n\nสาเหตุคือ Policy/RLS ของ Supabase ยังไม่อนุญาตให้บัญชีที่ใช้งาน UPDATE ช่อง role ในตาราง users`
-            : raw;
+          const raw = window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่';
+          const hint = window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ')
+            || 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
           notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', hint, 'shield-alert');
           if (btn) { btn.classList.remove('pd-v10-admin-busy'); }
           await window.loadAdminData?.();
@@ -336,7 +335,7 @@
         localStorage.setItem('sp_print_bucket', b); location.reload();
       };
       async function uploadPrintFileV10(file, orderId) {
-        if (!(typeof supabaseClient !== 'undefined' ? supabaseClient : null)) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+        if (!(typeof supabaseClient !== 'undefined' ? supabaseClient : null)) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
         const primary = localStorage.getItem('sp_print_bucket') || 'documents';
         const candidates = [primary, ...(primary === 'documents' ? ['print-files'] : primary === 'print-files' ? ['documents'] : [])];
         const errors = [];
@@ -353,7 +352,8 @@
             if (!/bucket.*not found|not found/i.test(error.message || '')) break;
           } catch (e) { errors.push(`${bucket}: ${e.message || e}`) }
         }
-        throw new Error(`อัปโหลดไม่สำเร็จ\n${errors.join('\n')}\n\nตรวจสอบ Storage > Buckets และ Storage Policies สำหรับการ INSERT ใน bucket ที่เลือก`);
+        console.error('[PrintDekD] Profile upload diagnostics:', errors);
+        throw new Error('อัปโหลดรูปโปรไฟล์ไม่สำเร็จ กรุณาลองใช้รูปอื่นหรือลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
       }
 
       /* ---------- 6. Security copy: simple, calm, readable ---------- */
