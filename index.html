@@ -1770,12 +1770,21 @@
         <div class="pd-admin-search"><i data-lucide="search" class="w-4 h-4"></i><input id="pd-admin-search"
             type="search" placeholder="ค้นหาออเดอร์ / สมาชิก / ไฟล์…" oninput="filterAdminWorkspace(this.value)"></div>
       </div>
-      <div class="pd-admin-module-strip" aria-label="ขอบเขตงานผู้ดูแลระบบ">
-        <article><span class="pd-admin-module-icon operations"><i data-lucide="clipboard-list"></i></span><div><strong>ปฏิบัติการ</strong><small>คิวงานพิมพ์ · เติม Coins · ชำระเงิน</small></div></article>
-        <article><span class="pd-admin-module-icon management"><i data-lucide="users-round"></i></span><div><strong>จัดการระบบ</strong><small>สมาชิก · Employee · บริการและราคา</small></div></article>
-        <article><span class="pd-admin-module-icon insights"><i data-lucide="chart-no-axes-combined"></i></span><div><strong>ตรวจสอบและวิเคราะห์</strong><small>เครื่องพิมพ์ · ประวัติ · รายงาน</small></div></article>
+      <div class="pd-admin-module-strip" aria-label="หมวดงานผู้ดูแลระบบ">
+        <button type="button" class="pd-admin-module-card operations" data-pd-admin-group="operations" data-pd-admin-tab="orders" aria-label="เปิดหมวดปฏิบัติการ: คิวงานพิมพ์ เติม Coins และชำระเงิน">
+          <span class="pd-admin-module-icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></span>
+          <span class="pd-admin-module-copy"><small>01 · OPERATIONS</small><strong>ปฏิบัติการ</strong><em>คิวงานพิมพ์ · เติม Coins · ชำระเงิน</em></span><i data-lucide="arrow-up-right" class="pd-admin-module-arrow" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pd-admin-module-card management" data-pd-admin-group="management" data-pd-admin-tab="users" aria-label="เปิดหมวดจัดการระบบ: สมาชิก พนักงาน บริการและราคา">
+          <span class="pd-admin-module-icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span>
+          <span class="pd-admin-module-copy"><small>02 · MANAGEMENT</small><strong>จัดการระบบ</strong><em>สมาชิก · Employee · บริการและราคา</em></span><i data-lucide="arrow-up-right" class="pd-admin-module-arrow" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="pd-admin-module-card insights" data-pd-admin-group="insights" data-pd-admin-tab="printers" aria-label="เปิดหมวดตรวจสอบและวิเคราะห์: เครื่องพิมพ์ ประวัติและรายงาน">
+          <span class="pd-admin-module-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
+          <span class="pd-admin-module-copy"><small>03 · INSIGHTS</small><strong>ตรวจสอบและวิเคราะห์</strong><em>เครื่องพิมพ์ · ประวัติ · รายงาน</em></span><i data-lucide="arrow-up-right" class="pd-admin-module-arrow" aria-hidden="true"></i>
+        </button>
       </div>
-      <div class="pd-admin-tabs-heading"><strong>เมนูจัดการระบบ</strong><span>เลือกหัวข้อด้านล่างเพื่อเปิดรายละเอียด</span></div>
+      <div class="pd-admin-tabs-heading"><div><strong>เมนูจัดการระบบ</strong><p>เลือกหัวข้อเพื่อเปิดรายละเอียดของงานแต่ละส่วน</p></div><span class="pd-admin-active-hint"><i data-lucide="mouse-pointer-click" aria-hidden="true"></i> เลือกการ์ดหรือเมนูด้านล่าง</span></div>
       <div id="pd-admin-tabs" class="flex gap-2 p-1.5 bg-slate-100 dark:bg-white/5 rounded-2xl mb-6">
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')"
           class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
@@ -1898,7 +1907,11 @@
       <div class="pd-employee-section-head"><div><span>01 · FULFILLMENT QUEUE</span><h2>จัดเตรียมและส่งมอบงานพิมพ์</h2><p>แต่ละการ์ดระบุคิว ลูกค้า รายละเอียดงาน สถานะ และวิธีรับสินค้าไว้อย่างชัดเจน</p></div><div class="pd-employee-readonly-note"><i data-lucide="user-round-check"></i> งานที่พนักงานรับผิดชอบ</div></div>
       <div class="pd-employee-queue-panel"><div class="pd-employee-queue-toolbar"><div><strong>คิวงานที่ต้องดำเนินการ</strong><small>เรียงตามรายการล่าสุด · เปิดการ์ดเพื่อดำเนินการตามสถานะ</small></div><label class="pd-employee-search-wrap"><i data-lucide="search" aria-hidden="true"></i><input id="pd-employee-search" type="search" class="ui-input" placeholder="ค้นหาคิว / ชื่อไฟล์ / Tracking" aria-label="ค้นหางานพิมพ์"></label></div><div id="pd-employee-orders" class="pd-employee-orders-list"><p class="text-sm sub-text text-center py-8">กำลังโหลดคิวงาน…</p></div></div>
       <section class="pd-employee-topup-section" aria-labelledby="pd-employee-topup-title"><div class="pd-employee-section-head"><div><span>02 · COINS HISTORY</span><h2 id="pd-employee-topup-title">ประวัติเติม Coins</h2><p>พนักงานตรวจสอบวันที่ ยอด Coins และสถานะได้ แต่ไม่สามารถอนุมัติ/ปฏิเสธหรือแก้ไขยอดเงินได้</p></div><div class="pd-employee-topup-count"><strong id="pd-employee-topup-count">—</strong><small>รายการล่าสุด</small></div></div><div class="pd-employee-history-card"><div class="pd-employee-history-heading"><strong>รายการเติม Coins ล่าสุด</strong><span id="pd-employee-topup-updated">กำลังโหลด…</span><button type="button" id="pd-employee-topups-refresh" class="pd-employee-history-refresh">รีเฟรชประวัติ</button></div><div class="overflow-x-auto"><table class="pd-employee-history-table"><thead><tr><th>วันที่</th><th>สมาชิก</th><th>ยอดเติม</th><th>สถานะ</th></tr></thead><tbody id="pd-employee-topup-history"><tr><td colspan="4" class="pd-history-empty">กำลังโหลดประวัติเติม Coins…</td></tr></tbody></table></div></div></section>
-      <p class="pd-employee-disclaimer"><i data-lucide="info" aria-hidden="true"></i><span>หากยังไม่มี Print Server พนักงานเป็นผู้ยืนยัน “พิมพ์เสร็จแล้ว” หลังตรวจเอกสารจริง สถานะดังกล่าวยังไม่ใช่การยืนยันจากเครื่องพิมพ์อัตโนมัติ</span></p>
+      <section class="pd-employee-payment-section" aria-labelledby="pd-employee-payment-title">
+        <div class="pd-employee-section-head"><div><span>03 · PAYMENT HISTORY</span><h2 id="pd-employee-payment-title">ประวัติชำระเงิน</h2><p>ตรวจสอบรายการชำระค่าพิมพ์แบบอ่านอย่างเดียว ไม่สามารถแก้ไขหรืออนุมัติธุรกรรมได้</p></div><div class="pd-employee-readonly-note"><i data-lucide="receipt-text" aria-hidden="true"></i> อ่านอย่างเดียว</div></div>
+        <div class="pd-employee-history-card"><div class="pd-employee-history-heading"><strong>รายการชำระเงินล่าสุด</strong><span id="pd-employee-payments-updated">เลือกรีเฟรชเพื่อโหลดข้อมูล</span><button type="button" id="pd-employee-payments-refresh" class="pd-employee-history-refresh">รีเฟรชประวัติ</button></div><div class="overflow-x-auto"><table class="pd-employee-history-table"><thead><tr><th>วันที่</th><th>คิว</th><th>ช่องทาง</th><th>ยอดชำระ</th><th>สถานะ</th></tr></thead><tbody id="pd-employee-payment-history"><tr><td colspan="5" class="pd-history-empty">กำลังโหลดประวัติชำระเงิน…</td></tr></tbody></table></div></div>
+      </section>
+      <p class="pd-employee-disclaimer"><i data-lucide="info" aria-hidden="true"></i><span>พนักงานดูได้เฉพาะคิวงาน ประวัติเติม Coins และประวัติชำระเงินแบบอ่านอย่างเดียว ส่วนการจัดการสมาชิก ราคา เครื่องพิมพ์ การอนุมัติ Coins และรายงานทั้งหมดเป็นหน้าที่ของ Admin หากยังไม่มี Print Server สถานะพิมพ์เสร็จต้องยืนยันจากเอกสารจริง</span></p>
     </section>
 
 
@@ -2236,6 +2249,8 @@
 <script id="pd-secure-rpc-bridge" src="assets/js/22-secure-rpc-bridge.js"></script>
 <link rel="stylesheet" href="assets/css/35-employee-admin-scope.css" id="pd-employee-admin-scope-style">
 <script id="pd-employee-admin-scope-runtime" src="assets/js/23-employee-admin-scope-runtime.js"></script>
+<link rel="stylesheet" href="assets/css/36-admin-employee-designer-overhaul.css" id="pd-admin-employee-designer-overhaul">
+<script id="pd-admin-employee-designer-overhaul-runtime" src="assets/js/24-admin-employee-designer-overhaul.js"></script>
 
 </body>
 
