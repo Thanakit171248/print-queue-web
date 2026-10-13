@@ -28,7 +28,7 @@
   // Present clear, customer-friendly Thai messages instead of exposing internal
   // service names, database objects, permission codes, or raw server errors.
   const CUSTOMER_ERROR_FALLBACK = 'ขออภัย ขณะนี้ไม่สามารถทำรายการได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
-  const INTERNAL_ERROR_PATTERN = /(supabase|\brpc\b|\bapi\b|\bsql\b|\brls\b|policy|storage|schema|column|\btable\b|postgres|permission denied|not authorized|jwt|http\s*\d{3}|pgrst|foreign key|constraint|could not find|does not exist|trigger|wallets\.balance|delivery_options|\bpricing\b|row-level security|duplicate key|violates|slipok|secure context)/i;
+  const INTERNAL_ERROR_PATTERN = /(supabase|\brpc\b|\bapi\b|\bsql\b|\brls\b|policy|storage|schema|column|\btable\b|postgres|permission denied|not authorized|jwt|http\s*\d{3}|pgrst|foreign key|constraint|could not find|does not exist|trigger|wallets\.balance|delivery_options|\bpricing\b|row-level security|duplicate key|violates|slipok|secure context|print\s*server|worker|\bcups\b|จัดเตรียมได้หลัง|พิมพ์เสร็จ)/i;
   function customerFacingMessage(error, fallback = CUSTOMER_ERROR_FALLBACK) {
     const raw = typeof error === 'string' ? error : (error?.message || (error == null ? '' : String(error)));
     const message = String(raw || '').trim();
@@ -690,8 +690,8 @@
   };
 
   const RPC_TARGET_STATUSES = [
-    ['queued', 'รอคิว / ลองใหม่เมื่ออนุญาต'],
-    ['preparing', 'กำลังจัดเตรียม'],
+    ['queued', 'รอแอดมินตรวจสอบ'],
+    ['preparing', 'กำลังตรวจสอบ / จัดเตรียม'],
     ['ready_for_pickup', 'พร้อมรับเอกสาร'],
     ['shipped', 'จัดส่งแล้ว'],
     ['finished', 'ส่งมอบเรียบร้อย'],
@@ -711,7 +711,8 @@
       const current = select.value;
       const options = [...RPC_TARGET_STATUSES];
       if (current && !options.some(([value]) => value === current)) {
-        options.unshift([current, `${current} (สถานะจากระบบพิมพ์)`]);
+        const legacyLabel = ({ printing: 'กำลังดำเนินการ', completed: 'ดำเนินการแล้ว' })[current] || 'สถานะเดิม';
+        options.unshift([current, `${legacyLabel}`]);
       }
 
       const unchanged = select.options.length === options.length && options.every(([value, label], index) => {
@@ -739,7 +740,7 @@
       const result = await rpc('pd_update_order_status_v2', {
         p_order_id: String(orderId), p_new_status: String(newStatus), p_admin_note: null
       });
-      const statusLabel = ({ queued: 'รอคิว', printing: 'กำลังพิมพ์', completed: 'พิมพ์เสร็จแล้ว', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
+      const statusLabel = ({ queued: 'รอแอดมินตรวจสอบ', preparing: 'กำลังตรวจสอบ / จัดเตรียม', ready_for_pickup: 'พร้อมรับเอกสาร', shipped: 'จัดส่งแล้ว', finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
       notify('อัปเดตสถานะคิวสำเร็จ', `คิว #${result?.queue_number ?? orderId} → ${statusLabel}`, 'shield-check');
       await window.loadAdminData?.();
       await window.fetchQueues?.();
