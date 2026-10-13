@@ -22,9 +22,9 @@
       } catch (error) {
         console.error('[PrintDekD] Unexpected checkout error:', error);
         if (typeof window.notifyV12 === 'function') {
-          window.notifyV12('ส่งคำสั่งพิมพ์ไม่สำเร็จ', error?.message || 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', 'shield-alert');
+          window.notifyV12('ส่งคำสั่งพิมพ์ไม่สำเร็จ', window.pdCustomerFacingMessage?.(error, 'ไม่สามารถส่งคำสั่งพิมพ์ได้ในขณะนี้ กรุณาตรวจสอบคิวก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
         } else if (typeof window.showCustomModal === 'function') {
-          window.showCustomModal({ title: 'ส่งคำสั่งพิมพ์ไม่สำเร็จ', message: error?.message || 'กรุณาตรวจสอบคิวก่อนลองส่งอีกครั้ง', icon: 'shield-alert' });
+          window.showCustomModal({ title: 'ส่งคำสั่งพิมพ์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(error, 'ไม่สามารถส่งคำสั่งพิมพ์ได้ในขณะนี้ กรุณาตรวจสอบคิวก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), icon: 'shield-alert' });
         }
       } finally {
         submitting = false;
