@@ -107,23 +107,28 @@
               <h2 id="pd-tracking-title">เพิ่มเลขพัสดุ</h2>
               <p>กรอกหมายเลขติดตามพัสดุที่ได้รับจากบริษัทขนส่ง ลูกค้าจะใช้หมายเลขนี้ติดตามการจัดส่ง</p>
               <label for="pd-tracking-provider" class="pd-tracking-label">บริษัทขนส่ง</label>
-              <select id="pd-tracking-provider" class="pd-tracking-input"><option value="Kerry Express">Kerry Express</option><option value="ไปรษณีย์ไทย">ไปรษณีย์ไทย</option><option value="Flash Express">Flash Express</option><option value="J&T Express">J&amp;T Express</option><option value="บริษัทขนส่งอื่น">บริษัทขนส่งอื่น</option></select>
+              <select id="pd-tracking-provider" class="pd-tracking-input"><option value="Kerry Express">Kerry Express</option><option value="ไปรษณีย์ไทย">ไปรษณีย์ไทย</option><option value="Messenger">Messenger</option><option value="LINE MAN">LINE MAN</option><option value="Flash Express">Flash Express</option><option value="J&amp;T Express">J&amp;T Express</option><option value="บริษัทขนส่งอื่น">บริษัทขนส่งอื่น</option></select>
+              <input id="pd-tracking-provider-other" class="pd-tracking-input" type="text" maxlength="80" placeholder="ระบุชื่อผู้ให้บริการอื่น" hidden />
               <label for="pd-tracking-number" class="pd-tracking-label">หมายเลข Tracking</label>
               <input id="pd-tracking-number" class="pd-tracking-input" type="text" maxlength="100" autocomplete="off" placeholder="เช่น TH123456789" />
               <p class="pd-tracking-hint">ตรวจสอบตัวอักษรและตัวเลขให้ถูกต้องก่อนบันทึก</p>
               <div class="pd-tracking-actions"><button type="button" class="pd-tracking-cancel" data-track-cancel>ยกเลิก</button><button type="button" class="pd-result-primary" data-track-save>บันทึกเลขพัสดุ</button></div>
             </section>`;
             document.body.appendChild(root);
-            root.addEventListener('click', e => { if (e.target === root || e.target.closest('[data-track-cancel]')) { root.hidden=true; resolve(null); } });
+            root.addEventListener('click', e => { if (e.target === root || e.target.closest('[data-track-cancel]')) { root.hidden=true; const done=root.__pdResolve; root.__pdResolve=null; done?.(null); } });
+            root.querySelector('#pd-tracking-provider').addEventListener('change', () => { const other=root.querySelector('#pd-tracking-provider-other'); other.hidden=root.querySelector('#pd-tracking-provider').value!=='บริษัทขนส่งอื่น'; if(!other.hidden) other.focus(); });
             root.querySelector('[data-track-save]').addEventListener('click', () => {
               const value=root.querySelector('#pd-tracking-number').value.trim();
               if (!value) { root.querySelector('#pd-tracking-number').focus(); notifyV12('กรุณากรอกหมายเลข Tracking','กรอกหมายเลขพัสดุก่อนบันทึก เพื่อให้ลูกค้าติดตามการจัดส่งได้','alert-triangle'); return; }
-              const provider=root.querySelector('#pd-tracking-provider').value;
-              root.hidden=true; resolve({tracking:value, provider});
+              let provider=root.querySelector('#pd-tracking-provider').value;
+              if(provider==='บริษัทขนส่งอื่น') { provider=root.querySelector('#pd-tracking-provider-other').value.trim(); if(!provider) {root.querySelector('#pd-tracking-provider-other').focus(); notifyV12('กรุณาระบุผู้ให้บริการ','พิมพ์ชื่อบริษัทขนส่งอื่นก่อนบันทึก','alert-triangle');return;} }
+              root.hidden=true; const done=root.__pdResolve; root.__pdResolve=null; done?.({tracking:value, provider});
             });
-            root.addEventListener('keydown', e => { if(e.key==='Escape'){root.hidden=true;resolve(null)} if(e.key==='Enter' && e.target.id==='pd-tracking-number'){e.preventDefault();root.querySelector('[data-track-save]').click()} });
+            root.addEventListener('keydown', e => { if(e.key==='Escape'){root.hidden=true;const done=root.__pdResolve;root.__pdResolve=null;done?.(null)} if(e.key==='Enter' && e.target.id==='pd-tracking-number'){e.preventDefault();root.querySelector('[data-track-save]').click()} });
           }
+          root.__pdResolve=resolve;
           root.querySelector('#pd-tracking-number').value=initial;
+          root.querySelector('#pd-tracking-provider-other').hidden=root.querySelector('#pd-tracking-provider').value!=='บริษัทขนส่งอื่น';
           root.hidden=false; window.lucide?.createIcons?.(); requestAnimationFrame(()=>root.querySelector('#pd-tracking-number').focus());
         });
       };
@@ -785,7 +790,7 @@
       // Old rows are displayed explicitly so the browser never silently falls back to the first option.
       function normalizeAdminStatusValueV12(rawStatus) {
         const status = String(rawStatus || 'queued').toLowerCase();
-        return ({ pending: 'queued', printing: 'preparing' })[status] || status;
+        return ({ pending: 'queued' })[status] || status;
       }
 
       function renderAdminStatusSelectV12(ord) {
@@ -794,19 +799,20 @@
         const delivery = ord.delivery_method === 'delivery';
         const hasTracking = Boolean(String(ord.tracking_number || '').trim() && String(ord.delivery_provider || '').trim());
         const labels = {
-          queued: 'รอแอดมินตรวจสอบ', preparing: 'กำลังตรวจสอบ / จัดเตรียม',
-          ready_for_pickup: 'พร้อมรับเอกสาร', shipped: 'จัดส่งแล้ว',
-          finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว'
+          queued: 'รอจัดการงานพิมพ์', printing: 'กำลังพิมพ์ (จากระบบเดิม)', completed: 'พิมพ์เสร็จแล้ว (ยืนยันหลังตรวจจริง)',
+          preparing: 'กำลังจัดเตรียม / เข้าเล่ม', ready_for_pickup: delivery ? 'พร้อมจัดส่ง' : 'พร้อมรับเอกสาร',
+          shipped: 'จัดส่งแล้ว', finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว'
         };
         let allowed;
-        if (current === 'queued') allowed = ['queued', 'preparing', 'failed', 'cancelled'];
-        else if (current === 'preparing') allowed = ['queued', 'preparing', 'ready_for_pickup', ...(delivery ? ['shipped'] : []), 'failed'];
-        else if (current === 'ready_for_pickup') allowed = ['ready_for_pickup', ...(delivery ? ['shipped'] : []), 'finished'];
+        if (current === 'queued') allowed = ['queued', 'completed', 'failed', 'cancelled'];
+        else if (current === 'printing') allowed = ['printing', 'completed', 'failed'];
+        else if (current === 'preparing') allowed = ['preparing', 'ready_for_pickup', 'failed'];
+        else if (current === 'ready_for_pickup') allowed = ['ready_for_pickup', ...(delivery ? ['shipped'] : ['finished'])];
         else if (current === 'shipped') allowed = ['shipped', 'finished'];
         else if (current === 'failed') allowed = ['failed', 'queued', 'cancelled'];
         else if (current === 'finished' || current === 'cancelled') allowed = [current];
-        else if (current === 'completed') allowed = ['completed', 'preparing']; // legacy state; the RPC supports moving it into manual preparation
-        else allowed = [current, 'preparing'];
+        else if (current === 'completed') allowed = ['completed', 'preparing'];
+        else allowed = [current];
 
         const options = allowed.map(value => {
           const label = labels[value] || `สถานะเดิม: ${value}`;
@@ -862,7 +868,7 @@
 
           const userTb = $('admin-users-tbody');
           if (userTb && ur.error) userTb.innerHTML = `<tr><td colspan="4" class="py-8 px-4 text-center text-rose-400">โหลดรายชื่อสมาชิก/สิทธิ์ไม่สำเร็จ: ${safe(ur.error.message || String(ur.error))}<br><span class="text-xs">ตรวจสอบ RLS/Policy ของ public.users ใน Supabase</span></td></tr>`;
-          else if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${safe(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
+          else if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : u.role === 'employee' || u.role === 'staff' ? 'text-emerald-500' : 'sub-text'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><div class="inline-flex gap-2 items-center"><select data-pd-role-select data-user-id="${safe(u.id)}" data-current-role="${safe(u.role)}" class="ui-input rounded-lg p-2 text-xs"><option value="member" ${u.role==='member'?'selected':''}>Member</option><option value="employee" ${u.role==='employee'?'selected':''}>Employee</option><option value="staff" ${u.role==='staff'?'selected':''}>Staff (เดิม)</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select><button type="button" data-pd-role-save data-user-id="${safe(u.id)}" class="px-3 py-2 ui-card rounded-xl text-xs font-extrabold">บันทึกสิทธิ์</button></div></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
 
           $('pd-admin-orders-count') && ($('pd-admin-orders-count').textContent = String(orders.length));
           $('pd-admin-pending-count') && ($('pd-admin-pending-count').textContent = String(orders.filter(o => o.status === 'queued').length));
