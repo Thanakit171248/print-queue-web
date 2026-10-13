@@ -130,13 +130,13 @@
 
       async function loadPricingV12(paper) {
         const client = db();
-        if (!client) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+        if (!client) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
         const { data, error } = await client.from('pricing')
           .select('id,paper_size,black_white_price,color_price,duplex_price')
           .eq('paper_size', paper)
           .maybeSingle();
         if (error) throw error;
-        if (!data) throw new Error(`ยังไม่มีราคาสำหรับกระดาษ ${paper} ในตาราง pricing กรุณาตั้งราคาก่อนสั่งพิมพ์`);
+        if (!data) throw new Error('ยังไม่พบราคาสำหรับตัวเลือกกระดาษนี้ กรุณาลองเลือกตัวเลือกอื่นหรือแจ้งผู้ดูแลระบบ');
         return data;
       }
 
@@ -243,7 +243,7 @@
           const hydrated = await hydrateOrdersV12(data || []);
           currentOrdersList = hydrated; window.__pdAdminOrders = hydrated; renderQueueV12(hydrated);
         } catch (err) {
-          container.innerHTML = `<p class="py-8 text-center text-rose-500 text-xs">${safe(err?.message || 'ไม่สามารถโหลดข้อมูลคิวงานได้')}</p>`;
+          container.innerHTML = `<p class="py-8 text-center text-rose-500 text-xs">${safe(window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดข้อมูลคิวงานได้ในขณะนี้ กรุณาลองใหม่ หรือโปรดติดต่อผู้ดูแลระบบหากยังพบปัญหา') || 'ไม่สามารถโหลดข้อมูลคิวงานได้ในขณะนี้ กรุณาลองใหม่ หรือโปรดติดต่อผู้ดูแลระบบหากยังพบปัญหา')}</p>`;
         }
       };
 
@@ -251,13 +251,13 @@
         const list = $('topup-history-list');
         if (!list) return;
         const client = db();
-        if (!client || !window.currentUser?.id) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">กรุณาเข้าสู่ระบบและเชื่อมต่อฐานข้อมูล</p>'; return; }
+        if (!client || !window.currentUser?.id) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">กรุณาเข้าสู่ระบบเพื่อดูประวัติการเติม Coins</p>'; return; }
         try {
           const { data, error } = await client.from('topups').select('id,user_id,amount,status,created_at').eq('user_id', window.currentUser.id).order('created_at', { ascending: false });
           if (error) throw error;
           if (!data?.length) { list.innerHTML = '<p class="text-center py-8 sub-text text-xs">ยังไม่มีประวัติการเติม Coins</p>'; return; }
           list.innerHTML = data.map(tp => `<div class="p-4 rounded-2xl ui-card border flex items-center justify-between gap-3 text-xs shadow-sm"><div><p class="font-black text-amber-500 text-sm">+${money(tp.amount)} Coins</p><p class="text-[10px] sub-text font-mono mt-0.5">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</p></div><span class="security-badge ${tp.status === 'approved' ? 'good' : tp.status === 'rejected' ? 'bad' : 'warn'}">${tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธ' : 'รอตรวจสอบ'}</span></div>`).join('');
-        } catch (err) { list.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">${safe(err?.message || 'ไม่สามารถโหลดประวัติได้')}</p>`; }
+        } catch (err) { list.innerHTML = `<p class="text-center py-8 text-rose-500 text-xs">${safe(window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดประวัติได้ในขณะนี้ กรุณาลองใหม่ หรือโปรดติดต่อผู้ดูแลระบบหากยังพบปัญหา') || 'ไม่สามารถโหลดประวัติได้ในขณะนี้ กรุณาลองใหม่ หรือโปรดติดต่อผู้ดูแลระบบหากยังพบปัญหา')}</p>`; }
       };
 
       async function uploadToBucketV12(bucket, file, path) {
@@ -300,18 +300,18 @@
         let result = null;
         try { result = await response.json(); } catch (_) { }
         if (!response.ok || result?.ok !== true || result?.manualReview === true) {
-          const providerMessage = String(result?.message || '').trim();
+          const providerMessage = window.pdCustomerFacingMessage?.(result?.message, 'ขณะนี้ยังไม่สามารถยืนยันสลิปได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ขณะนี้ยังไม่สามารถยืนยันสลิปได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
           if (response.status === 503 || response.status === 429) {
             throw new Error(`${providerMessage || 'ระบบตรวจสลิปอัตโนมัติยังไม่พร้อม'}\nไม่ได้บันทึกคำขอและยังไม่มีการเพิ่ม Coins กรุณาลองใหม่ภายหลัง`);
           }
-          throw new Error(providerMessage || `ตรวจสลิปไม่ผ่าน (HTTP ${response.status}) กรุณาใช้สลิปโอนเงินจริงที่ถูกต้อง`);
+          throw new Error(providerMessage || 'ตรวจสอบสลิปไม่สำเร็จ กรุณาตรวจสอบรูปสลิปและลองใหม่อีกครั้ง');
         }
         const confirmedAmount = Number(result.amount);
         const transRef = String(result.transRef || '').trim();
         if (!Number.isFinite(confirmedAmount) || Math.round(confirmedAmount * 100) !== Math.round(amount * 100)) {
-          throw new Error('ยอดเงินที่ผู้ให้บริการยืนยันไม่ตรงกับยอดที่ต้องชำระ จึงปฏิเสธรายการ');
+          throw new Error('ยอดเงินบนสลิปไม่ตรงกับยอดที่ต้องชำระ กรุณาตรวจสอบจำนวนเงินแล้วลองใหม่อีกครั้ง');
         }
-        if (!transRef) throw new Error('ระบบตรวจสลิปไม่ส่งเลขอ้างอิงธุรกรรมกลับมา จึงยังไม่รับรายการนี้');
+        if (!transRef) throw new Error('ยังไม่สามารถยืนยันข้อมูลการโอนได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
         return {
           transRef,
           amount: confirmedAmount,
@@ -349,7 +349,7 @@
         e?.preventDefault();
         const client = db(), user = window.currentUser;
         if (!user) return notifyV12('กรุณาล็อกอิน', 'กรุณาล็อกอินก่อนทำการสั่งพิมพ์', 'lock');
-        if (!client) return notifyV12('ฐานข้อมูลยังไม่พร้อม', 'กรุณาเชื่อมต่อ Supabase ก่อนสั่งงาน', 'database-zap');
+        if (!client) return notifyV12('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถรับคำสั่งพิมพ์ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
 
         const file = window.selectedFileObj;
         if (!file) return notifyV12('ยังไม่ได้เลือกไฟล์', 'กรุณาอัปโหลดเอกสารก่อนสร้างรายการ', 'file-plus-2');
@@ -377,7 +377,7 @@
         }
 
         let pricing;
-        try { pricing = await loadPricingV12(paper); } catch (err) { return notifyV12('ยังตั้งค่าราคาไม่ครบ', err.message, 'badge-alert'); }
+        try { pricing = await loadPricingV12(paper); } catch (err) { console.error('[PrintDekD] Pricing lookup failed:', err); return notifyV12('ยังไม่สามารถคำนวณราคาได้', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถคำนวณราคาได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถคำนวณราคาได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'badge-alert'); }
         const pageRate = Number(isColor ? pricing.color_price : pricing.black_white_price) + (isDuplex ? Number(pricing.duplex_price) : 0);
         const printCost = pages * pageRate * copies;
         const deliveryFee = deliveryMethod === 'delivery' ? 30 : 0;
@@ -390,7 +390,7 @@
         }
 
         if (payMethod === 'coins') {
-          try { await window.fetchUserWallet?.(); } catch (err) { return notifyV12('ตรวจสอบ Coins ไม่สำเร็จ', err.message || 'ไม่สามารถอ่าน wallets.balance', 'shield-alert'); }
+          try { await window.fetchUserWallet?.(); } catch (err) { console.error('[PrintDekD] Wallet lookup failed:', err); return notifyV12('ตรวจสอบ Coins ไม่สำเร็จ', 'ยังตรวจสอบยอด Coins ล่าสุดไม่ได้ จึงยังไม่ดำเนินการชำระเงิน กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'shield-alert'); }
           const balance = Number(window.currentUser?.coins || 0);
           if (balance < total) return notifyV12('Coins ไม่พอ', `มี ${money(balance)} Coins แต่ต้องใช้ ${money(total)} Coins`, 'coins');
         }
@@ -426,7 +426,7 @@
             id: orderId, user_id: user.id, total_amount: total, status: 'queued', admin_note: notes || null, created_at: new Date().toISOString()
           }]).select('id,queue_number,total_amount,status,created_at').single();
           if (orderError) throw orderError;
-          if (!order) throw new Error('Supabase ไม่คืนข้อมูลออเดอร์');
+          if (!order) throw new Error('ยังไม่สามารถยืนยันการสร้างรายการได้ กรุณาตรวจสอบคิวก่อนส่งคำสั่งซ้ำ');
           orderCreated = true;
 
           const { error: jobError } = await client.from('print_jobs').insert([{
@@ -484,7 +484,7 @@
             ? `ยอดรวม ${money(total)} บาท\nตรวจสลิปอัตโนมัติผ่านแล้ว — รอผู้ดูแลยืนยันก่อนดำเนินการ`
             : `ยอดรวม ${money(total)} Coins\nหัก Coins และบันทึกคิวเรียบร้อยแล้ว`;
           const schemaWarning = verificationMetadataWarning
-            ? '\nคำเตือน: ฐานข้อมูลยังไม่มีคอลัมน์บันทึกผลตรวจสลิป กรุณารัน database/printdekd-wallet-verification.sql'
+            ? '\nหมายเหตุ: ระบบยังบันทึกผลตรวจสลิปได้ไม่ครบ กรุณาติดต่อผู้ดูแลระบบเพื่อตรวจสอบรายการนี้'
             : '';
           notifyV12('ส่งคำสั่งพิมพ์สำเร็จ', `คิว #${order.queue_number ?? order.id} • ${pages} หน้า × ${copies} ชุด\n${paymentStatus}${schemaWarning}`, verificationMetadataWarning ? 'alert-triangle' : 'check-circle-2');
           $('print-form')?.reset(); window.selectedFileObj = null;
@@ -520,7 +520,7 @@
           }
           notifyV12('สร้างรายการไม่สำเร็จ', walletRollbackConflict
             ? 'ตรวจพบยอด Wallet เปลี่ยนพร้อมกันและไม่สามารถคืนยอดอย่างปลอดภัย ระบบเก็บหลักฐานรายการไว้ให้ผู้ดูแลตรวจสอบแล้ว กรุณาอย่าส่งคำสั่งซื้อซ้ำ'
-            : (err?.message || 'ไม่สามารถบันทึกข้อมูลได้'), 'shield-alert');
+            : (window.pdCustomerFacingMessage?.(err, 'ไม่สามารถบันทึกคำสั่งซื้อได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถบันทึกคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง'), 'shield-alert');
         }
       };
 
@@ -535,13 +535,13 @@
       };
 
       window.openStoredPrintFile = async function (filePath, fileBucket = 'documents') {
-        if (!filePath) return notifyV12('ยังไม่มีไฟล์ออนไลน์', 'รายการนี้ไม่มีตำแหน่งไฟล์ใน Storage', 'file-warning');
+        if (!filePath) return notifyV12('ยังไม่มีไฟล์ออนไลน์', 'ไม่พบไฟล์ออนไลน์สำหรับรายการนี้ กรุณาติดต่อผู้ดูแลระบบหากต้องการให้ช่วยตรวจสอบ', 'file-warning');
         if (/^https?:\/\//i.test(filePath)) { window.open(filePath, '_blank', 'noopener,noreferrer'); return; }
         try {
           const { data, error } = await db().storage.from(fileBucket || 'documents').createSignedUrl(filePath, 900);
           if (error || !data?.signedUrl) throw error || new Error('สร้างลิงก์ไฟล์ชั่วคราวไม่สำเร็จ');
           window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
-        } catch (err) { notifyV12('เปิดไฟล์ไม่สำเร็จ', err.message || 'ตรวจสอบ Storage Policy', 'file-warning'); }
+        } catch (err) { console.error('[PrintDekD] File open failed:', err); notifyV12('เปิดไฟล์ไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถเปิดไฟล์นี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'file-warning'); }
       };
 
       window.openQueueDetailModal = async function (orderId) {
@@ -579,7 +579,7 @@
           }
           const modal = $('queue-detail-modal'); if (modal) { modal.classList.remove('hidden'); modal.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; }
           window.lucide?.createIcons();
-        } catch (err) { notifyV12('เปิดข้อมูลไม่สำเร็จ', err.message || 'ไม่สามารถโหลดคิวได้', 'database-zap'); }
+        } catch (err) { console.error('[PrintDekD] Order details load failed:', err); notifyV12('เปิดข้อมูลไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดรายละเอียดคิวนี้ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'database-zap'); }
       };
 
       window.promptTracking = async function (orderId) {
@@ -591,20 +591,20 @@
           const r = await db().from('deliveries').update({ tracking_number: tracking, delivery_provider: 'Kerry Express' }).eq('order_id', orderId).select('id,tracking_number,delivery_provider').maybeSingle();
           if (r.error) throw r.error;
           if (!r.data) throw new Error('ไม่พบรายการจัดส่งของออเดอร์นี้');
-          notifyV12('บันทึก Tracking สำเร็จ', 'ข้อมูลถูกบันทึกในตาราง deliveries แล้ว', 'shield-check');
+          notifyV12('บันทึกข้อมูลจัดส่งสำเร็จ', 'บันทึกหมายเลขติดตามพัสดุเรียบร้อยแล้ว', 'shield-check');
           await window.loadAdminData?.();
-        } catch (err) { notifyV12('บันทึก Tracking ไม่สำเร็จ', err.message || 'เกิดข้อผิดพลาด', 'shield-alert'); }
+        } catch (err) { console.error('[PrintDekD] Delivery update failed:', err); notifyV12('บันทึกข้อมูลจัดส่งไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาตรวจสอบข้อมูลแล้วลองใหม่'), 'shield-alert'); }
       };
 
       window.updateOrderStatus = async function (orderId, newStatus) {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
-        if (!['queued', 'printing', 'completed', 'cancelled'].includes(newStatus)) return notifyV12('สถานะไม่ถูกต้อง', 'สถานะต้องเป็น queued, printing หรือ completed', 'shield-alert');
+        if (!['queued', 'printing', 'completed', 'cancelled'].includes(newStatus)) return notifyV12('สถานะไม่ถูกต้อง', 'กรุณาเลือกสถานะจากรายการที่ระบบกำหนด', 'shield-alert');
         try {
           const r = await db().from('orders').update({ status: newStatus }).eq('id', orderId).select('id,status').maybeSingle();
           if (r.error) throw r.error; if (!r.data) throw new Error('ไม่พบออเดอร์หรือ UPDATE ไม่สำเร็จ');
-          notifyV12('อัปเดตสถานะสำเร็จ', `คิว #${orderId} เปลี่ยนเป็น ${newStatus}`, 'shield-check');
+          notifyV12('อัปเดตสถานะสำเร็จ', `บันทึกสถานะคิว #${orderId} เรียบร้อยแล้ว`, 'shield-check');
           await window.loadAdminData?.(); await window.fetchQueues?.();
-        } catch (err) { notifyV12('อัปเดตสถานะไม่สำเร็จ', err.message || 'เกิดข้อผิดพลาด', 'shield-alert'); }
+        } catch (err) { console.error('[PrintDekD] Status update failed:', err); notifyV12('อัปเดตสถานะไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถบันทึกสถานะคิวได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert'); }
       };
 
       window.approveTopup = async function (topupId, _userId, _amount) {
@@ -614,13 +614,13 @@
         try {
           const review = await db().from('topups').select('*').eq('id', topupId).maybeSingle();
           if (review.error) throw review.error;
-          if (!review.data || review.data.status !== 'pending') return notifyV12('รายการถูกจัดการแล้ว', 'ไม่พบคำขอที่ยังรออนุมัติ', 'shield-check');
+          if (!review.data || review.data.status !== 'pending') return notifyV12('รายการนี้ได้รับการจัดการแล้ว', 'ไม่พบคำขอที่รอการอนุมัติ กรุณารีเฟรชรายการเพื่อตรวจสอบสถานะล่าสุด', 'shield-check');
           if (review.data.verification_status !== 'verified') {
-            const proceed = window.confirm('คำขอนี้ยังไม่มีผลตรวจอัตโนมัติที่บันทึกไว้ (อาจเป็นรายการเก่าก่อนแก้ระบบ)\n\nก่อนอนุมัติ ให้เปิดดูสลิปและตรวจยอดเงิน วันเวลา เลขอ้างอิง และบัญชีผู้รับจากรายการโอนจริงด้วยตนเอง\n\nต้องการดำเนินการตรวจด้วยตนเองต่อหรือไม่?');
+            const proceed = window.confirm('คำขอนี้ยังไม่มีผลตรวจสลิปที่ยืนยันได้\n\nก่อนอนุมัติ กรุณาเปิดดูสลิปและตรวจยอดเงิน วันเวลา เลขอ้างอิง และบัญชีผู้รับจากรายการโอนจริงด้วยตนเอง\n\nต้องการดำเนินการตรวจสอบต่อหรือไม่?');
             if (!proceed) return;
           }
         } catch (reviewError) {
-          return notifyV12('ตรวจคำขอก่อนอนุมัติไม่สำเร็จ', reviewError.message || 'ไม่สามารถอ่านคำขอจากฐานข้อมูลได้', 'shield-alert');
+          return notifyV12('ตรวจคำขอก่อนอนุมัติไม่สำเร็จ', window.pdCustomerFacingMessage?.(reviewError, 'ไม่สามารถตรวจสอบคำขอนี้ได้ในขณะนี้ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ') || 'ไม่สามารถตรวจสอบคำขอนี้ได้ในขณะนี้', 'shield-alert');
         }
         let claimed = false, walletChanged = false, ledgerCreated = false, rollbackSafe = true;
         let walletId = null, before = 0, after = 0;
@@ -629,21 +629,21 @@
           const claim = await db().from('topups').update({ status: 'approved' })
             .eq('id', topupId).eq('status', 'pending').select('id,user_id,amount').maybeSingle();
           if (claim.error) throw claim.error;
-          if (!claim.data) return notifyV12('รายการถูกจัดการแล้ว', 'คำขอนี้ไม่ได้อยู่ในสถานะ pending', 'shield-check');
+          if (!claim.data) return notifyV12('รายการนี้ได้รับการจัดการแล้ว', 'ไม่พบคำขอที่รอการอนุมัติ กรุณารีเฟรชรายการเพื่อตรวจสอบสถานะล่าสุด', 'shield-check');
           claimed = true;
           const targetUserId = claim.data.user_id;
           const value = Number(claim.data.amount);
           if (!targetUserId || !Number.isFinite(value) || ![20, 50, 100, 200, 500].includes(value)) {
-            throw new Error('ข้อมูลคำขอเติมเงินไม่ถูกต้อง: user_id/amount ไม่ตรงกับแพ็กเกจที่ระบบอนุญาต');
+            throw new Error('ข้อมูลคำขอเติม Coins ไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบเพื่อให้ตรวจสอบรายการนี้');
           }
           const wallet = await window.ensureUserWalletV12(targetUserId);
           walletId = wallet.id;
           before = Number(wallet.balance || 0);
-          if (!Number.isFinite(before) || before < 0) throw new Error('ยอด Wallet ปัจจุบันไม่ถูกต้อง');
+          if (!Number.isFinite(before) || before < 0) throw new Error('ยอด Coins ปัจจุบันไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบ');
           after = Number((before + value).toFixed(2));
           const changed = await db().from('wallets').update({ balance: after, updated_at: new Date().toISOString() })
             .eq('id', wallet.id).eq('balance', before).select('id,balance').maybeSingle();
-          if (changed.error || !changed.data) throw changed.error || new Error('ยอด Coins เปลี่ยนระหว่างการอนุมัติ');
+          if (changed.error || !changed.data) throw changed.error || new Error('ยอด Coins เปลี่ยนระหว่างการทำรายการ กรุณารีเฟรชแล้วลองใหม่');
           walletChanged = true;
           const tx = await db().from('wallet_transactions').insert([{
             wallet_id: wallet.id, order_id: null, transaction_type: 'topup', amount: value,
@@ -668,9 +668,9 @@
           }
           if (walletChanged && !ledgerCreated && !rollbackSafe) {
             console.error('[PrintDekD] Top-up needs reconciliation; status retained to prevent duplicate credit.', { topupId, walletId, before, after });
-            notifyV12('ต้องตรวจสอบรายการเติม Coins', 'ไม่สามารถยืนยันการคืนยอด Wallet ได้ ระบบคงสถานะคำขอไว้เพื่อป้องกันการเติมซ้ำ กรุณาตรวจสอบ Wallet และประวัติธุรกรรมก่อนดำเนินการต่อ', 'shield-alert');
+            notifyV12('ต้องตรวจสอบรายการเติม Coins', 'ระบบยังยืนยันยอด Coins ของรายการนี้ไม่ได้ จึงเก็บคำขอไว้เพื่อป้องกันการเพิ่ม Coins ซ้ำ กรุณาตรวจสอบประวัติ Coins และติดต่อผู้ดูแลระบบก่อนดำเนินการต่อ', 'shield-alert');
           } else {
-            notifyV12('อนุมัติไม่สำเร็จ', err.message || 'ระบบยกเลิกรายการเพื่อความปลอดภัย', 'shield-alert');
+            console.error('[PrintDekD] Top-up approval failed:', err); notifyV12('อนุมัติไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถอนุมัติรายการได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
           }
         }
       };
@@ -679,9 +679,9 @@
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
         try {
           const r = await db().from('topups').update({ status: 'rejected' }).eq('id', topupId).eq('status', 'pending').select('id').maybeSingle();
-          if (r.error) throw r.error; if (!r.data) return notifyV12('รายการถูกจัดการแล้ว', 'คำขอนี้ไม่อยู่ในสถานะ pending แล้ว', 'shield-check');
-          notifyV12('ปฏิเสธคำขอแล้ว', 'สถานะถูกบันทึกใน topups', 'x-circle'); await window.loadAdminData?.();
-        } catch (err) { notifyV12('ปฏิเสธรายการไม่สำเร็จ', err.message || 'เกิดข้อผิดพลาด', 'shield-alert'); }
+          if (r.error) throw r.error; if (!r.data) return notifyV12('รายการนี้ได้รับการจัดการแล้ว', 'ไม่พบคำขอที่รอการตรวจสอบ กรุณารีเฟรชรายการเพื่อตรวจสอบสถานะล่าสุด', 'shield-check');
+          notifyV12('ปฏิเสธคำขอแล้ว', 'บันทึกผลการตรวจสอบคำขอเรียบร้อยแล้ว', 'x-circle'); await window.loadAdminData?.();
+        } catch (err) { console.error('[PrintDekD] Top-up rejection failed:', err); notifyV12('ปฏิเสธรายการไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถจัดการรายการนี้ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert'); }
       };
 
 
@@ -689,7 +689,7 @@
         e?.preventDefault();
         const client = db(), user = window.currentUser;
         if (!user) return notifyV12('กรุณาล็อกอิน', 'กรุณาล็อกอินก่อนทำรายการเติมเงิน', 'lock');
-        if (!client) return notifyV12('ฐานข้อมูลยังไม่พร้อม', 'ระบบไม่รับคำขอเติมเงินในโหมดออฟไลน์', 'database-zap');
+        if (!client) return notifyV12('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถรับคำขอเติม Coins ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
         const amount = Number($('selected-topup-amount')?.value || 20);
         if (![20, 50, 100, 200, 500].includes(amount)) return notifyV12('แพ็กเกจไม่ถูกต้อง', 'กรุณาเลือกจำนวน Coins จากแพ็กเกจที่ระบบกำหนด', 'shield-alert');
         const file = $('topup-slip-file')?.files?.[0];
@@ -701,7 +701,8 @@
         try {
           verification = await verifySlipV12(file, amount);
         } catch (verifyError) {
-          return notifyV12('ตรวจสลิปไม่ผ่าน', verifyError?.message || 'ระบบยังยืนยันสลิปไม่ได้ จึงไม่ได้บันทึกคำขอเติม Coins', 'shield-alert');
+          console.error('[PrintDekD] Slip verification failed:', verifyError);
+          return notifyV12('ตรวจสอบสลิปไม่สำเร็จ', window.pdCustomerFacingMessage?.(verifyError, 'ยังไม่สามารถยืนยันสลิปได้ จึงไม่มีการบันทึกคำขอหรือเพิ่ม Coins กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
         }
 
         let slipPath = '', topupCreated = false;
@@ -722,14 +723,15 @@
           }, verification);
           topupCreated = true;
           const note = save.metadataStored
-            ? `SlipOK ตรวจสลิปผ่าน ยอด ${money(verification.amount)} บาทและส่งเลขอ้างอิงธุรกรรมแล้ว คำขอยังรอแอดมินอนุมัติ Coins จึงยังไม่เพิ่ม`
-            : `SlipOK ตรวจสลิปผ่านแล้วและบันทึกคำขอไว้รอแอดมิน แต่ฐานข้อมูลยังไม่มีคอลัมน์เก็บผลตรวจ กรุณารัน database/printdekd-wallet-verification.sql ก่อนใช้งานจริง`;
+            ? `ตรวจสอบสลิปแล้ว ยอด ${money(verification.amount)} บาท คำขอยังรอผู้ดูแลอนุมัติ จึงยังไม่มีการเพิ่ม Coins`
+            : `รับคำขอไว้แล้ว แต่ยังบันทึกผลตรวจสลิปได้ไม่ครบ กรุณาติดต่อผู้ดูแลระบบเพื่อตรวจสอบรายการนี้ก่อนเพิ่ม Coins`;
           notifyV12(save.metadataStored ? 'ตรวจสลิปผ่านแล้ว' : 'บันทึกคำขอพร้อมคำเตือน', note, save.metadataStored ? 'shield-check' : 'alert-triangle');
           $('topup-slip-file').value = '';
           await window.fetchUserTopups?.();
         } catch (err) {
           if (!topupCreated) await removeStorageV12('slips', slipPath);
-          notifyV12('ส่งคำขอไม่สำเร็จ', err.message || 'ไม่สามารถบันทึกข้อมูลได้', 'shield-alert');
+          console.error('[PrintDekD] Top-up request failed:', err);
+          notifyV12('ส่งคำขอไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถส่งคำขอเติม Coins ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
         }
       };
 
@@ -745,15 +747,15 @@
           const adminErrors = [];
           let orders = [];
           let orderDataError = or.error || null;
-          if (or.error) adminErrors.push(`orders: ${or.error.message}`);
-          else { try { orders = await hydrateOrdersV12(or.data || []); } catch (hydrateError) { orderDataError = hydrateError; adminErrors.push(`รายละเอียดคิว/ตารางที่เกี่ยวข้อง: ${hydrateError?.message || hydrateError}`); } }
-          if (tr.error) adminErrors.push(`topups: ${tr.error.message}`);
-          if (ur.error) adminErrors.push(`users/สิทธิ์สมาชิก: ${ur.error.message}`);
+          if (or.error) adminErrors.push('ไม่สามารถโหลดรายการสั่งพิมพ์ได้');
+          else { try { orders = await hydrateOrdersV12(or.data || []); } catch (hydrateError) { orderDataError = hydrateError; adminErrors.push('ไม่สามารถโหลดรายละเอียดบางรายการได้'); } }
+          if (tr.error) adminErrors.push('ไม่สามารถโหลดรายการเติม Coins ได้');
+          if (ur.error) adminErrors.push('ไม่สามารถโหลดรายชื่อสมาชิกได้');
           window.__pdAdminOrders = orders; currentOrdersList = orders;
           const search = (v('pd-admin-search') || '').toLowerCase();
           const filtered = orders.filter(o => !search || [o.id, o.queue_number, o.file_name, o.user_name, o.user_email].some(x => String(x || '').toLowerCase().includes(search)));
           const tb = $('admin-orders-tbody');
-          if (tb && orderDataError) tb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดข้อมูลคิวไม่สำเร็จ: ${safe(orderDataError.message || String(orderDataError))}</td></tr>`;
+          if (tb && orderDataError) tb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดข้อมูลคิวไม่สำเร็จ: ไม่สามารถโหลดข้อมูลคิวได้ กรุณาลองใหม่ หรือติดต่อผู้ดูแลระบบหากยังพบปัญหา</td></tr>`;
           else if (tb) tb.innerHTML = filtered.map(ord => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 font-mono text-blue-500 font-bold">#${safe(ord.queue_number ?? ord.id)}</td>
         <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
@@ -766,26 +768,26 @@
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
 
           const topupTb = $('admin-topups-tbody');
-          if (topupTb && tr.error) topupTb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดรายการเติม Coins ไม่สำเร็จ: ${safe(tr.error.message || String(tr.error))}</td></tr>`;
+          if (topupTb && tr.error) topupTb.innerHTML = `<tr><td colspan="6" class="py-8 px-4 text-center text-rose-400">โหลดรายการเติม Coins ไม่สำเร็จ: ไม่สามารถโหลดรายการเติม Coins ได้ กรุณาลองใหม่ หรือติดต่อผู้ดูแลระบบหากยังพบปัญหา</td></tr>`;
           else if (topupTb) topupTb.innerHTML = (tr.data || []).map(tp => `<tr data-pd-topup-row-id="${safe(tp.id)}" class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition">
         <td class="py-3 px-3 sub-text text-[10px]">${safe(new Date(tp.created_at).toLocaleString('th-TH'))}</td>
         <td class="py-3 px-3 font-bold titanium-text">${safe(tp.user_name || tp.user_id)}</td>
         <td class="py-3 px-3 font-black text-amber-500">+${money(tp.amount)} Coins</td>
         <td class="py-3 px-3">${tp.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(tp.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '-'}</td>
-        <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}"><div>${safe(tp.status || 'pending')}</div><div class="mt-1 text-[11px] font-semibold ${/ผู้ดูแลตรวจ/.test(String(tp.verification_message || '')) ? (tp.status === 'approved' ? 'text-emerald-500' : 'text-rose-500') : tp.verification_status === 'verified' ? 'text-emerald-500' : tp.verification_status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${/ผู้ดูแลตรวจ/.test(String(tp.verification_message || '')) ? (tp.status === 'approved' ? 'Admin: ตรวจหลักฐานโอนแล้ว' : 'Admin: ปฏิเสธหลังตรวจหลักฐาน') : tp.verification_status === 'verified' ? 'SlipOK: ตรวจผ่าน' : tp.verification_status === 'rejected' ? 'SlipOK: ไม่ผ่าน' : tp.verification_status === 'manual_review' ? 'รอตรวจหลักฐานด้วยตนเอง' : 'ยังไม่มีผลตรวจอัตโนมัติ'}</div>${tp.verification_ref ? `<div class="mt-1 text-[10px] sub-text font-mono break-all">Ref: ${safe(tp.verification_ref)}</div>` : ''}</td>
+        <td class="py-3 px-3 font-bold ${tp.status === 'approved' ? 'text-emerald-500' : tp.status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}"><div>${tp.status === 'approved' ? 'อนุมัติแล้ว' : tp.status === 'rejected' ? 'ปฏิเสธแล้ว' : 'รอตรวจสอบ'}</div><div class="mt-1 text-[11px] font-semibold ${/ผู้ดูแลตรวจ/.test(String(tp.verification_message || '')) ? (tp.status === 'approved' ? 'text-emerald-500' : 'text-rose-500') : tp.verification_status === 'verified' ? 'text-emerald-500' : tp.verification_status === 'rejected' ? 'text-rose-500' : 'text-amber-500'}">${/ผู้ดูแลตรวจ/.test(String(tp.verification_message || '')) ? (tp.status === 'approved' ? 'ผู้ดูแลตรวจหลักฐานแล้ว' : 'ผู้ดูแลปฏิเสธหลังตรวจหลักฐาน') : tp.verification_status === 'verified' ? 'ตรวจสลิปผ่านอัตโนมัติ' : tp.verification_status === 'rejected' ? 'ตรวจสลิปไม่ผ่าน' : tp.verification_status === 'manual_review' ? 'รอตรวจหลักฐานการโอน' : 'ยังไม่มีผลตรวจอัตโนมัติ'}</div>${tp.verification_ref ? `<div class="mt-1 text-[10px] sub-text font-mono break-all">เลขอ้างอิง: ${safe(tp.verification_ref)}</div>` : ''}</td>
         <td class="py-3 px-3 text-right">${tp.status === 'pending' ? `<div class="flex gap-2 justify-end"><button type="button" data-pd-admin-action="approve-topup" data-topup-id="${safe(tp.id)}" data-user-id="${safe(tp.user_id)}" data-amount="${Number(tp.amount)}" class="px-3 py-2 bg-emerald-600 text-white font-bold rounded-xl text-sm">อนุมัติ</button><button type="button" data-pd-admin-action="reject-topup" data-topup-id="${safe(tp.id)}" class="px-3 py-2 bg-rose-600 text-white font-bold rounded-xl text-sm">ปฏิเสธ</button></div>` : '-'}</td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีคำขอเติม Coins</td></tr>';
 
           const userTb = $('admin-users-tbody');
-          if (userTb && ur.error) userTb.innerHTML = `<tr><td colspan="4" class="py-8 px-4 text-center text-rose-400">โหลดรายชื่อสมาชิก/สิทธิ์ไม่สำเร็จ: ${safe(ur.error.message || String(ur.error))}<br><span class="text-xs">ตรวจสอบ RLS/Policy ของ public.users ใน Supabase</span></td></tr>`;
+          if (userTb && ur.error) userTb.innerHTML = `<tr><td colspan="4" class="py-8 px-4 text-center text-rose-400">โหลดรายชื่อสมาชิก/สิทธิ์ไม่สำเร็จ: ไม่สามารถโหลดรายชื่อสมาชิกได้ในขณะนี้ กรุณาลองใหม่หรือติดต่อผู้ดูแลระบบ</td></tr>`;
           else if (userTb) userTb.innerHTML = (ur.data || []).map(u => `<tr class="hover:bg-slate-200/50 dark:hover:bg-white/5 transition"><td class="py-3 px-3 font-bold titanium-text">${safe(u.full_name)}</td><td class="py-3 px-3 sub-text">${safe(u.email)}</td><td class="py-3 px-3 font-bold ${u.role === 'admin' ? 'text-purple-500' : 'text-emerald-500'}">${safe(u.role)}</td><td class="py-3 px-3 text-right"><button type="button" data-pd-admin-action="role" data-user-id="${safe(u.id)}" data-target-role="${u.role === 'admin' ? 'member' : 'admin'}" class="px-3 py-2 ui-card rounded-xl text-sm font-extrabold">สลับสิทธิ์เป็น ${u.role === 'admin' ? 'Member' : 'Admin'}</button></td></tr>`).join('') || '<tr><td colspan="4" class="py-10 text-center sub-text">ยังไม่มีสมาชิก</td></tr>';
 
           $('pd-admin-orders-count') && ($('pd-admin-orders-count').textContent = String(orders.length));
           $('pd-admin-pending-count') && ($('pd-admin-pending-count').textContent = String(orders.filter(o => o.status === 'queued').length));
           $('pd-admin-topup-count') && ($('pd-admin-topup-count').textContent = String((tr.error ? [] : (tr.data || [])).filter(x => x.status === 'pending').length));
           window.lucide?.createIcons();
-          if (adminErrors.length) notifyV12('โหลดข้อมูล Admin ได้บางส่วน', adminErrors.join('\n'), 'database');
-        } catch (err) { notifyV12('โหลดข้อมูล Admin ไม่สำเร็จ', err.message || 'ไม่สามารถดึงข้อมูลได้', 'shield-alert'); }
+          if (adminErrors.length) notifyV12('โหลดข้อมูลผู้ดูแลได้บางส่วน', adminErrors.join('\n'), 'database');
+        } catch (err) { console.error('[PrintDekD] Admin data load failed:', err); notifyV12('โหลดข้อมูลผู้ดูแลไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดข้อมูลได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert'); }
       };
 
       window.filterAdminWorkspace = () => window.loadAdminData?.();
