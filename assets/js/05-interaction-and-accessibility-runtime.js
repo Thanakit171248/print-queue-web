@@ -131,20 +131,17 @@
         const btn = qa('#admin-users-tbody [data-pd-role-target]').find(x => String(x.dataset.pdRoleTarget) === String(userId));
         if (btn) { btn.classList.add('pd-v11-busy'); btn.disabled = true; btn.dataset.oldText = btn.textContent; btn.textContent = 'กำลังบันทึก…'; }
         try {
-          if (!window.supabaseClient) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+          if (!window.supabaseClient) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
           const r = await window.supabaseClient.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle();
           if (r.error) throw r.error;
-          if (!r.data) throw new Error('UPDATE ไม่คืนแถวข้อมูล — ตรวจสอบ RLS Policy ของ public.users ว่าบัญชีผู้ดูแลที่ใช้งานมีสิทธิ์ UPDATE และ SELECT');
-          if (r.data.role !== newRole) throw new Error('ฐานข้อมูลไม่ยืนยัน role ใหม่');
-          notify('สลับสิทธิ์สำเร็จ', `เปลี่ยนเป็น ${newRole.toUpperCase()} แล้ว`, 'shield-check');
+          if (!r.data) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ');
+          if (r.data.role !== newRole) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+          notify('เปลี่ยนสิทธิ์สำเร็จ', `เปลี่ยนสิทธิ์สมาชิกเป็น ${newRole.toUpperCase()} เรียบร้อยแล้ว`, 'shield-check');
           btn?.classList.add('pd-v11-result-good');
           await window.loadAdminData?.(); setTimeout(decorateAdminRows, 120);
         } catch (err) {
-          const raw = err?.message || String(err);
-          let msg = raw;
-          if (/row-level security|permission denied|not authorized|policy/i.test(raw)) msg = `${raw}\n\nสาเหตุ: Supabase RLS/Policy ของ users ยังไม่อนุญาต UPDATE role จาก client นี้`;
-          if (/JWT|auth\.uid/i.test(raw)) msg = `${raw}\n\nระบบปัจจุบันใช้ session users แบบกำหนดเอง ไม่ใช่ Supabase Auth จึงไม่สามารถใช้ auth.uid() เป็นตัวพิสูจน์ Admin ได้อย่างปลอดภัย`;
-          notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', msg, 'shield-alert');
+          console.error('[PrintDekD] Change user role failed:', err);
+          notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
           btn?.classList.add('pd-v11-result-bad');
         } finally {
           if (btn) { btn.disabled = false; btn.classList.remove('pd-v11-busy'); btn.textContent = btn.dataset.oldText || 'สลับสิทธิ์'; }
@@ -156,7 +153,7 @@
          Supabase screen. It is tried first. print-files remains fallback.
          --------------------------------------------------------------- */
       window.pdV11UploadPrintFile = async function (file, orderId) {
-        if (!window.supabaseClient) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+        if (!window.supabaseClient) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
         const preferred = localStorage.getItem('sp_print_bucket') || 'documents';
         const buckets = [...new Set([preferred, 'documents', 'print-files'])];
         const safeName = String(file.name || 'document').replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 100) || 'document';
@@ -170,7 +167,8 @@
             if (!/bucket.*not found|not found/i.test(r.error.message || '')) break;
           } catch (e) { errors.push(`${bucket}: ${e.message || e}`) }
         }
-        throw new Error(`อัปโหลดไฟล์ไม่สำเร็จ\n${errors.join('\n')}\n\nBucket documents มีอยู่ในโปรเจกต์ของคุณแล้ว หากยังอัปโหลดไม่ได้ให้ตรวจ Storage Policy สำหรับ INSERT`);
+        console.error('[PrintDekD] Upload failed in all available locations:', errors);
+        throw new Error('อัปโหลดไฟล์ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
       };
 
       /* ---------------------------------------------------------------
@@ -179,7 +177,7 @@
          before upload and show the exact migration instead of wasting a file.
          --------------------------------------------------------------- */
       async function probeOrdersCopies() {
-        if (!window.supabaseClient) return { ok: false, error: 'Supabase ยังไม่เชื่อมต่อ' };
+        if (!window.supabaseClient) return { ok: false, error: 'ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง' };
         const r = await window.supabaseClient.from('orders').select('copies').limit(1);
         if (r.error) return { ok: false, error: r.error.message };
         return { ok: true };
@@ -188,7 +186,7 @@
         const r = await probeOrdersCopies();
         if (r.ok) return true;
         if (/copies.*column|column.*copies|schema cache/i.test(r.error || '')) {
-          notify('ฐานข้อมูลยังขาดคอลัมน์ copies', 'กรุณารัน SQL Migration ที่แนบมากับ v11 แล้วรีเฟรชหน้าเว็บ', 'database-zap');
+          notify('ระบบยังไม่พร้อมรับคำสั่งพิมพ์', 'ยังไม่สามารถบันทึกข้อมูลการพิมพ์ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
           return false;
         }
         return true;
@@ -199,7 +197,7 @@
         e?.preventDefault();
         const u = window.currentUser;
         if (!u) return notify('กรุณาล็อกอิน', 'กรุณาล็อกอินก่อนทำการสั่งพิมพ์', 'lock');
-        if (!window.supabaseClient) return notify('ฐานข้อมูลยังไม่พร้อม', 'กรุณาเชื่อมต่อ Supabase ก่อนสั่งงาน', 'database-zap');
+        if (!window.supabaseClient) return notify('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถรับคำสั่งพิมพ์ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
         if (!(await window.pdV11EnsureOrderSchema())) return;
         const val = id => q('#' + id)?.value?.trim?.() ?? q('#' + id)?.value ?? '';
         const pages = Math.max(1, parseInt(val('printed-pages-input')) || 1);
@@ -237,7 +235,7 @@
           const obj = { id: orderId, user_id: u.id, user_name: u.full_name || '', file_name: file.name, file_path: uploaded.path, file_bucket: uploaded.bucket, file_size: file.size, file_mime: file.type || 'application/octet-stream', page_count: pages, copies, paper_size: paper, is_color: isColor, is_duplex: isDuplex, delivery_method: deliveryMethod, recipient_name: rn, recipient_phone: rp, recipient_address: ra, delivery_fee: delivery, total_price: total, payment_method: payMethod, slip_url: slipUrl, admin_note: notes, status: 'pending', created_at: new Date().toISOString() };
           const ins = await window.supabaseClient.from('orders').insert([obj]).select('id,copies,file_path,file_bucket,total_price').maybeSingle();
           if (ins.error) throw ins.error;
-          if (!ins.data) throw new Error('Supabase ไม่คืนรายการที่สร้าง — ตรวจสอบ INSERT/SELECT Policy ของ orders');
+          if (!ins.data) throw new Error('ยังไม่สามารถยืนยันการสร้างรายการได้ กรุณาลองใหม่ และตรวจสอบคิวก่อนส่งซ้ำ');
           created = true;
           if (payMethod === 'coins') {
             const before = Number(u.coins || 0), after = Number((before - total).toFixed(2));
@@ -250,7 +248,8 @@
           if (uploaded && !created) {
             try { await window.supabaseClient.storage.from(uploaded.bucket).remove([uploaded.path]) } catch (_) { }
           }
-          notify('สร้างรายการไม่สำเร็จ', err?.message || 'ไม่สามารถบันทึกรายการได้', 'shield-alert');
+          console.error('[PrintDekD] Order creation failed:', err);
+          notify('สร้างรายการไม่สำเร็จ', window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถบันทึกรายการได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ยังไม่สามารถบันทึกรายการได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'shield-alert');
         }
       };
 
