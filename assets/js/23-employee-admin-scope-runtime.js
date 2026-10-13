@@ -8,7 +8,7 @@
   const db = () => window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
   const role = () => String(window.currentUser?.role || '').toLowerCase();
   const isAdmin = () => role() === 'admin';
-  const isStaff = () => ['admin', 'employee', 'staff'].includes(role());
+  const isStaff = () => ['admin', 'employee'].includes(role());
   const esc = (value) => typeof window.escapeHtml === 'function'
     ? window.escapeHtml(String(value ?? ''))
     : String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -22,7 +22,7 @@
     preparing:'กำลังจัดเตรียม / เข้าเล่ม', ready_for_pickup:'พร้อมรับ / พร้อมจัดส่ง',
     shipped:'จัดส่งแล้ว', finished:'ส่งมอบเรียบร้อย', cancelled:'ยกเลิกแล้ว', failed:'ต้องตรวจสอบแก้ไข', pending:'รอจัดการงานพิมพ์'
   })[String(status || '').toLowerCase()] || String(status || 'ไม่ทราบสถานะ');
-  const roleLabel = (v) => ({admin:'Admin · ผู้ดูแลระบบ',employee:'Employee · พนักงาน',staff:'Employee · บทบาท Staff เดิม',member:'Member · ลูกค้า'})[v] || v;
+  const roleLabel = (v) => ({admin:'Admin · ผู้ดูแลระบบ',employee:'Employee · พนักงาน',staff:'Staff เดิม · ต้องปรับเป็น Employee',member:'Member · ลูกค้า'})[v] || v;
   let activePricing = [];
   let activeBindings = [];
   let activeDeliveries = [];
