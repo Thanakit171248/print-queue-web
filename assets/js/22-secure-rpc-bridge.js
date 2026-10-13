@@ -24,6 +24,62 @@
     if (typeof window.showCustomModal === 'function') return window.showCustomModal({ title, message, icon });
     console.warn(`[PrintDekD] ${title}: ${message}`);
   };
+
+  // Use PrintDekD's own modal for confirmations instead of browser-native confirm().
+  // This keeps Admin actions visually consistent with the existing logout/success dialog.
+  function showAppConfirm({ title, message, icon = 'shield-check', confirmText = 'ยืนยัน', cancelText = 'ยกเลิก', onConfirm }) {
+    const modal = $('custom-modal');
+    const titleEl = $('modal-title');
+    const messageEl = $('modal-message');
+    const iconEl = $('modal-icon');
+    const confirmButton = $('modal-confirm-btn');
+    const cancelButton = $('modal-cancel-btn');
+
+    // The project includes these elements; retain a safe fallback only if markup was removed.
+    if (!modal || !titleEl || !messageEl || !iconEl || !confirmButton || !cancelButton) {
+      if (window.confirm(`${title}\n\n${message}`)) return onConfirm?.();
+      return;
+    }
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    iconEl.setAttribute('data-lucide', icon);
+    cancelButton.classList.remove('hidden');
+    cancelButton.textContent = cancelText;
+    confirmButton.textContent = confirmText;
+
+    const close = () => {
+      // `hidden` removes the dialog from the accessibility tree; leave aria-hidden
+      // false so later standard notifications can reopen this shared modal normally.
+      modal.classList.add('hidden');
+    };
+    cancelButton.onclick = (event) => {
+      event?.preventDefault?.();
+      close();
+    };
+    confirmButton.onclick = (event) => {
+      event?.preventDefault?.();
+      close();
+      try {
+        const result = onConfirm?.();
+        if (result && typeof result.catch === 'function') {
+          result.catch((error) => console.error('[PrintDekD] Confirmation action failed:', error));
+        }
+      } catch (error) {
+        console.error('[PrintDekD] Confirmation action failed:', error);
+      }
+    };
+
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'modal-title');
+    modal.setAttribute('aria-describedby', 'modal-message');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.remove('hidden');
+    try { window.lucide?.createIcons(); } catch (_) { /* icon library is optional */ }
+    // Focus the safer option first so Enter does not immediately change permissions.
+    requestAnimationFrame(() => cancelButton.focus({ preventScroll: true }));
+  }
   const currentValue = (id) => String($(id)?.value ?? '').trim();
   const randomKey = () => {
     if (window.crypto?.randomUUID) return window.crypto.randomUUID();
@@ -598,17 +654,26 @@
     const role = String(newRole || '').toLowerCase();
     if (!['admin', 'staff', 'member'].includes(role)) return notify('สิทธิ์ไม่ถูกต้อง', 'เลือกได้เฉพาะ Admin, Staff หรือ Member', 'shield-alert');
     if (String(window.currentUser?.id) === String(userId)) return notify('เปลี่ยนสิทธิ์ไม่ได้', 'เพื่อป้องกันการล็อกตัวเองออกจากระบบ ไม่อนุญาตให้เปลี่ยนบทบาทบัญชีที่กำลังใช้งาน', 'shield-alert');
-    if (!window.confirm(`ยืนยันเปลี่ยนสิทธิ์สมาชิกเป็น ${role.toUpperCase()} หรือไม่?`)) return;
-    try {
-      await rpc('pd_admin_set_user_role_v2', { p_user_id: String(userId), p_new_role: role });
-      const { data, error } = await db().from('users').select('id,role').eq('id', userId).maybeSingle();
-      if (error) throw error;
-      if (!data || data.role !== role) throw new Error('RPC ทำงานแล้ว แต่ยังยืนยันบทบาทจากฐานข้อมูลไม่ได้ กรุณารีเฟรชหน้า Admin');
-      notify('เปลี่ยนสิทธิ์สำเร็จ', `บันทึกบทบาท ${role.toUpperCase()} ผ่าน RPC แล้ว`, 'shield-check');
-      await window.loadAdminData?.();
-    } catch (error) {
-      notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', error?.message || String(error), 'shield-alert');
-    }
+    const roleLabel = role === 'admin' ? 'Admin' : role === 'staff' ? 'Staff' : 'Member';
+    showAppConfirm({
+      title: 'ยืนยันการเปลี่ยนสิทธิ์',
+      message: `ต้องการเปลี่ยนสิทธิ์บัญชีนี้เป็น ${roleLabel} หรือไม่?\n\nระบบจะบันทึกการเปลี่ยนแปลงลงฐานข้อมูลจริงหลังจากคุณกดยืนยัน`,
+      icon: role === 'admin' ? 'shield-check' : 'user-round',
+      confirmText: `ยืนยันเป็น ${roleLabel}`,
+      cancelText: 'ยกเลิก',
+      onConfirm: async () => {
+        try {
+          await rpc('pd_admin_set_user_role_v2', { p_user_id: String(userId), p_new_role: role });
+          const { data, error } = await db().from('users').select('id,role').eq('id', userId).maybeSingle();
+          if (error) throw error;
+          if (!data || data.role !== role) throw new Error('RPC ทำงานแล้ว แต่ยังยืนยันบทบาทจากฐานข้อมูลไม่ได้ กรุณารีเฟรชหน้า Admin');
+          notify('เปลี่ยนสิทธิ์สำเร็จ', `บันทึกบทบาท ${roleLabel} ผ่าน RPC แล้ว`, 'shield-check');
+          await window.loadAdminData?.();
+        } catch (error) {
+          notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+        }
+      }
+    });
   };
 
   const RPC_TARGET_STATUSES = [
