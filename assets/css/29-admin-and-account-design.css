@@ -21,6 +21,39 @@
       #custom-modal #modal-actions button { width: 100%; flex: auto !important; }
     }
 
+    /* PrintDekD branded dialog finish: calm glass surface, soft accent, clear actions. */
+    #custom-modal { background: rgba(4, 7, 14, .72) !important; backdrop-filter: blur(18px) saturate(125%) !important; }
+    #custom-modal > div {
+      position: relative !important;
+      border: 1px solid rgba(148, 163, 184, .24) !important;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, .10), transparent 62%), rgba(17, 19, 28, .97) !important;
+    }
+    #custom-modal > div::before {
+      content: ""; position: absolute; top: 0; left: 12%; right: 12%; height: 2px;
+      border-radius: 0 0 999px 999px;
+      background: linear-gradient(90deg, rgba(59, 130, 246, .25), #818cf8, #a855f7, rgba(168, 85, 247, .25));
+      pointer-events: none;
+    }
+    #custom-modal > div > div:first-child { box-shadow: 0 12px 32px rgba(59, 130, 246, .10); }
+    #custom-modal #modal-confirm-btn {
+      background: linear-gradient(135deg, #2563eb 0%, #6d28d9 58%, #9333ea 100%) !important;
+      border: 1px solid rgba(196, 181, 253, .24) !important;
+      box-shadow: 0 10px 28px rgba(109, 40, 217, .22) !important;
+    }
+    #custom-modal #modal-confirm-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    #custom-modal #modal-cancel-btn {
+      border: 1px solid rgba(148, 163, 184, .22) !important;
+      background: rgba(148, 163, 184, .08) !important;
+    }
+    html:not(.dark) #custom-modal > div {
+      background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, .07), transparent 62%), rgba(255, 255, 255, .98) !important;
+      border-color: rgba(100, 116, 139, .20) !important;
+    }
+    html:not(.dark) #custom-modal #modal-cancel-btn {
+      background: rgba(15, 23, 42, .035) !important; border-color: rgba(100, 116, 139, .22) !important;
+      color: #334155 !important;
+    }
+
     /* Leading brand icons for the profile URL/name inputs */
     .pd-input-icon-wrap { position: relative; width: 100%; min-width: 0; }
     .pd-input-leading-icon { position: absolute; z-index: 2; left: 16px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; color: #8abfff; pointer-events: none; }
