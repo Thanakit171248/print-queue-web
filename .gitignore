@@ -2,3 +2,8 @@
 Thumbs.db
 *.log
 .vercel/
+
+# Local/server secrets must not be committed
+.env
+.env.*
+!.env.example
