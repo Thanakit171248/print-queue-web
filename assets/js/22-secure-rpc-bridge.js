@@ -393,7 +393,7 @@
     return chosen.size;
   }
 
-  async function getPricingForOrder(client, paperSize, deliveryMethod) {
+  async function getPricingForOrder(client, paperSize, deliveryMethod, deliveryProvider, bindingOptionId) {
     const { data: price, error: priceError } = await client.from('pricing')
       .select('paper_size,black_white_price,color_price,duplex_price,active')
       .eq('paper_size', paperSize).eq('active', true).maybeSingle();
@@ -401,13 +401,22 @@
     if (!price) throw new Error(`ยังไม่มีราคาที่เปิดใช้งานสำหรับกระดาษ ${paperSize}`);
     let deliveryFee = 0;
     if (deliveryMethod === 'delivery') {
+      const providerKey = String(deliveryProvider || currentValue('delivery-provider') || 'parcel');
       const { data: option, error: optionError } = await client.from('delivery_options')
-        .select('provider_key,fee,active').eq('provider_key', 'parcel').eq('active', true).maybeSingle();
+        .select('provider_key,fee,active').eq('provider_key', providerKey).eq('active', true).maybeSingle();
       if (optionError) throw optionError;
-      if (!option || option.fee == null) throw new Error('ขณะนี้ยังไม่พร้อมให้เลือกจัดส่งพัสดุ กรุณาเลือกมารับที่ร้านหรือติดต่อผู้ดูแลระบบ');
+      if (!option || option.fee == null) throw new Error('ช่องทางจัดส่งที่เลือกยังไม่ได้เปิดใช้หรือยังไม่กำหนดราคา กรุณาเลือกช่องทางอื่นหรือติดต่อ Admin');
       deliveryFee = Number(option.fee);
     }
-    return { price, deliveryFee };
+    let bindingFee = 0;
+    if (bindingOptionId !== null && bindingOptionId !== undefined && String(bindingOptionId) !== '') {
+      const { data: binding, error: bindingError } = await client.from('binding_options')
+        .select('id,price,active').eq('id', bindingOptionId).eq('active', true).maybeSingle();
+      if (bindingError) throw bindingError;
+      if (!binding) throw new Error('ตัวเลือกเข้าเล่มที่เลือกยังไม่เปิดใช้ กรุณาเลือกใหม่');
+      bindingFee = Number(binding.price || 0);
+    }
+    return { price, deliveryFee, bindingFee };
   }
 
   async function findOrderByRequestKey(client, userId, requestKey) {
@@ -516,15 +525,21 @@
         return notify('พบรายการที่บันทึกแล้ว', `คำขอเดิมถูกบันทึกเป็นคิว #${existing.queue_number ?? existing.id} จำนวน ${money(existing.total_amount)} บาท/Coins จึงไม่ส่งรายการซ้ำ`, 'check-circle-2');
       }
 
-      const { price, deliveryFee } = await getPricingForOrder(client, paperSize, deliveryMethod);
+      const bindingRaw = currentValue('binding-option');
+      const bindingOptionId = bindingRaw ? Number.parseInt(bindingRaw, 10) : null;
+      if (bindingRaw && (!Number.isInteger(bindingOptionId) || bindingOptionId < 1)) throw new Error('ตัวเลือกเข้าเล่มไม่ถูกต้อง กรุณาเลือกใหม่');
+      const deliveryProvider = deliveryMethod === 'delivery' ? currentValue('delivery-provider') : null;
+      if (deliveryMethod === 'delivery' && !deliveryProvider) throw new Error('ยังไม่มีผู้ให้บริการจัดส่งที่เปิดใช้งาน กรุณาติดต่อ Admin ให้ตั้งราคาก่อนสั่งพิมพ์');
+      const { price, deliveryFee, bindingFee } = await getPricingForOrder(client, paperSize, deliveryMethod, deliveryProvider, bindingOptionId);
       const perPage = Number(color ? price.color_price : price.black_white_price) + (duplex ? Number(price.duplex_price || 0) : 0);
-      const estimatedTotal = Number((selectedPages * perPage * copies + deliveryFee).toFixed(2));
+      const bindingTotal = bindingFee * copies;
+      const estimatedTotal = Number((selectedPages * perPage * copies + bindingTotal + deliveryFee).toFixed(2));
       if (!Number.isFinite(estimatedTotal) || estimatedTotal <= 0) throw new Error('ขณะนี้ยังคำนวณราคาไม่ได้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
 
       const totalEl = $('total-price');
       if (totalEl) totalEl.textContent = `${money(estimatedTotal)} ฿`;
       const breakdown = $('price-breakdown');
-      if (breakdown) breakdown.textContent = `(${selectedPages} หน้า × ${money(perPage)} ฿ × ${copies} ชุด${deliveryFee ? ` + ค่าส่ง ${money(deliveryFee)} ฿` : ''})`;
+      if (breakdown) breakdown.textContent = `(${selectedPages} หน้า × ${money(perPage)} ฿ × ${copies} ชุด${bindingTotal ? ` + เข้าเล่ม ${money(bindingTotal)} ฿` : ''}${deliveryMethod === 'delivery' ? ` + ค่าส่ง ${money(deliveryFee)} ฿` : ''})`;
 
       if (paymentMethod === 'coins') {
         await window.fetchUserWallet?.();
@@ -569,9 +584,9 @@
         p_color: color,
         p_paper_size: paperSize,
         p_duplex: duplex,
-        p_binding_option_id: null,
+        p_binding_option_id: bindingOptionId,
         p_delivery_method: deliveryMethod,
-        p_delivery_provider: deliveryMethod === 'delivery' ? 'parcel' : null,
+        p_delivery_provider: deliveryMethod === 'delivery' ? deliveryProvider : null,
         p_recipient_name: deliveryMethod === 'delivery' ? recipientName : null,
         p_phone_number: deliveryMethod === 'delivery' ? phone : null,
         p_delivery_address: deliveryMethod === 'delivery' ? address : null,
@@ -665,9 +680,9 @@
   window.changeUserRole = async function changeUserRoleThroughRpc(userId, newRole) {
     if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
     const role = String(newRole || '').toLowerCase();
-    if (!['admin', 'staff', 'member'].includes(role)) return notify('สิทธิ์ไม่ถูกต้อง', 'เลือกได้เฉพาะ Admin, Staff หรือ Member', 'shield-alert');
+    if (!['admin', 'staff', 'employee', 'member'].includes(role)) return notify('สิทธิ์ไม่ถูกต้อง', 'เลือกได้เฉพาะ Admin, Employee, Staff หรือ Member', 'shield-alert');
     if (String(window.currentUser?.id) === String(userId)) return notify('เปลี่ยนสิทธิ์ไม่ได้', 'เพื่อป้องกันการล็อกตัวเองออกจากระบบ ไม่อนุญาตให้เปลี่ยนบทบาทบัญชีที่กำลังใช้งาน', 'shield-alert');
-    const roleLabel = role === 'admin' ? 'Admin' : role === 'staff' ? 'Staff' : 'Member';
+    const roleLabel = role === 'admin' ? 'Admin' : role === 'employee' ? 'Employee' : role === 'staff' ? 'Staff' : 'Member';
     showAppConfirm({
       title: 'ยืนยันการเปลี่ยนสิทธิ์',
       message: `ต้องการเปลี่ยนสิทธิ์บัญชีนี้เป็น ${roleLabel} หรือไม่?\n\nการเปลี่ยนสิทธิ์จะมีผลหลังจากคุณกดยืนยัน`,
@@ -690,8 +705,9 @@
   };
 
   const RPC_TARGET_STATUSES = [
-    ['queued', 'รอแอดมินตรวจสอบ'],
-    ['preparing', 'กำลังตรวจสอบ / จัดเตรียม'],
+    ['queued', 'รอจัดการ'],
+    ['completed', 'พิมพ์เสร็จแล้ว (ยืนยันโดยพนักงาน)'],
+    ['preparing', 'กำลังจัดเตรียม'],
     ['ready_for_pickup', 'พร้อมรับเอกสาร'],
     ['shipped', 'จัดส่งแล้ว'],
     ['finished', 'ส่งมอบเรียบร้อย'],
@@ -712,7 +728,7 @@
   }
 
   window.updateOrderStatus = async function updateOrderStatusThroughRpc(orderId, newStatus) {
-    if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return false;
+    if (typeof window.assertStaffAccess === 'function' && !window.assertStaffAccess()) return false;
     if (!RPC_TARGET_STATUSES.some(([status]) => status === newStatus)) {
       notify('ยังเปลี่ยนสถานะนี้ไม่ได้', 'สถานะที่เลือกไม่ถูกต้อง กรุณาเลือกสถานะจากรายการที่กำหนด', 'shield-alert');
       return false;
@@ -724,25 +740,27 @@
       if (result?.status && String(result.status) !== String(newStatus)) {
         throw new Error('ระบบยังยืนยันสถานะใหม่ไม่ได้ กรุณารีเฟรชหน้าแล้วลองอีกครั้ง');
       }
-      const statusLabel = ({ queued: 'รอแอดมินตรวจสอบ', preparing: 'กำลังตรวจสอบ / จัดเตรียม', ready_for_pickup: 'พร้อมรับเอกสาร', shipped: 'จัดส่งแล้ว', finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
+      const statusLabel = ({ queued: 'รอจัดการ', completed: 'พิมพ์เสร็จแล้ว', preparing: 'กำลังจัดเตรียม', ready_for_pickup: 'พร้อมรับ/พร้อมจัดส่ง', shipped: 'จัดส่งแล้ว', finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
       // Update the admin-scoped cache for other Admin interactions before refreshing.
       const order = (window.__pdAdminOrders || []).find(item => String(item.id) === String(orderId));
       if (order) order.status = newStatus;
       notify('อัปเดตสถานะสำเร็จ', `คิว #${result?.queue_number ?? orderId} · ${statusLabel}`, 'shield-check');
-      await window.loadAdminData?.();
+      if (window.currentUser?.role === 'admin' && !$('view-admin')?.classList.contains('hidden')) await window.loadAdminData?.();
+      if (!$('view-employee')?.classList.contains('hidden')) await window.loadEmployeeOrders?.();
       // Refresh the customer's visible queue only if that view is actually open.
       const queueView = $('view-dashboard');
       if (queueView && !queueView.classList.contains('hidden')) await window.fetchQueues?.();
       return true;
     } catch (error) {
       notify('อัปเดตสถานะไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกสถานะคิวได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
-      await window.loadAdminData?.();
+      if (window.currentUser?.role === 'admin' && !$('view-admin')?.classList.contains('hidden')) await window.loadAdminData?.();
+      if (!$('view-employee')?.classList.contains('hidden')) await window.loadEmployeeOrders?.();
       return false;
     }
   };
 
   window.promptTracking = async function promptTrackingThroughRpc(orderId) {
-    if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
+    if (typeof window.assertStaffAccess === 'function' && !window.assertStaffAccess()) return;
     const trackingInput = await window.pdAskTracking?.();
     if (!trackingInput) return;
     const tracking = trackingInput.tracking;
@@ -768,7 +786,8 @@
         p_tracking_number: tracking
       });
       notify('บันทึก Tracking สำเร็จ', `คิว #${orderId} • ${result?.tracking_number || tracking}`, 'shield-check');
-      await window.loadAdminData?.();
+      if (window.currentUser?.role === 'admin' && !$('view-admin')?.classList.contains('hidden')) await window.loadAdminData?.();
+      if (!$('view-employee')?.classList.contains('hidden')) await window.loadEmployeeOrders?.();
     } catch (error) {
       notify('บันทึกข้อมูลจัดส่งไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาตรวจสอบข้อมูลแล้วลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
     }
@@ -785,7 +804,7 @@
       if (/^https?:\/\//i.test(path)) return originalOpenSlipModal(path);
       try {
         const session = await requireSession();
-        const privileged = ['admin', 'staff'].includes(String(window.currentUser?.role || '').toLowerCase());
+        const privileged = ['admin', 'staff', 'employee'].includes(String(window.currentUser?.role || '').toLowerCase());
         if (!privileged) throw new Error('ต้องเป็นผู้ดูแลหรือเจ้าหน้าที่จึงจะเปิดสลิปของสมาชิกได้');
         const { data, error } = await db().storage.from('slips').createSignedUrl(path, 600);
         if (error) throw error;
