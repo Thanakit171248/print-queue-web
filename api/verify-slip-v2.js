@@ -142,7 +142,7 @@ function verificationResponse(res, capability, fallbackMessage) {
       manualReview: true,
       manualReviewToken: record.id,
       amount: Number(record.amount),
-      message: fallbackMessage || 'SlipOK ยืนยันรายการไม่ได้ชั่วคราว จึงส่งคำขอให้ผู้ดูแลตรวจหลักฐานโอนจริงได้ โดยยังไม่เพิ่ม Coins'
+      message: fallbackMessage || 'ขณะนี้ยังยืนยันสลิปไม่ได้ จึงส่งคำขอให้ผู้ดูแลตรวจสอบหลักฐานการโอนจริง โดยจะยังไม่เพิ่ม Coins จนกว่าจะตรวจสอบเสร็จ'
     });
   }
   if (record.consumed_at) {
@@ -274,7 +274,7 @@ async function sendManualFallback(res, context, message) {
   if (context.purpose !== 'topup') {
     return send(res, 503, {
       ok: false, code: 'provider_unavailable', manualReview: false,
-      message: `${message || 'SlipOK ยังยืนยันไม่ได้'} งานพิมพ์ยังไม่ถูกสร้างและไม่มีการหัก Coins`
+      message: `${message || 'ยังไม่สามารถยืนยันสลิปได้'} งานพิมพ์ยังไม่ถูกสร้างและไม่มีการหัก Coins`
     });
   }
   try {
@@ -283,7 +283,7 @@ async function sendManualFallback(res, context, message) {
   } catch (e) {
     return send(res, e.statusCode || 503, {
       ok: false, code: e.code || 'manual_review_issue_failed', manualReview: false,
-      message: e.message || 'ระบบไม่สามารถสร้างโทเคน Manual Review ได้ จึงไม่มีรายการค้างและไม่มีการเพิ่ม Coins'
+      message: 'ยังไม่สามารถส่งรายการให้ผู้ดูแลตรวจสอบได้ จึงไม่มีการเพิ่ม Coins กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'
     });
   }
 }
@@ -355,7 +355,7 @@ module.exports = async function handler(req, res) {
   const bearer = /^Bearer\s+(.+)$/i.exec(String(req.headers.authorization || ''));
   if (!bearer) return send(res,401,{ok:false,code:'auth_required',message:'กรุณาเข้าสู่ระบบใหม่ก่อนตรวจสลิป'});
   let user;
-  try { user = await supabaseUser(bearer[1]); } catch (e) { return send(res,e.statusCode || 503,{ok:false,code:'auth_unavailable',message:e.message || 'ตรวจสอบเซสชันไม่ได้'}); }
+  try { user = await supabaseUser(bearer[1]); } catch (e) { console.error('[PrintDekD] Slip verification session check failed:', e); return send(res,e.statusCode || 503,{ok:false,code:'auth_unavailable',message:'ไม่สามารถตรวจสอบการเข้าสู่ระบบได้ในขณะนี้ กรุณาเข้าสู่ระบบอีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'}); }
   if (!user) return send(res,401,{ok:false,code:'invalid_session',message:'เซสชันไม่ถูกต้องหรือหมดอายุ กรุณาเข้าสู่ระบบใหม่'});
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return send(res,503,{
@@ -367,7 +367,7 @@ module.exports = async function handler(req, res) {
   if (!/^multipart\/form-data\s*;/i.test(ct)) return send(res,415,{ok:false,code:'unsupported_media_type',message:'กรุณาแนบไฟล์สลิปเป็น multipart/form-data'});
   let parsed;
   try { parsed = parseMultipart(await readBody(req), ct); }
-  catch (e) { return send(res,e.statusCode || 400,{ok:false,code:'invalid_upload',message:e.message || 'อ่านไฟล์ไม่สำเร็จ'}); }
+  catch (e) { console.warn('[PrintDekD] Slip file upload validation failed:', e); return send(res,e.statusCode || 400,{ok:false,code:'invalid_upload',message:'อ่านไฟล์สลิปไม่สำเร็จ กรุณาเลือกไฟล์รูปภาพที่รองรับแล้วลองใหม่'}); }
   if (!parsed.file?.buffer?.length) return send(res,400,{ok:false,code:'missing_slip',message:'กรุณาแนบรูปสลิป'});
   if (parsed.file.buffer.length > MAX_FILE_BYTES) return send(res,413,{ok:false,code:'file_too_large',message:'ไฟล์สลิปต้องไม่เกิน 4 MB'});
   const mime = imageType(parsed.file.buffer);
@@ -388,7 +388,7 @@ module.exports = async function handler(req, res) {
       supabaseBase, process.env.SUPABASE_SERVICE_ROLE_KEY, user.id, purpose, requestKey
     );
   } catch (e) {
-    return send(res,e.statusCode || 503,{ok:false,code:'verification_lookup_failed',message:e.message || 'ตรวจคำขอตรวจสลิปเดิมไม่ได้'});
+    console.error('[PrintDekD] Previous slip verification lookup failed:', e); return send(res,e.statusCode || 503,{ok:false,code:'verification_lookup_failed',message:'ไม่สามารถตรวจสอบคำขอเดิมได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'});
   }
   if (priorVerification) {
     if (priorVerification.purpose !== purpose || Number(priorVerification.amount) !== cents / 100 || priorVerification.file_sha256 !== fileSha256) {
@@ -407,7 +407,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (!process.env.SLIPOK_API_KEY || !process.env.SLIPOK_BRANCH_ID) {
-    return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, 'ระบบตรวจสลิปอัตโนมัติตั้งค่าไม่ครบ จึงต้องให้ผู้ดูแลตรวจหลักฐานโอนจริง');
+    return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, 'บริการตรวจสอบสลิปอัตโนมัติยังไม่พร้อมให้บริการ จึงส่งคำขอให้ผู้ดูแลตรวจหลักฐานการโอนจริง');
   }
 
   let upstream;
@@ -425,13 +425,13 @@ module.exports = async function handler(req, res) {
     const result = await upstream.json().catch(()=>null);
     if (!upstream.ok || result?.success !== true || result?.data?.success !== true) {
       const code = Number(result?.code ?? result?.data?.code ?? 0) || null;
-      const messages = {1012:'สลิปนี้เคยถูกใช้แล้ว',1013:'ยอดเงินบนสลิปไม่ตรงกับยอดที่ระบุ',1014:'บัญชีผู้รับไม่ตรงกับบัญชีหลักใน SlipOK',1005:'ชนิดไฟล์ไม่ถูกต้อง',1006:'อ่านรูปสลิปไม่ได้',1007:'ไม่พบ QR ในสลิป',1008:'QR ไม่ใช่รายการชำระเงิน',1011:'ไม่พบรายการโอนหรือ QR หมดอายุ'};
+      const messages = {1012:'สลิปนี้เคยถูกใช้แล้ว',1013:'ยอดเงินบนสลิปไม่ตรงกับยอดที่ระบุ',1014:'บัญชีผู้รับไม่ตรงกับบัญชีที่กำหนดไว้',1005:'ชนิดไฟล์ไม่ถูกต้อง',1006:'อ่านรูปสลิปไม่ได้',1007:'ไม่พบ QR ในสลิป',1008:'QR ไม่ใช่รายการชำระเงิน',1011:'ไม่พบรายการโอนหรือ QR หมดอายุ'};
       // Manual review is a fallback for ambiguous reading/provider failures, not a
       // way around a duplicate slip, amount mismatch, receiver mismatch, or invalid file.
       // In the manual path the wallet is NOT credited until the Admin verifies the real
       // bank transfer and approves the pending request through the secure RPC.
       const hardReject = [1005, 1012, 1013, 1014].includes(code);
-      const message = messages[code] || 'SlipOK ยังยืนยันไม่ได้ จึงไม่มีการเพิ่ม Coins อัตโนมัติ';
+      const message = messages[code] || 'ยังไม่สามารถยืนยันสลิปได้ จึงยังไม่มีการเพิ่ม Coins กรุณาตรวจสอบรูปสลิปแล้วลองใหม่อีกครั้ง';
       if (hardReject) {
         return send(res,422,{ok:false,code:code || `provider_http_${upstream.status}`,manualReview:false,message});
       }
@@ -441,7 +441,7 @@ module.exports = async function handler(req, res) {
     const got = Math.round(Number(d.amount)*100);
     if (!Number.isFinite(got) || got !== cents) return send(res,422,{ok:false,code:1013,message:'ยอดเงินบนสลิปไม่ตรงกับยอดที่ระบุ'});
     const transRef = String(d.transRef || '').trim();
-    if (!transRef) return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, 'SlipOK ตอบกลับโดยไม่มีเลขอ้างอิงธุรกรรม จึงต้องให้ผู้ดูแลตรวจหลักฐานโอนจริง');
+    if (!transRef) return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, 'ระบบยังยืนยันรายละเอียดการโอนไม่ได้ จึงต้องให้ผู้ดูแลตรวจหลักฐานการโอนจริง');
     let record;
     try {
       record = await storeVerification({
@@ -453,13 +453,13 @@ module.exports = async function handler(req, res) {
       });
     } catch (e) {
       if (e.manualReview === true) {
-        return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, e.message || 'ผลตรวจเดิมหมดอายุ จึงต้องให้ผู้ดูแลตรวจหลักฐานโอนจริง');
+        console.warn('[PrintDekD] Reusing previous slip result failed:', e); return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, 'ไม่สามารถใช้ผลตรวจเดิมได้ในขณะนี้ กรุณาให้ผู้ดูแลตรวจหลักฐานการโอนจริง');
       }
-      return send(res,e.statusCode || 503,{ok:false,code:e.code || 'verification_store_failed',manualReview:false,message:e.message || 'บันทึกผลตรวจไม่ได้ จึงไม่สร้างรายการ'});
+      console.error('[PrintDekD] Verification result could not be saved:', e); return send(res,e.statusCode || 503,{ok:false,code:e.code || 'verification_store_failed',manualReview:false,message:'ยังไม่สามารถบันทึกผลตรวจสลิปได้ จึงยังไม่มีการสร้างรายการหรือเพิ่ม Coins กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'});
     }
     return verificationResponse(res, { kind: record?.manual_review === true ? 'manual' : 'verified', record }, 'คำขอนี้ต้องผ่านการตรวจโดยผู้ดูแล');
   } catch (e) {
-    return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, e?.name==='AbortError' ? 'SlipOK ใช้เวลาตอบกลับนานเกินกำหนด จึงต้องให้ผู้ดูแลตรวจหลักฐานโอนจริง' : 'บริการตรวจสลิปขัดข้อง จึงต้องให้ผู้ดูแลตรวจหลักฐานโอนจริง');
+    return sendManualFallback(res, { base: supabaseBase, key: process.env.SUPABASE_SERVICE_ROLE_KEY, user, purpose, amount: cents / 100, requestKey, fileSha256 }, e?.name==='AbortError' ? 'การตรวจสอบสลิปใช้เวลานานกว่าปกติ จึงต้องให้ผู้ดูแลตรวจหลักฐานการโอนจริง' : 'บริการตรวจสอบสลิปขัดข้องชั่วคราว จึงต้องให้ผู้ดูแลตรวจหลักฐานการโอนจริง');
   }
 };
 
