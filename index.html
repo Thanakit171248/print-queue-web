@@ -184,6 +184,13 @@
           <span><span class="menu-kicker">04 · ADMIN</span><span class="menu-title block">Admin Backoffice</span></span>
           <span class="menu-state">สิทธิ์ผู้ดูแล</span>
         </button>
+        <button type="button" id="apple-employee-menu-btn" data-view="employee" data-menu-link="employee"
+          onclick="switchView('employee'); toggleAppleTabMenu(false);" class="hidden apple-menu-item"
+          style="--accent:#0d9488">
+          <span class="menu-icon"><i data-lucide="clipboard-check" class="w-5 h-5"></i></span>
+          <span><span class="menu-kicker">05 · EMPLOYEE</span><span class="menu-title block">พื้นที่ทำงานพนักงาน</span></span>
+          <span class="menu-state">จัดเตรียมและส่งมอบ</span>
+        </button>
       </div>
 
       <div class="apple-menu-foot">
@@ -665,6 +672,11 @@
                   onclick="switchView('admin'); closePDAccountMenu();" role="menuitem">
                   <span class="pd-account-action-icon purple"><i data-lucide="shield-check"
                       class="w-4 h-4"></i></span><span><b>Admin</b><small>ดูแลระบบ</small></span>
+                </button>
+                <button type="button" id="employee-menu-btn" class="hidden pd-account-action"
+                  onclick="switchView('employee'); closePDAccountMenu();" role="menuitem">
+                  <span class="pd-account-action-icon green"><i data-lucide="clipboard-check"
+                      class="w-4 h-4"></i></span><span><b>พนักงาน</b><small>จัดเตรียมและส่งมอบงาน</small></span>
                 </button>
                 <button type="button" class="pd-account-action danger" onclick="handleLogout(); closePDAccountMenu();"
                   role="menuitem">
@@ -1394,6 +1406,23 @@
               </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="binding-option" class="block text-xs font-bold mb-1 titanium-text">การเข้าเล่ม</label>
+                <select id="binding-option" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold">
+                  <option value="">กำลังโหลดตัวเลือกเข้าเล่ม…</option>
+                </select>
+                <p class="text-[10px] sub-text mt-1">ราคาเข้าเล่มตั้งโดยผู้ดูแลระบบ</p>
+              </div>
+              <div>
+                <label for="delivery-provider" class="block text-xs font-bold mb-1 titanium-text">ผู้ให้บริการจัดส่ง</label>
+                <select id="delivery-provider" onchange="calculatePrice()" class="w-full px-3.5 py-3 ui-input rounded-xl text-xs font-bold" disabled>
+                  <option value="parcel">กำลังโหลดผู้ให้บริการ…</option>
+                </select>
+                <p class="text-[10px] sub-text mt-1">เลือกได้เมื่อเปิดใช้บริการและกำหนดราคาแล้ว</p>
+              </div>
+            </div>
+
             <div class="pt-3 border-t border-slate-200 dark:border-white/10">
               <label class="block text-xs font-bold mb-2.5 titanium-text">2. ตัวเลือกการรับสินค้า / จัดส่ง</label>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -1412,9 +1441,9 @@
                   <input type="radio" name="delivery_method" value="delivery" onchange="toggleDeliveryFields()">
                   <div>
                     <p class="text-xs font-bold flex items-center gap-1 titanium-text">
-                      <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> จัดส่งพัสดุถึงบ้าน
+                      <i data-lucide="truck" class="w-3.5 h-3.5 text-blue-500"></i> จัดส่งถึงบ้าน
                     </p>
-                    <p class="text-[10px] text-blue-500 font-bold">+ค่าส่ง 30.00 ฿</p>
+                    <p id="delivery-fee-label" class="text-[10px] text-blue-500 font-bold">เลือกผู้ให้บริการและรอโหลดราคา</p>
                   </div>
                 </label>
               </div>
@@ -1747,10 +1776,17 @@
         <button id="admin-tab-orders-btn" onclick="switchAdminTab('orders')"
           class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white shadow-sm">จัดการงานพิมพ์</button>
         <button id="admin-tab-topups-btn" onclick="switchAdminTab('topups')"
-          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">อนุมัติเติม
-          Coins</button>
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ประวัติเติม Coins</button>
+        <button id="admin-tab-payments-btn" onclick="switchAdminTab('payments')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">ประวัติชำระเงิน</button>
         <button id="admin-tab-users-btn" onclick="switchAdminTab('users')"
-          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">จัดการสมาชิก</button>
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">สมาชิกและพนักงาน</button>
+        <button id="admin-tab-services-btn" onclick="switchAdminTab('services')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">บริการและราคา</button>
+        <button id="admin-tab-printers-btn" onclick="switchAdminTab('printers')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">เครื่องพิมพ์</button>
+        <button id="admin-tab-reports-btn" onclick="switchAdminTab('reports')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg titanium-text opacity-80 hover:opacity-100">รายงาน</button>
       </div>
 
       <div id="admin-tab-orders" class="ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
@@ -1800,6 +1836,11 @@
         </div>
       </div>
 
+      <div id="admin-tab-payments" class="hidden ui-panel p-5 sm:p-8 rounded-[32px] space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h2 class="text-lg font-bold titanium-text">ประวัติรายการชำระเงิน</h2><p class="text-xs sub-text mt-1">ตรวจรายการชำระค่าพิมพ์และสถานะธุรกรรมที่บันทึกในระบบ</p></div><button type="button" id="pd-admin-payments-refresh" class="ui-card rounded-xl px-3 py-2 text-xs font-bold">รีเฟรชรายการ</button></div>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-200 dark:border-white/10 sub-text"><th class="py-3 px-2">วันที่</th><th class="py-3 px-2">คิว</th><th class="py-3 px-2">ช่องทาง</th><th class="py-3 px-2">ยอด</th><th class="py-3 px-2">สถานะ</th><th class="py-3 px-2">หลักฐานการตรวจ</th></tr></thead><tbody id="pd-admin-payments-tbody"><tr><td colspan="6" class="py-6 text-center sub-text">ยังไม่ได้โหลดประวัติชำระเงิน</td></tr></tbody></table></div>
+      </div>
+
       <div id="admin-tab-users" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
         <h2 class="text-lg font-bold titanium-text">สิทธิ์สมาชิกในระบบ</h2>
         <div class="overflow-x-auto">
@@ -1820,10 +1861,42 @@
           </table>
         </div>
       </div>
+
+      <div id="admin-tab-services" class="hidden ui-panel p-5 sm:p-8 rounded-[32px] space-y-6">
+        <div><h2 class="text-lg font-bold titanium-text">ตั้งค่าบริการและราคาจริง</h2><p class="text-xs sub-text mt-1">ค่าที่บันทึกจะใช้เป็นข้อมูลตั้งต้นในการคำนวณคำสั่งพิมพ์ครั้งถัดไป ราคาแต่ละบริการต้องได้รับการยืนยันจากร้านก่อนเปิดใช้</p></div>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-200 dark:border-white/10 sub-text"><th class="py-3 px-2">กระดาษ</th><th class="py-3 px-2">ขาว-ดำ/หน้า</th><th class="py-3 px-2">สี/หน้า</th><th class="py-3 px-2">เพิ่มหน้า-หลัง</th><th class="py-3 px-2">เปิดใช้</th><th class="py-3 px-2">บันทึก</th></tr></thead><tbody id="pd-admin-pricing-tbody"><tr><td colspan="6" class="py-5 text-center sub-text">กำลังโหลดตารางราคา…</td></tr></tbody></table></div>
+        <form id="pd-pricing-add-form" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2 rounded-2xl border border-slate-200 dark:border-white/10 p-3"><input id="pd-pricing-new-size" class="ui-input rounded-xl p-3 text-xs" maxlength="12" pattern="[A-Za-z0-9_-]{1,12}" placeholder="ชนิดกระดาษ เช่น A5" required><input id="pd-pricing-new-bw" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="ขาว-ดำ / หน้า" required><input id="pd-pricing-new-color" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="สี / หน้า" required><input id="pd-pricing-new-duplex" type="number" min="0" step="0.01" value="0" class="ui-input rounded-xl p-3 text-xs" placeholder="เพิ่มหน้า-หลัง" required><button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่มชนิดกระดาษ</button></form>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <div class="ui-card rounded-2xl p-4 space-y-3"><h3 class="font-bold titanium-text">ค่าบริการเข้าเล่ม</h3><form id="pd-binding-add-form" class="grid grid-cols-1 sm:grid-cols-[1fr_120px_auto] gap-2"><input id="pd-binding-new-name" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="ชื่อ เช่น เข้าเล่มสันกาว" required><input id="pd-binding-new-price" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="ราคา (บาท)" required><button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่ม</button></form><div id="pd-admin-binding-list" class="space-y-2"></div></div>
+          <div class="ui-card rounded-2xl p-4 space-y-3"><h3 class="font-bold titanium-text">ช่องทางจัดส่งและค่าบริการ</h3><form id="pd-delivery-add-form" class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="pd-delivery-new-key" class="ui-input rounded-xl p-3 text-xs" pattern="[a-z0-9_-]+" maxlength="40" placeholder="key เช่น messenger" required><input id="pd-delivery-new-name" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="ชื่อบริการ" required><input id="pd-delivery-new-fee" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="ค่าจัดส่ง (บาท)" required><button class="sm:col-span-3 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่มช่องทาง</button></form><div id="pd-admin-delivery-list" class="space-y-2"></div></div>
+        </div>
+      </div>
+
+      <div id="admin-tab-printers" class="hidden ui-panel p-5 sm:p-8 rounded-[32px] space-y-5">
+        <div><h2 class="text-lg font-bold titanium-text">ข้อมูลเครื่องพิมพ์</h2><p class="text-xs sub-text mt-1">ข้อมูลนี้เก็บ metadata และ heartbeat ที่ Print Server ส่งมา หากยังไม่ได้ติดตั้ง Print Server ระบบจะไม่สามารถตรวจการเชื่อมต่อของเครื่องจริงจากหน้าเว็บได้</p></div>
+        <form id="pd-printer-add-form" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2"><input id="pd-printer-new-name" class="ui-input rounded-xl p-3 text-xs" maxlength="100" placeholder="ชื่อเครื่องพิมพ์" required><input id="pd-printer-new-ip" class="ui-input rounded-xl p-3 text-xs" maxlength="100" placeholder="IP / รหัสอุปกรณ์"><input id="pd-printer-new-location" class="ui-input rounded-xl p-3 text-xs" maxlength="120" placeholder="ตำแหน่งติดตั้ง"><select id="pd-printer-new-status" class="ui-input rounded-xl p-3 text-xs"><option value="offline">ออฟไลน์</option><option value="online">ออนไลน์ (บันทึกมือ)</option><option value="busy">กำลังทำงาน</option><option value="error">ขัดข้อง</option><option value="maintenance">บำรุงรักษา</option></select><button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่มเครื่องพิมพ์</button></form>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-200 dark:border-white/10 sub-text"><th class="py-3 px-2">ชื่อ/ตำแหน่ง</th><th class="py-3 px-2">IP / อุปกรณ์</th><th class="py-3 px-2">สถานะที่บันทึก</th><th class="py-3 px-2">Heartbeat ล่าสุด</th><th class="py-3 px-2">บันทึก</th></tr></thead><tbody id="pd-admin-printers-tbody"><tr><td colspan="5" class="py-5 text-center sub-text">กำลังโหลดเครื่องพิมพ์…</td></tr></tbody></table></div>
+        <p class="text-xs sub-text border-l-2 border-amber-500 pl-3">ข้อ 4.5 ส่วนเชื่อมต่อจริงต้องติดตั้ง Print Server/agent ให้ส่ง last_seen_at และสถานะจริงมาเป็นระยะ ก่อนหน้านั้นสถานะในตารางเป็นเพียงข้อมูลที่ Admin บันทึก ไม่ใช่ผล ping จริง</p>
+      </div>
+
+      <div id="admin-tab-reports" class="hidden ui-panel p-5 sm:p-8 rounded-[32px] space-y-5">
+        <div class="flex items-start justify-between gap-4"><div><h2 class="text-lg font-bold titanium-text">รายงานคำสั่งพิมพ์ รายได้ และการใช้บริการ</h2><p class="text-xs sub-text mt-1">ยอดรายได้คำนวณจากธุรกรรมคำสั่งพิมพ์ที่ชำระสำเร็จ ไม่รวมยอดเติม Coins เพื่อไม่ให้นับซ้ำ</p></div><button type="button" id="pd-admin-reports-refresh" class="ui-card rounded-xl px-3 py-2 text-xs font-bold">รีเฟรชรายงาน</button></div>
+        <div id="pd-admin-report-metrics" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"><p class="sub-text text-sm">กำลังคำนวณรายงาน…</p></div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4"><div class="ui-card rounded-2xl p-4"><h3 class="font-bold titanium-text mb-3">สถานะคำสั่งพิมพ์</h3><div id="pd-admin-report-status" class="space-y-2"></div></div><div class="ui-card rounded-2xl p-4"><h3 class="font-bold titanium-text mb-3">การใช้บริการ</h3><div id="pd-admin-report-usage" class="space-y-2"></div></div></div>
+        <div class="text-xs sub-text" id="pd-admin-report-updated"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 6: EMPLOYEE WORKSPACE -->
+    <section id="view-employee" class="hidden py-8 px-4 max-w-6xl mx-auto" aria-labelledby="pd-employee-title">
+      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"><div><span class="text-xs bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 px-3 py-1 rounded-full font-bold">EMPLOYEE WORKSPACE</span><h1 id="pd-employee-title" class="text-2xl sm:text-3xl font-extrabold titanium-text mt-2">จัดเตรียมและส่งมอบงานพิมพ์</h1><p class="sub-text text-sm mt-2">ตรวจงานพิมพ์เสร็จ ตรวจรายละเอียดการเข้าเล่ม จัดเตรียมสินค้า และส่งมอบให้ลูกค้าตามวิธีรับที่เลือก</p></div><button type="button" id="pd-employee-refresh" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> รีเฟรชงาน</button></header>
+      <div id="pd-employee-metrics" class="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-5"></div>
+      <div class="ui-panel rounded-[28px] p-4 sm:p-6 space-y-4"><div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between"><h2 class="text-lg font-bold titanium-text">งานที่ต้องดำเนินการ</h2><input id="pd-employee-search" type="search" class="ui-input rounded-xl p-3 text-xs w-full sm:max-w-sm" placeholder="ค้นหาคิว / ชื่อไฟล์ / Tracking"></div><div id="pd-employee-orders" class="space-y-3"><p class="text-sm sub-text text-center py-8">กำลังโหลดคิวงาน…</p></div></div>
+      <p class="text-xs sub-text mt-4 border-l-2 border-amber-500 pl-3">โหมด Mini Project: หากยังไม่มี Print Server ให้พนักงานยืนยัน “พิมพ์เสร็จ” ด้วยตนเองตามผลตรวจเอกสารจริง สถานะนี้ไม่ใช่การยืนยันจากเครื่องพิมพ์อัตโนมัติ</p>
     </section>
 
 
-    <!-- VIEW 6: PRINTDEKD SUPPORT CENTER -->
+    <!-- VIEW 7: PRINTDEKD SUPPORT CENTER -->
     <section id="view-help" class="hidden pd-help-view" aria-labelledby="pd-help-title">
       <header class="pd-help-hero">
         <div class="pd-help-brandmark" aria-hidden="true"><i data-lucide="printer"></i></div>
@@ -2155,6 +2228,8 @@
 
 <!-- Secure RPC bridge must load last to replace legacy direct-write handlers. -->
 <script id="pd-secure-rpc-bridge" src="assets/js/22-secure-rpc-bridge.js"></script>
+<link rel="stylesheet" href="assets/css/35-employee-admin-scope.css" id="pd-employee-admin-scope-style">
+<script id="pd-employee-admin-scope-runtime" src="assets/js/23-employee-admin-scope-runtime.js"></script>
 
 </body>
 
