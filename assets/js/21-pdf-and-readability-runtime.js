@@ -24,7 +24,7 @@
   const bulkConfigs = {
     orders: { tbody: 'admin-orders-tbody', title: 'คิวงานพิมพ์', button: 'ลบคิวที่เลือก', note: 'ลบได้เฉพาะงานที่พิมพ์เสร็จแล้ว เพื่อไม่ให้คิวที่กำลังทำงานหายไป' },
     topups: { tbody: 'admin-topups-tbody', title: 'ประวัติเติม Coins', button: 'ลบประวัติที่เลือก', note: 'ลบได้เฉพาะคำขอที่อนุมัติหรือปฏิเสธแล้ว รายการรอตรวจจะถูกล็อกไว้' },
-    users: { tbody: 'admin-users-tbody', title: 'สมาชิก', button: 'ตรวจสอบการลบสมาชิก', note: 'การลบบัญชีจริงต้องทำผ่าน API ฝั่งเซิร์ฟเวอร์' }
+    users: { tbody: 'admin-users-tbody', title: 'สมาชิก', button: 'ตรวจสอบการลบสมาชิก', note: 'เพื่อความปลอดภัย การลบบัญชีต้องให้ผู้ดูแลระบบดำเนินการ' }
   };
   function getRowId(kind, row) {
     if (kind === 'topups' && row.dataset.pdTopupRowId) return String(row.dataset.pdTopupRowId);
@@ -122,7 +122,7 @@
   }
   async function bulkDeleteOrders(ids) {
     if (!assertAdmin()) return;
-    const client = db(); if (!client) return notice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่ได้ จึงไม่มีรายการถูกลบ', 'database-zap');
+    const client = db(); if (!client) return notice('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถลบรายการได้ในขณะนี้ ไม่มีรายการใดถูกลบ กรุณาลองใหม่ภายหลัง', 'database-zap');
     const lookup = await client.from('orders').select('id,queue_number,status').in('id', ids);
     if (lookup.error) throw lookup.error;
     const rows = lookup.data || [];
@@ -163,12 +163,12 @@
     if (deletedIds.length) {
       await window.loadAdminData?.(); await window.fetchQueues?.();
     }
-    if (failed.length) throw new Error(`ลบสำเร็จ ${deletedIds.length} รายการ แต่ลบไม่สำเร็จ ${failed.length} รายการ\n${failed.slice(0, 3).map(x => `คิว ${x.id}: ${x.error}`).join('\n')}`);
-    notice('ลบคิวที่เลือกสำเร็จ', `ลบงานที่เสร็จแล้ว ${deletedIds.length} รายการ\nข้อมูลที่ยังมีความสัมพันธ์ในฐานข้อมูลจะไม่ถูกลบตามโดยอัตโนมัติ`, 'check-circle-2');
+    if (failed.length) { console.error('[PrintDekD] Bulk delete failures:', failed); throw new Error(`ลบสำเร็จ ${deletedIds.length} รายการ แต่ลบไม่สำเร็จ ${failed.length} รายการ กรุณารีเฟรชรายการ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ`); }
+    notice('ลบคิวที่เลือกสำเร็จ', `ลบงานที่เสร็จแล้ว ${deletedIds.length} รายการแล้ว รายการอื่นที่ยังเกี่ยวข้องจะถูกเก็บไว้เพื่อป้องกันข้อมูลสูญหาย`, 'check-circle-2');
   }
   async function bulkDeleteTopups(ids) {
     if (!assertAdmin()) return;
-    const client = db(); if (!client) return notice('ฐานข้อมูลยังไม่พร้อม', 'ยังเชื่อมต่อ Supabase ไม่ได้ จึงไม่มีรายการถูกลบ', 'database-zap');
+    const client = db(); if (!client) return notice('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถลบรายการได้ในขณะนี้ ไม่มีรายการใดถูกลบ กรุณาลองใหม่ภายหลัง', 'database-zap');
     const lookup = await client.from('topups').select('id,status').in('id', ids);
     if (lookup.error) throw lookup.error;
     const rows = lookup.data || [];
@@ -184,7 +184,7 @@
   }
   function bulkUserDeleteBlocked(ids) {
     if (!assertAdmin()) return;
-    notice('ยังไม่ลบบัญชีผู้ใช้', `เลือกไว้ ${ids.length} บัญชี แต่ไฟล์หน้าเว็บนี้ไม่มี API ฝั่งเซิร์ฟเวอร์ที่สามารถลบบัญชี Supabase Auth และตรวจความสัมพันธ์ orders / topups / wallet ได้ครบถ้วน\n\nการลบแถว public.users จากเบราว์เซอร์อย่างเดียวอาจทำให้ล็อกอินหรือประวัติข้อมูลไม่สอดคล้องกัน จึงยังไม่มีข้อมูลใดถูกลบ\n\nขั้นตอนถัดไปที่ปลอดภัยคือเพิ่ม endpoint ที่ตรวจสิทธิ์แอดมินฝั่งเซิร์ฟเวอร์ ใช้ service role key เฉพาะฝั่งเซิร์ฟเวอร์ และกำหนดนโยบายเก็บ/ลบข้อมูลที่เกี่ยวข้องให้ชัดเจน`, 'shield-alert');
+    notice('ยังไม่สามารถลบบัญชีได้', `เลือกไว้ ${ids.length} บัญชี แต่ยังไม่สามารถลบบัญชีและข้อมูลที่เกี่ยวข้องได้อย่างครบถ้วน จึงยังไม่มีบัญชีใดถูกลบ\n\nเพื่อป้องกันประวัติคำสั่งพิมพ์และ Coins สูญหาย กรุณาติดต่อผู้ดูแลระบบเพื่อให้ตรวจสอบและดำเนินการอย่างปลอดภัย`, 'shield-alert');
   }
   async function runBulkAction(kind) {
     const ids = [...new Set(selectedFor(kind))];
@@ -202,7 +202,7 @@
         const button = document.querySelector(`[data-pd-bulk-action="${kind}"]`);
         if (button) { button.disabled = true; button.textContent = 'กำลังตรวจสอบ…'; }
         try { if (kind === 'orders') await bulkDeleteOrders(ids); else await bulkDeleteTopups(ids); }
-        catch (error) { notice('ลบรายการไม่สำเร็จ', error?.message || String(error), 'shield-alert'); }
+        catch (error) { console.error('[PrintDekD] Bulk deletion failed:', error); notice('ลบรายการไม่สำเร็จ', window.pdCustomerFacingMessage?.(error, 'ยังไม่สามารถลบรายการได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert'); }
         finally {
           if (button) button.textContent = bulkConfigs[kind].button;
           enhanceAdminTables();
