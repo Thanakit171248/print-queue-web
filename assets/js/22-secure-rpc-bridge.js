@@ -621,12 +621,32 @@
     ['cancelled', 'ยกเลิกคิว']
   ];
   function decorateStatusSelects(root = document) {
-    qa('#admin-orders-tbody select[data-pd-admin-action="status"]', root).forEach((select) => {
+    // Important: MutationObserver watches this tbody. Do not replace <option>s
+    // unless the option list actually differs, or each replacement will trigger
+    // the observer again and can lock the browser in an endless mutation loop.
+    const selector = 'select[data-pd-admin-action="status"]';
+    const selects = root?.matches?.(selector)
+      ? [root]
+      : [...(root?.querySelectorAll?.(selector) || [])];
+
+    selects.forEach((select) => {
       const current = select.value;
       const options = [...RPC_TARGET_STATUSES];
-      if (current && !options.some(([value]) => value === current)) options.unshift([current, `${current} (สถานะจากระบบพิมพ์)`]);
+      if (current && !options.some(([value]) => value === current)) {
+        options.unshift([current, `${current} (สถานะจากระบบพิมพ์)`]);
+      }
+
+      const unchanged = select.options.length === options.length && options.every(([value, label], index) => {
+        const existing = select.options[index];
+        return existing && existing.value === value && existing.textContent === label;
+      });
+      if (unchanged) return;
+
       select.replaceChildren(...options.map(([value, label]) => {
-        const option = document.createElement('option'); option.value = value; option.textContent = label; return option;
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        return option;
       }));
       select.value = current;
     });
@@ -724,7 +744,15 @@
   } else decorateStatusSelects();
   const adminOrdersBody = $('admin-orders-tbody');
   if (adminOrdersBody && 'MutationObserver' in window) {
-    const observer = new MutationObserver(() => decorateStatusSelects(adminOrdersBody));
+    let statusDecorateQueued = false;
+    const observer = new MutationObserver(() => {
+      if (statusDecorateQueued) return;
+      statusDecorateQueued = true;
+      requestAnimationFrame(() => {
+        statusDecorateQueued = false;
+        decorateStatusSelects(adminOrdersBody);
+      });
+    });
     observer.observe(adminOrdersBody, { childList: true, subtree: true });
   }
 
