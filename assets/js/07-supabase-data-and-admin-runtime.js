@@ -216,13 +216,25 @@
           window.lucide?.createIcons(); return;
         }
         container.innerHTML = orders.map(ord => {
-          const status = ord.status === 'printing'
-            ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-500 border border-blue-500/30">🖨️ กำลังพิมพ์</span>'
-            : ord.status === 'completed'
-              ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-500 border border-emerald-500/30">✅ พิมพ์เสร็จแล้ว</span>'
-              : ord.status === 'cancelled'
-                ? '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">❌ ยกเลิก</span>'
-                : '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">⏳ รอคิว</span>';
+          const deliveryOrder = ord.delivery_method === 'delivery';
+        const legacyCompletedLabel = deliveryOrder ? 'พร้อมจัดส่งพัสดุ' : 'พร้อมรับเอกสาร';
+        const statusMeta = ({
+          queued: ['รอแอดมินตรวจสอบ', 'amber', 'clock-3'],
+          pending: ['รอแอดมินตรวจสอบ', 'amber', 'clock-3'],
+          preparing: ['กำลังตรวจสอบ / จัดเตรียม', 'blue', 'clipboard-check'],
+          printing: ['กำลังตรวจสอบ / จัดเตรียม', 'blue', 'clipboard-check'],
+          ready_for_pickup: ['พร้อมรับเอกสาร', 'emerald', 'package-check'],
+          shipped: ['จัดส่งแล้ว', 'blue', 'truck'],
+          finished: ['ส่งมอบเรียบร้อย', 'emerald', 'check-circle-2'],
+          completed: [legacyCompletedLabel, 'emerald', 'package-check'],
+          failed: ['ต้องตรวจสอบแก้ไข', 'rose', 'alert-triangle'],
+          cancelled: ['ยกเลิกแล้ว', 'rose', 'circle-x']
+        })[String(ord.status || 'queued').toLowerCase()] || ['รอแอดมินตรวจสอบ', 'amber', 'clock-3'];
+        const statusColorClass = statusMeta[1] === 'emerald' ? 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30'
+          : statusMeta[1] === 'blue' ? 'bg-blue-500/15 text-blue-500 border-blue-500/30'
+          : statusMeta[1] === 'rose' ? 'bg-rose-500/15 text-rose-500 border-rose-500/30'
+          : 'bg-amber-500/15 text-amber-500 border-amber-500/30';
+        const status = `<span class="pd-order-status-badge px-3 py-1 rounded-full text-xs font-bold border ${statusColorClass}">${safe(statusMeta[0])}</span>`;
           return `<div class="p-4 rounded-xl ui-card border space-y-2.5 hover:border-blue-500 transition cursor-pointer" role="button" tabindex="0" data-pd-order-detail="${safe(ord.id)}" aria-label="เปิดรายละเอียดคิวงานพิมพ์">
         <div class="flex items-center justify-between"><span class="text-xs font-bold font-mono text-blue-500">คิว #${safe(ord.queue_label)}</span>${status}</div>
         <div class="flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-sm font-bold titanium-text truncate max-w-[230px]">${safe(ord.file_name)}</p><p class="text-[11px] sub-text">${ord.page_count || 1} หน้า | ${ord.copies || 1} ชุด | ${ord.delivery_method === 'delivery' ? '🚚 จัดส่งพัสดุ' : '📍 รับหน้าร้าน'}</p></div><span class="text-lg font-black blue-gradient-text shrink-0">${money(ord.total_price)} ฿</span></div>
@@ -241,7 +253,7 @@
           const { data, error } = await client.from('orders').select('id,user_id,queue_number,total_amount,status,estimated_pickup,admin_note,created_at').eq('user_id', window.currentUser.id).order('created_at', { ascending: false });
           if (error) throw error;
           const hydrated = await hydrateOrdersV12(data || []);
-          currentOrdersList = hydrated; window.__pdAdminOrders = hydrated; renderQueueV12(hydrated);
+          currentOrdersList = hydrated; window.__pdUserOrders = hydrated; renderQueueV12(hydrated);
         } catch (err) {
           container.innerHTML = `<p class="py-8 text-center text-rose-500 text-xs">${safe(err?.message || 'ไม่สามารถโหลดข้อมูลคิวงานได้')}</p>`;
         }
@@ -566,7 +578,7 @@
           set('qd-modal-pickup-info', order.delivery_method === 'delivery' ? '🚚 การรับสินค้า: จัดส่งพัสดุ' : '📍 การรับสินค้า: รับหน้าร้านโดยตรง');
           const track = $('qd-modal-tracking-box');
           if (order.delivery_method === 'delivery') {
-            set('qd-modal-tracking-num', order.tracking_number ? `เลข Tracking: ${order.tracking_number} (${order.delivery_provider || 'ผู้ให้บริการขนส่ง'})` : 'รอแอดมินอัปเดตเลขพัสดุ');
+            set('qd-modal-tracking-num', order.tracking_number ? `เลข Tracking: ${order.tracking_number} (${order.delivery_provider || 'ผู้ให้บริการขนส่ง'})` : 'กำลังเตรียมจัดส่ง');
             set('qd-modal-recipient-info', `ผู้รับ: ${order.recipient_name || '-'} (${order.recipient_phone || '-'}) | ที่อยู่: ${order.recipient_address || '-'}`);
             track?.classList.remove('hidden');
           } else track?.classList.add('hidden');
@@ -591,9 +603,9 @@
           const r = await db().from('deliveries').update({ tracking_number: tracking, delivery_provider: 'Kerry Express' }).eq('order_id', orderId).select('id,tracking_number,delivery_provider').maybeSingle();
           if (r.error) throw r.error;
           if (!r.data) throw new Error('ไม่พบรายการจัดส่งของออเดอร์นี้');
-          notifyV12('บันทึกเลขพัสดุสำเร็จ', 'อัปเดตข้อมูลจัดส่งเรียบร้อยแล้ว', 'shield-check');
+          notifyV12('บันทึก Tracking สำเร็จ', 'ข้อมูลถูกบันทึกในตาราง deliveries แล้ว', 'shield-check');
           await window.loadAdminData?.();
-        } catch (err) { notifyV12('บันทึกเลขพัสดุไม่สำเร็จ', 'กรุณาลองอีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'shield-alert'); }
+        } catch (err) { notifyV12('บันทึก Tracking ไม่สำเร็จ', err.message || 'เกิดข้อผิดพลาด', 'shield-alert'); }
       };
 
       window.updateOrderStatus = async function (orderId, newStatus) {
@@ -733,6 +745,44 @@
         }
       };
 
+      // Keep the Admin status dropdown values aligned with pd_update_order_status_v2.
+      // Old rows are displayed explicitly so the browser never silently falls back to the first option.
+      function normalizeAdminStatusValueV12(rawStatus) {
+        const status = String(rawStatus || 'queued').toLowerCase();
+        return ({ pending: 'queued', printing: 'preparing' })[status] || status;
+      }
+
+      function renderAdminStatusSelectV12(ord) {
+        const rawStatus = String(ord.status || 'queued').toLowerCase();
+        const current = normalizeAdminStatusValueV12(rawStatus);
+        const delivery = ord.delivery_method === 'delivery';
+        const hasTracking = Boolean(String(ord.tracking_number || '').trim() && String(ord.delivery_provider || '').trim());
+        const labels = {
+          queued: 'รอแอดมินตรวจสอบ', preparing: 'กำลังตรวจสอบ / จัดเตรียม',
+          ready_for_pickup: 'พร้อมรับเอกสาร', shipped: 'จัดส่งแล้ว',
+          finished: 'ส่งมอบเรียบร้อย', failed: 'ต้องตรวจสอบแก้ไข', cancelled: 'ยกเลิกแล้ว'
+        };
+        let allowed;
+        if (current === 'queued') allowed = ['queued', 'preparing', 'failed', 'cancelled'];
+        else if (current === 'preparing') allowed = ['queued', 'preparing', 'ready_for_pickup', ...(delivery ? ['shipped'] : []), 'failed'];
+        else if (current === 'ready_for_pickup') allowed = ['ready_for_pickup', ...(delivery ? ['shipped'] : []), 'finished'];
+        else if (current === 'shipped') allowed = ['shipped', 'finished'];
+        else if (current === 'failed') allowed = ['failed', 'queued', 'cancelled'];
+        else if (current === 'finished' || current === 'cancelled') allowed = [current];
+        else if (current === 'completed') allowed = ['completed', 'preparing']; // legacy state; the RPC supports moving it into manual preparation
+        else allowed = [current, 'preparing'];
+
+        const options = allowed.map(value => {
+          const label = labels[value] || `สถานะเดิม: ${value}`;
+          const disabled = value === 'shipped' && delivery && !hasTracking && current !== 'shipped';
+          const suffix = disabled ? ' · กรุณาบันทึกเลขพัสดุก่อน' : '';
+          return `<option value="${safe(value)}" ${value === current ? 'selected' : ''} ${disabled ? 'disabled' : ''}>${safe(label + suffix)}</option>`;
+        });
+        if (!allowed.includes(current)) options.unshift(`<option value="${safe(current)}" selected>สถานะเดิม: ${safe(current)}</option>`);
+        const terminal = ['finished', 'cancelled'].includes(current);
+        return `<select data-pd-admin-action="status" data-order-id="${safe(ord.id)}" data-current-status="${safe(current)}" aria-label="สถานะคิวงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold pd-admin-status-select" ${terminal ? 'disabled aria-disabled="true"' : ''}>${options.join('')}</select>`;
+      }
+
       window.loadAdminData = async function () {
         if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
         try {
@@ -759,9 +809,7 @@
         <td class="py-3 px-3"><p class="font-bold titanium-text truncate max-w-[170px]">${safe(ord.file_name)}</p><p class="sub-text text-[10px]">${money(ord.total_price)} ฿ · ${ord.page_count || 1} หน้า</p>${ord.file_path ? `<button type="button" data-pd-admin-action="open-file" data-file-path="${safe(ord.file_path)}" data-file-bucket="documents" class="mt-1 text-[12px] font-black text-blue-500 hover:underline">เปิดไฟล์</button>` : ''}</td>
         <td class="py-3 px-3">${ord.delivery_method === 'delivery' ? `<p class="text-blue-500 font-bold">🚚 จัดส่งพัสดุ</p><p class="sub-text text-[10px] truncate max-w-[150px]">${safe(ord.recipient_name)} (${safe(ord.recipient_phone)})</p>` : `<p class="text-emerald-500 font-bold">📍 หน้าร้าน</p>`}</td>
         <td class="py-3 px-3">${ord.slip_url ? `<button type="button" data-pd-admin-action="slip" data-slip-url="${safe(ord.slip_url)}" class="text-blue-500 underline font-bold">ดูสลิป</button>` : '<span class="sub-text">Coins</span>'}</td>
-        <td class="py-3 px-3"><select data-pd-admin-action="status" data-order-id="${safe(ord.id)}" aria-label="เปลี่ยนสถานะงานพิมพ์" class="ui-input rounded-xl p-2 text-sm font-bold">
-          <option value="queued" ${ord.status === 'queued' ? 'selected' : ''}>⏳ รอคิว</option><option value="printing" ${ord.status === 'printing' ? 'selected' : ''}>🖨️ กำลังพิมพ์</option><option value="completed" ${ord.status === 'completed' ? 'selected' : ''}>✅ พิมพ์เสร็จแล้ว</option><option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>❌ ยกเลิก</option>
-        </select></td>
+        <td class="py-3 px-3">${renderAdminStatusSelectV12(ord)}</td>
         <td class="py-3 px-3 text-right space-x-1">${ord.delivery_method === 'delivery' ? `<button type="button" data-pd-admin-action="tracking" data-order-id="${safe(ord.id)}" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold">Tracking</button>` : ''}<button type="button" data-pd-admin-action="detail" data-order-id="${safe(ord.id)}" class="px-3 py-2 ui-card rounded-xl text-sm font-bold">ดูข้อมูล</button><button type="button" data-pd-admin-action="delete-order" data-order-id="${safe(ord.id)}" class="px-3 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-sm font-extrabold transition" aria-label="ลบคิว #${safe(ord.queue_number ?? ord.id)}"><span aria-hidden="true">⌫</span> ลบงาน</button></td>
       </tr>`).join('') || '<tr><td colspan="6" class="py-10 text-center sub-text">ยังไม่มีรายการ</td></tr>';
 
