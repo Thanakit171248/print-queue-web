@@ -360,20 +360,68 @@
     const box=$('pd-employee-orders');if(!box)return;
     const term=currentText('pd-employee-search').toLowerCase();
     const rows=employeeOrdersCache.filter(o=>!term||[o.id,o.queue_number,o.file_name,o.customer_name,o.tracking_number,o.recipient_name,o.phone_number].some(v=>String(v||'').toLowerCase().includes(term)));
-    if(!rows.length){box.innerHTML='<p class="text-sm sub-text text-center py-10">ไม่พบงานที่ตรงกับการค้นหา</p>';return;}
+    if(!rows.length){box.innerHTML='<div class="pd-employee-empty-state"><span class="pd-employee-empty-icon"><i data-lucide="clipboard-list" aria-hidden="true"></i></span><strong>ไม่พบคิวงานที่ตรงกับการค้นหา</strong><p>ลองค้นหาด้วยหมายเลขคิว ชื่อไฟล์ ชื่อลูกค้า หรือ Tracking อีกครั้ง</p></div>';window.lucide?.createIcons?.();return;}
     box.innerHTML=rows.map(o=>{
       const shipping=o.delivery_method==='delivery';
       const picked=o.page_range?`ช่วงหน้าที่เลือก: ${o.page_range}`:`ทั้งหมด ${o.page_count} หน้า`;
       const binding=Number(o.binding_cost||0)>0?`เข้าเล่ม · ${money(o.binding_cost)} บาท (รวมตามคำสั่งซื้อ)`:'ไม่ได้ระบุค่าบริการเข้าเล่มในยอดสั่งซื้อ';
       const payLabel=/coins|wallet/i.test(String(o.payment_method||''))?'Coins / กระเป๋าเงิน':(o.payment_method||'ไม่ระบุช่องทาง');
+      const created=o.created_at?new Date(o.created_at).toLocaleString('th-TH'):'ไม่ระบุวันเวลา';
+      const queue=o.queue_number??o.id;
+      const statusLabel=humanStatus(o.status);
       return `<article class="pd-employee-order" data-employee-order="${esc(o.id)}">
-        <div class="pd-employee-order-head"><div><div class="pd-employee-card-context"><span class="pd-employee-queue">คิว #${esc(o.queue_number??o.id)}</span><span class="pd-employee-work-badge"><i data-lucide="user-round-check" aria-hidden="true"></i> งานที่พนักงานดูแล</span><span class="pd-employee-method-badge ${shipping?'delivery':'pickup'}"><i data-lucide="${shipping?'truck':'store'}" aria-hidden="true"></i>${shipping?'จัดส่ง':'รับที่ร้าน'}</span></div><h3 class="font-bold titanium-text mt-2">${esc(o.file_name)}</h3><p class="text-[11px] sub-text mt-1">ลูกค้า: ${esc(o.customer_name||'สมาชิก')} · ${esc(new Date(o.created_at).toLocaleString('th-TH'))}</p><p class="pd-employee-payment-line"><span>ชำระผ่าน ${esc(payLabel)}</span><strong>${money(o.total_amount)} ฿</strong></p></div><span class="pd-employee-status pd-status-${esc(o.status)}">${esc(humanStatus(o.status))}</span></div>
-        <div class="pd-employee-specs"><span><b>ช่วงหน้า</b>${esc(picked)}</span><span><b>งานพิมพ์</b>${esc(o.paper_size)} · ${o.color?'สี':'ขาว-ดำ'} · ${o.duplex?'หน้า-หลัง':'หน้าเดียว'}</span><span><b>จำนวน</b>${esc(o.copies)} ชุด</span><span><b>เข้าเล่ม</b>${esc(binding)}</span><span><b>วิธีรับ</b>${shipping?'จัดส่ง':'รับที่ร้าน'}</span><span><b>ค่าจัดส่ง</b>${shipping?money(o.delivery_fee)+' ฿':'0.00 ฿'}</span></div>
-        ${shipping?`<div class="pd-employee-delivery"><strong>ข้อมูลจัดส่ง</strong><p>${esc(o.recipient_name)} · ${esc(o.phone_number)}</p><p>${esc(o.delivery_address)}</p><p>ผู้ให้บริการ: ${esc(o.delivery_provider||'ยังไม่บันทึก')} · Tracking: ${esc(o.tracking_number||'ยังไม่บันทึก')}</p><p>ค่าจัดส่งที่ลูกค้าชำระ: ${money(o.delivery_fee)} ฿ · ต้นทุนจัดส่งจริง: ${o.actual_delivery_cost===null?'ยังไม่บันทึก':money(o.actual_delivery_cost)+' ฿'}</p><button type="button" data-emp-edit-delivery="${esc(o.id)}" class="pd-emp-action secondary mt-2">บันทึก/แก้ไขข้อมูลจัดส่ง</button></div>`:'<p class="pd-employee-delivery"><strong>รับที่หน้าร้าน</strong> · กรุณาตรวจคิวและจำนวนชุดก่อนส่งมอบ</p>'}
-        ${o.last_error?`<p class="text-xs text-rose-400 mt-2">หมายเหตุงานพิมพ์: ${esc(o.last_error)}</p>`:''}
-        <div class="pd-employee-actions"><button type="button" data-emp-open-file="${esc(o.file_path)}" class="pd-emp-action secondary" ${o.file_path?'':'disabled'}>เปิดไฟล์ PDF</button><details class="pd-employee-details"><summary>ดูรายละเอียดเพิ่มเติม</summary><div class="pt-3 text-xs sub-text space-y-1"><p>Order ID: ${esc(o.id)}</p><p>Print Job: ${esc(o.job?.id||'ไม่พบ Job')}</p><p>สถานะ Print Job: ${esc(humanStatus(o.print_status))}</p><p>วิธีรับสินค้า: ${shipping?'จัดส่งทาง '+(o.delivery_provider||'ยังไม่ระบุ'):'รับที่ร้าน'}</p><p>ค่าบริการเข้าเล่มรวมในคำสั่งซื้อ: ${money(o.binding_cost)} ฿</p><p>ยืนยันการเข้าเล่มแล้ว: ${o.binding_completed?'ใช่':'ยังไม่ได้ยืนยัน'}</p><p>ต้นทุนจัดส่งจริง: ${o.actual_delivery_cost===null?'ยังไม่บันทึก':money(o.actual_delivery_cost)+' ฿'}</p><p>หมายเหตุ: ${esc(o.admin_note||'—')}</p></div></details><div class="flex flex-wrap gap-2">${nextActions(o)}</div></div>
+        <header class="pd-employee-order-head">
+          <div class="pd-employee-order-main">
+            <div class="pd-employee-card-context">
+              <span class="pd-employee-queue"><i data-lucide="hash" aria-hidden="true"></i> คิว ${esc(queue)}</span>
+              <span class="pd-employee-method-badge ${shipping?'delivery':'pickup'}"><i data-lucide="${shipping?'truck':'store'}" aria-hidden="true"></i>${shipping?'จัดส่งถึงบ้าน':'รับที่ร้าน'}</span>
+            </div>
+            <h3 class="pd-employee-file-title"><span class="pd-employee-file-icon"><i data-lucide="file-text" aria-hidden="true"></i></span><span>${esc(o.file_name||'เอกสาร PDF')}</span></h3>
+            <div class="pd-employee-meta-line"><span><i data-lucide="user-round" aria-hidden="true"></i><b>ลูกค้า</b> ${esc(o.customer_name||'สมาชิก')}</span><span><i data-lucide="calendar-clock" aria-hidden="true"></i>${esc(created)}</span></div>
+          </div>
+          <div class="pd-employee-order-statusbox">
+            <span class="pd-employee-status pd-status-${esc(o.status)}">${esc(statusLabel)}</span>
+            <div class="pd-employee-total-card"><small>ยอดชำระคำสั่งซื้อ</small><strong>${money(o.total_amount)} <em>฿</em></strong><span><i data-lucide="check-circle-2" aria-hidden="true"></i> ${esc(payLabel)}</span></div>
+          </div>
+        </header>
+
+        <section class="pd-employee-info-section" aria-label="รายละเอียดงานพิมพ์">
+          <div class="pd-employee-subsection-title"><span class="pd-employee-subsection-icon"><i data-lucide="printer" aria-hidden="true"></i></span><div><h4>รายละเอียดงานพิมพ์</h4><p>ตรวจสอบรูปแบบ จำนวน และบริการที่ลูกค้าเลือก</p></div></div>
+          <div class="pd-employee-specs">
+            <div class="pd-employee-info-item"><b><i data-lucide="files" aria-hidden="true"></i>ช่วงหน้าที่พิมพ์</b><span>${esc(picked)}</span></div>
+            <div class="pd-employee-info-item"><b><i data-lucide="file-check-2" aria-hidden="true"></i>ชนิดกระดาษและสี</b><span>${esc(o.paper_size||'A4')} · ${o.color?'พิมพ์สี':'ขาว-ดำ'}</span></div>
+            <div class="pd-employee-info-item"><b><i data-lucide="copy" aria-hidden="true"></i>รูปแบบและจำนวน</b><span>${o.duplex?'พิมพ์หน้า-หลัง':'พิมพ์หน้าเดียว'} · ${esc(o.copies)} ชุด</span></div>
+            <div class="pd-employee-info-item"><b><i data-lucide="book-open" aria-hidden="true"></i>บริการเข้าเล่ม</b><span>${esc(binding)}</span></div>
+            <div class="pd-employee-info-item"><b><i data-lucide="package-check" aria-hidden="true"></i>วิธีรับสินค้า</b><span>${shipping?'จัดส่งถึงบ้าน':'รับที่ร้าน'}</span></div>
+            <div class="pd-employee-info-item pd-employee-info-price"><b><i data-lucide="truck" aria-hidden="true"></i>ค่าจัดส่งที่เรียกเก็บ</b><span>${shipping?money(o.delivery_fee)+' ฿':'0.00 ฿'}</span></div>
+          </div>
+        </section>
+
+        ${shipping?`<section class="pd-employee-delivery" aria-label="ข้อมูลจัดส่ง">
+          <div class="pd-employee-subsection-title"><span class="pd-employee-subsection-icon delivery"><i data-lucide="map-pinned" aria-hidden="true"></i></span><div><h4>ข้อมูลจัดส่ง</h4><p>ตรวจสอบชื่อผู้รับ ที่อยู่ และหมายเลขติดตามก่อนส่งมอบ</p></div></div>
+          <div class="pd-employee-delivery-grid">
+            <div class="pd-employee-delivery-field"><small>ชื่อผู้รับ</small><strong>${esc(o.recipient_name||'ยังไม่บันทึก')}</strong></div>
+            <div class="pd-employee-delivery-field"><small>เบอร์โทรศัพท์</small><strong>${esc(o.phone_number||'ยังไม่บันทึก')}</strong></div>
+            <div class="pd-employee-delivery-field address"><small>ที่อยู่จัดส่ง</small><strong>${esc(o.delivery_address||'ยังไม่บันทึกที่อยู่')}</strong></div>
+            <div class="pd-employee-delivery-field"><small>ผู้ให้บริการ</small><strong>${esc(o.delivery_provider||'ยังไม่บันทึก')}</strong></div>
+            <div class="pd-employee-delivery-field"><small>Tracking Number</small><strong class="${o.tracking_number?'has-value':'missing-value'}">${esc(o.tracking_number||'ยังไม่บันทึก')}</strong></div>
+            <div class="pd-employee-delivery-field"><small>ลูกค้าชำระค่าจัดส่ง</small><strong>${money(o.delivery_fee)} ฿</strong></div>
+            <div class="pd-employee-delivery-field"><small>ต้นทุนจัดส่งจริง</small><strong>${o.actual_delivery_cost===null?'<span class="missing-value">ยังไม่บันทึก</span>':money(o.actual_delivery_cost)+' ฿'}</strong></div>
+          </div>
+          <div class="pd-employee-delivery-actions"><span><i data-lucide="info" aria-hidden="true"></i> ต้นทุนจริงแยกจากค่าจัดส่งที่ลูกค้าชำระ</span><button type="button" data-emp-edit-delivery="${esc(o.id)}" class="pd-emp-action secondary"><i data-lucide="pencil-line" aria-hidden="true"></i> บันทึก / แก้ไขข้อมูลจัดส่ง</button></div>
+        </section>`:`<section class="pd-employee-pickup-note"><span class="pd-employee-subsection-icon"><i data-lucide="store" aria-hidden="true"></i></span><div><strong>รับสินค้าที่หน้าร้าน</strong><p>ตรวจหมายเลขคิวและจำนวนชุดให้ครบก่อนส่งมอบแก่ลูกค้า</p></div></section>`}
+        ${o.last_error?`<div class="pd-employee-error-note"><i data-lucide="alert-circle" aria-hidden="true"></i><div><strong>หมายเหตุงานพิมพ์</strong><p>${esc(o.last_error)}</p></div></div>`:''}
+
+        <footer class="pd-employee-actions">
+          <div class="pd-employee-secondary-actions">
+            <button type="button" data-emp-open-file="${esc(o.file_path)}" class="pd-emp-action secondary" ${o.file_path?'':'disabled'}><i data-lucide="file-search" aria-hidden="true"></i> เปิดไฟล์ PDF</button>
+            <details class="pd-employee-details"><summary><i data-lucide="list-details" aria-hidden="true"></i> ดูรายละเอียดระบบ</summary><div class="pd-employee-detail-list"><p><b>Order ID</b><span>${esc(o.id)}</span></p><p><b>Print Job</b><span>${esc(o.job?.id||'ไม่พบ Job')}</span></p><p><b>สถานะ Print Job</b><span>${esc(humanStatus(o.print_status))}</span></p><p><b>วิธีรับสินค้า</b><span>${shipping?'จัดส่งทาง '+(o.delivery_provider||'ยังไม่ระบุ'):'รับที่ร้าน'}</span></p><p><b>ค่าบริการเข้าเล่ม</b><span>${money(o.binding_cost)} ฿</span></p><p><b>ยืนยันเข้าเล่มแล้ว</b><span>${o.binding_completed?'ยืนยันแล้ว':'ยังไม่ได้ยืนยัน'}</span></p><p><b>ต้นทุนจัดส่งจริง</b><span>${o.actual_delivery_cost===null?'ยังไม่บันทึก':money(o.actual_delivery_cost)+' ฿'}</span></p><p><b>หมายเหตุ Admin</b><span>${esc(o.admin_note||'—')}</span></p></div></details>
+          </div>
+          <div class="pd-employee-primary-actions">${nextActions(o)}</div>
+        </footer>
       </article>`;
     }).join('');
+    window.lucide?.createIcons?.();
   }
 
   function employeeChangeStatus(button) {
