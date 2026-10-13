@@ -25,6 +25,18 @@
     console.warn(`[PrintDekD] ${title}: ${message}`);
   };
 
+  // Present clear, customer-friendly Thai messages instead of exposing internal
+  // service names, database objects, permission codes, or raw server errors.
+  const CUSTOMER_ERROR_FALLBACK = 'ขออภัย ขณะนี้ไม่สามารถทำรายการได้ กรุณาลองใหม่อีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ';
+  const INTERNAL_ERROR_PATTERN = /(supabase|\brpc\b|\bapi\b|\bsql\b|\brls\b|policy|storage|schema|column|\btable\b|postgres|permission denied|not authorized|jwt|http\s*\d{3}|pgrst|foreign key|constraint|could not find|does not exist|trigger|wallets\.balance|delivery_options|\bpricing\b|row-level security|duplicate key|violates|slipok|secure context)/i;
+  function customerFacingMessage(error, fallback = CUSTOMER_ERROR_FALLBACK) {
+    const raw = typeof error === 'string' ? error : (error?.message || (error == null ? '' : String(error)));
+    const message = String(raw || '').trim();
+    if (!message || message.length > 220 || INTERNAL_ERROR_PATTERN.test(message) || !/[\u0E00-\u0E7F]/.test(message)) return fallback;
+    return message;
+  }
+  window.pdCustomerFacingMessage = customerFacingMessage;
+
   // Use PrintDekD's own modal for confirmations instead of browser-native confirm().
   // This keeps Admin actions visually consistent with the existing logout/success dialog.
   function showAppConfirm({ title, message, icon = 'shield-check', confirmText = 'ยืนยัน', cancelText = 'ยกเลิก', onConfirm }) {
@@ -88,7 +100,7 @@
 
   async function requireSession() {
     const client = db();
-    if (!client) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+    if (!client) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
     const { data, error } = await client.auth.getSession();
     if (error) throw error;
     const session = data?.session;
@@ -101,7 +113,7 @@
 
   async function rpc(name, args) {
     const client = db();
-    if (!client) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+    if (!client) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
     const { data, error } = await client.rpc(name, args);
     if (error) throw error;
     return Array.isArray(data) && data.length === 1 ? data[0] : data;
@@ -174,7 +186,7 @@
     } catch (_) {
       // A network failure is ambiguous: the server may already have stored a
       // verification capability. Do not create a second manual request in this case.
-      throw new Error('ติดต่อ API ตรวจสลิปไม่ได้ จึงยังไม่สร้างคำขอหรือเพิ่ม Coins กรุณาลองใหม่ และตรวจประวัติ Wallet ก่อนส่งซ้ำ');
+      throw new Error('ไม่สามารถตรวจสอบสลิปได้ในขณะนี้ จึงยังไม่มีการเพิ่ม Coins กรุณาลองใหม่ภายหลัง และตรวจสอบประวัติ Coins ก่อนส่งคำขอซ้ำ');
     }
 
     let result = null;
@@ -184,19 +196,19 @@
         manualReview: true,
         manualReviewToken: String(result.manualReviewToken),
         amount: amountNumber,
-        message: String(result?.message || 'SlipOK ยังยืนยันไม่ได้ชั่วคราว จึงส่งให้ผู้ดูแลตรวจสอบด้วยตนเองได้'),
+        message: customerFacingMessage(result?.message, 'ยังไม่สามารถยืนยันสลิปได้ในขณะนี้ คุณสามารถส่งคำขอให้ผู้ดูแลตรวจสอบหลักฐานการโอนได้'),
         code: String(result?.code || 'manual_review_required')
       };
     }
     if (!response.ok || result?.ok !== true) {
-      throw new Error(String(result?.message || `SlipOK ตรวจสลิปไม่ผ่าน (HTTP ${response.status})`));
+      throw new Error(String(result?.message || 'ไม่สามารถยืนยันสลิปได้ กรุณาตรวจสอบรูปสลิปและลองใหม่อีกครั้ง'));
     }
     const confirmed = Number(result.amount);
     if (!Number.isFinite(confirmed) || Math.round(confirmed * 100) !== Math.round(amountNumber * 100)) {
-      throw new Error('ยอดเงินที่ SlipOK ยืนยันไม่ตรงกับยอดที่เลือก ระบบจึงไม่ทำรายการ');
+      throw new Error('ยอดเงินบนสลิปไม่ตรงกับยอดที่เลือก กรุณาตรวจสอบจำนวนเงินแล้วลองใหม่อีกครั้ง');
     }
     if (!result.verificationId || !String(result.transRef || '').trim()) {
-      throw new Error('ผลตรวจสลิปขาดรหัสยืนยันหรือเลขอ้างอิง กรุณาลองใหม่โดยไม่ส่งรายการซ้ำ');
+      throw new Error('ยังยืนยันผลตรวจสลิปไม่ได้ กรุณาตรวจสอบประวัติ Coins ก่อนส่งรายการซ้ำ หรือ ติดต่อผู้ดูแลระบบ');
     }
     return {
       manualReview: false,
@@ -204,7 +216,7 @@
       transRef: String(result.transRef).slice(0, 100),
       amount: confirmed,
       verifiedAt: String(result.verifiedAt || new Date().toISOString()),
-      message: String(result.message || 'SlipOK ยืนยันสลิปแล้ว')
+      message: String(result.message || 'ยืนยันสลิปเรียบร้อยแล้ว')
     };
   }
 
@@ -225,7 +237,7 @@
   }
 
   async function deterministicTopupRequestKey(userId, file) {
-    if (!window.crypto?.subtle) throw new Error('เบราว์เซอร์ไม่รองรับ SHA-256 ใน Secure Context กรุณาเปิดเว็บผ่าน HTTPS');
+    if (!window.crypto?.subtle) throw new Error('เบราว์เซอร์นี้ไม่รองรับการตรวจสอบไฟล์อย่างปลอดภัย กรุณาใช้เบราว์เซอร์รุ่นล่าสุดและเปิดเว็บไซต์ผ่านการเชื่อมต่อที่ปลอดภัย');
     const fileDigest = new Uint8Array(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()));
     const hex = [...fileDigest].map((byte) => byte.toString(16).padStart(2, '0')).join('');
     const seed = new TextEncoder().encode(`${userId}:${hex}`);
@@ -245,7 +257,7 @@
     const fileInput = $('topup-slip-file');
     const form = fileInput?.form || q('#view-wallet form');
     if (!user) return notify('กรุณาล็อกอิน', 'กรุณาล็อกอินก่อนทำรายการเติม Coins', 'lock');
-    if (!client) return notify('ฐานข้อมูลยังไม่พร้อม', 'ไม่สามารถรับคำขอเติม Coins ขณะ Supabase ยังไม่เชื่อมต่อ', 'database-zap');
+    if (!client) return notify('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถรับคำขอเติม Coins ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
     const amount = Number($('selected-topup-amount')?.value || 20);
     if (![20, 50, 100, 200, 500].includes(amount)) return notify('แพ็กเกจไม่ถูกต้อง', 'เลือก Coins ได้เฉพาะ 20, 50, 100, 200 หรือ 500 บาท', 'shield-alert');
     const file = fileInput?.files?.[0];
@@ -297,7 +309,7 @@
         } else {
           notify(
             'ส่งคำขอให้แอดมินตรวจสอบแล้ว',
-            `SlipOK ยังยืนยันสลิปไม่ได้ชั่วคราว: ${verification.message}\n\nสร้างคำขอ ${pending?.topup_id || ''} สถานะรอตรวจสอบแล้ว แต่ยังไม่มีการเพิ่ม Coins จนกว่าแอดมินจะตรวจรายการโอนจริงและอนุมัติ`,
+            `ยังไม่สามารถยืนยันสลิปได้ในขณะนี้\n\nส่งคำขอ ${pending?.topup_id || ''} ให้ผู้ดูแลตรวจสอบแล้ว Coins จะเพิ่มหลังจากผู้ดูแลตรวจหลักฐานการโอนและอนุมัติเท่านั้น`,
             'clock'
           );
         }
@@ -319,15 +331,15 @@
       } else {
         notify(
           created?.idempotent_replay ? 'รายการเติม Coins มีอยู่แล้ว' : 'เติม Coins สำเร็จ',
-          `SlipOK ยืนยันยอด ${money(created?.amount ?? verification.amount)} บาทแล้ว.\n${created?.idempotent_replay ? 'ระบบพบรายการเดิมและไม่ได้เพิ่ม Coins ซ้ำ' : 'เพิ่ม Coins ผ่านฐานข้อมูลอย่างปลอดภัยแล้ว'}${created?.balance != null ? `\nยอดคงเหลือ ${money(created.balance)} Coins` : ''}`,
+          `ตรวจสอบยอดโอน ${money(created?.amount ?? verification.amount)} บาทเรียบร้อยแล้ว.\n${created?.idempotent_replay ? 'พบรายการเดิม จึงไม่มีการเพิ่ม Coins ซ้ำ' : 'เพิ่ม Coins ให้บัญชีของคุณเรียบร้อยแล้ว'}${created?.balance != null ? `\nยอดคงเหลือ ${money(created.balance)} Coins` : ''}`,
           'check-circle-2'
         );
       }
     } catch (error) {
-      const raw = String(error?.message || error || 'เกิดข้อผิดพลาด');
-      // Keep request key and file for safe retry. If the server committed before a
-      // response was lost, the request-key / verification-ID idempotency checks recover it.
-      notify('ส่งคำขอเติม Coins ไม่สำเร็จ', `${raw}\n\nระบบไม่ได้แจ้งว่าเพิ่ม Coins สำเร็จ กรุณาตรวจประวัติ Wallet/Coins ก่อนกดส่งซ้ำ`, 'shield-alert');
+      const friendly = customerFacingMessage(error, 'ส่งคำขอเติม Coins ไม่สำเร็จ กรุณาตรวจสอบประวัติ Coins ก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
+      // Keep the technical error in the console for maintainers, not in customer-facing copy.
+      console.error('[PrintDekD] Top-up action failed:', error);
+      notify('ส่งคำขอเติม Coins ไม่สำเร็จ', `${friendly}\n\nกรุณาตรวจสอบประวัติ Coins ก่อนส่งคำขอซ้ำ`, 'shield-alert');
     } finally {
       if (submit?.isConnected) { submit.disabled = false; delete submit.dataset.pdRpcBusy; }
     }
@@ -392,7 +404,7 @@
       const { data: option, error: optionError } = await client.from('delivery_options')
         .select('provider_key,fee,active').eq('provider_key', 'parcel').eq('active', true).maybeSingle();
       if (optionError) throw optionError;
-      if (!option || option.fee == null) throw new Error('ยังไม่ได้เปิดใช้งานการจัดส่งพัสดุหรือกำหนดค่าส่งใน delivery_options');
+      if (!option || option.fee == null) throw new Error('ขณะนี้ยังไม่พร้อมให้เลือกจัดส่งพัสดุ กรุณาเลือกมารับที่ร้านหรือติดต่อผู้ดูแลระบบ');
       deliveryFee = Number(option.fee);
     }
     return { price, deliveryFee };
@@ -440,19 +452,19 @@
     const form = $('print-form');
     const submit = form?.querySelector('button[type="submit"]');
     if (!user) return notify('กรุณาล็อกอิน', 'กรุณาล็อกอินก่อนสร้างคิวงานพิมพ์', 'lock');
-    if (!client) return notify('ฐานข้อมูลยังไม่พร้อม', 'กรุณาเชื่อมต่อ Supabase ก่อนสั่งงาน', 'database-zap');
+    if (!client) return notify('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถรับคำสั่งพิมพ์ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
     if (submit?.disabled) return;
 
     const file = window.selectedFileObj || $('file-input')?.files?.[0];
     if (!file) return notify('ยังไม่ได้เลือกไฟล์', 'กรุณาอัปโหลดเอกสาร PDF ก่อนสร้างรายการ', 'file-plus-2');
     if (!/\.pdf$/i.test(String(file.name || '')) || (file.type && file.type !== 'application/pdf')) {
-      return notify('ชนิดไฟล์ไม่ตรงกับฐานข้อมูล', 'ฐานข้อมูลชุด Secure RPC รองรับงานพิมพ์ PDF เท่านั้น กรุณาบันทึกเอกสารเป็น PDF ก่อนอัปโหลด', 'file-warning');
+      return notify('รองรับไฟล์ PDF เท่านั้น', 'กรุณาบันทึกเอกสารเป็นไฟล์ PDF ก่อนอัปโหลด เพื่อให้ระบบตรวจจำนวนหน้าและคำนวณราคาได้ถูกต้อง', 'file-warning');
     }
     if (file.size <= 0 || file.size > 20 * 1024 * 1024) return notify('ขนาดไฟล์ไม่ถูกต้อง', 'ไฟล์ PDF ต้องมีขนาดมากกว่า 0 และไม่เกิน 20 MB', 'file-warning');
     try {
       const signature = new Uint8Array(await file.slice(0, 5).arrayBuffer());
       if (new TextDecoder().decode(signature) !== '%PDF-') throw new Error('ไฟล์นี้ไม่มีลายเซ็น PDF ที่ถูกต้อง กรุณาเลือกไฟล์ PDF จริง');
-    } catch (error) { return notify('ตรวจสอบไฟล์ไม่สำเร็จ', error?.message || 'อ่านไฟล์ PDF ไม่ได้', 'file-warning'); }
+    } catch (error) { return notify('ตรวจสอบไฟล์ไม่สำเร็จ', customerFacingMessage(error, 'อ่านไฟล์ PDF ไม่สำเร็จ กรุณาลองใช้ไฟล์ PDF อื่น หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'file-warning'); }
 
     const paymentMethod = q('input[name="payment_method"]:checked')?.value;
     const deliveryMethod = q('input[name="delivery_method"]:checked')?.value;
@@ -464,7 +476,7 @@
     const pageRange = currentPageRange(totalPages);
     let selectedPages;
     try { selectedPages = countPageRange(pageRange, totalPages); }
-    catch (error) { return notify('ช่วงหน้าไม่ถูกต้อง', error.message || String(error), 'alert-triangle'); }
+    catch (error) { return notify('ช่วงหน้าไม่ถูกต้อง', customerFacingMessage(error, 'กรุณาตรวจสอบเลขหน้าที่เลือก แล้วลองใหม่อีกครั้ง'), 'alert-triangle'); }
     const copies = Number.parseInt(currentValue('copies'), 10);
     if (!Number.isInteger(copies) || copies < 1 || copies > 500) return notify('จำนวนชุดไม่ถูกต้อง', 'จำนวนชุดต้องอยู่ระหว่าง 1–500 ชุด', 'alert-triangle');
     const paperSize = currentValue('paper-size') || 'A4';
@@ -507,7 +519,7 @@
       const { price, deliveryFee } = await getPricingForOrder(client, paperSize, deliveryMethod);
       const perPage = Number(color ? price.color_price : price.black_white_price) + (duplex ? Number(price.duplex_price || 0) : 0);
       const estimatedTotal = Number((selectedPages * perPage * copies + deliveryFee).toFixed(2));
-      if (!Number.isFinite(estimatedTotal) || estimatedTotal <= 0) throw new Error('คำนวณราคาไม่ได้ กรุณาตรวจตาราง pricing');
+      if (!Number.isFinite(estimatedTotal) || estimatedTotal <= 0) throw new Error('ขณะนี้ยังคำนวณราคาไม่ได้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
 
       const totalEl = $('total-price');
       if (totalEl) totalEl.textContent = `${money(estimatedTotal)} ฿`;
@@ -526,7 +538,7 @@
         if (!slipFile) throw new Error('กรุณาแนบสลิป PromptPay ก่อนสั่งพิมพ์');
         verification = await verifySlipWithV2(slipFile, estimatedTotal, 'print', requestKey);
         if (verification.manualReview) {
-          throw new Error(`SlipOK ยังยืนยันการชำระเงินของงานพิมพ์ไม่ได้ชั่วคราว: ${verification.message}\nเพื่อป้องกันการสร้างคิวที่ยังไม่ชำระ ระบบยังไม่ได้สร้างคิว โปรดลองใหม่ภายหลังหรือติดต่อผู้ดูแล`);
+          throw new Error(`ยังไม่สามารถยืนยันการชำระเงินของงานพิมพ์ได้ในขณะนี้: ${customerFacingMessage(verification.message, 'กรุณาตรวจสอบสลิปแล้วลองใหม่อีกครั้ง')}\nเพื่อป้องกันการสร้างคิวที่ยังไม่ได้ชำระเงิน ระบบยังไม่ได้สร้างคิว กรุณาลองใหม่ภายหลังหรือติดต่อผู้ดูแลระบบ`);
         }
         slipPath = `${session.user.id}/orders/${requestKey}/${safeFilename(slipFile, 'payment-slip.jpg')}`;
         await uploadPrivateFile('slips', slipPath, slipFile, slipFile.type);
@@ -576,12 +588,13 @@
       const queueLabel = result?.queue_number ?? result?.order_id ?? 'บันทึกแล้ว';
       notify(
         result?.idempotent_replay ? 'พบคิวที่บันทึกไว้แล้ว' : 'ส่งคำสั่งพิมพ์สำเร็จ',
-        `คิว #${queueLabel} • ${selectedPages} หน้า × ${copies} ชุด\nยอด ${money(result?.total_amount ?? estimatedTotal)} ${paymentMethod === 'coins' ? 'Coins' : 'บาท'}\n${paymentMethod === 'coins' ? 'หัก Coins และบันทึกคิวในธุรกรรมเดียวแล้ว' : 'SlipOK ยืนยันสลิปแล้ว และฐานข้อมูลบันทึกคิว/การชำระเงินในธุรกรรมเดียวแล้ว'}${note ? `\nหมายเหตุที่กรอก: ${note}` : ''}`,
+        `คิว #${queueLabel} • ${selectedPages} หน้า × ${copies} ชุด\nยอด ${money(result?.total_amount ?? estimatedTotal)} ${paymentMethod === 'coins' ? 'Coins' : 'บาท'}\n${paymentMethod === 'coins' ? 'หัก Coins และบันทึกคิวเรียบร้อยแล้ว' : 'ยืนยันการชำระเงินและบันทึกคิวเรียบร้อยแล้ว'}${note ? `\nหมายเหตุที่กรอก: ${note}` : ''}`,
         'check-circle-2'
       );
     } catch (error) {
-      const raw = String(error?.message || error || 'เกิดข้อผิดพลาด');
-      // A database RPC error with a Postgres code is a confirmed rollback. Network
+      const raw = customerFacingMessage(error, 'สร้างรายการไม่สำเร็จ กรุณาตรวจสอบคิวก่อนส่งซ้ำ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
+      console.error('[PrintDekD] Print-order action failed:', error);
+      // A database error with a server code is a confirmed rollback. Network
       // failures are ambiguous, so preserve uploaded evidence and keep the request key.
       const confirmedDatabaseFailure = Boolean(error?.code) && rpcStarted;
       const mayCleanUp = !rpcStarted || confirmedDatabaseFailure;
@@ -592,7 +605,7 @@
         await removePrivateFile('documents', documentPath);
         await removePrivateFile('slips', slipPath);
       }
-      notify('สร้างรายการไม่สำเร็จ', `${raw}${rpcStarted && !confirmedDatabaseFailure ? '\n\nระบบยังยืนยันไม่ได้ว่าคิวถูกบันทึกหรือไม่ กรุณารีเฟรช/ตรวจคิวก่อนส่งซ้ำ' : ''}`, 'shield-alert');
+      notify('สร้างรายการไม่สำเร็จ', `${raw}${rpcStarted && !confirmedDatabaseFailure ? '\n\nระบบยังยืนยันผลการบันทึกไม่ได้ กรุณารีเฟรชและตรวจสอบคิวก่อนส่งคำสั่งซ้ำ' : ''}`, 'shield-alert');
     } finally {
       if (submit?.isConnected) { submit.disabled = false; delete submit.dataset.pdRpcBusy; }
     }
@@ -602,19 +615,19 @@
   // Never create or change a wallet directly from browser code.
   window.ensureUserWalletV12 = async function ensureExistingWalletOnly(userId) {
     const client = db();
-    if (!client) throw new Error('Supabase ยังไม่เชื่อมต่อ');
+    if (!client) throw new Error('ระบบยังไม่พร้อมให้บริการ กรุณาลองใหม่ภายหลัง');
     const { data, error } = await client.from('wallets')
       .select('id,user_id,balance,updated_at').eq('user_id', userId).maybeSingle();
     if (error) throw error;
-    if (!data) throw new Error('ไม่พบกระเป๋า Coins ของบัญชีนี้ กรุณาตรวจ trigger pd_auth_user_created ใน Supabase');
+    if (!data) throw new Error('ยังไม่พบกระเป๋า Coins สำหรับบัญชีนี้ กรุณาติดต่อผู้ดูแลระบบเพื่อให้ตรวจสอบบัญชีของคุณ');
     return data;
   };
 
   window.approveTopup = async function approveTopupThroughRpc(topupId) {
     if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
     const client = db();
-    if (!client) return notify('ฐานข้อมูลยังไม่พร้อม', 'ไม่สามารถอนุมัติรายการได้', 'database-zap');
-    if (!window.confirm('กรุณาเปิดแอปธนาคาร/รายการเดินบัญชีของบัญชีผู้รับ และยืนยันยอด วันเวลา และการโอนเงินจริงก่อน\n\nระบบจะเพิ่ม Coins หลัง RPC ตรวจสอบสิทธิ์และบันทึกธุรกรรมแบบอะตอมมิกเท่านั้น\n\nดำเนินการต่อหรือไม่?')) return;
+    if (!client) return notify('ระบบยังไม่พร้อมให้บริการ', 'ยังไม่สามารถอนุมัติรายการได้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', 'database-zap');
+    if (!window.confirm('ก่อนอนุมัติ กรุณาตรวจสอบหลักฐานการโอนจริงจากรายการเดินบัญชีของบัญชีผู้รับ ทั้งยอดเงิน วันเวลา และรายการโอน\n\nCoins จะเพิ่มให้สมาชิกหลังจากยืนยันว่ามีการโอนเงินจริงแล้วเท่านั้น\n\nต้องการดำเนินการต่อหรือไม่?')) return;
     const verificationRef = window.prompt('กรอกเลขอ้างอิงธุรกรรมจากสลิปหรือรายการเดินบัญชีธนาคาร (จำเป็นเพื่อป้องกันการเติมซ้ำ):')?.trim();
     if (!verificationRef) return notify('ยังไม่ได้กรอกเลขอ้างอิง', 'ยกเลิกการอนุมัติแล้ว ไม่มีการเพิ่ม Coins', 'shield-alert');
     if (verificationRef.length > 120) return notify('เลขอ้างอิงยาวเกินไป', 'เลขอ้างอิงต้องไม่เกิน 120 ตัวอักษร', 'shield-alert');
@@ -625,10 +638,10 @@
         p_admin_note: 'อนุมัติโดยผู้ดูแลหลังตรวจสอบการโอนจริง',
         p_verification_ref: verificationRef
       });
-      notify('อนุมัติรายการสำเร็จ', `คำขอ ${result?.topup_id || topupId} • ${money(result?.amount)} Coins${result?.balance != null ? `\nยอดคงเหลือผู้รับ ${money(result.balance)} Coins` : ''}${result?.idempotent_replay ? '\nรายการนี้เคยถูกจัดการแล้ว จึงไม่เพิ่ม Coins ซ้ำ' : '\nเพิ่ม Coins และสร้างรายการธุรกรรมผ่าน RPC แล้ว'}`, 'check-circle-2');
+      notify('อนุมัติรายการสำเร็จ', `คำขอ ${result?.topup_id || topupId} • ${money(result?.amount)} Coins${result?.balance != null ? `\nยอดคงเหลือสมาชิก ${money(result.balance)} Coins` : ''}${result?.idempotent_replay ? '\nรายการนี้เคยถูกจัดการแล้ว จึงไม่มีการเพิ่ม Coins ซ้ำ' : '\nเพิ่ม Coins ให้สมาชิกเรียบร้อยแล้ว'}`, 'check-circle-2');
       await window.loadAdminData?.();
     } catch (error) {
-      notify('อนุมัติไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+      notify('อนุมัติไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถอนุมัติรายการได้ กรุณาตรวจสอบข้อมูลและลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
     }
   };
 
@@ -645,7 +658,7 @@
       notify('ปฏิเสธคำขอแล้ว', `คำขอ ${result?.topup_id || topupId} ถูกปฏิเสธ และไม่มีการเพิ่ม Coins`, 'check-circle-2');
       await window.loadAdminData?.();
     } catch (error) {
-      notify('ปฏิเสธรายการไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+      notify('ปฏิเสธรายการไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถจัดการรายการนี้ได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
     }
   };
 
@@ -657,7 +670,7 @@
     const roleLabel = role === 'admin' ? 'Admin' : role === 'staff' ? 'Staff' : 'Member';
     showAppConfirm({
       title: 'ยืนยันการเปลี่ยนสิทธิ์',
-      message: `ต้องการเปลี่ยนสิทธิ์บัญชีนี้เป็น ${roleLabel} หรือไม่?\n\nระบบจะบันทึกการเปลี่ยนแปลงลงฐานข้อมูลจริงหลังจากคุณกดยืนยัน`,
+      message: `ต้องการเปลี่ยนสิทธิ์บัญชีนี้เป็น ${roleLabel} หรือไม่?\n\nการเปลี่ยนสิทธิ์จะมีผลหลังจากคุณกดยืนยัน`,
       icon: role === 'admin' ? 'shield-check' : 'user-round',
       confirmText: `ยืนยันเป็น ${roleLabel}`,
       cancelText: 'ยกเลิก',
@@ -666,11 +679,11 @@
           await rpc('pd_admin_set_user_role_v2', { p_user_id: String(userId), p_new_role: role });
           const { data, error } = await db().from('users').select('id,role').eq('id', userId).maybeSingle();
           if (error) throw error;
-          if (!data || data.role !== role) throw new Error('RPC ทำงานแล้ว แต่ยังยืนยันบทบาทจากฐานข้อมูลไม่ได้ กรุณารีเฟรชหน้า Admin');
-          notify('เปลี่ยนสิทธิ์สำเร็จ', `บันทึกบทบาท ${roleLabel} ผ่าน RPC แล้ว`, 'shield-check');
+          if (!data || data.role !== role) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณารีเฟรชหน้าแล้วลองอีกครั้ง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
+          notify('เปลี่ยนสิทธิ์สำเร็จ', `เปลี่ยนสิทธิ์สมาชิกเป็น ${roleLabel} เรียบร้อยแล้ว`, 'shield-check');
           await window.loadAdminData?.();
         } catch (error) {
-          notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+          notify('เปลี่ยนสิทธิ์ไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
         }
       }
     });
@@ -720,17 +733,18 @@
   window.updateOrderStatus = async function updateOrderStatusThroughRpc(orderId, newStatus) {
     if (typeof window.assertAdminAccess === 'function' && !window.assertAdminAccess()) return;
     if (!RPC_TARGET_STATUSES.some(([status]) => status === newStatus)) {
-      return notify('สถานะเปลี่ยนผ่านหน้าเว็บไม่ได้', 'สถานะ printing/completed ต้องมาจาก Print Server ตามกติกาฐานข้อมูล', 'shield-alert');
+      return notify('ยังเปลี่ยนสถานะนี้ไม่ได้', 'สถานะนี้ต้องได้รับการยืนยันจากขั้นตอนการทำงานของเจ้าหน้าที่ กรุณาติดต่อผู้ดูแลระบบหากต้องการความช่วยเหลือ', 'shield-alert');
     }
     try {
       const result = await rpc('pd_update_order_status_v2', {
         p_order_id: String(orderId), p_new_status: String(newStatus), p_admin_note: null
       });
-      notify('อัปเดตสถานะคิวสำเร็จ', `คิว #${result?.queue_number ?? orderId} → ${newStatus}`, 'shield-check');
+      const statusLabel = ({ queued: 'รอคิว', printing: 'กำลังพิมพ์', completed: 'พิมพ์เสร็จแล้ว', cancelled: 'ยกเลิกแล้ว' })[newStatus] || 'อัปเดตแล้ว';
+      notify('อัปเดตสถานะคิวสำเร็จ', `คิว #${result?.queue_number ?? orderId} → ${statusLabel}`, 'shield-check');
       await window.loadAdminData?.();
       await window.fetchQueues?.();
     } catch (error) {
-      notify('อัปเดตสถานะไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+      notify('อัปเดตสถานะไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกสถานะคิวได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
       await window.loadAdminData?.();
     }
   };
@@ -763,7 +777,7 @@
       notify('บันทึก Tracking สำเร็จ', `คิว #${orderId} • ${result?.tracking_number || tracking}`, 'shield-check');
       await window.loadAdminData?.();
     } catch (error) {
-      notify('บันทึก Tracking ไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+      notify('บันทึกข้อมูลจัดส่งไม่สำเร็จ', customerFacingMessage(error, 'ยังไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาตรวจสอบข้อมูลแล้วลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
     }
   };
 
@@ -782,10 +796,10 @@
         if (!privileged) throw new Error('ต้องเป็นผู้ดูแลหรือเจ้าหน้าที่จึงจะเปิดสลิปของสมาชิกได้');
         const { data, error } = await db().storage.from('slips').createSignedUrl(path, 600);
         if (error) throw error;
-        if (!data?.signedUrl) throw new Error('สร้างลิงก์สลิปชั่วคราวไม่สำเร็จ ตรวจ Storage Policy ของ slips');
+        if (!data?.signedUrl) throw new Error('ไม่สามารถเปิดดูสลิปนี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ');
         return originalOpenSlipModal(data.signedUrl);
       } catch (error) {
-        notify('เปิดสลิปไม่สำเร็จ', error?.message || String(error), 'shield-alert');
+        notify('เปิดสลิปไม่สำเร็จ', customerFacingMessage(error, 'ไม่สามารถเปิดดูสลิปได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), 'shield-alert');
       }
     };
   }
@@ -793,7 +807,7 @@
   // The supplied SQL deliberately has no client-facing delete RPC for ledger-linked
   // orders/top-ups. Do not leave old direct DELETE handlers appearing to succeed.
   window.deleteCompletedPrintOrder = function deletionBlockedWithoutSecureRpc() {
-    notify('ยังลบคิวจากหน้าเว็บไม่ได้', 'SQL ชุด Secure RPC ยังไม่มีฟังก์ชันลบคิวที่จัดการ payments, print_jobs, deliveries และ wallet_transactions อย่างปลอดภัย จึงปิดการลบโดยตรงเพื่อรักษาประวัติทางการเงิน', 'shield-alert');
+    notify('ยังไม่สามารถลบคิวจากหน้านี้ได้', 'เพื่อป้องกันข้อมูลการชำระเงินสูญหาย การลบคิวต้องผ่านการตรวจสอบเพิ่มเติม กรุณาติดต่อผู้ดูแลระบบเพื่อดำเนินการ', 'shield-alert');
   };
   document.addEventListener('click', (event) => {
     const bulk = event.target.closest('[data-pd-bulk-action="orders"], [data-pd-bulk-action="topups"]');
@@ -801,7 +815,7 @@
     event.preventDefault();
     event.stopPropagation();
     if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
-    notify('ยังลบประวัติโดยตรงไม่ได้', 'ฐานข้อมูลนี้ยังไม่มี Admin RPC สำหรับลบคิว/ประวัติ Coins และมีตารางธุรกรรมอ้างอิงอยู่ ระบบจึงเก็บประวัติไว้เพื่อการตรวจสอบ', 'shield-alert');
+    notify('ยังไม่สามารถลบประวัตินี้ได้', 'ระบบเก็บประวัติการทำรายการไว้เพื่อการตรวจสอบ กรุณาติดต่อผู้ดูแลระบบหากต้องการให้ช่วยตรวจสอบรายการนี้', 'shield-alert');
   }, true);
 
   if (document.readyState === 'loading') {
