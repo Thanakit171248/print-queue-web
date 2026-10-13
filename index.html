@@ -813,7 +813,7 @@
           ไปจนถึงกรอกที่อยู่จัดส่งและติดตามคิว</p>
         <div class="pd19-home-order-steps" aria-label="ขั้นตอนสั่งพิมพ์">
           <div><span>01</span><i data-lucide="file-up" aria-hidden="true"></i><strong>อัปโหลดไฟล์</strong><small>PDF /
-              DOCX / รูปภาพ</small></div>
+              PDF เท่านั้น</small></div>
           <div><span>02</span><i data-lucide="sliders-horizontal"
               aria-hidden="true"></i><strong>ปรับงานพิมพ์</strong><small>หน้า สี กระดาษ จำนวนชุด</small></div>
           <div><span>03</span><i data-lucide="wallet-cards"
@@ -1256,17 +1256,17 @@
 
           <form id="print-form" onsubmit="handleOrderSubmit(event)" class="space-y-6">
             <div>
-              <label class="block text-xs font-bold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF, DOCX, JPG)</label>
+              <label class="block text-xs font-bold mb-2 titanium-text">1. อัปโหลดไฟล์เอกสาร (PDF เท่านั้น)</label>
               <div
                 class="relative border-2 border-dashed hover:border-blue-500 border-slate-300 dark:border-white/20 rounded-2xl p-6 text-center transition ui-input cursor-pointer group"
                 onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" required onchange="handleFileSelect(event)" class="hidden"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                  accept=".pdf,application/pdf">
                 <div id="upload-placeholder" class="space-y-2">
                   <i data-lucide="file-plus"
                     class="w-10 h-10 text-blue-500 mx-auto group-hover:scale-110 transition"></i>
                   <p class="text-sm font-bold titanium-text">คลิกเลือกไฟล์ หรือ ลากไฟล์มาวางที่นี่</p>
-                  <p class="text-[10px] sub-text">PDF, DOC, DOCX, JPG, PNG • สูงสุด 20 MB • ระบบตรวจสอบไฟล์ก่อนส่ง</p>
+                  <p class="text-[10px] sub-text">PDF เท่านั้น • สูงสุด 20 MB • ระบบตรวจสอบไฟล์ก่อนส่ง</p>
                   <div id="pd-upload-progress" class="hidden mt-3 mx-auto max-w-sm text-left">
                     <div class="flex items-center justify-between text-[10px] font-bold mb-1"><span
                         id="pd-upload-status">กำลังตรวจสอบไฟล์…</span><span id="pd-upload-percent">0%</span></div>
@@ -1685,7 +1685,7 @@
               </label>
               <input type="file" id="topup-slip-file" required accept="image/png,image/jpeg,image/webp"
                 class="w-full text-sm ui-input rounded-2xl p-4 font-semibold focus:outline-none border focus:border-amber-500" aria-describedby="pd-topup-slip-help">
-              <p id="pd-topup-slip-help" class="sub-text text-xs mt-2">รองรับไฟล์ PNG, JPG/JPEG หรือ WEBP ขนาดไม่เกิน 5 MB</p>
+              <p id="pd-topup-slip-help" class="sub-text text-xs mt-2">รองรับไฟล์ PNG, JPG/JPEG หรือ WEBP ขนาดไม่เกิน 4 MB</p>
             </div>
 
             <button type="submit"
@@ -1712,8 +1712,9 @@
 
           <div
             class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs sub-text space-y-1 text-center">
-            <p class="font-bold titanium-text">💡 คำแนะนำการอนุมัติ:</p>
-            <p>เมื่อแนบสลิปแล้ว แอดมินจะตรวจสอบและอนุมัติ Coins เข้ากระเป๋าของคุณภายใน 1-3 นาที</p>
+            <p class="font-bold titanium-text">💡 วิธีตรวจสอบสลิปและเติม Coins:</p>
+            <p>เมื่อ SlipOK ยืนยันสลิป ยอดเงิน และบัญชีผู้รับถูกต้อง ระบบจะเพิ่ม Coins อัตโนมัติผ่านฐานข้อมูลอย่างปลอดภัย หาก SlipOK อ่านสลิปไม่ได้หรือบริการขัดข้อง ระบบจะส่งคำขอให้แอดมินตรวจหลักฐานโอนจริง โดยจะยังไม่เพิ่ม Coins จนกว่าแอดมินอนุมัติ</p>
+            <p class="mt-1">สลิปซ้ำ ยอดไม่ตรง หรือบัญชีผู้รับไม่ตรงจะถูกปฏิเสธ ไม่ส่งเข้าคิวอนุมัติแทน</p>
           </div>
         </div>
       </div>
@@ -1776,7 +1777,8 @@
       </div>
 
       <div id="admin-tab-topups" class="hidden ui-panel p-6 sm:p-8 rounded-[32px] space-y-4">
-        <h2 class="text-lg font-bold titanium-text">คำขอเติม Coins (อนุมัติสลิปโอนเงิน)</h2>
+        <h2 class="text-lg font-bold titanium-text">ประวัติและคำขอเติม Coins</h2>
+        <p class="text-xs sub-text">รายการที่ SlipOK ยืนยันแล้วจะขึ้นอนุมัติอัตโนมัติ ส่วนรายการ pending คือกรณีที่ต้องตรวจหลักฐานโอนจริงด้วยตนเองก่อนเพิ่ม Coins</p>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
@@ -1889,7 +1891,7 @@
           </div>
           <div class="pd-help-article-list" id="pd-help-article-list">
             <article class="pd-help-article" data-help-filter-item data-help-group="print"
-              data-help-search="อัปโหลด สั่งพิมพ์ ไฟล์ PDF DOC DOCX JPG PNG ตั้งค่าจำนวนชุด">
+              data-help-search="อัปโหลด สั่งพิมพ์ ไฟล์ PDF ตั้งค่าจำนวนชุด">
               <span class="pd-help-article-icon blue"><i data-lucide="file-plus-2"></i></span>
               <div><span class="pd-help-article-kicker">PRINTING</span>
                 <h3>เริ่มสั่งพิมพ์เอกสาร</h3>
@@ -1994,10 +1996,10 @@
         </div>
         <div class="pd-help-faq-list">
           <details class="pd-help-faq-item" data-help-filter-item data-help-group="print preview"
-            data-help-search="รองรับไฟล์อะไร PDF DOC DOCX JPG JPEG PNG ขนาด 20 MB">
+            data-help-search="รองรับไฟล์อะไร PDF ขนาด 20 MB">
             <summary>รองรับไฟล์ประเภทใดบ้าง?</summary>
-            <p>หน้าสั่งพิมพ์ระบุชนิดไฟล์ PDF, DOC, DOCX, JPG, JPEG และ PNG
-              โดยไฟล์พิมพ์มีขนาดสูงสุดตามค่าที่กำหนดไว้ในแอป ให้ตรวจสอบข้อความใกล้ช่องอัปโหลดก่อนเลือกไฟล์</p>
+            <p>ระบบ Secure RPC และฐานข้อมูลชุดนี้รองรับการสั่งพิมพ์ไฟล์ PDF เท่านั้น ขนาดสูงสุด 20 MB
+              หากเป็น DOC/DOCX หรือรูปภาพ กรุณาแปลงเป็น PDF ก่อนอัปโหลดเพื่อให้จำนวนหน้าและช่วงหน้าตรงกับฐานข้อมูล</p>
           </details>
           <details class="pd-help-faq-item" data-help-filter-item data-help-group="preview"
             data-help-search="PDF พรีวิวว่างเปล่า ไม่ขึ้น canvas worker error">
@@ -2149,6 +2151,9 @@
 
 <!-- PrintDekD stability pass: registration cropper + low-cost motion defaults -->
 <link rel="stylesheet" href="assets/css/33-cropper-layout-and-performance-stability.css" id="pd-stability-cropper-performance">
+
+<!-- Secure RPC bridge must load last to replace legacy direct-write handlers. -->
+<script id="pd-secure-rpc-bridge" src="assets/js/22-secure-rpc-bridge.js"></script>
 
 </body>
 
