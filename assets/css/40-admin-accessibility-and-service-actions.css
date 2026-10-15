@@ -1,0 +1,73 @@
+/* PrintDekD Admin v6 — readable admin-wide controls, configuration rows, and destructive actions. */
+#view-admin{--pd-admin-text:#172033;--pd-admin-muted:#667085;--pd-admin-border:rgba(120,136,158,.25);--pd-admin-soft:rgba(120,136,158,.07);--pd-admin-accent:#2673e8;--pd-admin-danger:#c73545;--pd-admin-radius:20px}
+#view-admin :is(h2,h3,h4){text-wrap:pretty}
+#view-admin p{max-width:85ch}
+#view-admin .ui-panel{min-width:0}
+#view-admin .ui-panel>div:first-child{min-width:0}
+#view-admin .ui-panel>div:first-child p{font-size:.83rem!important;line-height:1.75!important;color:var(--sub-text,#667085)}
+#view-admin :is(input:not([type=checkbox]):not([type=radio]),select,textarea){min-width:0;min-height:44px;border:1px solid var(--pd-admin-border)!important;border-radius:12px!important;padding:10px 12px!important;font-size:.84rem!important;line-height:1.45;background:var(--input-bg,#f8fafc)!important;box-shadow:none!important;transition:border-color .16s,box-shadow .16s,background-color .16s}
+#view-admin :is(input:not([type=checkbox]):not([type=radio]),select,textarea)::placeholder{color:#7a8799;opacity:1}
+#view-admin :is(input:not([type=checkbox]):not([type=radio]),select,textarea):focus{border-color:#4388f5!important;box-shadow:0 0 0 3px rgba(38,115,232,.14)!important;outline:none}
+#view-admin :is(button,a,[tabindex]):focus-visible{outline:3px solid rgba(38,115,232,.52)!important;outline-offset:2px}
+#view-admin button{min-height:40px;font-weight:800;transition:transform .16s,border-color .16s,background-color .16s,box-shadow .16s}
+#view-admin button:disabled{opacity:.58;cursor:wait;transform:none!important}
+#view-admin button:not(:disabled):active{transform:translateY(1px)}
+#view-admin .ui-panel .ui-card{border:1px solid var(--pd-admin-border)!important;border-radius:18px!important;background:var(--panel-bg,rgba(255,255,255,.72))!important;box-shadow:none!important;min-width:0}
+#view-admin .overflow-x-auto{scrollbar-width:thin;overscroll-behavior-x:contain}
+#view-admin table{width:100%;border-collapse:separate;border-spacing:0}
+#view-admin thead th{position:sticky;top:0;z-index:1;letter-spacing:.025em}
+#view-admin tbody tr:last-child td{border-bottom:0}
+#view-admin td :is(input,select){max-width:100%}
+#view-admin .pd-admin-config-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(115px,.7fr) auto auto;align-items:end;gap:12px;padding:15px;border-radius:17px;border:1px solid var(--pd-admin-border);background:var(--panel-bg,rgba(255,255,255,.82));box-shadow:0 3px 12px rgba(15,23,42,.025);transition:border-color .16s,box-shadow .16s,transform .16s}
+#view-admin .pd-admin-config-row:hover{border-color:rgba(38,115,232,.35);box-shadow:0 7px 20px rgba(15,23,42,.05)}
+#view-admin .pd-admin-config-field{display:grid;gap:6px;min-width:0}
+#view-admin .pd-admin-config-field>label,#view-admin .pd-admin-config-key small{font-size:.68rem;font-weight:850;line-height:1.4;color:var(--sub-text,#667085)}
+#view-admin .pd-admin-config-field input{width:100%;max-width:100%}
+#view-admin .pd-admin-config-field-price{max-width:170px}
+#view-admin .pd-admin-config-active{display:inline-flex;align-items:center;justify-content:flex-start;gap:7px;min-height:42px;white-space:nowrap;font-size:.76rem;font-weight:800;color:var(--titanium-text,#344054);cursor:pointer}
+#view-admin .pd-admin-config-active input{width:18px;height:18px;min-height:18px;accent-color:#2673e8}
+#view-admin .pd-admin-config-state{display:inline-flex;align-items:center;justify-content:center;justify-self:start;align-self:center;min-height:27px;padding:4px 9px;border-radius:999px;border:1px solid transparent;font-size:.66rem;font-weight:850;white-space:nowrap}
+#view-admin .pd-admin-config-state.is-active{color:#177448;background:rgba(22,163,74,.09);border-color:rgba(22,163,74,.2)}
+#view-admin .pd-admin-config-state.is-inactive{color:#8a5a08;background:rgba(217,119,6,.09);border-color:rgba(217,119,6,.2)}
+#view-admin .pd-admin-config-key{display:grid;align-content:center;gap:5px;min-width:0;overflow-wrap:anywhere}
+#view-admin .pd-admin-config-key code{font-size:.75rem;font-weight:800;color:var(--titanium-text,#344054);background:var(--pd-admin-soft);border:1px solid var(--pd-admin-border);border-radius:8px;padding:7px 9px;max-width:100%;overflow-wrap:anywhere}
+#view-admin .pd-admin-config-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;grid-column:1/-1;padding-top:10px;border-top:1px solid var(--pd-admin-border)}
+#view-admin .pd-admin-action-save,#view-admin .pd-admin-action-delete{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:9px 14px;border:1px solid transparent;border-radius:11px;font-size:.78rem;font-weight:900}
+#view-admin .pd-admin-action-save{background:#2673e8;color:#fff;box-shadow:0 4px 10px rgba(38,115,232,.14)}
+#view-admin .pd-admin-action-save:hover{background:#1d61cc;box-shadow:0 7px 15px rgba(38,115,232,.2)}
+#view-admin .pd-admin-action-delete{background:rgba(199,53,69,.07);color:var(--pd-admin-danger);border-color:rgba(199,53,69,.24)}
+#view-admin .pd-admin-action-delete:hover{background:rgba(199,53,69,.13);border-color:rgba(199,53,69,.42)}
+#view-admin .pd-admin-action-delete svg{width:15px;height:15px}
+#view-admin .pd-admin-empty-state{padding:18px;border:1px dashed var(--pd-admin-border);border-radius:14px;color:var(--sub-text,#667085);font-size:.83rem;text-align:center;background:var(--pd-admin-soft)}
+#view-admin #pd-admin-binding-list,#view-admin #pd-admin-delivery-list{display:grid;gap:11px;margin-top:14px}
+#view-admin #pd-pricing-add-form,#view-admin #pd-binding-add-form,#view-admin #pd-delivery-add-form,#view-admin #pd-printer-add-form{align-items:end;gap:12px!important;padding:clamp(14px,2vw,22px)!important;border:1px solid var(--pd-admin-border)!important;border-radius:18px!important;background:var(--pd-admin-soft)!important}
+#view-admin #pd-binding-add-form>input,#view-admin #pd-delivery-add-form>input,#view-admin #pd-pricing-add-form>input{width:100%;min-width:0}
+#view-admin #pd-pricing-add-form button,#view-admin #pd-binding-add-form button,#view-admin #pd-delivery-add-form button,#view-admin #pd-printer-add-form button{min-height:44px;border-radius:12px!important;font-size:.8rem!important;box-shadow:0 5px 14px rgba(38,115,232,.12)}
+#view-admin #custom-modal .pd-confirm-danger{background:#c73545!important;border-color:#b42332!important;color:#fff!important;box-shadow:0 5px 16px rgba(199,53,69,.18)!important}
+#view-admin .pd-admin-module-card:focus-visible{outline-offset:4px}
+.dark #view-admin{--pd-admin-text:#f2f5fa;--pd-admin-muted:#aab5c5;--pd-admin-border:rgba(148,163,184,.2);--pd-admin-soft:rgba(148,163,184,.075);--pd-admin-danger:#ff8f99}
+.dark #view-admin .pd-admin-config-row,.dark #view-admin .ui-panel .ui-card{background:rgba(15,23,42,.66)!important}
+.dark #view-admin :is(input:not([type=checkbox]):not([type=radio]),select,textarea){background:rgba(8,15,29,.82)!important;color:#f3f6fb!important;border-color:rgba(148,163,184,.24)!important}
+.dark #view-admin .pd-admin-config-state.is-active{color:#80e1b0;background:rgba(22,163,74,.12);border-color:rgba(22,163,74,.25)}
+.dark #view-admin .pd-admin-config-state.is-inactive{color:#ffd28a;background:rgba(217,119,6,.12);border-color:rgba(217,119,6,.25)}
+.dark #view-admin .pd-admin-config-key code{color:#e6ecf5}
+.dark #view-admin .pd-admin-action-delete{color:#ff9ca5;background:rgba(248,113,113,.09);border-color:rgba(248,113,113,.23)}
+.dark #view-admin .pd-admin-action-delete:hover{background:rgba(248,113,113,.16)}
+@media(min-width:1250px){#view-admin #pd-admin-binding-list .pd-admin-config-row{grid-template-columns:minmax(0,1.2fr) minmax(115px,.7fr) auto auto}#view-admin #pd-admin-delivery-list .pd-admin-config-row{grid-template-columns:minmax(85px,.55fr) minmax(125px,1.2fr) minmax(110px,.7fr) auto auto}#view-admin .pd-admin-config-actions{grid-column:1/-1}}
+@media(max-width:1100px){#view-admin #pd-admin-binding-list .pd-admin-config-row,#view-admin #pd-admin-delivery-list .pd-admin-config-row{grid-template-columns:minmax(0,1fr) minmax(100px,.65fr)}#view-admin .pd-admin-config-field-price{max-width:none}#view-admin .pd-admin-config-actions{grid-column:1/-1;justify-content:stretch}#view-admin .pd-admin-config-actions button{flex:1}}
+@media(max-width:680px){#view-admin #pd-admin-binding-list .pd-admin-config-row,#view-admin #pd-admin-delivery-list .pd-admin-config-row{grid-template-columns:minmax(0,1fr)}#view-admin .pd-admin-config-row{gap:10px;padding:13px!important}#view-admin .pd-admin-config-active{min-height:36px}#view-admin .pd-admin-config-state{justify-self:start}#view-admin .pd-admin-config-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:12px}#view-admin .pd-admin-config-actions button{width:100%}#view-admin #pd-binding-add-form,#view-admin #pd-delivery-add-form,#view-admin #pd-pricing-add-form,#view-admin #pd-printer-add-form{grid-template-columns:minmax(0,1fr)!important}#view-admin #pd-delivery-add-form button,#view-admin #pd-binding-add-form button{grid-column:auto!important}#view-admin .ui-panel{padding:15px!important}#view-admin :is(input:not([type=checkbox]):not([type=radio]),select,textarea){font-size:16px!important}#view-admin .pd-admin-action-save,#view-admin .pd-admin-action-delete{min-height:46px}}
+@media(prefers-reduced-motion:reduce){#view-admin *,#custom-modal .pd-confirm-danger{scroll-behavior:auto!important;transition:none!important;animation:none!important}#view-admin .pd-admin-config-row:hover,#view-admin button:not(:disabled):active{transform:none!important}}
+#view-admin .pd-admin-config-heading{display:grid;gap:6px;margin-bottom:4px}
+#view-admin .pd-admin-config-heading h3{font-size:1rem;font-weight:950;line-height:1.4}
+#view-admin .pd-admin-config-heading p{font-size:.75rem;line-height:1.65;color:var(--sub-text,#667085);margin:0}
+#custom-modal .pd-confirm-danger{background:#c73545!important;border-color:#b42332!important;color:#fff!important;box-shadow:0 5px 16px rgba(199,53,69,.18)!important}
+.dark #custom-modal .pd-confirm-danger{background:#c73545!important;color:#fff!important}
+#view-admin .pd-admin-pricing-actions{display:flex;align-items:center;gap:7px;min-width:160px}
+#view-admin .pd-admin-pricing-actions .pd-admin-action-save,#view-admin .pd-admin-pricing-actions .pd-admin-action-delete{min-height:39px;padding:8px 10px;font-size:.72rem}
+#view-admin #pd-admin-pricing-tbody td{vertical-align:middle}
+@media(max-width:680px){#view-admin .pd-admin-pricing-actions{min-width:150px;flex-wrap:wrap}#view-admin .pd-admin-pricing-actions button{flex:1}}
+#view-admin .pd-admin-form-field{display:grid;gap:6px;min-width:0}
+#view-admin .pd-admin-form-field>label{font-size:.7rem;font-weight:850;line-height:1.4;color:var(--sub-text,#667085)}
+#view-admin #pd-pricing-add-form>button,#view-admin #pd-binding-add-form>button,#view-admin #pd-delivery-add-form>button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+#view-admin #pd-pricing-add-form>button svg,#view-admin #pd-binding-add-form>button svg,#view-admin #pd-delivery-add-form>button svg{width:15px;height:15px;flex:none}
+@media(max-width:680px){#view-admin .pd-admin-form-field{gap:5px}}
