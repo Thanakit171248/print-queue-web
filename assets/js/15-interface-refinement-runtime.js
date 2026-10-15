@@ -170,7 +170,6 @@
       const total = $('pd-live-total'); if (total) { total.setAttribute('aria-live', 'polite'); total.setAttribute('aria-atomic', 'true') }
       const status = $('pd-live-order-copy'); if (status) { status.setAttribute('aria-live', 'polite'); status.setAttribute('aria-atomic', 'true') }
       $('pd-live-order-strip')?.setAttribute('role', 'status');
-      $('pd-help-search')?.setAttribute('autocomplete', 'off');
 
       installProfileBranding();
       installWalletHero();
