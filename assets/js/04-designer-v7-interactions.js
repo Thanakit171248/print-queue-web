@@ -4,6 +4,38 @@
       const $ = id => document.getElementById(id);
       const safe = v => (typeof escapeHtml === 'function' ? escapeHtml(v ?? '') : String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
+      // Force the help panel's text contrast in the active theme. This is deliberately
+      // applied inline with !important because legacy app-wide color utilities may
+      // otherwise override dynamically-created help-panel text.
+      function syncHelpChooserTheme() {
+        const panel = $('pd-ai-panel');
+        if (!panel) return;
+        const dark = document.documentElement.classList.contains('dark');
+        panel.dataset.pdHelpTheme = dark ? 'dark' : 'light';
+        const rules = [
+          ['.pd-ai-head', { background: '#171e2a', 'border-bottom-color': 'rgba(255,255,255,.16)' }],
+          ['.pd-ai-title, .pd-help-choice-intro h2, .pd-help-choice-text strong, .pd-help-answer-empty strong, .pd-help-answer-title', { color: '#ffffff', opacity: '1' }],
+          ['.pd-ai-sub, .pd-help-choice-intro p, .pd-help-choice-text small, .pd-help-answer-empty p, .pd-help-answer-copy, .pd-help-choice-disclaimer', { color: '#f0f4fa', opacity: '1' }],
+          ['.pd-ai-close', { color: '#ffffff', background: '#202938', 'border-color': '#526078' }],
+          ['.pd-help-choice-card', { color: '#ffffff', background: '#202938', 'border-color': '#46546a' }],
+          ['.pd-help-choice-card .pd-help-choice-text strong', { color: '#ffffff', opacity: '1' }],
+          ['.pd-help-choice-card .pd-help-choice-text small', { color: '#e6edf7', opacity: '1' }],
+          ['.pd-help-choice-arrow', { color: '#e6edf7', opacity: '1' }],
+          ['.pd-help-choice-answer', { color: '#ffffff', background: '#1b2a40', 'border-color': '#48658d' }],
+          ['.pd-help-answer-empty-icon, .pd-help-choice-icon', { color: '#d7e6ff', background: '#2a3d59' }],
+          ['.pd-help-choice-eyebrow', { color: '#b9d5ff', opacity: '1' }],
+          ['.pd-help-answer-action', { color: '#ffffff', background: '#2768d8', 'border-color': '#7aa8f8' }]
+        ];
+        const panelProps = { color: '#ffffff', background: '#101722', 'border-color': '#465164', 'color-scheme': 'dark' };
+        const apply = (el, props) => Object.entries(props).forEach(([name, value]) => {
+          if (dark) el.style.setProperty(name, value, 'important');
+          else el.style.removeProperty(name);
+        });
+        apply(panel, panelProps);
+        for (const [selector, props] of rules) panel.querySelectorAll(selector).forEach(el => apply(el, props));
+      }
+      let helpThemeObserver = null;
+
       /* ---------- file removal ---------- */
       window.removeSelectedPrintFile = function () {
         const input = $('file-input');
@@ -249,6 +281,7 @@
           answer.appendChild(actionButton);
         }
         if (window.lucide) window.lucide.createIcons({ root: answer });
+        syncHelpChooserTheme();
       }
 
       function installHelpChooser() {
@@ -271,7 +304,7 @@
           <header class="pd-ai-head">
             <div class="pd-ai-brand">
               <div class="pd-ai-icon"><i data-lucide="life-buoy" aria-hidden="true"></i></div>
-              <div class="pd-help-assistant-heading"><div class="pd-ai-title">ศูนย์ช่วยเหลือ PrintDekD</div><div class="pd-ai-sub">· เลือกหัวข้อที่ต้องการ</div></div>
+              <div class="pd-help-assistant-heading"><div class="pd-ai-title">ศูนย์ช่วยเหลือ PrintDekD</div><div class="pd-ai-sub">เลือกหัวข้อที่ต้องการ · ไม่ต้องพิมพ์คำถาม</div></div>
             </div>
             <button class="pd-ai-close" type="button" aria-label="ปิดศูนย์ช่วยเหลือ"><i data-lucide="x" aria-hidden="true"></i></button>
           </header>
@@ -284,6 +317,11 @@
             <p class="pd-help-choice-disclaimer"><i data-lucide="info" aria-hidden="true"></i> ใช้คำแนะนำที่เตรียมไว้ล่วงหน้า ไม่ใช่แชต AI หรือเจ้าหน้าที่สด</p>
           </div>`;
         document.body.appendChild(panel);
+        syncHelpChooserTheme();
+        if (!helpThemeObserver && 'MutationObserver' in window) {
+          helpThemeObserver = new MutationObserver(syncHelpChooserTheme);
+          helpThemeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        }
         panel.querySelector('.pd-ai-close')?.addEventListener('click', window.togglePDAssistant);
         panel.querySelectorAll('[data-pd-help-topic]').forEach(button => button.addEventListener('click', () => showHelpTopic(button.dataset.pdHelpTopic)));
         document.addEventListener('keydown', event => {
