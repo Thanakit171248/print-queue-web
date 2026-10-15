@@ -13,27 +13,21 @@
         });
       }
 
-      // Help Center filtering: no network calls, no HTML injection, and native details remain keyboard accessible.
+      // Help Center category filters. The text-search UI was removed because it was not useful.
       const help = $('view-help');
-      const helpSearch = $('pd-help-search');
       const helpItems = [...document.querySelectorAll('#view-help [data-help-filter-item]')];
       const categoryButtons = [...document.querySelectorAll('#view-help [data-help-category]')];
       let activeCategory = '';
       function updateHelpFilter() {
         if (!help) return;
-        const term = String(helpSearch?.value || '').trim().toLocaleLowerCase('th-TH');
         let shown = 0;
         helpItems.forEach(item => {
-          const hay = `${item.textContent || ''} ${item.dataset.helpSearch || ''}`.toLocaleLowerCase('th-TH');
           const groups = String(item.dataset.helpGroup || '').split(/\s+/).filter(Boolean);
-          const textMatch = !term || hay.includes(term);
-          const categoryMatch = !activeCategory || groups.includes(activeCategory);
-          const visible = textMatch && categoryMatch;
+          const visible = !activeCategory || groups.includes(activeCategory);
           item.classList.toggle('pd-help-filtered-out', !visible);
           if (visible && item.classList.contains('pd-help-article')) shown++;
         });
-        const noResults = $('pd-help-no-results');
-        noResults?.classList.toggle('hidden', shown > 0);
+        $('pd-help-no-results')?.classList.toggle('hidden', shown > 0);
         const count = $('pd-help-result-count');
         if (count) count.textContent = `${shown} หัวข้อ`;
         categoryButtons.forEach(btn => {
@@ -42,20 +36,20 @@
         });
         if (window.lucide) window.lucide.createIcons();
       }
-      $('pd-help-search-form')?.addEventListener('submit', e => { e.preventDefault(); activeCategory = ''; updateHelpFilter(); });
-      helpSearch?.addEventListener('input', () => { activeCategory = ''; updateHelpFilter(); });
-      $('pd-help-clear')?.addEventListener('click', () => { if (helpSearch) helpSearch.value = ''; activeCategory = ''; updateHelpFilter(); helpSearch?.focus(); });
-      $('pd-help-no-results-clear')?.addEventListener('click', () => { if (helpSearch) helpSearch.value = ''; activeCategory = ''; updateHelpFilter(); });
-      document.querySelectorAll('[data-help-query]').forEach(btn => btn.addEventListener('click', () => {
-        if (helpSearch) helpSearch.value = btn.dataset.helpQuery || '';
-        activeCategory = ''; updateHelpFilter(); helpSearch?.focus();
-      }));
+      $('pd-help-clear')?.addEventListener('click', () => {
+        activeCategory = '';
+        updateHelpFilter();
+      });
+      $('pd-help-no-results-clear')?.addEventListener('click', () => {
+        activeCategory = '';
+        updateHelpFilter();
+      });
       categoryButtons.forEach(btn => btn.addEventListener('click', () => {
         activeCategory = activeCategory === btn.dataset.helpCategory ? '' : (btn.dataset.helpCategory || '');
-        if (helpSearch) helpSearch.value = '';
         updateHelpFilter();
         $('pd-help-article-list')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
       }));
+      updateHelpFilter();
       $('pd-help-open-assistant')?.addEventListener('click', () => {
         if (typeof window.togglePDAssistant === 'function') window.togglePDAssistant();
         else if (typeof window.openPDCommandPalette === 'function') window.openPDCommandPalette();
