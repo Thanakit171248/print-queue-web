@@ -95,13 +95,13 @@
       /* ---------- admin order detail / file viewer ---------- */
       function statusLabel(s) { return s === 'completed' ? 'พิมพ์เสร็จแล้ว' : s === 'printing' ? 'กำลังพิมพ์' : s === 'cancelled' ? 'ยกเลิก' : 'รอคิว' }
       window.openAdminFileViewer = async function (filePath, fileBucket, fileName, fileMime) {
-        if (!filePath) return showCustomModal({ title: 'ยังไม่มีไฟล์', message: 'ไม่พบไฟล์ออนไลน์สำหรับรายการนี้ กรุณาติดต่อผู้ดูแลระบบหากต้องการให้ช่วยตรวจสอบ', icon: 'file-warning' });
-        if (!supabaseClient) return showCustomModal({ title: 'ระบบยังไม่พร้อมให้บริการ', message: 'ไม่สามารถเปิดไฟล์นี้ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'database-zap' });
+        if (!filePath) return showCustomModal({ title: 'ยังไม่มีไฟล์', message: 'ออเดอร์นี้ไม่มีไฟล์ที่เก็บใน Storage', icon: 'file-warning' });
+        if (!supabaseClient) return showCustomModal({ title: 'ฐานข้อมูลยังไม่พร้อม', message: 'ไม่สามารถสร้างลิงก์ไฟล์ชั่วคราวได้', icon: 'database-zap' });
         try {
           const bucket = fileBucket || window.PRINT_STORAGE_BUCKET || 'print-files'; const { data, error } = await supabaseClient.storage.from(bucket).createSignedUrl(filePath, 900); if (error || !data?.signedUrl) throw error || new Error('สร้างลิงก์ไฟล์ชั่วคราวไม่สำเร็จ');
           let m = $('pd-file-viewer-modal'); if (!m) { m = document.createElement('div'); m.id = 'pd-file-viewer-modal'; m.className = 'fixed inset-0 z-[10000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-2xl'; m.innerHTML = '<div class="ui-panel w-full max-w-6xl rounded-[30px] p-4 sm:p-5 animate-modal" onclick="event.stopPropagation()"><div class="flex items-center justify-between gap-3 pb-3"><div class="min-w-0"><span class="pd-eyebrow">SECURE FILE PREVIEW</span><h3 id="pd-file-viewer-title" class="text-lg sm:text-xl font-black titanium-text truncate mt-1">ไฟล์เอกสาร</h3></div><button id="pd-file-viewer-close" class="nav-icon-btn ui-card"><i data-lucide="x"></i></button></div><div id="pd-file-viewer-body" class="pd-admin-file-preview"></div><div class="flex justify-end gap-2 pt-3"><a id="pd-file-viewer-open" target="_blank" rel="noopener noreferrer" class="min-h-[46px] px-4 rounded-2xl bg-blue-600 text-white font-black text-xs flex items-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> เปิดเต็มหน้าต่าง</a></div></div>'; document.body.appendChild(m); $('pd-file-viewer-close').onclick = () => m.classList.add('hidden'); m.onclick = () => m.classList.add('hidden'); if (window.lucide) lucide.createIcons() }
           $('pd-file-viewer-title').textContent = fileName || 'ไฟล์เอกสาร'; $('pd-file-viewer-open').href = data.signedUrl; const body = $('pd-file-viewer-body'); body.innerHTML = ''; const mime = (fileMime || '').toLowerCase(); if (mime.startsWith('image/')) { const img = document.createElement('img'); img.src = data.signedUrl; img.alt = fileName || 'document'; body.appendChild(img) } else { const iframe = document.createElement('iframe'); iframe.src = data.signedUrl; iframe.title = fileName || 'document'; body.appendChild(iframe) } m.classList.remove('hidden'); m.classList.add('flex');
-        } catch (err) { console.error('[PrintDekD] Open file failed:', err); showCustomModal({ title: 'เปิดไฟล์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ไม่สามารถเปิดไฟล์นี้ได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), icon: 'file-warning' }) }
+        } catch (err) { showCustomModal({ title: 'เปิดไฟล์ไม่สำเร็จ', message: err.message || 'ตรวจสอบ Storage Policy ของ Supabase', icon: 'file-warning' }) }
       };
 
       const oldOpenStored = window.openStoredPrintFile;
@@ -115,7 +115,7 @@
       const oldOpenQueue = window.openQueueDetailModal;
       window.openQueueDetailModal = async function (orderId) {
         let order = (window.__pdAdminOrders || []).find(o => o.id === orderId) || (typeof currentOrdersList !== 'undefined' ? currentOrdersList.find(o => o.id === orderId) : null);
-        if (!order && currentUser?.role === 'admin' && supabaseClient) { try { const { data, error } = await supabaseClient.from('orders').select('*').eq('id', orderId).maybeSingle(); if (error) throw error; order = data } catch (err) { return showCustomModal({ title: 'โหลดรายละเอียดไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ไม่สามารถโหลดรายละเอียดรายการได้ในขณะนี้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ไม่สามารถโหลดรายละเอียดรายการได้ในขณะนี้', icon: 'database-zap' }) } }
+        if (!order && currentUser?.role === 'admin' && supabaseClient) { try { const { data, error } = await supabaseClient.from('orders').select('*').eq('id', orderId).maybeSingle(); if (error) throw error; order = data } catch (err) { return showCustomModal({ title: 'โหลดรายละเอียดไม่สำเร็จ', message: err.message || 'ไม่สามารถดึงข้อมูลออเดอร์', icon: 'database-zap' }) } }
         if (!order) return oldOpenQueue?.(orderId);
         try {
           const set = (id, val) => { const e = $(id); if (e) e.innerText = val ?? '-' }; set('qd-modal-order-id', `Queue ID: #${order.id}`); set('qd-modal-filename', order.file_name || 'เอกสารพิมพ์'); set('qd-modal-pages', `${order.page_count || 1} หน้า`); set('qd-modal-copies', `${order.copies || 1} ชุด`); set('qd-modal-paper', order.paper_size || 'A4'); set('qd-modal-color', order.is_color ? 'พิมพ์สี' : 'ขาว-ดำ'); set('qd-modal-duplex', order.is_duplex ? 'พิมพ์หน้า-หลัง' : 'หน้าเดียว'); set('qd-modal-notes', order.admin_note || 'ไม่มีหมายเหตุเพิ่มเติม'); set('qd-modal-totalprice', `${Number(order.total_price || 0).toFixed(2)} ฿`); set('qd-modal-paymethod', order.payment_method === 'coins' ? 'Coins' : 'PromptPay Direct'); set('qd-modal-pickup-info', order.delivery_method === 'delivery' ? '🚚 การรับสินค้า: จัดส่งพัสดุถึงบ้าน' : '📍 การรับสินค้า: รับหน้าร้านโดยตรง');
@@ -124,7 +124,7 @@
           const slip = $('qd-modal-slip-box'); if (order.slip_url) { $('qd-modal-slip-img').src = order.slip_url; slip?.classList.remove('hidden') } else slip?.classList.add('hidden');
           let body = $('queue-detail-modal')?.querySelector('.flex-1.overflow-y-auto'); if (body && currentUser?.role === 'admin') { let panel = $('pd-admin-detail-extra'); if (!panel) { panel = document.createElement('div'); panel.id = 'pd-admin-detail-extra'; panel.className = 'space-y-3'; body.appendChild(panel) } panel.innerHTML = `<div class="pd-admin-detail-grid"><div class="pd-admin-detail-item"><small>เจ้าของงาน</small><strong>${safe(order.user_name || '-')}</strong></div><div class="pd-admin-detail-item"><small>User ID</small><strong>${safe(order.user_id || '-')}</strong></div><div class="pd-admin-detail-item"><small>สร้างเมื่อ</small><strong>${order.created_at ? new Date(order.created_at).toLocaleString('th-TH') : '-'}</strong></div><div class="pd-admin-detail-item"><small>ไฟล์</small><strong>${safe(order.file_name || '-')} • ${order.file_size ? ((Number(order.file_size) / 1048576).toFixed(2) + ' MB') : '-'}</strong></div><div class="pd-admin-detail-item"><small>Bucket</small><strong>${safe(order.file_bucket || '-')}</strong></div><div class="pd-admin-detail-item"><small>หมายเหตุแอดมิน</small><strong>${safe(order.admin_note || '-')}</strong></div></div><div class="pd-admin-actions">${order.file_path ? `<button type="button" class="bg-blue-600 text-white" data-pd-detail-action="open-file" data-file-path="${safe(order.file_path)}" data-file-bucket="${safe(order.file_bucket || 'print-files')}" data-file-name="${safe(order.file_name || 'เอกสาร')}" data-file-mime="${safe(order.file_mime || '')}"><i data-lucide="file-eye" class="w-4 h-4 inline"></i> ดูไฟล์เอกสาร</button>` : ''}${order.slip_url ? `<button type="button" class="ui-card" data-pd-detail-action="slip" data-slip-url="${safe(order.slip_url)}"><i data-lucide="receipt" class="w-4 h-4 inline"></i> ดูสลิป</button>` : ''}<button type="button" class="ui-card" data-pd-detail-action="close">ปิดรายละเอียด</button></div>`; if (window.lucide) lucide.createIcons() }
           $('queue-detail-modal')?.classList.remove('hidden');
-        } catch (err) { console.error('[PrintDekD] Display details failed:', err); showCustomModal({ title: 'แสดงรายละเอียดไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ข้อมูลบางส่วนยังไม่พร้อมแสดง กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ') || 'ข้อมูลบางส่วนยังไม่พร้อมแสดง กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ', icon: 'alert-circle' }) }
+        } catch (err) { console.error(err); showCustomModal({ title: 'แสดงรายละเอียดไม่สำเร็จ', message: err.message || 'ข้อมูลบางส่วนไม่พร้อม', icon: 'alert-circle' }) }
       };
 
       /* Patch admin loader: keep full order objects and use richer file buttons. */
@@ -136,24 +136,161 @@
         if (typeof assertAdminAccess === 'function' && !assertAdminAccess()) return;
         if (!['member', 'admin'].includes(newRole)) return showCustomModal({ title: 'สิทธิ์ไม่ถูกต้อง', message: 'ระบบหยุดการเปลี่ยนสิทธิ์เพื่อความปลอดภัย', icon: 'shield-alert' });
         if (currentUser?.id === userId) return showCustomModal({ title: 'ป้องกันการเปลี่ยนสิทธิ์ตัวเอง', message: 'กรุณาใช้บัญชีผู้ดูแลอื่นเมื่อจำเป็นต้องเปลี่ยนสิทธิ์ของบัญชีนี้', icon: 'shield-alert' });
-        try { const { data, error } = await supabaseClient.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle(); if (error) throw error; if (!data || data.role !== newRole) throw new Error('ระบบยังยืนยันการเปลี่ยนสิทธิ์ไม่สำเร็จ กรุณาลองใหม่หรือแจ้งผู้ดูแลระบบ'); showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `บัญชีนี้ถูกเปลี่ยนเป็น ${newRole.toUpperCase()} แล้ว`, icon: 'shield-check' }); await loadAdminData() } catch (err) { console.error('[PrintDekD] Change user role failed:', err); showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: window.pdCustomerFacingMessage?.(err, 'ยังไม่สามารถเปลี่ยนสิทธิ์สมาชิกได้ กรุณาลองใหม่ หากยังพบปัญหา โปรดติดต่อผู้ดูแลระบบ'), icon: 'shield-alert' }) }
+        try { const { data, error } = await supabaseClient.from('users').update({ role: newRole }).eq('id', userId).select('id,role').maybeSingle(); if (error) throw error; if (!data || data.role !== newRole) throw new Error('Supabase ไม่อนุญาตให้แก้ไขสิทธิ์รายการนี้ (ตรวจสอบ RLS Policy ของตาราง users)'); showCustomModal({ title: 'สลับสิทธิ์สำเร็จ', message: `บัญชีนี้ถูกเปลี่ยนเป็น ${newRole.toUpperCase()} แล้ว`, icon: 'shield-check' }); await loadAdminData() } catch (err) { showCustomModal({ title: 'เปลี่ยนสิทธิ์ไม่สำเร็จ', message: err.message || 'ไม่สามารถอัปเดตสิทธิ์ได้', icon: 'shield-alert' }) }
       };
 
-      /* ---------- local system AI assistant ---------- */
-      function addAiMsg(text, who = 'bot') { const box = $('pd-ai-messages'); if (!box) return; const d = document.createElement('div'); d.className = 'pd-ai-msg ' + who; d.textContent = text; box.appendChild(d); box.scrollTop = box.scrollHeight }
-      function aiAnswer(q) {
-        const x = (q || '').toLowerCase(); const u = window.currentUser || currentUser; const orders = window.__pdAdminOrders || [];
-        if (/เหรียญ|coins|ยอด/.test(x)) return `ตอนนี้บัญชีของคุณมียอด Coins ${Number(u?.coins || 0).toFixed(2)} Coins\nสามารถไปที่ Wallet เพื่อเติม Coins ได้ทันที`;
-        if (/อัปโหลด|upload|ไฟล์/.test(x)) return 'ไปที่ “สั่งพิมพ์” แล้วอัปโหลด PDF, DOC, DOCX, JPG, JPEG หรือ PNG ได้สูงสุด 20 MB\nถ้าไฟล์ไม่รองรับ ระบบจะแจ้งเตือนทันที และสามารถกด “ลบไฟล์” เพื่อเลือกไฟล์ใหม่ได้';
-        if (/คิว|สถานะ|งานพิมพ์/.test(x)) return u ? `ระบบจะแสดงคิวล่าสุดในหน้า “สั่งพิมพ์”\n${u.role === 'admin' && orders.length ? `แอดมินมีรายการที่โหลดไว้ ${orders.length} รายการ` : 'เปิดรายการคิวเพื่อดูสถานะและรายละเอียดได้เลย'}` : 'กรุณาเข้าสู่ระบบก่อนดูคิวงานพิมพ์';
-        if (/แอดมิน|admin|สมาชิก|สิทธิ์/.test(x)) return u?.role === 'admin' ? 'คุณกำลังใช้งานสิทธิ์ Admin สามารถดูรายละเอียดคิว เปิดไฟล์ ตรวจสลิป อัปเดตสถานะ และจัดการสิทธิ์สมาชิกได้' : 'บัญชี Member จะไม่เห็นพื้นที่ Admin';
-        if (/โปรไฟล์|รูป|avatar/.test(x)) return 'เปิด Account Center → โปรไฟล์ → แก้ไขโปรไฟล์\nเลือกรูป PNG/JPG/WEBP ไม่เกิน 2 MB แล้ว Profile Studio จะให้ลาก/ซูม/ครอปก่อนบันทึก';
-        if (/promptpay|สลิป|เติมเงิน/.test(x)) return 'Wallet รองรับการเลือกแพ็กเกจ Coins และแนบสลิปเพื่อรอแอดมินตรวจสอบ\nแอดมินสามารถเปิดสลิปจากหน้า Admin ได้';
-        if (/ราคา|คิดราคา|คำนวณ/.test(x)) return 'ระบบคำนวณจากจำนวนหน้า × อัตราพิมพ์ × จำนวนชุด และเพิ่มค่าจัดส่ง 30 บาทเมื่อเลือกจัดส่ง โดยจะแสดงยอดรวมแบบเรียลไทม์';
-        return 'ผมเป็นผู้ช่วยคู่มือภายใน PrintDekD Pro โดยรุ่นนี้ใช้คำสำคัญและคำตอบที่เตรียมไว้ ยังไม่ได้เชื่อมต่อ Generative AI เพื่อสร้างคำตอบอิสระ\n\nลองถามว่า “Coins เหลือเท่าไร”, “อัปโหลดไฟล์อะไรได้บ้าง”, “ดูคิวอย่างไร” หรือ “Admin ทำอะไรได้บ้าง”';
+      /* ---------- PrintDekD Help Chooser (curated answers, no free-text AI claim) ---------- */
+      const PD_HELP_TOPICS = [
+        {
+          id: 'print', icon: 'printer', title: 'สั่งพิมพ์เอกสาร', subtitle: 'เริ่มงานพิมพ์ทีละขั้นตอน',
+          answer: '1. เข้าสู่ระบบก่อนสั่งพิมพ์\n2. เปิดหน้า “สั่งพิมพ์ / คิวงาน” และเลือกไฟล์\n3. ตรวจตัวอย่างเอกสาร จำนวนหน้า กระดาษ สี จำนวนชุด และวิธีรับ\n4. ตรวจยอดรวมก่อนยืนยันรายการ',
+          actionLabel: 'ไปหน้าสั่งพิมพ์', action: 'print'
+        },
+        {
+          id: 'files', icon: 'file-check-2', title: 'ไฟล์ที่รองรับ', subtitle: 'ชนิดไฟล์และขนาดอัปโหลด',
+          answer: 'รองรับ PDF, DOC, DOCX, JPG, JPEG และ PNG ขนาดไม่เกิน 20 MB ต่อไฟล์\n\nหากต้องเลือกช่วงหน้า หรือต้องการให้รูปแบบเอกสารคงที่ แนะนำให้แปลงเป็น PDF และตรวจตัวอย่างก่อนส่งงาน',
+          actionLabel: 'ไปหน้าอัปโหลดไฟล์', action: 'print'
+        },
+        {
+          id: 'queue', icon: 'clipboard-list', title: 'ติดตามคิวงาน', subtitle: 'ดูสถานะและรายละเอียดคำสั่งพิมพ์',
+          answer: 'เข้าสู่ระบบแล้วเปิดหน้า “สั่งพิมพ์ / คิวงาน” เพื่อดูรายการของคุณ เลือกคิวที่ต้องการเพื่อตรวจสอบสถานะ รายละเอียดงาน และวิธีรับเอกสารได้',
+          actionLabel: 'ดูคิวงานของฉัน', action: 'queue'
+        },
+        {
+          id: 'coins', icon: 'wallet-cards', title: 'Coins และการเติมเงิน', subtitle: 'ดูยอดคงเหลือและรายการเติม',
+          answer: 'เปิด Coins Wallet เพื่อดูยอด Coins และเลือกแพ็กเกจเติมเงินตามตัวเลือกในหน้า Wallet หากต้องแนบสลิป ให้ตรวจยอดและรายละเอียดก่อนส่ง จากนั้นรอผลตรวจสอบตามสถานะที่แสดงในระบบ',
+          actionLabel: 'เปิด Coins Wallet', action: 'wallet'
+        },
+        {
+          id: 'payment', icon: 'receipt-text', title: 'การชำระเงินและสลิป', subtitle: 'ตรวจสอบรายการและสถานะการชำระ',
+          answer: 'ตรวจยอดที่ต้องชำระและข้อมูลรายการให้ถูกต้องก่อนยืนยัน หากส่งสลิปเติม Coins แล้ว สถานะอาจต้องรอผู้ดูแลตรวจสอบ อย่าส่งข้อมูลธนาคารหรือรหัสผ่านให้บุคคลอื่น',
+          actionLabel: 'ตรวจสอบ Wallet', action: 'wallet'
+        },
+        {
+          id: 'delivery', icon: 'truck', title: 'รับที่ร้านหรือจัดส่ง', subtitle: 'เตรียมข้อมูลสำหรับรับเอกสาร',
+          answer: 'เลือกวิธีรับเอกสารในขั้นตอนสั่งพิมพ์\n• รับที่ร้าน: ตรวจสอบสถานะคิวก่อนเดินทางไปรับ\n• จัดส่ง: ตรวจชื่อผู้รับ เบอร์โทรศัพท์ และที่อยู่ให้ครบถ้วนก่อนยืนยัน แล้วตรวจสถานะ/Tracking ในรายละเอียดคิวเมื่อมีการบันทึกข้อมูล',
+          actionLabel: 'ดูคิวและวิธีรับงาน', action: 'queue'
+        },
+        {
+          id: 'account', icon: 'user-round', title: 'บัญชีและโปรไฟล์', subtitle: 'เข้าสู่ระบบหรือแก้ไขข้อมูลบัญชี',
+          answer: 'เข้าสู่ระบบด้วยอีเมลที่ลงทะเบียนไว้ จากเมนูบัญชีจึงเปิด Account Center เพื่อดูหรือแก้ไขข้อมูลโปรไฟล์ได้ อย่าส่งรหัสผ่านหรือรหัสยืนยันให้ผู้อื่น',
+          actionLabel: 'เปิดบัญชีของฉัน', action: 'account'
+        },
+        {
+          id: 'guide', icon: 'book-open-text', title: 'คู่มือและคำถามอื่น ๆ', subtitle: 'เปิดหัวข้อช่วยเหลือทั้งหมด',
+          answer: 'ในศูนย์ช่วยเหลือมีคู่มือสั่งพิมพ์ พรีวิวเอกสาร Coins การติดตามคิว บัญชี และความปลอดภัย เลือกหมวดหมู่หรือคำถามที่พบบ่อยบนหน้านี้เพื่อดูคำแนะนำเพิ่มเติม',
+          actionLabel: 'เปิดศูนย์ช่วยเหลือ', action: 'guide'
+        }
+      ];
+
+      window.togglePDAssistant = function () {
+        const panel = $('pd-ai-panel');
+        if (!panel) return;
+        const isOpen = panel.classList.toggle('is-open');
+        panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        $('pd-ai-launcher')?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (isOpen) setTimeout(() => panel.querySelector('.pd-ai-close')?.focus(), 0);
+        else $('pd-ai-launcher')?.focus();
+      };
+
+      function routeHelpChoice(action) {
+        const user = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+        const needsLogin = ['print', 'queue', 'wallet', 'account'].includes(action);
+        if (needsLogin && !user) {
+          window.togglePDAssistant?.();
+          window.switchView?.('auth');
+          window.switchAuthTab?.('login');
+          return;
+        }
+        if (action === 'print') {
+          window.togglePDAssistant?.();
+          if (typeof window.handleStartPrinting === 'function') window.handleStartPrinting();
+          else window.switchView?.('dashboard');
+        } else if (action === 'queue') {
+          window.togglePDAssistant?.();
+          window.switchView?.('dashboard');
+        } else if (action === 'wallet') {
+          window.togglePDAssistant?.();
+          window.switchView?.('wallet');
+        } else if (action === 'account') {
+          window.togglePDAssistant?.();
+          if (typeof window.openUserProfileModal === 'function') window.openUserProfileModal();
+          else { window.switchView?.('auth'); window.switchAuthTab?.('login'); }
+        } else if (action === 'guide') {
+          window.togglePDAssistant?.();
+          window.switchView?.('help');
+          setTimeout(() => document.querySelector('#view-help .pd-help-content-grid')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }), 100);
+        }
       }
-      window.togglePDAssistant = function () { const p = $('pd-ai-panel'); p?.classList.toggle('is-open'); if (p?.classList.contains('is-open')) $('pd-ai-input')?.focus() };
-      function installAI() { if ($('pd-ai-launcher')) return; const l = document.createElement('button'); l.id = 'pd-ai-launcher'; l.type = 'button'; l.setAttribute('aria-label', 'เปิด AI ผู้ช่วย'); l.innerHTML = '<span class="pd-ai-pulse"></span><i data-lucide="sparkles" class="w-7 h-7"></i>'; l.onclick = togglePDAssistant; document.body.appendChild(l); const p = document.createElement('div'); p.id = 'pd-ai-panel'; p.innerHTML = '<div class="pd-ai-head"><div class="pd-ai-brand"><div class="pd-ai-icon"><i data-lucide="sparkles"></i></div><div><div class="pd-ai-title">PrintDekD AI</div><div class="pd-ai-sub">ผู้ช่วยคู่มือและคำถามที่พบบ่อย</div></div></div><button class="pd-ai-close" type="button" onclick="togglePDAssistant()"><i data-lucide="x"></i></button></div><div id="pd-ai-messages" class="pd-ai-messages"></div><div class="pd-ai-suggestions"><button>Coins เหลือเท่าไร?</button><button>อัปโหลดไฟล์อะไรได้บ้าง?</button><button>ดูคิวอย่างไร?</button><button>Admin ทำอะไรได้บ้าง?</button></div><form id="pd-ai-form" class="pd-ai-form"><input id="pd-ai-input" autocomplete="off" placeholder="ถามอะไรเกี่ยวกับระบบก็ได้…"><button type="submit"><i data-lucide="arrow-up"></i></button></form>'; document.body.appendChild(p); p.querySelectorAll('.pd-ai-suggestions button').forEach(b => b.onclick = () => { addAiMsg(b.textContent, 'user'); setTimeout(() => addAiMsg(aiAnswer(b.textContent)), 220) }); $('pd-ai-form').onsubmit = e => { e.preventDefault(); const v = $('pd-ai-input').value.trim(); if (!v) return; $('pd-ai-input').value = ''; addAiMsg(v, 'user'); setTimeout(() => addAiMsg(aiAnswer(v)), 240) }; if (window.lucide) lucide.createIcons(); addAiMsg('สวัสดีครับ 👋 ผมช่วยตอบเรื่อง Coins, การอัปโหลด, คิวงาน, โปรไฟล์ และฟังก์ชัน Admin ได้ ลองถามได้เลย'); }
+
+      function showHelpTopic(id) {
+        const topic = PD_HELP_TOPICS.find(item => item.id === id);
+        const answer = $('pd-help-choice-answer');
+        if (!topic || !answer) return;
+        document.querySelectorAll('[data-pd-help-topic]').forEach(button => {
+          const selected = button.dataset.pdHelpTopic === id;
+          button.classList.toggle('is-selected', selected);
+          button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        });
+        answer.replaceChildren();
+        const heading = document.createElement('h3');
+        heading.className = 'pd-help-answer-title';
+        heading.textContent = topic.title;
+        const body = document.createElement('p');
+        body.className = 'pd-help-answer-copy';
+        body.textContent = topic.answer;
+        answer.append(heading, body);
+        if (topic.actionLabel && topic.action) {
+          const actionButton = document.createElement('button');
+          actionButton.type = 'button';
+          actionButton.className = 'pd-help-answer-action';
+          actionButton.innerHTML = `<span>${safe(topic.actionLabel)}</span><i data-lucide="arrow-up-right" aria-hidden="true"></i>`;
+          actionButton.addEventListener('click', () => routeHelpChoice(topic.action));
+          answer.appendChild(actionButton);
+        }
+        if (window.lucide) window.lucide.createIcons({ root: answer });
+      }
+
+      function installHelpChooser() {
+        if ($('pd-ai-launcher') || $('pd-ai-panel')) return;
+        const launcher = document.createElement('button');
+        launcher.id = 'pd-ai-launcher';
+        launcher.type = 'button';
+        launcher.setAttribute('aria-label', 'เปิดศูนย์ช่วยเหลือ PrintDekD');
+        launcher.setAttribute('aria-controls', 'pd-ai-panel');
+        launcher.setAttribute('aria-expanded', 'false');
+        launcher.innerHTML = '<i data-lucide="life-buoy" class="w-7 h-7" aria-hidden="true"></i>';
+        launcher.addEventListener('click', window.togglePDAssistant);
+        document.body.appendChild(launcher);
+
+        const panel = document.createElement('section');
+        panel.id = 'pd-ai-panel';
+        panel.setAttribute('aria-label', 'ศูนย์ช่วยเหลือ PrintDekD');
+        panel.setAttribute('aria-hidden', 'true');
+        panel.innerHTML = `
+          <header class="pd-ai-head">
+            <div class="pd-ai-brand">
+              <div class="pd-ai-icon"><i data-lucide="life-buoy" aria-hidden="true"></i></div>
+              <div class="pd-help-assistant-heading"><div class="pd-ai-title">ศูนย์ช่วยเหลือ PrintDekD</div><div class="pd-ai-sub">เลือกหัวข้อที่ต้องการ · ไม่ต้องพิมพ์คำถาม</div></div>
+            </div>
+            <button class="pd-ai-close" type="button" aria-label="ปิดศูนย์ช่วยเหลือ"><i data-lucide="x" aria-hidden="true"></i></button>
+          </header>
+          <div class="pd-help-choice-body">
+            <div class="pd-help-choice-intro"><span class="pd-help-choice-eyebrow">QUICK HELP</span><h2>วันนี้ให้เราช่วยเรื่องอะไร?</h2><p>เลือกหัวข้อเพื่อดูคำแนะนำและไปยังหน้าที่เกี่ยวข้องได้ทันที</p></div>
+            <div class="pd-help-choice-grid" aria-label="หัวข้อช่วยเหลือ">
+              ${PD_HELP_TOPICS.map(topic => `<button type="button" class="pd-help-choice-card" data-pd-help-topic="${topic.id}" aria-pressed="false"><span class="pd-help-choice-icon" aria-hidden="true"><i data-lucide="${topic.icon}"></i></span><span class="pd-help-choice-text"><strong>${safe(topic.title)}</strong><small>${safe(topic.subtitle)}</small></span><i class="pd-help-choice-arrow" data-lucide="chevron-right" aria-hidden="true"></i></button>`).join('')}
+            </div>
+            <section id="pd-help-choice-answer" class="pd-help-choice-answer" aria-live="polite" aria-atomic="true"><div class="pd-help-answer-empty"><span class="pd-help-answer-empty-icon"><i data-lucide="mouse-pointer-click" aria-hidden="true"></i></span><strong>เลือกหัวข้อด้านบนได้เลย</strong><p>เราจะแสดงคำแนะนำที่ตรงกับเรื่องที่คุณเลือก พร้อมปุ่มลัดไปยังหน้าที่เกี่ยวข้อง</p></div></section>
+            <p class="pd-help-choice-disclaimer"><i data-lucide="info" aria-hidden="true"></i> ใช้คำแนะนำที่เตรียมไว้ล่วงหน้า ไม่ใช่แชต AI หรือเจ้าหน้าที่สด</p>
+          </div>`;
+        document.body.appendChild(panel);
+        panel.querySelector('.pd-ai-close')?.addEventListener('click', window.togglePDAssistant);
+        panel.querySelectorAll('[data-pd-help-topic]').forEach(button => button.addEventListener('click', () => showHelpTopic(button.dataset.pdHelpTopic)));
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape' && panel.classList.contains('is-open')) window.togglePDAssistant();
+        });
+        if (window.lucide) window.lucide.createIcons();
+      }
 
       /* ---------- scroll / cinematic motion ---------- */
       function installMotion() {
@@ -169,6 +306,6 @@
         }, { threshold: .08, rootMargin: '100px 0px' });
         imgs.forEach(img => io.observe(img));
       }
-      installAI(); installMotion();
+      installHelpChooser(); installMotion();
     })();
   
