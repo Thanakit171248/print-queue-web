@@ -271,7 +271,7 @@
           <header class="pd-ai-head">
             <div class="pd-ai-brand">
               <div class="pd-ai-icon"><i data-lucide="life-buoy" aria-hidden="true"></i></div>
-              <div class="pd-help-assistant-heading"><div class="pd-ai-title">ศูนย์ช่วยเหลือ PrintDekD</div><div class="pd-ai-sub">เลือกหัวข้อที่ต้องการ · ไม่ต้องพิมพ์คำถาม</div></div>
+              <div class="pd-help-assistant-heading"><div class="pd-ai-title">ศูนย์ช่วยเหลือ PrintDekD</div><div class="pd-ai-sub">· เลือกหัวข้อที่ต้องการ</div></div>
             </div>
             <button class="pd-ai-close" type="button" aria-label="ปิดศูนย์ช่วยเหลือ"><i data-lucide="x" aria-hidden="true"></i></button>
           </header>
