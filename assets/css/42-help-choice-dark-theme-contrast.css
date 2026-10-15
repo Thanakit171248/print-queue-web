@@ -1,0 +1,78 @@
+/* PrintDekD Help Chooser — dark-theme readability override.
+   Scoped only to the floating Help Center; light theme remains unchanged. */
+html.dark #pd-ai-panel {
+  color: #f3f6fb !important;
+  background: rgba(17, 22, 32, .98) !important;
+  border-color: rgba(255, 255, 255, .16) !important;
+  color-scheme: dark;
+}
+
+html.dark #pd-ai-panel .pd-ai-head {
+  background: #171e2a !important;
+  border-bottom-color: rgba(255, 255, 255, .14) !important;
+}
+html.dark #pd-ai-panel .pd-ai-title,
+html.dark #pd-ai-panel .pd-help-choice-intro h2,
+html.dark #pd-ai-panel .pd-help-choice-text strong,
+html.dark #pd-ai-panel .pd-help-answer-empty strong,
+html.dark #pd-ai-panel .pd-help-answer-title {
+  color: #f5f7fb !important;
+  opacity: 1 !important;
+}
+html.dark #pd-ai-panel .pd-ai-sub,
+html.dark #pd-ai-panel .pd-help-choice-intro p,
+html.dark #pd-ai-panel .pd-help-choice-text small,
+html.dark #pd-ai-panel .pd-help-answer-empty p,
+html.dark #pd-ai-panel .pd-help-answer-copy,
+html.dark #pd-ai-panel .pd-help-choice-disclaimer {
+  color: #c5cfdd !important;
+  opacity: 1 !important;
+}
+html.dark #pd-ai-panel .pd-ai-close {
+  color: #eef3fa !important;
+  background: rgba(255, 255, 255, .055) !important;
+  border-color: rgba(255, 255, 255, .18) !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-card {
+  color: #f3f6fb !important;
+  background: #202938 !important;
+  border-color: #3b4657 !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-card:hover {
+  background: #27364b !important;
+  border-color: #78aaff !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-card.is-selected {
+  color: #ffffff !important;
+  background: #263b5b !important;
+  border-color: #8db7ff !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-arrow {
+  color: #c4d0e0 !important;
+  opacity: 1 !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-answer {
+  color: #f3f6fb !important;
+  background: #1b2a40 !important;
+  border-color: #3c5b83 !important;
+}
+html.dark #pd-ai-panel .pd-help-answer-empty-icon,
+html.dark #pd-ai-panel .pd-help-choice-icon {
+  color: #c0d8ff !important;
+  background: #2a3d59 !important;
+}
+html.dark #pd-ai-panel .pd-help-choice-eyebrow {
+  color: #a8caff !important;
+  opacity: 1 !important;
+}
+html.dark #pd-ai-panel .pd-help-answer-action {
+  color: #ffffff !important;
+  background: #2768d8 !important;
+  border-color: #6398ef !important;
+}
+html.dark #pd-ai-panel .pd-help-answer-action:hover {
+  background: #3478eb !important;
+}
+html.dark #pd-ai-panel button:focus-visible {
+  outline-color: #b9d5ff !important;
+}
