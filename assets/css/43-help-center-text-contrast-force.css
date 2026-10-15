@@ -1,0 +1,34 @@
+/* v8.2 hard contrast guard for Help Center. Theme marker is set by JS, so styles do not
+   depend solely on legacy root theme selectors. */
+#pd-ai-panel[data-pd-help-theme="dark"] {
+  color: #fff !important;
+  background: #101722 !important;
+  border-color: #465164 !important;
+  color-scheme: dark !important;
+}
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-ai-title,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-intro h2,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-text strong,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-empty strong,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-title {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-ai-sub,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-intro p,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-text small,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-empty p,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-copy,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-disclaimer {
+  color: #f0f4fa !important;
+  opacity: 1 !important;
+}
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-ai-head { background: #171e2a !important; border-bottom-color: rgba(255,255,255,.16) !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-card { color: #fff !important; background: #202938 !important; border-color: #46546a !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-answer { color: #fff !important; background: #1b2a40 !important; border-color: #48658d !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-ai-close { color: #fff !important; background: #202938 !important; border-color: #526078 !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-icon,
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-empty-icon { color: #d7e6ff !important; background: #2a3d59 !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-choice-eyebrow { color: #b9d5ff !important; opacity: 1 !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] .pd-help-answer-action { color: #fff !important; background: #2768d8 !important; border-color: #7aa8f8 !important; }
+#pd-ai-panel[data-pd-help-theme="dark"] button:focus-visible { outline: 3px solid #c8deff !important; outline-offset: 3px !important; }
