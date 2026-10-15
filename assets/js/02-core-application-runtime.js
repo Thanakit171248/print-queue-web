@@ -1073,7 +1073,11 @@
         updateUserUI();
         await fetchUserWallet();
         await runSecurityAudit(false);
-        showCustomModal({ title: 'สมัครสมาชิกสำเร็จ', message: `สร้างบัญชีผ่าน Supabase Auth แล้ว: ${currentUser.full_name || name}`, icon: 'shield-check' });
+        showCustomModal({
+              title: 'ยินดีต้อนรับสู่ PrintDekD',
+              message: `สมัครสมาชิกเรียบร้อยแล้ว คุณ ${currentUser.full_name || name}`,
+              icon: 'shield-check'
+        });
         switchView('dashboard');
       } catch (err) {
         console.error('Supabase Auth sign-up failed:', err);
