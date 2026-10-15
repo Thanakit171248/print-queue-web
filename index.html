@@ -28,7 +28,7 @@
   <meta name="description"
     content="PrintDekD Pro — ระบบสั่งพิมพ์เอกสาร ติดตามคิว จัดการ Coins และศูนย์ช่วยเหลือสำหรับ KMUTNB ITI">
   <meta name="theme-color" content="#0b1119">
-  <title>PrintDekD Pro — Supabase Auth Preview Fix</title>
+  <title>PrintDekD Pro — ระบบสั่งพิมพ์เอกสารออนไลน์</title>
 
   <!-- FAVICON / BROWSER TAB LOGO (Fix Globe Icon Issue) -->
   <link rel="icon" type="image/svg+xml"
@@ -1877,11 +1877,26 @@
 
       <div id="admin-tab-services" class="hidden ui-panel p-5 sm:p-8 rounded-[32px] space-y-6">
         <div><h2 class="text-lg font-bold titanium-text">ตั้งค่าบริการและราคาจริง</h2><p class="text-xs sub-text mt-1">ค่าที่บันทึกจะใช้เป็นข้อมูลตั้งต้นในการคำนวณคำสั่งพิมพ์ครั้งถัดไป ราคาแต่ละบริการต้องได้รับการยืนยันจากร้านก่อนเปิดใช้</p></div>
-        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-200 dark:border-white/10 sub-text"><th class="py-3 px-2">กระดาษ</th><th class="py-3 px-2">ขาว-ดำ/หน้า</th><th class="py-3 px-2">สี/หน้า</th><th class="py-3 px-2">เพิ่มหน้า-หลัง</th><th class="py-3 px-2">เปิดใช้</th><th class="py-3 px-2">บันทึก</th></tr></thead><tbody id="pd-admin-pricing-tbody"><tr><td colspan="6" class="py-5 text-center sub-text">กำลังโหลดตารางราคา…</td></tr></tbody></table></div>
-        <form id="pd-pricing-add-form" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2 rounded-2xl border border-slate-200 dark:border-white/10 p-3"><input id="pd-pricing-new-size" class="ui-input rounded-xl p-3 text-xs" maxlength="12" pattern="[A-Za-z0-9_-]{1,12}" placeholder="ชนิดกระดาษ เช่น A5" required><input id="pd-pricing-new-bw" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="ขาว-ดำ / หน้า" required><input id="pd-pricing-new-color" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="สี / หน้า" required><input id="pd-pricing-new-duplex" type="number" min="0" step="0.01" value="0" class="ui-input rounded-xl p-3 text-xs" placeholder="เพิ่มหน้า-หลัง" required><button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่มชนิดกระดาษ</button></form>
+        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs"><thead><tr class="border-b border-slate-200 dark:border-white/10 sub-text"><th class="py-3 px-2">กระดาษ</th><th class="py-3 px-2">ขาว-ดำ/หน้า</th><th class="py-3 px-2">สี/หน้า</th><th class="py-3 px-2">เพิ่มหน้า-หลัง</th><th class="py-3 px-2">เปิดใช้</th><th class="py-3 px-2">จัดการ</th></tr></thead><tbody id="pd-admin-pricing-tbody"><tr><td colspan="6" class="py-5 text-center sub-text">กำลังโหลดตารางราคา…</td></tr></tbody></table></div>
+        <form id="pd-pricing-add-form" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 rounded-2xl border border-slate-200 dark:border-white/10 p-3">
+          <div class="pd-admin-form-field"><label for="pd-pricing-new-size">ชนิดกระดาษ</label><input id="pd-pricing-new-size" aria-label="ชนิดกระดาษ เช่น A5" class="ui-input rounded-xl p-3 text-xs" maxlength="12" pattern="[A-Za-z0-9_-]{1,12}" placeholder="เช่น A5" required></div>
+          <div class="pd-admin-form-field"><label for="pd-pricing-new-bw">ขาว-ดำ / หน้า (บาท)</label><input id="pd-pricing-new-bw" aria-label="ราคาขาวดำต่อหน้าเป็นบาท" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="0.00" required></div>
+          <div class="pd-admin-form-field"><label for="pd-pricing-new-color">สี / หน้า (บาท)</label><input id="pd-pricing-new-color" aria-label="ราคาสีต่อหน้าเป็นบาท" type="number" min="0" step="0.01" class="ui-input rounded-xl p-3 text-xs" placeholder="0.00" required></div>
+          <div class="pd-admin-form-field"><label for="pd-pricing-new-duplex">เพิ่มหน้า-หลัง (บาท)</label><input id="pd-pricing-new-duplex" aria-label="ราคาเพิ่มหน้าและหลังเป็นบาท" type="number" min="0" step="0.01" value="0" class="ui-input rounded-xl p-3 text-xs" placeholder="0.00" required></div>
+          <button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit"><i data-lucide="plus" aria-hidden="true"></i> เพิ่มชนิดกระดาษ</button>
+        </form>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-          <div class="ui-card rounded-2xl p-4 space-y-3"><h3 class="font-bold titanium-text">ค่าบริการเข้าเล่ม</h3><form id="pd-binding-add-form" class="grid grid-cols-1 sm:grid-cols-[1fr_120px_auto] gap-2"><input id="pd-binding-new-name" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="ชื่อ เช่น เข้าเล่มสันกาว" required><input id="pd-binding-new-price" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="ราคา (บาท)" required><button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่ม</button></form><div id="pd-admin-binding-list" class="space-y-2"></div></div>
-          <div class="ui-card rounded-2xl p-4 space-y-3"><h3 class="font-bold titanium-text">ช่องทางจัดส่งและค่าบริการ</h3><form id="pd-delivery-add-form" class="grid grid-cols-1 sm:grid-cols-3 gap-2"><input id="pd-delivery-new-key" class="ui-input rounded-xl p-3 text-xs" pattern="[a-z0-9_-]+" maxlength="40" placeholder="key เช่น messenger" required><input id="pd-delivery-new-name" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="ชื่อบริการ" required><input id="pd-delivery-new-fee" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="ค่าจัดส่ง (บาท)" required><button class="sm:col-span-3 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit">เพิ่มช่องทาง</button></form><div id="pd-admin-delivery-list" class="space-y-2"></div></div>
+          <div class="ui-card rounded-2xl p-4 space-y-3"><div class="pd-admin-config-heading"><h3 class="font-bold titanium-text">ค่าบริการเข้าเล่ม</h3><p>แก้ชื่อ ราคา และสถานะเปิดใช้ได้จากแต่ละรายการ · ถ้ามีประวัติงาน ระบบจะปิดใช้แทนการลบถาวร</p></div><form id="pd-binding-add-form" class="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_130px_auto] gap-3">
+            <div class="pd-admin-form-field"><label for="pd-binding-new-name">ชื่อบริการเข้าเล่ม</label><input id="pd-binding-new-name" aria-label="ชื่อบริการเข้าเล่ม" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="เช่น เข้าเล่มสันกาว" required></div>
+            <div class="pd-admin-form-field"><label for="pd-binding-new-price">ราคา / ชุด (บาท)</label><input id="pd-binding-new-price" aria-label="ราคาค่าบริการเข้าเล่มเป็นบาท" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="0.00" required></div>
+            <button class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit"><i data-lucide="plus" aria-hidden="true"></i> เพิ่ม</button>
+          </form><div id="pd-admin-binding-list" class="space-y-2"></div></div>
+          <div class="ui-card rounded-2xl p-4 space-y-3"><div class="pd-admin-config-heading"><h3 class="font-bold titanium-text">ช่องทางจัดส่งและค่าบริการ</h3><p>รายการที่ลบจะหายจากตัวเลือกใหม่ โดยไม่ลบข้อมูลจัดส่งและ Tracking ที่บันทึกไว้ในออเดอร์เดิม</p></div><form id="pd-delivery-add-form" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="pd-admin-form-field"><label for="pd-delivery-new-key">รหัสบริการ (key)</label><input id="pd-delivery-new-key" aria-label="รหัสช่องทางจัดส่ง ภาษาอังกฤษตัวเล็กและตัวเลข" class="ui-input rounded-xl p-3 text-xs" pattern="[a-z0-9_-]+" maxlength="40" placeholder="เช่น messenger" required></div>
+            <div class="pd-admin-form-field"><label for="pd-delivery-new-name">ชื่อช่องทางจัดส่ง</label><input id="pd-delivery-new-name" aria-label="ชื่อช่องทางจัดส่ง" class="ui-input rounded-xl p-3 text-xs" maxlength="80" placeholder="เช่น Messenger" required></div>
+            <div class="pd-admin-form-field"><label for="pd-delivery-new-fee">ค่าจัดส่ง (บาท)</label><input id="pd-delivery-new-fee" aria-label="ค่าจัดส่งเป็นบาท" type="number" step="0.01" min="0" class="ui-input rounded-xl p-3 text-xs" placeholder="0.00" required></div>
+            <button class="sm:col-span-3 px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs" type="submit"><i data-lucide="plus" aria-hidden="true"></i> เพิ่มช่องทาง</button>
+          </form><div id="pd-admin-delivery-list" class="space-y-2"></div></div>
         </div>
       </div>
 
@@ -2263,6 +2278,8 @@
 <link rel="stylesheet" href="assets/css/37-employee-dashboard-designer.css" id="pd-employee-dashboard-designer">
 <link rel="stylesheet" href="assets/css/38-employee-dashboard-refinement.css" id="pd-employee-dashboard-refinement">
 <link rel="stylesheet" href="assets/css/39-employee-queue-index.css" id="pd-employee-queue-index">
+<link rel="stylesheet" href="assets/css/40-admin-accessibility-and-service-actions.css" id="pd-admin-accessibility-services-style">
+<script id="pd-admin-service-delete-runtime" src="assets/js/25-admin-service-delete-actions.js"></script>
 
 </body>
 
