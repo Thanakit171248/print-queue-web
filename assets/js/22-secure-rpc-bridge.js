@@ -39,7 +39,7 @@
 
   // Use PrintDekD's own modal for confirmations instead of browser-native confirm().
   // This keeps Admin actions visually consistent with the existing logout/success dialog.
-  function showAppConfirm({ title, message, icon = 'shield-check', confirmText = 'ยืนยัน', cancelText = 'ยกเลิก', onConfirm }) {
+  function showAppConfirm({ title, message, icon = 'shield-check', confirmText = 'ยืนยัน', cancelText = 'ยกเลิก', danger = false, onConfirm }) {
     const modal = $('custom-modal');
     const titleEl = $('modal-title');
     const messageEl = $('modal-message');
@@ -59,10 +59,13 @@
     cancelButton.classList.remove('hidden');
     cancelButton.textContent = cancelText;
     confirmButton.textContent = confirmText;
+    confirmButton.classList.toggle('pd-confirm-danger', Boolean(danger));
 
     const close = () => {
+      // Do not let destructive styling leak into later informational dialogs.
+      confirmButton.classList.remove('pd-confirm-danger');
       // `hidden` removes the dialog from the accessibility tree; leave aria-hidden
-      // false so later standard notifications can reopen this shared modal normally.
+      // false so later standard notifications can reopen the shared modal normally.
       modal.classList.add('hidden');
     };
     cancelButton.onclick = (event) => {
@@ -92,6 +95,8 @@
     // Focus the safer option first so Enter does not immediately change permissions.
     requestAnimationFrame(() => cancelButton.focus({ preventScroll: true }));
   }
+  // Share the same native-looking PrintDekD confirmation dialog with Admin configuration actions.
+  window.pdShowAppConfirm = showAppConfirm;
   const currentValue = (id) => String($(id)?.value ?? '').trim();
   const randomKey = () => {
     if (window.crypto?.randomUUID) return window.crypto.randomUUID();
