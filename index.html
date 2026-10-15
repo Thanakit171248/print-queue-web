@@ -1945,16 +1945,7 @@
         <div class="pd-help-brandmark" aria-hidden="true"><i data-lucide="printer"></i></div>
         <span class="pd-help-eyebrow">PRINTDEKD PRO · SUPPORT</span>
         <h1 id="pd-help-title">บริการช่วยเหลือของ <span>PrintDekD</span></h1>
-        <p>ต้องการความช่วยเหลือใช่ไหม? ค้นหาคู่มือการใช้งาน การสั่งพิมพ์ Coins และการติดตามคิวได้จากที่เดียว</p>
-        <form id="pd-help-search-form" class="pd-help-search" role="search">
-          <i data-lucide="search" aria-hidden="true"></i>
-          <input id="pd-help-search" type="search" autocomplete="off"
-            placeholder="ค้นหาความช่วยเหลือ เช่น พรีวิว PDF, Coins, คิวพิมพ์…" aria-label="ค้นหาหัวข้อช่วยเหลือ">
-          <button type="submit">ค้นหา</button>
-        </form>
-        <p class="pd-help-search-hint">ลองค้นหา: <button type="button" data-help-query="PDF">พรีวิว PDF</button><button
-            type="button" data-help-query="Coins">Coins</button><button type="button"
-            data-help-query="คิว">คิวพิมพ์</button></p>
+        <p>เลือกหมวดหมู่ด้านล่างเพื่อดูคู่มือการใช้งาน การสั่งพิมพ์ Coins และการติดตามคิวได้จากที่เดียว</p>
       </header>
 
       <section class="pd-help-section" aria-labelledby="pd-help-categories-title">
@@ -1962,7 +1953,7 @@
           <div><span class="pd-help-kicker">เริ่มจากหัวข้อ</span>
             <h2 id="pd-help-categories-title">คุณต้องการความช่วยเหลือเรื่องไหน?</h2>
           </div>
-          <button type="button" class="pd-help-clear" id="pd-help-clear">ล้างการค้นหา</button>
+          <button type="button" class="pd-help-clear" id="pd-help-clear">แสดงทุกหัวข้อ</button>
         </div>
         <div class="pd-help-categories">
           <button type="button" class="pd-help-category" data-help-category="print" aria-pressed="false">
@@ -2006,8 +1997,7 @@
             </div><span class="pd-help-result-count" id="pd-help-result-count" aria-live="polite">6 หัวข้อ</span>
           </div>
           <div class="pd-help-article-list" id="pd-help-article-list">
-            <article class="pd-help-article" data-help-filter-item data-help-group="print"
-              data-help-search="อัปโหลด สั่งพิมพ์ ไฟล์ PDF ตั้งค่าจำนวนชุด">
+            <article class="pd-help-article" data-help-filter-item data-help-group="print">
               <span class="pd-help-article-icon blue"><i data-lucide="file-plus-2"></i></span>
               <div><span class="pd-help-article-kicker">PRINTING</span>
                 <h3>เริ่มสั่งพิมพ์เอกสาร</h3>
@@ -2016,8 +2006,7 @@
                     data-lucide="arrow-up-right"></i></button>
               </div>
             </article>
-            <article class="pd-help-article" data-help-filter-item data-help-group="preview print"
-              data-help-search="พรีวิว preview PDF เลือกหน้าพิมพ์ canvas อ่านไม่ขึ้น PDF worker DOC Word รูปภาพ">
+            <article class="pd-help-article" data-help-filter-item data-help-group="preview print">
               <span class="pd-help-article-icon violet"><i data-lucide="file-search"></i></span>
               <div><span class="pd-help-article-kicker">DOCUMENT PREVIEW</span>
                 <h3>ดูตัวอย่างและเลือกหน้าที่ต้องการ</h3>
@@ -2026,8 +2015,7 @@
                     data-lucide="arrow-up-right"></i></button>
               </div>
             </article>
-            <article class="pd-help-article" data-help-filter-item data-help-group="coins"
-              data-help-search="Coins Wallet เติมเงิน Top up PromptPay Direct สลิป โอนเงิน ยอดเงิน">
+            <article class="pd-help-article" data-help-filter-item data-help-group="coins">
               <span class="pd-help-article-icon gold"><i data-lucide="coins"></i></span>
               <div><span class="pd-help-article-kicker">COINS WALLET</span>
                 <h3>เติม Coins และตรวจสอบยอด</h3>
@@ -2037,8 +2025,7 @@
                   Wallet <i data-lucide="arrow-up-right"></i></button>
               </div>
             </article>
-            <article class="pd-help-article" data-help-filter-item data-help-group="queue"
-              data-help-search="คิวงาน สถานะ queued printing completed รับหน้าร้าน delivery tracking จัดส่ง">
+            <article class="pd-help-article" data-help-filter-item data-help-group="queue">
               <span class="pd-help-article-icon green"><i data-lucide="package-check"></i></span>
               <div><span class="pd-help-article-kicker">ORDER STATUS</span>
                 <h3>ติดตามคิวและการรับเอกสาร</h3>
@@ -2049,8 +2036,7 @@
                   <i data-lucide="arrow-up-right"></i></button>
               </div>
             </article>
-            <article class="pd-help-article" data-help-filter-item data-help-group="account"
-              data-help-search="บัญชี เข้าสู่ระบบ ลงทะเบียน อีเมล รหัสผ่าน รูปโปรไฟล์ account">
+            <article class="pd-help-article" data-help-filter-item data-help-group="account">
               <span class="pd-help-article-icon cyan"><i data-lucide="user-round-cog"></i></span>
               <div><span class="pd-help-article-kicker">ACCOUNT</span>
                 <h3>เข้าสู่ระบบและจัดการโปรไฟล์</h3>
@@ -2060,8 +2046,7 @@
                     data-lucide="arrow-up-right"></i></button>
               </div>
             </article>
-            <article class="pd-help-article" data-help-filter-item data-help-group="security account"
-              data-help-search="ความปลอดภัย HTTPS Security Audit session RLS policy Supabase privacy ข้อมูลส่วนตัว">
+            <article class="pd-help-article" data-help-filter-item data-help-group="security account">
               <span class="pd-help-article-icon red"><i data-lucide="shield-check"></i></span>
               <div><span class="pd-help-article-kicker">SECURITY</span>
                 <h3>ตรวจสอบความปลอดภัยก่อนทำรายการ</h3>
@@ -2073,7 +2058,7 @@
           </div>
           <div class="pd-help-no-results hidden" id="pd-help-no-results"><i
               data-lucide="search-x"></i><strong>ไม่พบหัวข้อที่ตรงกัน</strong>
-            <p>ลองใช้คำค้นอื่น หรือล้างตัวกรองเพื่อดูหัวข้อทั้งหมด</p><button type="button" class="pd-help-primary"
+            <p>ลองเลือกหมวดหมู่อื่น หรือแสดงหัวข้อทั้งหมดอีกครั้ง</p><button type="button" class="pd-help-primary"
               id="pd-help-no-results-clear">แสดงทุกหัวข้อ</button>
           </div>
         </section>
@@ -2111,33 +2096,28 @@
           </div>
         </div>
         <div class="pd-help-faq-list">
-          <details class="pd-help-faq-item" data-help-filter-item data-help-group="print preview"
-            data-help-search="รองรับไฟล์อะไร PDF ขนาด 20 MB">
+          <details class="pd-help-faq-item" data-help-filter-item data-help-group="print preview">
             <summary>รองรับไฟล์ประเภทใดบ้าง?</summary>
             <p>ระบบ Secure RPC และฐานข้อมูลชุดนี้รองรับการสั่งพิมพ์ไฟล์ PDF เท่านั้น ขนาดสูงสุด 20 MB
               หากเป็น DOC/DOCX หรือรูปภาพ กรุณาแปลงเป็น PDF ก่อนอัปโหลดเพื่อให้จำนวนหน้าและช่วงหน้าตรงกับฐานข้อมูล</p>
           </details>
-          <details class="pd-help-faq-item" data-help-filter-item data-help-group="preview"
-            data-help-search="PDF พรีวิวว่างเปล่า ไม่ขึ้น canvas worker error">
+          <details class="pd-help-faq-item" data-help-filter-item data-help-group="preview">
             <summary>ทำไมพรีวิว PDF ถึงไม่แสดง?</summary>
             <p>รอสักครู่ให้ระบบอ่านหน้า PDF ก่อน หากยังว่าง ให้เปิด Console เพื่อตรวจข้อผิดพลาดเกี่ยวกับ PDF
               worker/เครือข่าย หรือทดลองบันทึก PDF จากไฟล์ต้นฉบับอีกครั้ง เบราว์เซอร์ไม่สามารถเรนเดอร์ DOC/DOCX
               เป็นพรีวิว PDF โดยตรงได้ในทุกกรณี</p>
           </details>
-          <details class="pd-help-faq-item" data-help-filter-item data-help-group="coins"
-            data-help-search="เติม Coins สลิป pending รออนุมัติ โอน PromptPay">
+          <details class="pd-help-faq-item" data-help-filter-item data-help-group="coins">
             <summary>แนบสลิปแล้วทำไม Coins ยังไม่เข้า?</summary>
             <p>การเติมเงินผ่านสลิปอาจอยู่ระหว่างตรวจสอบ เปิด Wallet เพื่อตรวจสถานะก่อนส่งรายการซ้ำ หากยังไม่เปลี่ยนแปลง
               ให้ติดต่อผู้ดูแลระบบพร้อมรายละเอียดรายการโดยไม่เปิดเผยข้อมูลลับ</p>
           </details>
-          <details class="pd-help-faq-item" data-help-filter-item data-help-group="queue"
-            data-help-search="คิว queued printing completed รับหน้าร้าน จัดส่ง tracking">
+          <details class="pd-help-faq-item" data-help-filter-item data-help-group="queue">
             <summary>สถานะคิวแต่ละแบบหมายถึงอะไร?</summary>
             <p>สถานะในแอปอาจแสดงเป็น queued (รอคิว), printing (กำลังพิมพ์) หรือ completed (พิมพ์เสร็จ)
               โดยสถานะการจัดส่งอาจอยู่ในส่วนข้อมูลจัดส่งแยกจากสถานะงานพิมพ์</p>
           </details>
-          <details class="pd-help-faq-item" data-help-filter-item data-help-group="security account"
-            data-help-search="ข้อมูลปลอดภัยไหม รหัสผ่าน Supabase RLS policy Auth">
+          <details class="pd-help-faq-item" data-help-filter-item data-help-group="security account">
             <summary>หน้าเว็บเพียงอย่างเดียวทำให้ข้อมูลปลอดภัยทั้งหมดหรือไม่?</summary>
             <p>ไม่ใช่ครับ ส่วนหน้าเว็บช่วยตรวจรูปแบบข้อมูลและแสดงสถานะได้ แต่การคุ้มครองข้อมูลจริงต้องตั้งค่า Auth,
               RLS/Policies และ Storage policies บนเซิร์ฟเวอร์อย่างถูกต้อง และต้องทดสอบทั้งสิทธิ์อนุญาตและปฏิเสธ</p>
