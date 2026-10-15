@@ -1100,7 +1100,11 @@
       resetLoginAttempts();
       updateUserUI();
       switchView('landing');
-      showCustomModal({ title: 'ออกจากระบบแล้ว', message: 'ออกจาก Supabase Auth และล้างสถานะผู้ใช้ในหน้านี้แล้ว', icon: 'log-out' });
+      showCustomModal({
+          title: 'ออกจากระบบสำเร็จ',
+          message: 'ขอบคุณที่ใช้บริการ PrintDekD แล้วพบกันใหม่',
+          icon: 'log-out'
+        });
     }
 
     function handleFileSelect(e) {
